@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class Log4JTest
         sm_Log.removeAllAppenders();
     }
 
-    @Before
+    @After
     public void cleanupAfterEachTest()
     {
         sm_Log.removeAllAppenders();

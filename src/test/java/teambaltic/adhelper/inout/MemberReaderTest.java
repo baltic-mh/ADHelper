@@ -1,0 +1,74 @@
+/**
+ * MemberReaderTest.java
+ *
+ * Created on 30.01.2016
+ * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
+ *
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ *
+ * Copyright (C) 2016 Team Baltic. All rights reserved
+ */
+// ############################################################################
+package teambaltic.adhelper.inout;
+
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.util.Collection;
+
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.utils.Log4J;
+
+// ############################################################################
+public class MemberReaderTest
+{
+    private static final Logger sm_Log = Logger.getLogger(MemberReaderTest.class);
+
+    // ########################################################################
+    // INITIALISIERUNG
+    // ########################################################################
+    @BeforeClass
+    public static void initOnceBeforeStart()
+    {
+        Log4J.initLog4J();
+    }
+
+    @Before
+    public void initBeforeEachTest()
+    {
+    }
+
+    @After
+    public void cleanupAfterEachTest()
+    {
+    }
+
+    // ########################################################################
+    // TESTS
+    // ########################################################################
+
+    @Test
+    public void test()
+    {
+        final File aFile = new File("misc/TestResources/Tabellen/Members.csv");
+        try{
+            final Collection<IClubMember> aMembers = MemberReader.readFrom( aFile );
+            for( final IClubMember aMember : aMembers ){
+                sm_Log.info("Member: "+aMember);
+            }
+        }catch( final Exception fEx ){
+            // TODO Auto-generated catch block
+            fEx.printStackTrace();
+            fail("Exception: "+fEx.getMessage());
+        }
+    }
+
+}
+
+// ############################################################################

@@ -1,0 +1,17 @@
+1. Eclipse einrichten
+    - Plugin BuildShip installieren
+    - Plugin WindowBuilder installieren
+    - ResourceBundle-Editor:
+        Update Site
+            Site name: ResourceBundle Editor
+            Site URL:   https://raw.githubusercontent.com/essiembre/eclipse-rbe/master/eclipse-rbe-update-site/site.xml
+
+2. Git einrichten
+
+3. SourceTree
+    - OpenSSH benutzen!
+    
+FAQ:
+    Gradle:
+        Neues Jar-Archiv hinzufügen:
+            https://bintray.com/bintray/jcenter/
