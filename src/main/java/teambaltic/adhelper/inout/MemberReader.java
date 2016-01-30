@@ -15,21 +15,37 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.utils.FileUtils;
+import teambaltic.adhelper.utils.ParseUtils;
 
 // ############################################################################
 public class MemberReader
 {
     private static final Logger sm_Log = Logger.getLogger(MemberReader.class);
+
+    private final static Set<String> IGNORED_COLUMNS = new HashSet<>();
+    static {
+        IGNORED_COLUMNS.add( IKnownColumns.MEMBERID );
+        IGNORED_COLUMNS.add( IKnownColumns.PLZ );
+        IGNORED_COLUMNS.add( IKnownColumns.ORT );
+        IGNORED_COLUMNS.add( IKnownColumns.ANREDE );
+        IGNORED_COLUMNS.add( IKnownColumns.STREET );
+        IGNORED_COLUMNS.add( IKnownColumns.BEITRAGSART );
+    }
+
 
     public static Collection<IClubMember> readFrom(final File fFile) throws Exception
     {
@@ -65,7 +81,7 @@ public class MemberReader
             final List<String> fColumnNames, final String fSingleLine )
     {
         final Map<String, String> aAttributes = makeMap( fColumnNames, fSingleLine );
-        final String aIDString = aAttributes.get( "Mitglieds_Nr" );
+        final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
         final int aID = Integer.parseInt( aIDString );
         final ClubMember aCM = new ClubMember( aID );
         populate( aCM, aAttributes );
@@ -92,18 +108,39 @@ public class MemberReader
         String aVorname  = "";
         for( final Entry<String, String> aEntry : fAttributes.entrySet() ){
             final String aKey = aEntry.getKey();
+            if( ignoreColumn(aKey) ){
+                continue;
+            }
             final String aValue = aEntry.getValue();
             switch( aKey ){
-                case "Nachname":
+                case IKnownColumns.NAME:
                     aNachname = aValue;
                     break;
-                case "Vorname":
+                case IKnownColumns.FIRSTNAME:
                     aVorname = aValue;
                     break;
-                case "Eintritt":
-                    final Long aL = getLong( aValue );
-                    if( aL != null ){
-                        fCM.setMemberSince( aL.longValue() );
+                case IKnownColumns.BIRTHDAY:
+                    final Date aBirthday = ParseUtils.getDate( aValue );
+                    if( aBirthday != null ){
+                        fCM.setBirtday( aBirthday.getTime() );
+                    }
+                    break;
+                case IKnownColumns.EINTRITT:
+                    final Date aEintritt = ParseUtils.getDate( aValue );
+                    if( aEintritt != null ){
+                        fCM.setMemberSince( aEintritt.getTime() );
+                    }
+                    break;
+                case IKnownColumns.AUSTRITT:
+                    final Date aAustritt = ParseUtils.getDate( aValue );
+                    if( aAustritt != null ){
+                        fCM.setMemberUntil( aAustritt.getTime() );
+                    }
+                    break;
+                case IKnownColumns.LINKID:
+                    final Integer aLink = ParseUtils.getInteger( aValue );
+                    if( aLink != null ){
+                        fCM.setLinkID( aLink.intValue() );
                     }
                     break;
                 default:
@@ -113,19 +150,18 @@ public class MemberReader
         fCM.setName( String.format("%s %s", aVorname, aNachname) );
     }
 
-    private static Long getLong( final String fValue )
+    private static boolean ignoreColumn( final String fColumn )
     {
-        if( fValue == null || "".equals( fValue ) ){
-            return null;
+
+        if( IGNORED_COLUMNS.contains( fColumn ) ){
+            return true;
         }
-        try{
-            final long aValue = Long.parseLong( fValue );
-            return Long.valueOf( aValue );
-        }catch( final NumberFormatException fEx ){
-            sm_Log.warn("Not a number: "+fValue );
-            return null;
+        if( fColumn.startsWith( IKnownColumns.GUTHABEN_PREFIX ) ){
+            return true;
         }
+        return false;
     }
+
 }
 
 // ############################################################################

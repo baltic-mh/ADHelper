@@ -35,6 +35,13 @@ public class ClubMember implements IClubMember
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private long m_Birtday;
+    @Override
+    public long getBirtday(){ return m_Birtday; }
+    public void setBirtday( final long fNewVal ){ m_Birtday = fNewVal; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private long m_MemberSince;
     @Override
     public long getMemberSince(){ return m_MemberSince; }

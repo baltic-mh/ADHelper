@@ -1,5 +1,5 @@
 /**
- * IClubMember.java
+ * IKnownColumns.java
  *
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -12,19 +12,22 @@
 package teambaltic.adhelper.model;
 
 // ############################################################################
-public interface IClubMember
+public interface IKnownColumns
 {
+    String MEMBERID = "Mitglieds_Nr";
+    String BIRTHDAY = "Geburtstag";
+    String PLZ = "Plz";
+    String ORT = "Ort";
+    String ANREDE = "Anrede";
+    String STREET = "Straße";
+    String BEITRAGSART = "Beitragsart_1";
+    String NAME = "Nachname";
+    String FIRSTNAME = "Vorname";
+    String EINTRITT = "Eintritt";
+    String AUSTRITT = "Austritt";
+    String LINKID = "Verknüpfung";
 
-    int getID();
-    int getLinkID();
-    String getName();
-    long getBirtday();
-    long getMemberSince();
-    long getMemberUntil();
-    EMemberKind getMemberKind();
-    Long getManagementMemberSince();
-    Long getFreedFromDutySince();
-
+    String GUTHABEN_PREFIX = "Guthaben ";
 }
 
 // ############################################################################

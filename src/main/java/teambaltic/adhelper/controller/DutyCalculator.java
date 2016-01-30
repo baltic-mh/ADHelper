@@ -1,5 +1,5 @@
 /**
- * IClubMember.java
+ * DutyCalculator.java
  *
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -9,22 +9,26 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.model;
+package teambaltic.adhelper.controller;
+
+import teambaltic.adhelper.model.IClubMember;
 
 // ############################################################################
-public interface IClubMember
+public class DutyCalculator
 {
+    private final long m_DueDate;
 
-    int getID();
-    int getLinkID();
-    String getName();
-    long getBirtday();
-    long getMemberSince();
-    long getMemberUntil();
-    EMemberKind getMemberKind();
-    Long getManagementMemberSince();
-    Long getFreedFromDutySince();
+    public DutyCalculator( final long fDueDate )
+    {
+        m_DueDate = fDueDate;
+    }
 
+    public int calculate( final IClubMember fMember )
+    {
+        final int aHoursToWork = 0;
+        final long aBirtday = fMember.getBirtday();
+        return aHoursToWork;
+    }
 }
 
 // ############################################################################
