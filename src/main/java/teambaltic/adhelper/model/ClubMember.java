@@ -11,6 +11,8 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.time.LocalDate;
+
 // ############################################################################
 public class ClubMember implements IClubMember
 {
@@ -35,51 +37,29 @@ public class ClubMember implements IClubMember
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private long m_Birtday;
+    private LocalDate m_Birthday;
     @Override
-    public long getBirtday(){ return m_Birtday; }
-    public void setBirtday( final long fNewVal ){ m_Birtday = fNewVal; }
+    public LocalDate getBirthday(){ return m_Birthday; }
+    public void setBirthday( final LocalDate fNewVal ){ m_Birthday = fNewVal; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private long m_MemberSince;
+    private LocalDate m_MemberSince;
     @Override
-    public long getMemberSince(){ return m_MemberSince; }
-    public void setMemberSince( final long fNewVal ){ m_MemberSince = fNewVal; }
+    public LocalDate getMemberSince(){ return m_MemberSince; }
+    public void setMemberSince( final LocalDate fNewVal ){ m_MemberSince = fNewVal; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private long m_MemberUntil;
+    private LocalDate m_MemberUntil;
     @Override
-    public long getMemberUntil(){ return m_MemberUntil; }
-    public void setMemberUntil( final long fNewVal ){ m_MemberUntil = fNewVal; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private EMemberKind m_MemberKind;
-    @Override
-    public EMemberKind getMemberKind(){ return m_MemberKind; }
-    public void setMemberKind( final EMemberKind fNewVal ){ m_MemberKind = fNewVal; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private Long m_ManagementMemberSince;
-    @Override
-    public Long getManagementMemberSince(){ return m_ManagementMemberSince; }
-    public void setManagementMemberSince( final Long fNewVal ){ m_ManagementMemberSince = fNewVal; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private Long m_FreedFromDutySince;
-    @Override
-    public Long getFreedFromDutySince(){ return m_FreedFromDutySince; }
-    public void setFreedFromDutySince( final Long fNewVal ){ m_FreedFromDutySince = fNewVal; }
+    public LocalDate getMemberUntil(){ return m_MemberUntil; }
+    public void setMemberUntil( final LocalDate fNewVal ){ m_MemberUntil = fNewVal; }
     // ------------------------------------------------------------------------
 
     public ClubMember(final int fID)
     {
         m_ID = fID;
-        m_MemberKind = EMemberKind.NORMAL;
     }
 
     @Override

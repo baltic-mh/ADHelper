@@ -12,10 +12,10 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -120,21 +120,21 @@ public class MemberReader
                     aVorname = aValue;
                     break;
                 case IKnownColumns.BIRTHDAY:
-                    final Date aBirthday = ParseUtils.getDate( aValue );
+                    final LocalDate aBirthday = ParseUtils.getDate( aValue );
                     if( aBirthday != null ){
-                        fCM.setBirtday( aBirthday.getTime() );
+                        fCM.setBirthday( aBirthday );
                     }
                     break;
                 case IKnownColumns.EINTRITT:
-                    final Date aEintritt = ParseUtils.getDate( aValue );
+                    final LocalDate aEintritt = ParseUtils.getDate( aValue );
                     if( aEintritt != null ){
-                        fCM.setMemberSince( aEintritt.getTime() );
+                        fCM.setMemberSince( aEintritt );
                     }
                     break;
                 case IKnownColumns.AUSTRITT:
-                    final Date aAustritt = ParseUtils.getDate( aValue );
+                    final LocalDate aAustritt = ParseUtils.getDate( aValue );
                     if( aAustritt != null ){
-                        fCM.setMemberUntil( aAustritt.getTime() );
+                        fCM.setMemberUntil( aAustritt );
                     }
                     break;
                 case IKnownColumns.LINKID:

@@ -11,6 +11,8 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.time.LocalDate;
+
 // ############################################################################
 public interface IClubMember
 {
@@ -18,12 +20,9 @@ public interface IClubMember
     int getID();
     int getLinkID();
     String getName();
-    long getBirtday();
-    long getMemberSince();
-    long getMemberUntil();
-    EMemberKind getMemberKind();
-    Long getManagementMemberSince();
-    Long getFreedFromDutySince();
+    LocalDate getBirthday();
+    LocalDate getMemberSince();
+    LocalDate getMemberUntil();
 
 }
 

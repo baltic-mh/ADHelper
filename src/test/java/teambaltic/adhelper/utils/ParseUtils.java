@@ -11,10 +11,9 @@
 // ############################################################################
 package teambaltic.adhelper.utils;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +21,8 @@ import org.apache.log4j.Logger;
 public final class ParseUtils
 {
     private static final Logger sm_Log = Logger.getLogger(ParseUtils.class);
+
+    private static final DateTimeFormatter FORM = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public static Integer getInteger( final String fValue )
     {
@@ -51,14 +52,13 @@ public final class ParseUtils
         }
     }
 
-    public static Date getDate( final String fValue )
+    public static LocalDate getDate( final String fDateText )
     {
         try{
-            final DateFormat df = new SimpleDateFormat( "yyyy" );
-            final Date result = df.parse( fValue );
-            return result;
-        }catch( final ParseException pe ){
-            sm_Log.warn( "Not a number: " + fValue );
+            final LocalDate aResult = LocalDate.parse(fDateText, FORM);
+            return aResult;
+        }catch( final DateTimeParseException fEx ){
+            sm_Log.warn( "Not a valid date: " + fDateText );
             return null;
         }
     }

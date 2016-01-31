@@ -12,7 +12,7 @@
 package teambaltic.adhelper.model;
 
 // ############################################################################
-public class Duty
+public class HoursWorked
 {
     // ------------------------------------------------------------------------
     private final int m_MemberID;
@@ -37,7 +37,7 @@ public class Duty
     public void setCleared( final long fCleared ){ m_Cleared = fCleared; }
     // ------------------------------------------------------------------------
 
-    public Duty( final int fMemberID )
+    public HoursWorked( final int fMemberID )
     {
         m_MemberID = fMemberID;
     }
