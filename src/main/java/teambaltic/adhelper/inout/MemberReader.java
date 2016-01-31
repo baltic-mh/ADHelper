@@ -128,7 +128,7 @@ public class MemberReader
                 case IKnownColumns.EINTRITT:
                     final LocalDate aEintritt = ParseUtils.getDate( aValue );
                     if( aEintritt != null ){
-                        fCM.setMemberSince( aEintritt );
+                        fCM.setMemberFrom( aEintritt );
                     }
                     break;
                 case IKnownColumns.AUSTRITT:

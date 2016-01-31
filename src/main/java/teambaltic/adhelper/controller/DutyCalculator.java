@@ -48,6 +48,8 @@ public class DutyCalculator
         final int aMemberID = fMember.getID();
         final FreeFromDuty aFreeByNoLongerMember = getFreeFromDutyByNoLongerMember(
                 fMember, aMemberID );
+        final FreeFromDuty aFreeByNotYetMember = getFreeFromDutyByNotYetMember(
+                fMember, aMemberID );
 
         final LocalDate aBirthday  = fMember.getBirthday();
         final LocalDate aFreeByAgeFrom = aBirthday.plusYears( MAX_AGE_FOR_DUTY );
@@ -75,15 +77,21 @@ public class DutyCalculator
             return aFreeFromDuty;
         }
 
+        // Normale Austritte - ohne Faxen!
         if( aFreeByNoLongerMember != null ){
-            final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NO_LONGER_MEMBER );
-            aFreeFromDuty.setFrom( aFreeByNoLongerMember.getFrom() );
-            return aFreeFromDuty;
+            return aFreeByNoLongerMember;
         }
+
+        // Normale Eintritte - ohne Faxen!
+        if( aFreeByNotYetMember != null ){
+            return aFreeByNotYetMember;
+        }
+
         return null;
     }
 
-    private FreeFromDuty getFreeFromDutyByNoLongerMember( final IClubMember fMember, final int aMemberID )
+    private FreeFromDuty getFreeFromDutyByNoLongerMember(
+            final IClubMember fMember, final int aMemberID )
     {
         final LocalDate aMemberUntil = fMember.getMemberUntil();
         if( aMemberUntil == null ){
@@ -92,6 +100,22 @@ public class DutyCalculator
         if( aMemberUntil.compareTo( getInvoicingPeriod().getEnd() ) < 0 ) {
             final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NO_LONGER_MEMBER );
             aFreeFromDuty.setFrom( aMemberUntil );
+            return aFreeFromDuty;
+        }
+        return null;
+    }
+
+    private FreeFromDuty getFreeFromDutyByNotYetMember(
+            final IClubMember fMember, final int aMemberID )
+    {
+        final LocalDate aMemberFrom = fMember.getMemberFrom();
+        if( aMemberFrom == null ){
+            return null;
+        }
+        final LocalDate aFreeUntil = aMemberFrom.plusMonths( 5 );
+        if( aFreeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
+            final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NOT_YET_MEMBER );
+            aFreeFromDuty.setUntil( aFreeUntil );
             return aFreeFromDuty;
         }
         return null;

@@ -21,7 +21,7 @@ public interface IClubMember
     int getLinkID();
     String getName();
     LocalDate getBirthday();
-    LocalDate getMemberSince();
+    LocalDate getMemberFrom();
     LocalDate getMemberUntil();
 
 }

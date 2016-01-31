@@ -19,6 +19,7 @@ public class FreeFromDuty
     public enum REASON{
         TOO_YOUNG,
         TOO_OLD,
+        NOT_YET_MEMBER,
         NO_LONGER_MEMBER,
         SUSTAINING,
         HONORY,

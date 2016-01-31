@@ -44,10 +44,10 @@ public class ClubMember implements IClubMember
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private LocalDate m_MemberSince;
+    private LocalDate m_MemberFrom;
     @Override
-    public LocalDate getMemberSince(){ return m_MemberSince; }
-    public void setMemberSince( final LocalDate fNewVal ){ m_MemberSince = fNewVal; }
+    public LocalDate getMemberFrom(){ return m_MemberFrom; }
+    public void setMemberFrom( final LocalDate fNewVal ){ m_MemberFrom = fNewVal; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
