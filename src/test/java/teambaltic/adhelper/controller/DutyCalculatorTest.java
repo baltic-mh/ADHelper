@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.utils.Log4J;
@@ -33,6 +34,7 @@ import teambaltic.adhelper.utils.Log4J;
 public class DutyCalculatorTest
 {
     private static final Logger sm_Log = Logger.getLogger(DutyCalculatorTest.class);
+    private static GlobalParameters GPs;
 
     // ########################################################################
     // INITIALISIERUNG
@@ -41,6 +43,7 @@ public class DutyCalculatorTest
     public static void initOnceBeforeStart()
     {
         Log4J.initLog4J();
+        GPs = new GlobalParameters();
     }
 
     @Before
@@ -57,12 +60,11 @@ public class DutyCalculatorTest
     // TESTS
     // ########################################################################
 
-
     @Test
     public void test_TOO_OLD()
     {
         final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
-        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod );
+        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs );
 
         final ClubMember aMember1 = new ClubMember(1);
         aMember1.setBirthday( LocalDate.of( 1930, 1, 1 ) );
@@ -94,7 +96,7 @@ public class DutyCalculatorTest
     public void test_NORMAL_MEMBER()
     {
         final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
-        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod );
+        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs  );
 
         final ClubMember aMember3 = new ClubMember(3);
         aMember3.setBirthday( LocalDate.of( 1950, 3, 1 ) );
@@ -155,7 +157,7 @@ public class DutyCalculatorTest
     public void test_TOO_YOUNG()
     {
         final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
-        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod );
+        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs  );
 
         final ClubMember aMember4 = new ClubMember(4);
         aMember4.setBirthday( LocalDate.of( 1984, 3, 31 ) );

@@ -26,9 +26,9 @@ public class HoursWorked
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private float m_Hours;
-    public float getHours(){ return m_Hours; }
-    public void setHours( final float fHours ) { m_Hours = fHours; }
+    private int m_Hours;
+    public int getHours(){ return m_Hours; }
+    public void setHours( final int fHours ) { m_Hours = fHours; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------

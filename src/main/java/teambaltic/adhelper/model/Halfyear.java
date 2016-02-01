@@ -16,7 +16,7 @@ import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
 // ############################################################################
-public class Halfyear
+public class Halfyear implements IInvoicingPeriod
 {
     private static final DateTimeFormatter FORM = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -34,11 +34,13 @@ public class Halfyear
 
     // ------------------------------------------------------------------------
     private final LocalDate m_Start;
+    @Override
     public LocalDate getStart(){ return m_Start; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final LocalDate m_End;
+    @Override
     public LocalDate getEnd(){ return m_End;}
     // ------------------------------------------------------------------------
 

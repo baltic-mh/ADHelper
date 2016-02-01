@@ -15,32 +15,33 @@ import java.time.LocalDate;
 
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
-import teambaltic.adhelper.model.Halfyear;
+import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IInvoicingPeriod;
 
 // ############################################################################
 /**
  * @author Mathias
  *
- *  Berechnet die Anzahl der zu erbringenden Arbeitsstunden pro Halbjahr
+ *  Berechnet die Anzahl der zu erbringenden Arbeitsstunden pro Abbuchungszeitraum
  *
- *  Das DueDate ist das Ende des zur Berechnung stehenden Halbjahres.
  */
 public class DutyCalculator
 {
-    private static final long MIN_AGE_FOR_DUTY = 16L;
-    private static final long MAX_AGE_FOR_DUTY = 60L;
-
-    private static final float DUTYHOURS_PER_HALFYEAR = 3.0f;
-
     // ------------------------------------------------------------------------
-    private final Halfyear m_InvoicingPeriod;
-    public Halfyear getInvoicingPeriod(){ return m_InvoicingPeriod; }
+    private final IInvoicingPeriod m_InvoicingPeriod;
+    public IInvoicingPeriod getInvoicingPeriod(){ return m_InvoicingPeriod; }
     // ------------------------------------------------------------------------
 
-    public DutyCalculator( final Halfyear fInvoicingPeriod )
+    private final GlobalParameters m_GPs;
+    private GlobalParameters getGPs(){ return m_GPs; }
+
+    public DutyCalculator(
+            final IInvoicingPeriod fInvoicingPeriod,
+            final GlobalParameters fGlobalParameters)
     {
-        m_InvoicingPeriod = fInvoicingPeriod;
+        m_InvoicingPeriod   = fInvoicingPeriod;
+        m_GPs               = fGlobalParameters;
     }
 
     public FreeFromDuty isFreeFromDuty( final IClubMember fMember )
@@ -52,7 +53,7 @@ public class DutyCalculator
                 fMember, aMemberID );
 
         final LocalDate aBirthday  = fMember.getBirthday();
-        final LocalDate aFreeByAgeFrom = aBirthday.plusYears( MAX_AGE_FOR_DUTY );
+        final LocalDate aFreeByAgeFrom = aBirthday.plusYears( getGPs().getMaxAgeForDuty() );
         if( aFreeByAgeFrom.compareTo( getInvoicingPeriod().getEnd() ) < 0 ) {
             final FreeFromDuty aFreeFromDuty;
             if( aFreeByNoLongerMember != null
@@ -66,7 +67,7 @@ public class DutyCalculator
             return aFreeFromDuty;
         }
 
-        final LocalDate aFreeByAgeUntil = aBirthday.plusYears( MIN_AGE_FOR_DUTY );
+        final LocalDate aFreeByAgeUntil = aBirthday.plusYears( getGPs().getMinAgeForDuty() );
         if( aFreeByAgeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
             final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.TOO_YOUNG );
             aFreeFromDuty.setUntil( aFreeByAgeUntil );
@@ -112,7 +113,7 @@ public class DutyCalculator
         if( aMemberFrom == null ){
             return null;
         }
-        final LocalDate aFreeUntil = aMemberFrom.plusMonths( 5 );
+        final LocalDate aFreeUntil = aMemberFrom.plusMonths( getGPs().getProtectedTime()-1 );
         if( aFreeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
             final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NOT_YET_MEMBER );
             aFreeFromDuty.setUntil( aFreeUntil );
@@ -121,32 +122,35 @@ public class DutyCalculator
         return null;
     }
 
-    public float calculate( final FreeFromDuty fFreeFromDuty )
+    public int calculate( final FreeFromDuty fFreeFromDuty )
     {
         if( fFreeFromDuty == null ){
-            return DUTYHOURS_PER_HALFYEAR;
+            return getGPs().getDutyHoursPerInvoicePeriod();
         }
         final LocalDate aFreeFrom = fFreeFromDuty.getFrom();
         final LocalDate aFreeUntil = fFreeFromDuty.getUntil();
-        final float aHoursToWork = calcDuty( getInvoicingPeriod(), aFreeFrom, aFreeUntil );
+        final int aHoursToWork = calcDuty( getGPs(), getInvoicingPeriod(), aFreeFrom, aFreeUntil );
         return aHoursToWork;
     }
 
-    private static float calcDuty(
-            final Halfyear fInvoicingPeriod,
+    private static int calcDuty(
+            final GlobalParameters fGPs,
+            final IInvoicingPeriod fInvoicingPeriod,
             final LocalDate fFreeFrom,
             final LocalDate fFreeUntil )
     {
         final LocalDate aInvoicingPeriodStart = fInvoicingPeriod.getStart();
         if( fFreeFrom != null && fFreeFrom.compareTo( aInvoicingPeriodStart ) <= 0 ){
-            return 0.0f;
+            return 0;
         }
         final LocalDate aInvoicingPeriodEnd = fInvoicingPeriod.getEnd();
         if( fFreeUntil != null && fFreeUntil.compareTo( aInvoicingPeriodEnd ) >= 0 ){
-            return 0.0f;
+            return 0;
         }
 
-        int aNumMonthsDuty = 6;
+        int aNumMonthsInPeriod =
+                      aInvoicingPeriodEnd.getMonthValue()
+                    - aInvoicingPeriodStart.getMonthValue()+1;
         if( fFreeUntil != null
                 && fFreeUntil.compareTo( aInvoicingPeriodStart ) >= 0
                 && fFreeUntil.compareTo( aInvoicingPeriodEnd   ) <= 0
@@ -154,7 +158,7 @@ public class DutyCalculator
             // Befreiung liegt innerhalb des Abrechungszeitraumes
             final int aFreeUntilMonth  = fFreeUntil.getMonth().getValue();
             final int aInvoicingPeriodStartMonth = aInvoicingPeriodStart.getMonth().getValue();
-            aNumMonthsDuty -= aFreeUntilMonth - aInvoicingPeriodStartMonth+1;
+            aNumMonthsInPeriod -= aFreeUntilMonth - aInvoicingPeriodStartMonth+1;
         }
         if( fFreeFrom != null
                 && fFreeFrom.compareTo( aInvoicingPeriodStart ) >= 0
@@ -163,10 +167,11 @@ public class DutyCalculator
             // Befreiung liegt innerhalb des Abrechungszeitraumes
             final int aFreeFromMonth    = fFreeFrom.getMonth().getValue();
             final int aInvoicingPeriodEndMonth = aInvoicingPeriodEnd.getMonth().getValue();
-            aNumMonthsDuty -= aInvoicingPeriodEndMonth - aFreeFromMonth+1;
+            aNumMonthsInPeriod -= aInvoicingPeriodEndMonth - aFreeFromMonth+1;
         }
-        return DUTYHOURS_PER_HALFYEAR * aNumMonthsDuty / 6;
+        return fGPs.getDutyHoursPerInvoicePeriod() * aNumMonthsInPeriod / 6;
     }
+
 }
 
 // ############################################################################
