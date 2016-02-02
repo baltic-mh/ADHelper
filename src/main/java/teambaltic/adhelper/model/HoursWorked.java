@@ -12,10 +12,12 @@
 package teambaltic.adhelper.model;
 
 // ############################################################################
-public class HoursWorked
+public class HoursWorked  implements IIdentifiedItem
 {
     // ------------------------------------------------------------------------
     private final int m_MemberID;
+    @Override
+    public int getID() { return getMemberID(); }
     public int getMemberID() { return m_MemberID; }
     // ------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /**
- * MemberReaderTest.java
+ * InfoReaderTest.java
  *
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -26,9 +26,9 @@ import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
-public class MemberReaderTest
+public class InfoReaderTest
 {
-    private static final Logger sm_Log = Logger.getLogger(MemberReaderTest.class);
+    private static final Logger sm_Log = Logger.getLogger(InfoReaderTest.class);
 
     // ########################################################################
     // INITIALISIERUNG
@@ -57,8 +57,10 @@ public class MemberReaderTest
     public void test()
     {
         final File aFile = new File("misc/TestResources/Tabellen/Members.csv");
+        final BaseInfoReader aReader = new BaseInfoReader( aFile );
         try{
-            final Collection<IClubMember> aMembers = MemberReader.readFrom( aFile );
+            aReader.read( );
+            final Collection<IClubMember> aMembers = aReader.getMemberList();
             for( final IClubMember aMember : aMembers ){
                 sm_Log.info("Member: "+aMember);
             }

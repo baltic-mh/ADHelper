@@ -1,5 +1,5 @@
 /**
- * IClubMember.java
+ * IADInfoListProvider.java
  *
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -9,18 +9,18 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.model;
+package teambaltic.adhelper.controller;
 
-import java.time.LocalDate;
+import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.HoursWorked;
+import teambaltic.adhelper.model.IClubMember;
 
 // ############################################################################
-public interface IClubMember extends IIdentifiedItem
+public interface IADInfoListProvider
 {
-    int getLinkID();
-    String getName();
-    LocalDate getBirthday();
-    LocalDate getMemberFrom();
-    LocalDate getMemberUntil();
+    IListProvider<IClubMember> getMemberListProvider();
+    IListProvider<FreeFromDuty> getFreeFromDutyListProvider();
+    IListProvider<HoursWorked> getHoursWorkedListProvider();
 }
 
 // ############################################################################

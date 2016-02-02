@@ -54,6 +54,9 @@ public final class ParseUtils
 
     public static LocalDate getDate( final String fDateText )
     {
+        if( fDateText == null || "".equals( fDateText ) ){
+            return null;
+        }
         try{
             final LocalDate aResult = LocalDate.parse(fDateText, FORM);
             return aResult;

@@ -28,6 +28,7 @@ import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
+import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.utils.Log4J;
 import teambaltic.adhelper.utils.TestUtils;
 
@@ -44,7 +45,7 @@ public class ChargeCalculatorTest
 
     private static FreeFromDuty MHW_FreeFromDuty;
 
-    private static ClubMemberController CMC;
+    private static ListProvider<IClubMember> MemberListProvider;
 
     // ########################################################################
     // INITIALISIERUNG
@@ -54,7 +55,7 @@ public class ChargeCalculatorTest
     {
         Log4J.initLog4J();
         GPs = new GlobalParameters();
-        CMC = new ClubMemberController();
+        MemberListProvider = new ListProvider<>();
         createFamilieWeber();
     }
 
@@ -95,7 +96,7 @@ public class ChargeCalculatorTest
                 "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
         for( final DutyCharge aC : aAllDutyCharges ){
             sm_Log.info( String.format("%-20s  %5.1f %5.1f    %5.1f   %5.1f   %5.1f   %5.1f",
-                    CMC.get( aC.getMemberID() ).getName(),
+                    MemberListProvider.get( aC.getMemberID() ).getName(),
                     aC.getBalance_Original()/100.0,
                     aC.getHoursWorked()/100.0,
                     aC.getHoursDue()/100.0,
@@ -117,7 +118,7 @@ public class ChargeCalculatorTest
         MHW = new ClubMember( 44 );
         MHW.setBirthday( LocalDate.of( 1958, 4, 9 ) );
         MHW.setName( "Mathias" );
-        CMC.add( MHW );
+        MemberListProvider.add( MHW );
 
         MHW_FreeFromDuty = new FreeFromDuty( MHW.getID(), REASON.MANAGEMENT );
         MHW_FreeFromDuty.setFrom( LocalDate.of( 2011, 2, 14 ) );
@@ -125,17 +126,17 @@ public class ChargeCalculatorTest
         MTW = new ClubMember( 46 );
         MTW.setBirthday( LocalDate.of( 1960, 3, 20 ) );
         MTW.setName( "Marie-Theres" );
-        CMC.add( MTW );
+        MemberListProvider.add( MTW );
 
         BJW = new ClubMember( 48 );
         BJW.setBirthday( LocalDate.of( 1993, 9, 26 ) );
         BJW.setName( "Birke" );
-        CMC.add( BJW );
+        MemberListProvider.add( BJW );
 
         MMW = new ClubMember( 50 );
         MMW.setBirthday( LocalDate.of( 1996, 9, 26 ) );
         MMW.setName( "Merle" );
-        CMC.add( MMW );
+        MemberListProvider.add( MMW );
 
     }
 }

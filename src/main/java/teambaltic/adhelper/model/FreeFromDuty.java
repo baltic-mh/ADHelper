@@ -14,27 +14,41 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class FreeFromDuty
+public class FreeFromDuty implements IIdentifiedItem
 {
     public enum REASON{
         TOO_YOUNG,
         TOO_OLD,
         NOT_YET_MEMBER,
         NO_LONGER_MEMBER,
-        SUSTAINING,
-        HONORY,
+        SUSTAINING("Fördermitglied"),
+        HONORY("Ehrenmitglied"),
         MANAGEMENT,
         REMOTENESS,
         INDIVIDUALREASON;
+
+        private final String m_StringRep;
+        public String getStringRep(){ return m_StringRep; }
+
+        REASON()
+        {
+            this(null);
+        }
+        REASON(final String fStringRep)
+        {
+            m_StringRep = fStringRep;
+        }
     }
 
     // ------------------------------------------------------------------------
     private final int m_MemberID;
+    @Override
+    public int getID() { return getMemberID(); }
     public int getMemberID() { return m_MemberID; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    public final REASON m_Reason;
+    private final REASON m_Reason;
     public REASON getReason(){ return m_Reason; }
     // ------------------------------------------------------------------------
 
