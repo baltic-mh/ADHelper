@@ -16,6 +16,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.inout.BaseInfoReader;
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.HoursWorked;
 import teambaltic.adhelper.model.IClubMember;
@@ -38,6 +39,12 @@ public class ADInfoListProvider implements IADInfoListProvider
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private final IListProvider<Balance> m_BalanceListProvider;
+    @Override
+    public IListProvider<Balance> getBalanceListProvider(){ return m_BalanceListProvider; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private final IListProvider<HoursWorked> m_HoursWorkedListProvider;
     @Override
     public IListProvider<HoursWorked> getHoursWorkedListProvider(){ return m_HoursWorkedListProvider; }
@@ -45,9 +52,10 @@ public class ADInfoListProvider implements IADInfoListProvider
 
     public ADInfoListProvider()
     {
-        m_MemberListProvider        = new ListProvider<IClubMember>();
-        m_FreeFromDutyListProvider  = new ListProvider<FreeFromDuty>();
-        m_HoursWorkedListProvider   = new ListProvider<HoursWorked>();
+        m_MemberListProvider        = new ListProvider<>();
+        m_FreeFromDutyListProvider  = new ListProvider<>();
+        m_HoursWorkedListProvider   = new ListProvider<>();
+        m_BalanceListProvider       = new ListProvider<>();
     }
 
     public void readBaseInfo( final File fBaseInfoFile )
@@ -57,6 +65,7 @@ public class ADInfoListProvider implements IADInfoListProvider
             aBaseInfoReader.read();
             m_MemberListProvider.addAll( aBaseInfoReader.getMemberList() );
             m_FreeFromDutyListProvider.addAll( aBaseInfoReader.getFreeFromDutyList() );
+            m_BalanceListProvider.addAll( aBaseInfoReader.getBlanceList() );
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block
             sm_Log.warn("Exception: ", fEx );

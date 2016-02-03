@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.HoursWorked;
 import teambaltic.adhelper.model.IClubMember;
@@ -52,17 +53,27 @@ public class BaseInfoReader
     public Collection<HoursWorked> getHoursWorkedList(){ return m_HoursWorkedList; }
     // ------------------------------------------------------------------------
 
-    private final IItemFactory<IClubMember> m_MemberFactory;
-    private final IItemFactory<FreeFromDuty> m_FreeFromDutyFactory;
+    // ------------------------------------------------------------------------
+    private final Collection<Balance> m_BalanceList;
+    public Collection<Balance> getBlanceList(){ return m_BalanceList; }
+    // ------------------------------------------------------------------------
+
+    private final IItemFactory<IClubMember>     m_MemberFactory;
+    private final IItemFactory<FreeFromDuty>    m_FreeFromDutyFactory;
+    private final IItemFactory<Balance>         m_BalanceFactory;
 
     public BaseInfoReader(final File fFile)
     {
         m_File = fFile;
-        m_MemberList        = new ArrayList<>();
-        m_FreeFromDutyList  = new ArrayList<>();
-        m_HoursWorkedList   = new ArrayList<>();
-        m_MemberFactory     = new MemberFactory();
-        m_FreeFromDutyFactory = new FreeFromDutyFactory();
+
+        m_MemberList            = new ArrayList<>();
+        m_FreeFromDutyList      = new ArrayList<>();
+        m_BalanceList           = new ArrayList<>();
+        m_HoursWorkedList       = new ArrayList<>();
+
+        m_MemberFactory         = new MemberFactory();
+        m_FreeFromDutyFactory   = new FreeFromDutyFactory();
+        m_BalanceFactory        = new BalanceFactory();
     }
 
     public void read() throws Exception
@@ -92,6 +103,11 @@ public class BaseInfoReader
             if( aFFD != null ){
                 sm_Log.info(aClubMember+": "+ aFFD);
                 m_FreeFromDutyList.add( aFFD );
+            }
+            final Balance aBalance = m_BalanceFactory.createItem( aID, aAttributes);
+            if( aBalance != null ){
+                sm_Log.info(aClubMember+": Guthaben: "+ aBalance);
+                m_BalanceList.add( aBalance );
             }
         }
 

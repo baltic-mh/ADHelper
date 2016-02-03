@@ -11,6 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.HoursWorked;
 import teambaltic.adhelper.model.IClubMember;
@@ -18,9 +19,10 @@ import teambaltic.adhelper.model.IClubMember;
 // ############################################################################
 public interface IADInfoListProvider
 {
-    IListProvider<IClubMember> getMemberListProvider();
+    IListProvider<IClubMember>  getMemberListProvider();
     IListProvider<FreeFromDuty> getFreeFromDutyListProvider();
-    IListProvider<HoursWorked> getHoursWorkedListProvider();
+    IListProvider<Balance>      getBalanceListProvider();
+    IListProvider<HoursWorked>  getHoursWorkedListProvider();
 }
 
 // ############################################################################

@@ -19,12 +19,14 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class DutyCharge
+public class DutyCharge implements IIdentifiedItem
 {
     private static final Logger sm_Log = Logger.getLogger(DutyCharge.class);
 
     // ------------------------------------------------------------------------
     private final int m_MemberID;
+    @Override
+    public int getID() { return getMemberID(); }
     public int getMemberID() { return m_MemberID; }
     // ------------------------------------------------------------------------
 

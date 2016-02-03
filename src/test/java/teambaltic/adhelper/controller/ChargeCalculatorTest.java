@@ -29,6 +29,7 @@ import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IInvoicingPeriod;
 import teambaltic.adhelper.utils.Log4J;
 import teambaltic.adhelper.utils.TestUtils;
 
@@ -78,7 +79,7 @@ public class ChargeCalculatorTest
     {
         final String aMethodName = TestUtils.getMethodName();
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
-        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2016 ), EPart.FIRST );
+        final IInvoicingPeriod aInvoicingPeriod = new Halfyear( Year.of( 2016 ), EPart.FIRST );
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs );
 
         final ChargeCalculator aCC = new ChargeCalculator( aDC );
