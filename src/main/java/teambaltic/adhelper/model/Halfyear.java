@@ -16,7 +16,7 @@ import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
 // ############################################################################
-public class Halfyear implements IInvoicingPeriod
+public class Halfyear extends AInvoicingPeriod
 {
     private static final DateTimeFormatter FORM = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -50,23 +50,6 @@ public class Halfyear implements IInvoicingPeriod
         m_Part = fPart;
         m_Start = calcStart( fYear, fPart);
         m_End   = calcEnd( fYear, fPart);
-    }
-
-    public boolean isAfterMyStart(  final LocalDate fDate )
-    {
-        final int aComparedTo = getStart().compareTo( fDate );
-        return aComparedTo <= 0;
-    }
-
-    public boolean isBeforeMyEnd(  final LocalDate fDate )
-    {
-        final int aComparedTo = getEnd().compareTo( fDate );
-        return aComparedTo >= 0;
-    }
-
-    public boolean isWithinMyBounds( final LocalDate fDate )
-    {
-        return isAfterMyStart( fDate ) && isBeforeMyEnd( fDate );
     }
 
     private static LocalDate calcStart( final Year fYear, final EPart fPart )

@@ -11,8 +11,10 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.time.LocalDate;
+
 // ############################################################################
-public class HoursWorked  implements IIdentifiedItem
+public class WorkEvent implements IIdentifiedItem
 {
     // ------------------------------------------------------------------------
     private final int m_MemberID;
@@ -22,9 +24,9 @@ public class HoursWorked  implements IIdentifiedItem
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private long m_Date;
-    public long getDate(){ return m_Date; }
-    public void setDate( final long fDate ){ m_Date = fDate; }
+    private LocalDate m_Date;
+    public LocalDate getDate(){ return m_Date; }
+    public void setDate( final LocalDate fDate ){ m_Date = fDate; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -34,12 +36,12 @@ public class HoursWorked  implements IIdentifiedItem
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private long m_Cleared;
-    public long getCleared(){ return m_Cleared; }
-    public void setCleared( final long fCleared ){ m_Cleared = fCleared; }
+    private LocalDate m_Cleared;
+    public LocalDate getCleared(){ return m_Cleared; }
+    public void setCleared( final LocalDate fCleared ){ m_Cleared = fCleared; }
     // ------------------------------------------------------------------------
 
-    public HoursWorked( final int fMemberID )
+    public WorkEvent( final int fMemberID )
     {
         m_MemberID = fMemberID;
     }

@@ -18,8 +18,8 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.inout.BaseInfoReader;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.HoursWorked;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.WorkEventsAttended;
 
 // ############################################################################
 public class ADInfoListProvider implements IADInfoListProvider
@@ -45,17 +45,17 @@ public class ADInfoListProvider implements IADInfoListProvider
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final IListProvider<HoursWorked> m_HoursWorkedListProvider;
+    private final IListProvider<WorkEventsAttended> m_WorkEventsAttendedListProvider;
     @Override
-    public IListProvider<HoursWorked> getHoursWorkedListProvider(){ return m_HoursWorkedListProvider; }
+    public IListProvider<WorkEventsAttended> getWorkEventsAttendedListProvider(){ return m_WorkEventsAttendedListProvider; }
     // ------------------------------------------------------------------------
 
     public ADInfoListProvider()
     {
-        m_MemberListProvider        = new ListProvider<>();
-        m_FreeFromDutyListProvider  = new ListProvider<>();
-        m_HoursWorkedListProvider   = new ListProvider<>();
-        m_BalanceListProvider       = new ListProvider<>();
+        m_MemberListProvider            = new ListProvider<>();
+        m_FreeFromDutyListProvider      = new ListProvider<>();
+        m_BalanceListProvider           = new ListProvider<>();
+        m_WorkEventsAttendedListProvider= new ListProvider<>();
     }
 
     public void readBaseInfo( final File fBaseInfoFile )
@@ -65,7 +65,7 @@ public class ADInfoListProvider implements IADInfoListProvider
             aBaseInfoReader.read();
             m_MemberListProvider.addAll( aBaseInfoReader.getMemberList() );
             m_FreeFromDutyListProvider.addAll( aBaseInfoReader.getFreeFromDutyList() );
-            m_BalanceListProvider.addAll( aBaseInfoReader.getBlanceList() );
+            m_BalanceListProvider.addAll( aBaseInfoReader.getBalanceList() );
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block
             sm_Log.warn("Exception: ", fEx );

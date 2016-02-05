@@ -13,9 +13,7 @@ package teambaltic.adhelper.inout;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +21,6 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.HoursWorked;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.utils.FileUtils;
@@ -49,13 +46,8 @@ public class BaseInfoReader
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final Collection<HoursWorked> m_HoursWorkedList;
-    public Collection<HoursWorked> getHoursWorkedList(){ return m_HoursWorkedList; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
     private final Collection<Balance> m_BalanceList;
-    public Collection<Balance> getBlanceList(){ return m_BalanceList; }
+    public Collection<Balance> getBalanceList(){ return m_BalanceList; }
     // ------------------------------------------------------------------------
 
     private final IItemFactory<IClubMember>     m_MemberFactory;
@@ -69,7 +61,6 @@ public class BaseInfoReader
         m_MemberList            = new ArrayList<>();
         m_FreeFromDutyList      = new ArrayList<>();
         m_BalanceList           = new ArrayList<>();
-        m_HoursWorkedList       = new ArrayList<>();
 
         m_MemberFactory         = new MemberFactory();
         m_FreeFromDutyFactory   = new FreeFromDutyFactory();
@@ -89,12 +80,11 @@ public class BaseInfoReader
             throw new Exception("Cannot read file: "+aFile.getPath());
         }
 
-        m_MemberList.clear();
-        m_FreeFromDutyList.clear();
-        final List<String>aColumnNames = readColumnNames( aFile );
+        clearLists();
+        final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
         final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
         for( final String aSingleLine : aAllLines ){
-            final Map<String, String> aAttributes = makeMap( aColumnNames, aSingleLine );
+            final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
             final int aID = Integer.parseInt( aIDString );
             final IClubMember aClubMember = m_MemberFactory.createItem( aID, aAttributes);
@@ -113,30 +103,11 @@ public class BaseInfoReader
 
     }
 
-    private static List<String> readColumnNames( final File fFile )
+    private void clearLists()
     {
-        final String aFirstLine = FileUtils.readFirstLine( fFile );
-        final String[] aColumnNames = aFirstLine.split( ";" );
-        final List<String> aAsList = Arrays.asList( aColumnNames );
-        return aAsList;
-    }
-
-    private static Map<String, String> makeMap(
-            final List<String> fColumnNames, final String fSingleLine )
-    {
-        final Map<String, String> aMap = new HashMap<>();
-        final String[] aSplit = fSingleLine.split( ";" );
-        for( int aIdx = 0; aIdx < aSplit.length; aIdx++ ){
-            final String aString = aSplit[aIdx];
-            aMap.put( fColumnNames.get( aIdx ), aString );
-        }
-        return aMap;
-    }
-
-
-    private FreeFromDuty createFreeFromDuty( final int fMemberID, final List<String> fColumnNames, final String fSingleLine )
-    {
-        return null;
+        m_MemberList.clear();
+        m_FreeFromDutyList.clear();
+        m_BalanceList.clear();
     }
 
 }

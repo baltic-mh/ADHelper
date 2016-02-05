@@ -16,7 +16,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // ############################################################################
 public final class FileUtils
@@ -71,6 +74,27 @@ public final class FileUtils
         }
         return aLines;
     }
+
+    public static List<String> readColumnNames( final File fFile )
+    {
+        final String aFirstLine = FileUtils.readFirstLine( fFile );
+        final String[] aColumnNames = aFirstLine.split( ";" );
+        final List<String> aAsList = Arrays.asList( aColumnNames );
+        return aAsList;
+    }
+
+    public static Map<String, String> makeMap(
+            final List<String> fColumnNames, final String fSingleLine )
+    {
+        final Map<String, String> aMap = new HashMap<>();
+        final String[] aSplit = fSingleLine.split( ";" );
+        for( int aIdx = 0; aIdx < aSplit.length; aIdx++ ){
+            final String aString = aSplit[aIdx];
+            aMap.put( fColumnNames.get( aIdx ), aString );
+        }
+        return aMap;
+    }
+
 }
 
 // ############################################################################

@@ -13,9 +13,12 @@ package teambaltic.adhelper.controller;
 
 import java.util.List;
 
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.WorkEventsAttended;
 
 // ############################################################################
 /**
@@ -38,26 +41,29 @@ public class ChargeCalculator
     }
 
     public DutyCharge calculate(
-            final IClubMember fMember,
-            final int fBalance,
-            final int fHoursWorked,
-            final FreeFromDuty fFreeFromDuty)
+            final IClubMember        fMember,
+            final Balance            fBalance,
+            final WorkEventsAttended fWorkEventsAttended,
+            final FreeFromDuty       fFreeFromDuty)
     {
         final int aMemberID = fMember.getID();
-        final DutyCharge aCharge = new DutyCharge(aMemberID, fBalance );
-        aCharge.setHoursWorked( fHoursWorked );
+        final IInvoicingPeriod aInvoicingPeriod = getDC().getInvoicingPeriod();
+        final int aBalanceValue = getBalanceValue( fBalance );
+        final DutyCharge aCharge = new DutyCharge(aMemberID, aBalanceValue );
+        final int aHoursWorked = fWorkEventsAttended == null ? 0 : fWorkEventsAttended.getTotalHoursWorked( aInvoicingPeriod );
+        aCharge.setHoursWorked( aHoursWorked );
 
         final int aHoursDue = getDC().calculate( fFreeFromDuty );
         aCharge.setHoursDue( aHoursDue );
 
-        int aBalanceCharged = fBalance + fHoursWorked - aHoursDue;
+        int aBalanceCharged = aBalanceValue + aHoursWorked - aHoursDue;
         if( aBalanceCharged < 0 ){
             aBalanceCharged = 0;
         }
         aCharge.setBalance_Charged( aBalanceCharged );
         aCharge.setBalance_ChargedAndAdjusted( aBalanceCharged );
 
-        int aHoursToPay = aHoursDue - fHoursWorked - fBalance;
+        int aHoursToPay = aHoursDue - aHoursWorked - aBalanceValue;
         if( aHoursToPay < 0 ){
             aHoursToPay = 0;
         }
@@ -98,6 +104,15 @@ public class ChargeCalculator
         }
         return aHoursToPayTotal;
     }
+
+    private static int getBalanceValue( final Balance fBalance )
+    {
+        if( fBalance == null ){
+            return 0;
+        }
+        return fBalance.getValue();
+    }
+
 }
 
 // ############################################################################

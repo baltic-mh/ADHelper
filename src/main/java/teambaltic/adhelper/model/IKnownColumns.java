@@ -16,6 +16,7 @@ public interface IKnownColumns
 {
     String MEMBERID = "Mitglieds_Nr";
     String BIRTHDAY = "Geburtstag";
+    String DATE = "Datum";
     String PLZ = "Plz";
     String ORT = "Ort";
     String ANREDE = "Anrede";
@@ -28,6 +29,8 @@ public interface IKnownColumns
     String LINKID = "Verknüpfung";
 
     String GUTHABEN_PREFIX = "Guthaben ";
+    Object HOURSWORKED = "Gel.Stunden";
+
 }
 
 // ############################################################################

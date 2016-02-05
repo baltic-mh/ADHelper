@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
@@ -30,6 +31,8 @@ import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.WorkEvent;
+import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.Log4J;
 import teambaltic.adhelper.utils.TestUtils;
 
@@ -46,7 +49,16 @@ public class ChargeCalculatorTest
 
     private static FreeFromDuty MHW_FreeFromDuty;
 
+    private static Balance MHW_Balance;
+    private static Balance BJW_Balance;
+    private static Balance MMW_Balance;
+
+    private static WorkEventsAttended MHW_WorkEventsAttended;
+    private static WorkEventsAttended BJW_WorkEventsAttended;
+
+    private static ListProvider<WorkEventsAttended> WorkEventsAttendedListProvider;
     private static ListProvider<IClubMember> MemberListProvider;
+    private static ListProvider<Balance>     BalanceListProvider;
 
     // ########################################################################
     // INITIALISIERUNG
@@ -56,7 +68,9 @@ public class ChargeCalculatorTest
     {
         Log4J.initLog4J();
         GPs = new GlobalParameters();
-        MemberListProvider = new ListProvider<>();
+        MemberListProvider  = new ListProvider<>();
+        BalanceListProvider = new ListProvider<>();
+        WorkEventsAttendedListProvider = new ListProvider<>();
         createFamilieWeber();
     }
 
@@ -83,12 +97,12 @@ public class ChargeCalculatorTest
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs );
 
         final ChargeCalculator aCC = new ChargeCalculator( aDC );
-        final DutyCharge aCharge_MHW = aCC.calculate( MHW, 8100,  300, MHW_FreeFromDuty );
-        final DutyCharge aCharge_MTW = aCC.calculate( MTW, 0,  0, null );
+        final DutyCharge aCharge_MHW = aCC.calculate( MHW, MHW_Balance,  MHW_WorkEventsAttended, MHW_FreeFromDuty );
+        final DutyCharge aCharge_MTW = aCC.calculate( MTW, null,  null, null );
         aCharge_MHW.addCharge( aCharge_MTW );
-        final DutyCharge aCharge_BJW = aCC.calculate( BJW, 400,  200, null );
+        final DutyCharge aCharge_BJW = aCC.calculate( BJW, BJW_Balance,  BJW_WorkEventsAttended, null );
         aCharge_MHW.addCharge( aCharge_BJW );
-        final DutyCharge aCharge_MMW = aCC.calculate( MMW, 100,  0, null );
+        final DutyCharge aCharge_MMW = aCC.calculate( MMW, MMW_Balance,  null, null );
         aCharge_MHW.addCharge( aCharge_MMW );
 
         final int aToPayTotal = aCC.balance( aCharge_MHW );
@@ -116,7 +130,10 @@ public class ChargeCalculatorTest
 
     private static void createFamilieWeber()
     {
-        MHW = new ClubMember( 44 );
+        // ====================================================================
+        // MATHIAS
+        final int aID_MW = 44;
+        MHW = new ClubMember( aID_MW );
         MHW.setBirthday( LocalDate.of( 1958, 4, 9 ) );
         MHW.setName( "Mathias" );
         MemberListProvider.add( MHW );
@@ -124,20 +141,59 @@ public class ChargeCalculatorTest
         MHW_FreeFromDuty = new FreeFromDuty( MHW.getID(), REASON.MANAGEMENT );
         MHW_FreeFromDuty.setFrom( LocalDate.of( 2011, 2, 14 ) );
 
+        MHW_Balance = new Balance( aID_MW, 8100 );
+        BalanceListProvider.add( MHW_Balance );
+
+        MHW_WorkEventsAttended = new WorkEventsAttended( aID_MW );
+        WorkEventsAttendedListProvider.add( MHW_WorkEventsAttended );
+        final WorkEvent aWorkEvent1_MW = new WorkEvent( aID_MW );
+        MHW_WorkEventsAttended.addWorkEvent( aWorkEvent1_MW );
+        aWorkEvent1_MW.setHours( 100 );
+        aWorkEvent1_MW.setDate( LocalDate.of( 2016, 3, 1 ) );
+        final WorkEvent aWorkEvent2_MW = new WorkEvent( aID_MW );
+        MHW_WorkEventsAttended.addWorkEvent( aWorkEvent2_MW );
+        aWorkEvent2_MW.setHours( 100 );
+        aWorkEvent2_MW.setDate( LocalDate.of( 2016, 4, 1 ) );
+
+        // ====================================================================
+        // MARIE-THERES
         MTW = new ClubMember( 46 );
         MTW.setBirthday( LocalDate.of( 1960, 3, 20 ) );
         MTW.setName( "Marie-Theres" );
         MemberListProvider.add( MTW );
 
-        BJW = new ClubMember( 48 );
+        // ====================================================================
+        // BIRKE
+        final int aID_BJ = 48;
+        BJW = new ClubMember( aID_BJ );
         BJW.setBirthday( LocalDate.of( 1993, 9, 26 ) );
         BJW.setName( "Birke" );
         MemberListProvider.add( BJW );
 
-        MMW = new ClubMember( 50 );
+        BJW_Balance = new Balance( aID_BJ, 400 );
+        BalanceListProvider.add( BJW_Balance );
+
+        BJW_WorkEventsAttended = new WorkEventsAttended( aID_BJ );
+        WorkEventsAttendedListProvider.add( BJW_WorkEventsAttended );
+        final WorkEvent aWorkEvent1_BJ = new WorkEvent( aID_BJ );
+        BJW_WorkEventsAttended.addWorkEvent( aWorkEvent1_BJ );
+        aWorkEvent1_BJ.setHours( 200 );
+        aWorkEvent1_BJ.setDate( LocalDate.of( 2016, 3, 1 ) );
+        final WorkEvent aWorkEvent2_BJ = new WorkEvent( aID_BJ );
+        BJW_WorkEventsAttended.addWorkEvent( aWorkEvent2_BJ );
+        aWorkEvent2_BJ.setHours( 100 );
+        aWorkEvent2_BJ.setDate( LocalDate.of( 2016, 4, 1 ) );
+
+        // ====================================================================
+        // MERLE
+        final int aID_MM = 50;
+        MMW = new ClubMember( aID_MM );
         MMW.setBirthday( LocalDate.of( 1996, 9, 26 ) );
         MMW.setName( "Merle" );
         MemberListProvider.add( MMW );
+
+        MMW_Balance = new Balance( aID_MM, 100 );
+        BalanceListProvider.add( MMW_Balance );
 
     }
 }

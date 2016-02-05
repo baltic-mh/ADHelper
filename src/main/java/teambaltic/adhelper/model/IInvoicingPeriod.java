@@ -18,6 +18,10 @@ public interface IInvoicingPeriod
 {
     LocalDate getStart();
     LocalDate getEnd();
+
+    boolean isAfterStart  ( LocalDate fEvent );
+    boolean isBeforeEnd   ( LocalDate fEvent );
+    boolean isWithinPeriod( LocalDate fEvent );
 }
 
 // ############################################################################
