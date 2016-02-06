@@ -1,5 +1,5 @@
 /**
- * InfoReaderTest.java
+ * BaseInfoReaderTest.java
  *
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -22,13 +22,17 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import teambaltic.adhelper.controller.ListProvider;
+import teambaltic.adhelper.model.Balance;
+import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
-public class InfoReaderTest
+public class BaseInfoReaderTest
 {
-    private static final Logger sm_Log = Logger.getLogger(InfoReaderTest.class);
+    private static final Logger sm_Log = Logger.getLogger(BaseInfoReaderTest.class);
 
     // ########################################################################
     // INITIALISIERUNG
@@ -58,11 +62,22 @@ public class InfoReaderTest
     {
         final File aFile = new File("misc/TestResources/Tabellen/Members.csv");
         final BaseInfoReader aReader = new BaseInfoReader( aFile );
+        final ListProvider<InfoForSingleMember> aInfoListProvider = new ListProvider<>();
         try{
-            aReader.read( );
-            final Collection<IClubMember> aMembers = aReader.getMemberList();
-            for( final IClubMember aMember : aMembers ){
-                sm_Log.info("Member: "+aMember);
+            aReader.read(  aInfoListProvider );
+            final Collection<InfoForSingleMember> aInfoList = aInfoListProvider.getAll();
+            for( final InfoForSingleMember aInfo : aInfoList ){
+                final IClubMember aMember = aInfo.getMember();
+                final StringBuffer aSB = new StringBuffer( "Mitglied: "+aMember );
+                final Balance aBalance = aInfo.getBalance();
+                if( aBalance != null ){
+                    aSB.append( String.format( " | Guthaben: %5.2fh",aBalance.getValue()/100.0f) );
+                }
+                final FreeFromDuty aFreeFromDuty = aInfo.getFreeFromDuty();
+                if( aFreeFromDuty != null ){
+                    aSB.append( " | AD-Befreiung: "+aFreeFromDuty );
+                }
+                sm_Log.info( aSB.toString() );
             }
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block

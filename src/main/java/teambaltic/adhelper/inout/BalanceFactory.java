@@ -51,19 +51,6 @@ public class BalanceFactory implements IItemFactory<Balance>
         }
     }
 
-//    private REASON convertToReason( final String fReasonString )
-//    {
-//        if( fReasonString == null || "".equals( fReasonString ) ){
-//            return null;
-//        }
-//        for( final REASON aReason : REASON.values() ){
-//            if( fReasonString.equals( aReason.getStringRep() )){
-//                return aReason;
-//            }
-//        }
-//        return null;
-//    }
-
 }
 
 // ############################################################################

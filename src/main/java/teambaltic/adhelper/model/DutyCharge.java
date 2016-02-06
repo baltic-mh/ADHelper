@@ -62,7 +62,13 @@ public class DutyCharge implements IIdentifiedItem
     // ------------------------------------------------------------------------
     private int m_HoursToPay;
     public int getHoursToPay(){ return m_HoursToPay; }
-    public void setHoursToPay( final int fNewVal ){ m_HoursToPay = fNewVal; }
+    public void setHoursToPay( final int fNewVal ){ m_HoursToPay = m_HoursToPayTotal = fNewVal; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private int m_HoursToPayTotal;
+    public int getHoursToPayTotal(){ return m_HoursToPayTotal; }
+    public void setHoursToPayTotal( final int fNewVal ){ m_HoursToPayTotal = fNewVal; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -95,6 +101,13 @@ public class DutyCharge implements IIdentifiedItem
             }
             m_ChargeOfRelatives.put( aIntegerKey, fCharge );
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return String.format( "Guthaben: %5.2f | Pflicht: %5.2f | Gearbeitet: %5.2f | Zu zahlen: %5.2f",
+                getBalance_Original()/100.0f, getHoursDue()/100.0f, getHoursWorked()/100.0f, getHoursToPay()/100.0f );
     }
 }
 

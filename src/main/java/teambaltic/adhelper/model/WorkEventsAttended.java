@@ -76,7 +76,7 @@ public class WorkEventsAttended implements IIdentifiedItem
     @Override
     public String toString()
     {
-        final StringBuffer aSB = new StringBuffer(String.format("Arbeitsdienste für %s:", getID() ));
+        final StringBuffer aSB = new StringBuffer();
         for( final WorkEvent aWorkEvent : m_WorkEvents ){
             aSB.append( String.format( "\n\t%s: %5.2f", aWorkEvent.getDate(), aWorkEvent.getHours()/100.0f ) );
         }

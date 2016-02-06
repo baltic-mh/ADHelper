@@ -20,7 +20,9 @@ public interface IListProvider<ItemType extends IIdentifiedItem>
 {
     void add( ItemType fItem );
     ItemType get( int fID );
+    Collection<ItemType> getAll();
     void addAll( Collection<ItemType> fItems );
+    void clear();
 }
 
 // ############################################################################

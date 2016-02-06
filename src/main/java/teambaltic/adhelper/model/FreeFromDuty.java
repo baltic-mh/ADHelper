@@ -17,10 +17,12 @@ import java.time.LocalDate;
 public class FreeFromDuty implements IIdentifiedItem
 {
     public enum REASON{
+        // Aus Mitgliedsdaten berechnete Gründe:
         TOO_YOUNG,
+        DUTY_NOT_YET_EFFECTIVE,
         TOO_OLD,
-        NOT_YET_MEMBER,
         NO_LONGER_MEMBER,
+        // Explizit anzugebende Gründe:
         SUSTAINING("Fördermitglied"),
         HONORY("Ehrenmitglied"),
         MANAGEMENT,
@@ -28,7 +30,7 @@ public class FreeFromDuty implements IIdentifiedItem
         INDIVIDUALREASON;
 
         private final String m_StringRep;
-        public String getStringRep(){ return m_StringRep; }
+        public String getStringRep(){ return m_StringRep == null ? name() : m_StringRep; }
 
         REASON()
         {
@@ -73,14 +75,14 @@ public class FreeFromDuty implements IIdentifiedItem
     @Override
     public String toString()
     {
-        final StringBuffer aSB = new StringBuffer( String.format( "%s: %s ", getMemberID(), getReason() ) );
-        final LocalDate aUntil = getUntil();
-        if( aUntil != null ){
-            aSB.append( " - until "+aUntil );
-        }
+        final StringBuffer aSB = new StringBuffer( String.format( "%s ", getReason().getStringRep() ) );
         final LocalDate aFrom = getFrom();
         if( aFrom != null ){
-            aSB.append( " - from "+aFrom );
+            aSB.append( " von "+aFrom );
+        }
+        final LocalDate aUntil = getUntil();
+        if( aUntil != null ){
+            aSB.append( " bis "+aUntil );
         }
         return aSB.toString();
     }

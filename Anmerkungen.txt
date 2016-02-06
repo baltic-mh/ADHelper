@@ -1,0 +1,90 @@
+Birke Weber hat die falsche LinkID (richtig ist 10174)!
+
+Bei Corvin Fischer ist der 04.10.2005 als Aufnahmedatum vermerkt, bei Rufus Ihle der 16.01.2008.
+Beide gehören aber zur "Carola-Ihle-Gang". Das korrekte Datum ist vermutlich der 1.2.2015.
+
+Jörn Schauermann ist kein Fördermitglied mehr! Er war es nur für eine relativ kurze Zeit.
+
+Wann ist Tobias Völker Fördermitglied geworden?
+
+Lukas Bal ist Fördermitglied - aber das ist erst auf der VS am 28.9.15 beschlossen worden.
+(Ich werde mal den 1.1.2016 als Beginn der Befreiung eintragen. Bisher ist dieser Termin nicht
+verlässlich in unserer Verwaltung abgebildet worden.)
+
+Ist Thorsten Böhnke nicht ausgetreten?
+
+Familie Andree ist meines Wissens ausgetreten.
+
+Hat Gesa Buttgereit tatsächlich ein eigenes Konto (keine Verknüpfung mit Johann Friedrich Buttgereit)?
+
+===============================================================================================
+Aufzunehmende Spalten:
+    - Geburtsdatum
+    - Neu: Arbeitsdienstbefreiung (am besten drei Spalten)
+        - Grund (Vordefinierte Werte)
+            - von
+            - bis
+Die Spalte für Guthaben hat momentan das Datum mit im Titel
+	Stattdessen zwei neue Spalten:
+		Guthaben.Wert
+		Guthaben.am
+
+Spaltenüberschriften
+    // Verwendung in mehreren Tabellen:
+    String MEMBERID = "Mitglieds_Nr"; 	// Darf nicht 0 sein!
+    String DATE = "Datum";			  	// Format: DD.MM.YYYY
+    
+    // Tabelle der Mitgliederdaten:
+    String BIRTHDAY = "Geburtsdatum"; 	// Format wie Datum
+    String PLZ = "Plz";					// Wird nicht verwendet
+    String ORT = "Ort";					// Wird nicht verwendet
+    String ANREDE = "Anrede";			// Wird nicht verwendet
+    String STREET = "Straße";			// Wird nicht verwendet
+    String BEITRAGSART = "Beitragsart_1"; // Wird für AD-Befreiung verwendet
+    String NAME = "Nachname";			
+    String FIRSTNAME = "Vorname";
+    String EINTRITT = "Eintritt";		// Format wie Datum
+    String AUSTRITT = "Austritt";		// Format wie Datum
+    String LINKID = "Verknüpfung";		// Es muss eine Mitgliedsnummer mit diesem Wert geben
+
+    String GUTHABEN_PREFIX = "Guthaben ";	// Momentan taucht in dieser Überschrift das Daum mit auf.
+											// Besser zwei Spalten: Guthaben.Wert und Guthaben.am
+											// Es werden nur zwei Stellen hinter dem Komma ausgewertet!
+    
+    // Tabelle der Arbeitsdienste:
+    String HOURSWORKED = "Gel.Stunden";
+
+Spaltenüberschriften für die drei Spalten für die Arbeitsdienstbefreiung:
+	AD-Frei.Grund - hier steht einer der möglichen Gründe
+	AD-Frei.von   - Datumsangabe, wann die AD-Befreiung beginnt (Keine Angabe bedeutet Zeitpunkt des Urknalls)
+	AD-Frei.bis   - Datumsangabe, wann die AD-Befreiung endet (Keine Angabe bedeutet Zeitpunkt des Weltuntergangs)
+	
+	Es gibt Gründe für die Arbeitsdienstbefreiung, die man aus anderen Mitgliedsdaten bestimmen kann:
+        TOO_YOUNG,
+        DUTY_NOT_YET_EFFECTIVE,
+        TOO_OLD,
+        NO_LONGER_MEMBER,
+	Diese Gründe werden vom Programm automatisch berechnet und müssen nicht manuell eingegeben werden.
+
+	Es gibt Gründe für die Arbeitsdienstbefreiung, die man teilweise aus anderen Mitgliedsdaten bestimmen kann:
+		SUSTAINING("Fördermitglied") - Wird aus Spalte "Beitragsart_1" gelesen.
+		HONORY("Ehrenmitglied"),     - Wird aus Spalte "Beitragsart_1" gelesen.
+	(Der in Klammern stehende Wert ist der Eintrag, der in der Spalte "Beitragsart_1" steht)
+	Für derartige Gründe sind nur die Angaben in den Spalten "AD-Frei.von" und "AD-Frei.bis" anzugeben.
+	Ein Eintrag in der Spalte "AD-Frei.Grund" würde in diesem Falle nicht berücksichtigt werden.
+	Endet bspw. eine Fördermitgliedschaft, so ist unbedingt in der Spalte "AD-Frei.Grund"
+	der Wert "Fördermitglied" einzutragen und in der Spalte "AD-Frei.bis" das Datum, an dem die
+	Fördermitgliedschaft endet. Da ja in der Spalte "Beitragsart_1" wieder etwas "normales" steht,
+	kann bei einer nachfolgenden Arbeitsdienstabbuchung sonst nicht erkannt werden, dass das 
+	Mitglied im Abrechnungszeitraum Fördermitglied war.
+	
+	Es gibt Gründe für die Arbeitsdienstbefreiung, die manuell angegeben werden müssen:
+		MANAGEMENT,
+		REMOTENESS,
+		INDIVIDUALREASON;
+	Der Wert "MANAGEMENT" umfasst Vorstandsmitglieder, Platsch-Redakteure und sonstige Ehrenämter,
+	denen eine Arbeitsdienstbefreiung zugestanden wird.
+	Der Wert "REMOTENESS" gibt an, ob das Mitglied mehr als 50km vom Verein entfernt wohnt.
+	"INDIVIDUALREASON" ist schließlich gedacht für Mitglieder, die auf individuellen Antrag
+	vom Arbeitsdienst befreit worden sind.
+	Bei allen drei Kategorien ist neben dem Grund auch das Datum des Beginns bzw. des Endes einzutragen.

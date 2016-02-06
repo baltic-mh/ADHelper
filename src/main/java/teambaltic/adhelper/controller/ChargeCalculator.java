@@ -40,6 +40,11 @@ public class ChargeCalculator
         m_DutyCalculator = fDutyCalculator;
     }
 
+    public IInvoicingPeriod getInvoicingPeriod()
+    {
+        return getDC().getInvoicingPeriod();
+    }
+
     public DutyCharge calculate(
             final IClubMember        fMember,
             final Balance            fBalance,
@@ -53,7 +58,7 @@ public class ChargeCalculator
         final int aHoursWorked = fWorkEventsAttended == null ? 0 : fWorkEventsAttended.getTotalHoursWorked( aInvoicingPeriod );
         aCharge.setHoursWorked( aHoursWorked );
 
-        final int aHoursDue = getDC().calculate( fFreeFromDuty );
+        final int aHoursDue = getDC().calculateHoursToWork( fFreeFromDuty );
         aCharge.setHoursDue( aHoursDue );
 
         int aBalanceCharged = aBalanceValue + aHoursWorked - aHoursDue;
@@ -72,7 +77,7 @@ public class ChargeCalculator
         return aCharge;
     }
 
-    public int balance( final DutyCharge fCharge )
+    public void balance( final DutyCharge fCharge )
     {
         final List <DutyCharge> aAllCharges = fCharge.getAllDutyCharges();
         int aHoursToPayTotal  = 0;
@@ -102,7 +107,7 @@ public class ChargeCalculator
 
             }
         }
-        return aHoursToPayTotal;
+        fCharge.setHoursToPayTotal( aHoursToPayTotal );
     }
 
     private static int getBalanceValue( final Balance fBalance )

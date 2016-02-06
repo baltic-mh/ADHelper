@@ -12,12 +12,12 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.model.IKnownColumns;
+import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.FileUtils;
@@ -32,24 +32,16 @@ public class WorkEventReader
     public File getFile(){ return m_File; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private final Map<Integer, WorkEventsAttended> m_WorkEventsAttendedMap;
-    public Collection<WorkEventsAttended> getWorkEventsAttendedList(){ return m_WorkEventsAttendedMap.values(); }
-    // ------------------------------------------------------------------------
-
-
     private final IItemFactory<WorkEvent> m_WorkEventFactory;
 
     public WorkEventReader( final File fFile )
     {
         m_File = fFile;
 
-        m_WorkEventsAttendedMap = new HashMap<>();
-
         m_WorkEventFactory      = new WorkEventFactory();
     }
 
-    public void read() throws Exception
+    public void read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
     {
         final File aFile = getFile();
         if( !aFile.exists() ){
@@ -62,27 +54,31 @@ public class WorkEventReader
             throw new Exception("Cannot read file: "+aFile.getPath());
         }
 
-        m_WorkEventsAttendedMap.clear();
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
         final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
         for( final String aSingleLine : aAllLines ){
             final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
             final int aID = Integer.parseInt( aIDString );
-            final Integer aIDInteger = Integer.valueOf( aID );
-            final WorkEventsAttended aWorkEventsAttended = getCreateWorkEventsAttended( aIDInteger );
+            InfoForSingleMember aInfo = fListProvider.get( aID );
+            if( aInfo == null ){
+                aInfo = new InfoForSingleMember( aID );
+                fListProvider.add( aInfo );
+            }
+
+            final WorkEventsAttended aWorkEventsAttended = getCreateWorkEventsAttended( aInfo );
             final WorkEvent aWorkEvent = m_WorkEventFactory.createItem( aID, aAttributes);
             aWorkEventsAttended.addWorkEvent( aWorkEvent );
         }
 
     }
 
-    private WorkEventsAttended getCreateWorkEventsAttended( final Integer aIDInteger )
+    private static WorkEventsAttended getCreateWorkEventsAttended( final InfoForSingleMember fInfo )
     {
-        WorkEventsAttended aWorkEventsAttended = m_WorkEventsAttendedMap.get( aIDInteger );
+        WorkEventsAttended aWorkEventsAttended = fInfo.getWorkEventsAttended();
         if( aWorkEventsAttended == null ){
-            aWorkEventsAttended = new WorkEventsAttended( aIDInteger.intValue() );
-            m_WorkEventsAttendedMap.put( aIDInteger, aWorkEventsAttended );
+            aWorkEventsAttended = new WorkEventsAttended( fInfo.getID() );
+            fInfo.setWorkEventsAttended( aWorkEventsAttended );
         }
         return aWorkEventsAttended;
     }

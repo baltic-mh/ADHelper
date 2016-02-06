@@ -11,6 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,11 @@ public class ListProvider<ItemType extends IIdentifiedItem> implements IListProv
     public ListProvider()
     {
         m_Items = new HashMap<>();
+    }
+
+    @Override
+    public void clear(){
+        m_Items.clear();
     }
 
     @Override
@@ -61,6 +67,14 @@ public class ListProvider<ItemType extends IIdentifiedItem> implements IListProv
             } );
         }
 
+    }
+
+    @Override
+    public Collection<ItemType> getAll()
+    {
+        synchronized( m_Items ){
+            return new ArrayList<ItemType>( m_Items.values() );
+        }
     }
 
 }

@@ -97,30 +97,16 @@ public class ChargeCalculatorTest
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs );
 
         final ChargeCalculator aCC = new ChargeCalculator( aDC );
-        final DutyCharge aCharge_MHW = aCC.calculate( MHW, MHW_Balance,  MHW_WorkEventsAttended, MHW_FreeFromDuty );
+        final DutyCharge aCharge_MHW = aCC.calculate( MHW, MHW_Balance, MHW_WorkEventsAttended, MHW_FreeFromDuty );
         final DutyCharge aCharge_MTW = aCC.calculate( MTW, null,  null, null );
         aCharge_MHW.addCharge( aCharge_MTW );
-        final DutyCharge aCharge_BJW = aCC.calculate( BJW, BJW_Balance,  BJW_WorkEventsAttended, null );
+        final DutyCharge aCharge_BJW = aCC.calculate( BJW, BJW_Balance, BJW_WorkEventsAttended, null );
         aCharge_MHW.addCharge( aCharge_BJW );
-        final DutyCharge aCharge_MMW = aCC.calculate( MMW, MMW_Balance,  null, null );
+        final DutyCharge aCharge_MMW = aCC.calculate( MMW, MMW_Balance, null, null );
         aCharge_MHW.addCharge( aCharge_MMW );
 
-        final int aToPayTotal = aCC.balance( aCharge_MHW );
-        final List<DutyCharge> aAllDutyCharges = aCharge_MHW.getAllDutyCharges();
-        sm_Log.info( String.format("%-20s  %5s %5s %5s %5s %5s %5s",
-                "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
-        for( final DutyCharge aC : aAllDutyCharges ){
-            sm_Log.info( String.format("%-20s  %5.1f %5.1f    %5.1f   %5.1f   %5.1f   %5.1f",
-                    MemberListProvider.get( aC.getMemberID() ).getName(),
-                    aC.getBalance_Original()/100.0,
-                    aC.getHoursWorked()/100.0,
-                    aC.getHoursDue()/100.0,
-                    aC.getBalance_Charged()/100.0,
-                    aC.getHoursToPay()/100.0,
-                    aC.getBalance_ChargedAndAdjusted()/100.0
-                    ) );
-        }
-        sm_Log.info(String.format( "Verbleibende Stunden zu zahlen: %5.1f",aToPayTotal/100.0));
+        aCC.balance( aCharge_MHW );
+        reportCharge( aCharge_MHW );
         TestUtils.logMethodEnd( aStartTime, aMethodName );
     }
 
@@ -196,6 +182,27 @@ public class ChargeCalculatorTest
         BalanceListProvider.add( MMW_Balance );
 
     }
+
+    private static void reportCharge( final DutyCharge fCharge )
+    {
+        final List<DutyCharge> aAllDutyCharges = fCharge.getAllDutyCharges();
+        sm_Log.info( String.format("%-20s  %5s %5s %5s %5s %5s %5s",
+                "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
+        for( final DutyCharge aC : aAllDutyCharges ){
+            sm_Log.info( String.format("%-20s  %5.1f %5.1f    %5.1f   %5.1f   %5.1f   %5.1f",
+                    MemberListProvider.get( aC.getMemberID() ).getName(),
+                    aC.getBalance_Original()/100.0,
+                    aC.getHoursWorked()/100.0,
+                    aC.getHoursDue()/100.0,
+                    aC.getBalance_Charged()/100.0,
+                    aC.getHoursToPay()/100.0,
+                    aC.getBalance_ChargedAndAdjusted()/100.0
+                    ) );
+        }
+        sm_Log.info(String.format( "Verbleibende Stunden zu zahlen: %5.1f",
+                fCharge.getHoursToPayTotal()/100.0));
+    }
+
 }
 
 // ############################################################################

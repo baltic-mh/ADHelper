@@ -13,11 +13,14 @@ package teambaltic.adhelper.controller;
 
 import java.time.LocalDate;
 
+import org.apache.log4j.Logger;
+
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.utils.DateUtils;
 
 // ############################################################################
 /**
@@ -28,6 +31,8 @@ import teambaltic.adhelper.model.IInvoicingPeriod;
  */
 public class DutyCalculator
 {
+    private static final Logger sm_Log = Logger.getLogger(ChargeCalculatorTest.class);
+
     // ------------------------------------------------------------------------
     private final IInvoicingPeriod m_InvoicingPeriod;
     public IInvoicingPeriod getInvoicingPeriod(){ return m_InvoicingPeriod; }
@@ -53,29 +58,33 @@ public class DutyCalculator
                 fMember, aMemberID );
 
         final LocalDate aBirthday  = fMember.getBirthday();
-        final LocalDate aFreeByAgeFrom = aBirthday.plusYears( getGPs().getMaxAgeForDuty() );
-        if( aFreeByAgeFrom.compareTo( getInvoicingPeriod().getEnd() ) < 0 ) {
-            final FreeFromDuty aFreeFromDuty;
-            if( aFreeByNoLongerMember != null
-                    && aFreeByNoLongerMember.getFrom().compareTo( aFreeByAgeFrom ) < 0 ){
-                aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NO_LONGER_MEMBER );
-                aFreeFromDuty.setFrom( aFreeByNoLongerMember.getFrom() );
-            } else {
-                aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.TOO_OLD );
-                aFreeFromDuty.setFrom( aFreeByAgeFrom );
+        if( aBirthday == null ){
+            sm_Log.warn("Kein Geburtsdatum gefunden für: "+fMember);
+        } else {
+            final LocalDate aFreeByAgeFrom = aBirthday.plusYears( getGPs().getMaxAgeForDuty() );
+            if( aFreeByAgeFrom.compareTo( getInvoicingPeriod().getEnd() ) < 0 ) {
+                final FreeFromDuty aFreeFromDuty;
+                if( aFreeByNoLongerMember != null
+                        && aFreeByNoLongerMember.getFrom().compareTo( aFreeByAgeFrom ) < 0 ){
+                    aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NO_LONGER_MEMBER );
+                    aFreeFromDuty.setFrom( aFreeByNoLongerMember.getFrom() );
+                } else {
+                    aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.TOO_OLD );
+                    aFreeFromDuty.setFrom( aFreeByAgeFrom );
+                }
+                return aFreeFromDuty;
             }
-            return aFreeFromDuty;
-        }
 
-        final LocalDate aFreeByAgeUntil = aBirthday.plusYears( getGPs().getMinAgeForDuty() );
-        if( aFreeByAgeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
-            final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.TOO_YOUNG );
-            aFreeFromDuty.setUntil( aFreeByAgeUntil );
-            if( aFreeByNoLongerMember != null
-                    && aFreeByNoLongerMember.getFrom().compareTo( aFreeByAgeUntil ) > 0 ){
-                aFreeFromDuty.setFrom( aFreeByNoLongerMember.getFrom() );
+            final LocalDate aFreeByAgeUntil = aBirthday.plusYears( getGPs().getMinAgeForDuty() );
+            if( aFreeByAgeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
+                final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.TOO_YOUNG );
+                aFreeFromDuty.setUntil( aFreeByAgeUntil );
+                if( aFreeByNoLongerMember != null
+                        && aFreeByNoLongerMember.getFrom().compareTo( aFreeByAgeUntil ) > 0 ){
+                    aFreeFromDuty.setFrom( aFreeByNoLongerMember.getFrom() );
+                }
+                return aFreeFromDuty;
             }
-            return aFreeFromDuty;
         }
 
         // Normale Austritte - ohne Faxen!
@@ -113,23 +122,27 @@ public class DutyCalculator
         if( aMemberFrom == null ){
             return null;
         }
-        final LocalDate aFreeUntil = aMemberFrom.plusMonths( getGPs().getProtectedTime()-1 );
+        final LocalDate aFreeUntil = aMemberFrom.plusMonths( getGPs().getProtectedTime() ).minusDays( 1 );
         if( aFreeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
-            final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NOT_YET_MEMBER );
+            final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.DUTY_NOT_YET_EFFECTIVE );
             aFreeFromDuty.setUntil( aFreeUntil );
             return aFreeFromDuty;
         }
         return null;
     }
 
-    public int calculate( final FreeFromDuty fFreeFromDuty )
+    public int calculateHoursToWork( final FreeFromDuty fFreeFromDuty )
     {
         if( fFreeFromDuty == null ){
             return getGPs().getDutyHoursPerInvoicePeriod();
         }
+        final IInvoicingPeriod aIP = getInvoicingPeriod();
+        if( DateUtils.coversFreeFromDuty_InvoicingPeriod( fFreeFromDuty, aIP ) ){
+            return 0;
+        }
         final LocalDate aFreeFrom = fFreeFromDuty.getFrom();
         final LocalDate aFreeUntil = fFreeFromDuty.getUntil();
-        final int aHoursToWork = calcDuty( getGPs(), getInvoicingPeriod(), aFreeFrom, aFreeUntil );
+        final int aHoursToWork = calcDuty( getGPs(), aIP, aFreeFrom, aFreeUntil );
         return aHoursToWork;
     }
 
@@ -140,13 +153,7 @@ public class DutyCalculator
             final LocalDate fFreeUntil )
     {
         final LocalDate aInvoicingPeriodStart = fInvoicingPeriod.getStart();
-        if( fFreeFrom != null && fFreeFrom.compareTo( aInvoicingPeriodStart ) <= 0 ){
-            return 0;
-        }
         final LocalDate aInvoicingPeriodEnd = fInvoicingPeriod.getEnd();
-        if( fFreeUntil != null && fFreeUntil.compareTo( aInvoicingPeriodEnd ) >= 0 ){
-            return 0;
-        }
 
         int aNumMonthsInPeriod =
                       aInvoicingPeriodEnd.getMonthValue()

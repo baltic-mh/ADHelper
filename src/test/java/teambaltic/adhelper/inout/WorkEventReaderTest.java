@@ -14,7 +14,6 @@ package teambaltic.adhelper.inout;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -22,6 +21,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import teambaltic.adhelper.controller.ListProvider;
+import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -58,11 +59,12 @@ public class WorkEventReaderTest
     {
         final File aFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
         final WorkEventReader aReader = new WorkEventReader( aFile );
+        final ListProvider<InfoForSingleMember> aInfoListProvider = new ListProvider<>();
         try{
-            aReader.read( );
-            final Collection<WorkEventsAttended> aWEA = aReader.getWorkEventsAttendedList();
-            for( final WorkEventsAttended aWEAForMember : aWEA ){
-                sm_Log.info(aWEAForMember);
+            aReader.read( aInfoListProvider );
+            for( final InfoForSingleMember aSingleInfo : aInfoListProvider.getAll() ){
+                final WorkEventsAttended aWEAForMember = aSingleInfo.getWorkEventsAttended();
+                sm_Log.info(String.format( "Arbeitsdienste für %d: %s", aWEAForMember.getID(), aWEAForMember) );
             }
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block

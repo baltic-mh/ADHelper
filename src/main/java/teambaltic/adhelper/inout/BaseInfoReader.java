@@ -12,42 +12,25 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
+import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
+import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public class BaseInfoReader
 {
-    private static final Logger sm_Log = Logger.getLogger(BaseInfoReader.class);
+//    private static final Logger sm_Log = Logger.getLogger(BaseInfoReader.class);
 
     // ------------------------------------------------------------------------
     private final File m_File;
     public File getFile(){ return m_File; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private final Collection<IClubMember> m_MemberList;
-    public Collection<IClubMember> getMemberList(){ return m_MemberList; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private final Collection<FreeFromDuty> m_FreeFromDutyList;
-    public Collection<FreeFromDuty> getFreeFromDutyList(){ return m_FreeFromDutyList; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private final Collection<Balance> m_BalanceList;
-    public Collection<Balance> getBalanceList(){ return m_BalanceList; }
     // ------------------------------------------------------------------------
 
     private final IItemFactory<IClubMember>     m_MemberFactory;
@@ -58,16 +41,12 @@ public class BaseInfoReader
     {
         m_File = fFile;
 
-        m_MemberList            = new ArrayList<>();
-        m_FreeFromDutyList      = new ArrayList<>();
-        m_BalanceList           = new ArrayList<>();
-
         m_MemberFactory         = new MemberFactory();
         m_FreeFromDutyFactory   = new FreeFromDutyFactory();
         m_BalanceFactory        = new BalanceFactory();
     }
 
-    public void read() throws Exception
+    public void read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
     {
         final File aFile = getFile();
         if( !aFile.exists() ){
@@ -80,34 +59,37 @@ public class BaseInfoReader
             throw new Exception("Cannot read file: "+aFile.getPath());
         }
 
-        clearLists();
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
         final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
         for( final String aSingleLine : aAllLines ){
             final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
             final int aID = Integer.parseInt( aIDString );
-            final IClubMember aClubMember = m_MemberFactory.createItem( aID, aAttributes);
-            m_MemberList.add( aClubMember );
-            final FreeFromDuty aFFD = m_FreeFromDutyFactory.createItem( aID, aAttributes);
-            if( aFFD != null ){
-                sm_Log.info(aClubMember+": "+ aFFD);
-                m_FreeFromDutyList.add( aFFD );
+            InfoForSingleMember aInfo = fListProvider.get( aID );
+            if( aInfo == null ){
+                aInfo = new InfoForSingleMember( aID );
+                fListProvider.add( aInfo );
             }
-            final Balance aBalance = m_BalanceFactory.createItem( aID, aAttributes);
-            if( aBalance != null ){
-                sm_Log.info(aClubMember+": Guthaben: "+ aBalance);
-                m_BalanceList.add( aBalance );
-            }
+            populateInfoForSingleMember( aInfo, aAttributes );
         }
 
     }
 
-    private void clearLists()
+    public void populateInfoForSingleMember(
+            final InfoForSingleMember fInfo,
+            final Map<String, String> fAttributes )
     {
-        m_MemberList.clear();
-        m_FreeFromDutyList.clear();
-        m_BalanceList.clear();
+        final int aID = fInfo.getID();
+        final IClubMember aClubMember = m_MemberFactory.createItem( aID, fAttributes);
+        fInfo.setMember( aClubMember );
+        final FreeFromDuty aFFD = m_FreeFromDutyFactory.createItem( aID, fAttributes);
+        if( aFFD != null ){
+            fInfo.setFreeFromDuty( aFFD );
+        }
+        final Balance aBalance = m_BalanceFactory.createItem( aID, fAttributes);
+        if( aBalance != null ){
+            fInfo.setBalance( aBalance );
+        }
     }
 
 }

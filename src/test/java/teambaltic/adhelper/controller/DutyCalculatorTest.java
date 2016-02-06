@@ -105,9 +105,9 @@ public class DutyCalculatorTest
         sm_Log.info( aFreeFromDuty3 );
         assertNull( "3", aFreeFromDuty3 );
 
-        final float aDutyHours3 = aDC.calculate( aFreeFromDuty3 );
+        final int aDutyHours3 = aDC.calculateHoursToWork( aFreeFromDuty3 );
         sm_Log.info( "Plichtstunden 3: "+aDutyHours3 );
-        assertEquals("Plichtstunden 3", 3.0f, aDutyHours3, 0.001f);
+        assertEquals("Plichtstunden 3", 300, aDutyHours3);
 
         // Der MittelMann tritt zum ersten April aus:
         aMember3.setMemberUntil( LocalDate.of( 2000, 4, 1 ) );
@@ -123,9 +123,9 @@ public class DutyCalculatorTest
         sm_Log.info( aFreeFromDuty33 );
         assertNull( "33", aFreeFromDuty33 );
 
-        final float aDutyHours33 = aDC.calculate( aFreeFromDuty33 );
+        final int aDutyHours33 = aDC.calculateHoursToWork( aFreeFromDuty33 );
         sm_Log.info( "Plichtstunden 33: "+aDutyHours33 );
-        assertEquals("Plichtstunden 33", 3.0f, aDutyHours33, 0.001f);
+        assertEquals("Plichtstunden 33", 300, aDutyHours33 );
 
         // Ein neues Mitglied tritt ein:
         final ClubMember aMember34 = new ClubMember(34);
@@ -133,11 +133,11 @@ public class DutyCalculatorTest
         aMember34.setMemberFrom( LocalDate.of( 1999, 9, 1 ) );
         final FreeFromDuty aFreeFromDuty34 = aDC.isFreeFromDuty( aMember34 );
         sm_Log.info( aFreeFromDuty34 );
-        assertEquals( "34", FreeFromDuty.REASON.NOT_YET_MEMBER, aFreeFromDuty34.getReason() );
+        assertEquals( "34", FreeFromDuty.REASON.DUTY_NOT_YET_EFFECTIVE, aFreeFromDuty34.getReason() );
 
-        final float aDutyHours34 = aDC.calculate( aFreeFromDuty34 );
+        final int aDutyHours34 = aDC.calculateHoursToWork( aFreeFromDuty34 );
         sm_Log.info( "Plichtstunden 34: "+aDutyHours34 );
-        assertEquals("Plichtstunden 34", 2.0f, aDutyHours34, 0.001f);
+        assertEquals("Plichtstunden 34", 200, aDutyHours34 );
 
         // Ein neues Mitglied tritt ein:
         final ClubMember aMember333 = new ClubMember(333);
@@ -145,11 +145,11 @@ public class DutyCalculatorTest
         aMember333.setMemberFrom( LocalDate.of( 2000, 1, 1 ) );
         final FreeFromDuty aFreeFromDuty333 = aDC.isFreeFromDuty( aMember333 );
         sm_Log.info( aFreeFromDuty333 );
-        assertEquals( "333", FreeFromDuty.REASON.NOT_YET_MEMBER, aFreeFromDuty333.getReason() );
+        assertEquals( "333", FreeFromDuty.REASON.DUTY_NOT_YET_EFFECTIVE, aFreeFromDuty333.getReason() );
 
-        final float aDutyHours333 = aDC.calculate( aFreeFromDuty333 );
+        final int aDutyHours333 = aDC.calculateHoursToWork( aFreeFromDuty333 );
         sm_Log.info( "Plichtstunden 333: "+aDutyHours333 );
-        assertEquals("Plichtstunden 333", 0.0f, aDutyHours333, 0.001f);
+        assertEquals("Plichtstunden 333", 0, aDutyHours333 );
 
     }
 
@@ -168,9 +168,9 @@ public class DutyCalculatorTest
         sm_Log.info( aFreeFromDuty4 );
         assertEquals( "4", FreeFromDuty.REASON.TOO_YOUNG, aFreeFromDuty4.getReason() );
 
-        final float aDutyHours4 = aDC.calculate( aFreeFromDuty4 );
+        final int aDutyHours4 = aDC.calculateHoursToWork( aFreeFromDuty4 );
         sm_Log.info( "Plichtstunden 4: "+aDutyHours4 );
-        assertEquals("Plichtstunden 4", 1.5f, aDutyHours4, 0.001f);
+        assertEquals("Plichtstunden 4", 150, aDutyHours4 );
 
         final FreeFromDuty aFreeFromDuty5 = aDC.isFreeFromDuty( aMember5 );
         sm_Log.info( aFreeFromDuty5 );
@@ -187,9 +187,9 @@ public class DutyCalculatorTest
         sm_Log.info( aFreeFromDuty4a );
         assertEquals( "4a", FreeFromDuty.REASON.TOO_YOUNG, aFreeFromDuty4a.getReason() );
 
-        final float aDutyHours4a = aDC.calculate( aFreeFromDuty4a );
+        final int aDutyHours4a = aDC.calculateHoursToWork( aFreeFromDuty4a );
         sm_Log.info( "Plichtstunden 4a: "+aDutyHours4a );
-        assertEquals("Plichtstunden 4a", 1.0f, aDutyHours4a, 0.001f);
+        assertEquals("Plichtstunden 4a", 100, aDutyHours4a );
 
         // Das junge Kücken tritt zum ersten April aus:
         aMember5.setMemberUntil( LocalDate.of( 2000, 4, 1 ) );
@@ -197,12 +197,21 @@ public class DutyCalculatorTest
         sm_Log.info( aFreeFromDuty5a );
         assertEquals( "5a", FreeFromDuty.REASON.TOO_YOUNG, aFreeFromDuty5a.getReason() );
 
-        final float aDutyHours5a = aDC.calculate( aFreeFromDuty5a );
+        final int aDutyHours5a = aDC.calculateHoursToWork( aFreeFromDuty5a );
         sm_Log.info( "Plichtstunden 5a: "+aDutyHours5a );
-        assertEquals("Plichtstunden 5a", 0.0f, aDutyHours5a, 0.001f);
+        assertEquals("Plichtstunden 5a", 0, aDutyHours5a );
 
     }
 
+//    @Test
+//    public void test_Austritt()
+//    {
+//        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
+//        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs  );
+//
+//        final ClubMember aMember = new ClubMember(4);
+//        aMember.setBirthday( LocalDate.of( 1984, 3, 31 ) );
+//    }
 }
 
 // ############################################################################

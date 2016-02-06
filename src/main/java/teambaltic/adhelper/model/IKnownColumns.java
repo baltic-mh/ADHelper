@@ -14,22 +14,32 @@ package teambaltic.adhelper.model;
 // ############################################################################
 public interface IKnownColumns
 {
-    String MEMBERID = "Mitglieds_Nr";
-    String BIRTHDAY = "Geburtstag";
-    String DATE = "Datum";
-    String PLZ = "Plz";
-    String ORT = "Ort";
-    String ANREDE = "Anrede";
-    String STREET = "Straße";
-    String BEITRAGSART = "Beitragsart_1";
+    // Verwendung in mehreren Tabellen:
+    String MEMBERID = "Mitglieds_Nr";   // Darf nicht 0 sein!
+    String DATE = "Datum";              // Format: DD.MM.YYYY
+
+    // Tabelle der Mitgliederdaten:
+    String BIRTHDAY = "Geburtsdatum";   // Format wie Datum
+    String PLZ = "Plz";                 // Wird nicht verwendet
+    String ORT = "Ort";                 // Wird nicht verwendet
+    String ANREDE = "Anrede";           // Wird nicht verwendet
+    String STREET = "Straße";           // Wird nicht verwendet
+    String BEITRAGSART = "Beitragsart_1"; // Wird für AD-Befreiung verwendet
     String NAME = "Nachname";
     String FIRSTNAME = "Vorname";
-    String EINTRITT = "Eintritt";
-    String AUSTRITT = "Austritt";
-    String LINKID = "Verknüpfung";
+    String EINTRITT = "Eintritt";       // Format wie Datum
+    String AUSTRITT = "Austritt";       // Format wie Datum
+    String LINKID = "Verknüpfung";      // Es muss eine Mitgliedsnummer mit diesem Wert geben
+    String AD_FREE_REASON = "AD-Frei.Grund";
+    String AD_FREE_FROM   = "AD-Frei.von";
+    String AD_FREE_UNTIL  = "AD-Frei.bis";
 
-    String GUTHABEN_PREFIX = "Guthaben ";
-    Object HOURSWORKED = "Gel.Stunden";
+    String GUTHABEN_PREFIX = "Guthaben ";   // Momentan taucht in dieser Überschrift das Daum mit auf.
+                                            // Besser wären zwei Spalten: Guthaben.Wert und Guthaben.am
+                                            // Es werden nur zwei Stellen hinter dem Komma ausgewertet!
+
+    // Tabelle der Arbeitsdienste:
+    String HOURSWORKED = "Gel.Stunden";
 
 }
 
