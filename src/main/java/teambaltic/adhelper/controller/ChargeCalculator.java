@@ -89,20 +89,25 @@ public class ChargeCalculator
         while( aBalanceTotal > 0 && aHoursToPayTotal > 0 ){
             for( final DutyCharge aCharge : aAllCharges ){
                 int aChargedAndAdjusted = aCharge.getBalance_ChargedAndAdjusted();
-                if( aChargedAndAdjusted > 0 ){
-                    if( aChargedAndAdjusted < 100 ){
-                        aBalanceTotal       -= aChargedAndAdjusted;
-                        aHoursToPayTotal    -= aChargedAndAdjusted;
-                        aChargedAndAdjusted  = 0;
-                    } else {
-                        aBalanceTotal       -= 100;
-                        aHoursToPayTotal    -= 100;
-                        aChargedAndAdjusted -= 100;
-                    }
-                    aCharge.setBalance_ChargedAndAdjusted( aChargedAndAdjusted );
-                    if(aHoursToPayTotal == 0){
-                        break;
-                    }
+                if( aChargedAndAdjusted <= 0 ){
+                    continue;
+                }
+                if( aChargedAndAdjusted < 100 ){
+                    aBalanceTotal       -= aChargedAndAdjusted;
+                    aHoursToPayTotal    -= aChargedAndAdjusted;
+                    aChargedAndAdjusted  = 0;
+                } else if( aHoursToPayTotal < 100 ){
+                    aBalanceTotal       -= aHoursToPayTotal;
+                    aChargedAndAdjusted -= aHoursToPayTotal;
+                    aHoursToPayTotal     = 0;
+                } else {
+                    aBalanceTotal       -= 100;
+                    aHoursToPayTotal    -= 100;
+                    aChargedAndAdjusted -= 100;
+                }
+                aCharge.setBalance_ChargedAndAdjusted( aChargedAndAdjusted );
+                if(aHoursToPayTotal == 0){
+                    break;
                 }
 
             }

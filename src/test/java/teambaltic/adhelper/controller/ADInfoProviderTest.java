@@ -105,7 +105,7 @@ public class ADInfoProviderTest
     @Test
     public void test_MerleWeber() throws Exception
     {
-        final File aFile = new File("misc/TestResources/Tabellen/Members.csv");
+        final File aFile = new File("misc/TestResources/Tabellen/Mitglieder.csv");
         final BaseInfoReader aReader = new BaseInfoReader( aFile );
 
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
@@ -132,7 +132,7 @@ public class ADInfoProviderTest
     @Test
     public void test_LukasBal() throws Exception
     {
-        final File aFile = new File("misc/TestResources/Tabellen/Members.csv");
+        final File aFile = new File("misc/TestResources/Tabellen/Mitglieder.csv");
         final BaseInfoReader aReader = new BaseInfoReader( aFile );
 
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
@@ -166,7 +166,7 @@ public class ADInfoProviderTest
 
     private static ADInfoProvider init()
     {
-        final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/Members.csv");
+        final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/Mitglieder.csv");
         final File aWorkEventFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
         final ADInfoProvider aChef = new ADInfoProvider();
         aChef.readBaseInfo( aBaseInfoFile );
