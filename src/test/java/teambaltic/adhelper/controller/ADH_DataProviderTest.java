@@ -1,5 +1,5 @@
 /**
- * ADInfoProviderTest.java
+ * AD_DataProviderTest.java
  *
  * Created on 05.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -38,9 +38,9 @@ import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
-public class ADInfoProviderTest
+public class ADH_DataProviderTest
 {
-    private static final Logger sm_Log = Logger.getLogger(ADInfoProviderTest.class);
+    private static final Logger sm_Log = Logger.getLogger(ADH_DataProviderTest.class);
 
     // ########################################################################
     // INITIALISIERUNG
@@ -68,7 +68,7 @@ public class ADInfoProviderTest
     @Test
     public void test_Read()
     {
-        final ADInfoProvider aChef = init();
+        final ADH_DataProvider aChef = init();
 
         for( final InfoForSingleMember aInfo : aChef.getAll() ){
             final IClubMember aMember = aInfo.getMember();
@@ -91,7 +91,7 @@ public class ADInfoProviderTest
     @Test
     public void test_Calculate()
     {
-        final ADInfoProvider aChef = init();
+        final ADH_DataProvider aChef = init();
 
         final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2014 ), EPart.SECOND );
 
@@ -118,7 +118,7 @@ public class ADInfoProviderTest
         final InfoForSingleMember aInfo = new InfoForSingleMember(aID);
         aReader.populateInfoForSingleMember( aInfo, aAttributes );
 
-        final ADInfoProvider aChef = new ADInfoProvider();
+        final ADH_DataProvider aChef = new ADH_DataProvider();
         aChef.add( aInfo );
 
         final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2014 ), EPart.SECOND );
@@ -146,7 +146,7 @@ public class ADInfoProviderTest
         final InfoForSingleMember aInfo = new InfoForSingleMember(aID);
         aReader.populateInfoForSingleMember( aInfo, aAttributes );
 
-        final ADInfoProvider aChef = new ADInfoProvider();
+        final ADH_DataProvider aChef = new ADH_DataProvider();
         aChef.add( aInfo );
 
         final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2014 ), EPart.SECOND );
@@ -164,11 +164,11 @@ public class ADInfoProviderTest
     // TESTS
     // ########################################################################
 
-    private static ADInfoProvider init()
+    private static ADH_DataProvider init()
     {
         final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/Mitglieder.csv");
         final File aWorkEventFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
-        final ADInfoProvider aChef = new ADInfoProvider();
+        final ADH_DataProvider aChef = new ADH_DataProvider();
         aChef.readBaseInfo( aBaseInfoFile );
         aChef.readWorkEvents( aWorkEventFile );
         return aChef;

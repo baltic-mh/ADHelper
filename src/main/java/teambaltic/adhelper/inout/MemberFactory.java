@@ -37,7 +37,7 @@ public class MemberFactory implements IItemFactory<IClubMember>
     {
         final String aNachname = fAttributes.get( IKnownColumns.NAME );
         final String aVorname  = fAttributes.get( IKnownColumns.FIRSTNAME );
-        fCM.setName( String.format("%s %s", aVorname, aNachname) );
+        fCM.setName( String.format("%s, %s", aNachname, aVorname) );
 
         final String aBirthdayValue = fAttributes.get( IKnownColumns.BIRTHDAY );
         final LocalDate aBirthday = ParseUtils.getDate( aBirthdayValue );

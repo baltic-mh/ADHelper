@@ -75,10 +75,10 @@ public class DutyCharge implements IIdentifiedItem
     private final Map<Integer, DutyCharge> m_ChargeOfRelatives;
     public List<DutyCharge> getAllDutyCharges()
     {
-        final List <DutyCharge> aAllCharges = new ArrayList<>();
-        aAllCharges.add( this );
-        aAllCharges.addAll( m_ChargeOfRelatives.values() );
-        return aAllCharges;
+        final List <DutyCharge> aAllItems = new ArrayList<>();
+        aAllItems.add( this );
+        aAllItems.addAll( m_ChargeOfRelatives.values() );
+        return aAllItems;
     }
     // ------------------------------------------------------------------------
 
@@ -89,9 +89,9 @@ public class DutyCharge implements IIdentifiedItem
         m_ChargeOfRelatives = new HashMap<>();
     }
 
-    public void addCharge( final DutyCharge fCharge )
+    public void addRelative( final DutyCharge fItem )
     {
-        final int aRelativeID = fCharge.getMemberID();
+        final int aRelativeID = fItem.getMemberID();
         synchronized( m_ChargeOfRelatives ){
             final Integer aIntegerKey = Integer.valueOf( aRelativeID );
             if( m_ChargeOfRelatives.containsKey( aIntegerKey ) ){
@@ -99,7 +99,7 @@ public class DutyCharge implements IIdentifiedItem
                         getMemberID(), aRelativeID ) );
                 return;
             }
-            m_ChargeOfRelatives.put( aIntegerKey, fCharge );
+            m_ChargeOfRelatives.put( aIntegerKey, fItem );
         }
     }
 

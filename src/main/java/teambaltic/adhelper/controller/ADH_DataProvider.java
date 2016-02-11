@@ -1,5 +1,5 @@
 /**
- * ADInfoProvider.java
+ * ADH_DataProvider.java
  *
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -12,6 +12,7 @@
 package teambaltic.adhelper.controller;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -29,15 +30,20 @@ import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.DateUtils;
 
 // ############################################################################
-public class ADInfoProvider extends ListProvider<InfoForSingleMember>
+public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 {
-    private static final Logger sm_Log = Logger.getLogger(ADInfoProvider.class);
+    private static final Logger sm_Log = Logger.getLogger(ADH_DataProvider.class);
 
     private final GlobalParameters m_GPs;
 
     private ChargeCalculator m_ChargeCalculator;
 
-    public ADInfoProvider()
+    // ------------------------------------------------------------------------
+    private Collection<IClubMember> m_Members;
+    public Collection<IClubMember> getMembers(){ return m_Members; }
+    // ------------------------------------------------------------------------
+
+    public ADH_DataProvider()
     {
         m_GPs = new GlobalParameters();
     }
@@ -47,7 +53,7 @@ public class ADInfoProvider extends ListProvider<InfoForSingleMember>
         clear();
         final BaseInfoReader aReader = new BaseInfoReader( fFileToReadFrom );
         try{
-            aReader.read( this );
+            m_Members = aReader.read( this );
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block
             sm_Log.warn("Exception: ", fEx );
@@ -98,18 +104,28 @@ public class ADInfoProvider extends ListProvider<InfoForSingleMember>
             if( aLinkID == 0 ){
                 continue;
             }
-            final DutyCharge aCharge = aSingleInfo.getDutyCharge();
-            final DutyCharge aChargeToLinkTo = getDutyCharge( aLinkID );
-            if( aChargeToLinkTo == null ){
+            final IClubMember aLinkedToMember = getMember( aLinkID );
+            if( aLinkedToMember == null ){
                 sm_Log.error( String.format( "%s: Die LinkID %d existiert nicht als Mitgliedsnummer!",
                         aMember, aLinkID) );
                 continue;
             }
-            final IClubMember aLinkedToMember = getMember( aLinkID );
             if( sm_Log.isDebugEnabled() ){
                 sm_Log.debug( "Verbinde : "+aMember.getName() +" => "+aLinkedToMember.getName());
             }
-            aChargeToLinkTo.addCharge( aCharge );
+            final DutyCharge aCharge = aSingleInfo.getDutyCharge();
+            final DutyCharge aChargeToLinkTo = getDutyCharge( aLinkID );
+            aChargeToLinkTo.addRelative( aCharge );
+
+            final WorkEventsAttended aWEA = aSingleInfo.getWorkEventsAttended();
+            if( aWEA == null ){
+                continue;
+            }
+            WorkEventsAttended aWEAToLinkTo = getWorkEventsAttended( aLinkID );
+            if( aWEAToLinkTo == null ){
+                aWEAToLinkTo = new WorkEventsAttended( aLinkID );
+            }
+            aWEAToLinkTo.addRelative( aWEA );
         }
     }
 
@@ -191,16 +207,29 @@ public class ADInfoProvider extends ListProvider<InfoForSingleMember>
         return DateUtils.coversFreeFromDuty_InvoicingPeriod( fFreeFromDuty, aIP );
     }
 
-    private IClubMember getMember( final int aMemberID )
+    private IClubMember getMember( final int fMemberID )
     {
-        final InfoForSingleMember aInfo = get( aMemberID );
+        final InfoForSingleMember aInfo = get( fMemberID );
         return aInfo.getMember();
     }
 
-    private DutyCharge getDutyCharge( final int aMemberID )
+    private DutyCharge getDutyCharge( final int fMemberID )
     {
-        final InfoForSingleMember aInfo = get( aMemberID );
+        final InfoForSingleMember aInfo = get( fMemberID );
         return aInfo.getDutyCharge();
+    }
+
+    private WorkEventsAttended getWorkEventsAttended( final int fMemberID )
+    {
+        final InfoForSingleMember aInfo = get( fMemberID );
+        return aInfo.getWorkEventsAttended();
+    }
+
+    public String getMemberName( final int fID )
+    {
+        final InfoForSingleMember aInfoForSingleMember = get( fID );
+        final IClubMember aMember = aInfoForSingleMember.getMember();
+        return aMember.getName();
     }
 
 }

@@ -31,7 +31,7 @@ import teambaltic.adhelper.utils.DateUtils;
  */
 public class DutyCalculator
 {
-    private static final Logger sm_Log = Logger.getLogger(ChargeCalculatorTest.class);
+    private static final Logger sm_Log = Logger.getLogger(DutyCalculator.class);
 
     // ------------------------------------------------------------------------
     private final IInvoicingPeriod m_InvoicingPeriod;

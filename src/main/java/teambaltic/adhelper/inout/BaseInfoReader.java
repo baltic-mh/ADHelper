@@ -12,6 +12,9 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +49,7 @@ public class BaseInfoReader
         m_BalanceFactory        = new BalanceFactory();
     }
 
-    public void read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
+    public Collection<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
     {
         final File aFile = getFile();
         if( !aFile.exists() ){
@@ -59,6 +62,7 @@ public class BaseInfoReader
             throw new Exception("Cannot read file: "+aFile.getPath());
         }
 
+        final List<IClubMember> aAllMembers = new ArrayList<>();
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
         final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
         for( final String aSingleLine : aAllLines ){
@@ -71,7 +75,19 @@ public class BaseInfoReader
                 fListProvider.add( aInfo );
             }
             populateInfoForSingleMember( aInfo, aAttributes );
+            aAllMembers.add( aInfo.getMember() );
         }
+
+        final Comparator<? super IClubMember> aComp = new Comparator<IClubMember>(){
+            @Override
+            public int compare( final IClubMember fClubMember1, final IClubMember fClubMember2 )
+            {
+                return( fClubMember1.getName().compareTo( fClubMember2.getName() ) );
+            }
+
+        };
+        aAllMembers.sort( aComp );
+        return aAllMembers;
 
     }
 

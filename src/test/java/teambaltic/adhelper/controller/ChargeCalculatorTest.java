@@ -99,11 +99,11 @@ public class ChargeCalculatorTest
         final ChargeCalculator aCC = new ChargeCalculator( aDC );
         final DutyCharge aCharge_MHW = aCC.calculate( MHW, MHW_Balance, MHW_WorkEventsAttended, MHW_FreeFromDuty );
         final DutyCharge aCharge_MTW = aCC.calculate( MTW, null,  null, null );
-        aCharge_MHW.addCharge( aCharge_MTW );
+        aCharge_MHW.addRelative( aCharge_MTW );
         final DutyCharge aCharge_BJW = aCC.calculate( BJW, BJW_Balance, BJW_WorkEventsAttended, null );
-        aCharge_MHW.addCharge( aCharge_BJW );
+        aCharge_MHW.addRelative( aCharge_BJW );
         final DutyCharge aCharge_MMW = aCC.calculate( MMW, MMW_Balance, null, null );
-        aCharge_MHW.addCharge( aCharge_MMW );
+        aCharge_MHW.addRelative( aCharge_MMW );
 
         aCC.balance( aCharge_MHW );
         reportCharge( aCharge_MHW );

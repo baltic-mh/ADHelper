@@ -65,7 +65,7 @@ public class ClubMember implements IClubMember
     @Override
     public String toString()
     {
-        return String.format( "%d: %s", getID(), getName() );
+        return String.format( "%s (%d)", getName(), getID() );
     }
 }
 
