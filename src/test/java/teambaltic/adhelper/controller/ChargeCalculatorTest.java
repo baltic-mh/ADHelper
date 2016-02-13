@@ -97,12 +97,16 @@ public class ChargeCalculatorTest
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs );
 
         final ChargeCalculator aCC = new ChargeCalculator( aDC );
-        final DutyCharge aCharge_MHW = aCC.calculate( MHW, MHW_Balance, MHW_WorkEventsAttended, MHW_FreeFromDuty );
-        final DutyCharge aCharge_MTW = aCC.calculate( MTW, null,  null, null );
+        final DutyCharge aCharge_MHW = new DutyCharge(MHW.getID(), MHW_Balance.getValue());
+        aCC.calculate( aCharge_MHW, MHW_WorkEventsAttended, MHW_FreeFromDuty );
+        final DutyCharge aCharge_MTW = new DutyCharge(MTW.getID(), 0);
+        aCC.calculate( aCharge_MTW, null, null );
         aCharge_MHW.addRelative( aCharge_MTW );
-        final DutyCharge aCharge_BJW = aCC.calculate( BJW, BJW_Balance, BJW_WorkEventsAttended, null );
+        final DutyCharge aCharge_BJW = new DutyCharge(BJW.getID(), BJW_Balance.getValue() );
+        aCC.calculate( aCharge_BJW, BJW_WorkEventsAttended, null );
         aCharge_MHW.addRelative( aCharge_BJW );
-        final DutyCharge aCharge_MMW = aCC.calculate( MMW, MMW_Balance, null, null );
+        final DutyCharge aCharge_MMW = new DutyCharge(MMW.getID(), MMW_Balance.getValue() );
+        aCC.calculate( aCharge_MMW, null, null );
         aCharge_MHW.addRelative( aCharge_MMW );
 
         aCC.balance( aCharge_MHW );

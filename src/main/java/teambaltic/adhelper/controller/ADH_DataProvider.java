@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.inout.BaseInfoReader;
 import teambaltic.adhelper.inout.WorkEventReader;
-import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.GlobalParameters;
@@ -88,10 +87,9 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
                 aFreeFromDuty = aDC.isFreeFromDuty( aMember );
                 aSingleInfo.setFreeFromDuty( aFreeFromDuty );
             }
-            final Balance aBalance = aSingleInfo.getBalance();
             final WorkEventsAttended aWorkEventsAttended = aSingleInfo.getWorkEventsAttended();
-            final DutyCharge aDutyCharge = m_ChargeCalculator.calculate( aMember, aBalance, aWorkEventsAttended, aFreeFromDuty );
-            aSingleInfo.setDutyCharge( aDutyCharge );
+            final DutyCharge aDutyCharge = aSingleInfo.getDutyCharge();
+            m_ChargeCalculator.calculate( aDutyCharge, aWorkEventsAttended, aFreeFromDuty );
         }
     }
 

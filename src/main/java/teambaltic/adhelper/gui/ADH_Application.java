@@ -15,7 +15,6 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.time.Year;
 import java.util.Collection;
 
 import javax.swing.Box;
@@ -29,12 +28,11 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.gui.listeners.InvoicingPeriodSelectedListener;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
+import teambaltic.adhelper.gui.model.InvoicingPeriodBoxModel;
 import teambaltic.adhelper.gui.model.MemberComboBoxModel;
-import teambaltic.adhelper.model.Halfyear;
-import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IInvoicingPeriod;
 
 //import com.jgoodies.forms.layout.ColumnSpec;
 //import com.jgoodies.forms.layout.FormLayout;
@@ -52,12 +50,15 @@ public class ADH_Application
      */
     public static void main( final String[] args )
     {
+        final ADH_DataProvider aChef = initInfo();
+        aChef.joinRelatives();
+
         EventQueue.invokeLater( new Runnable() {
             @Override
             public void run()
             {
                 try{
-                    final ADH_Application window = new ADH_Application();
+                    final ADH_Application window = new ADH_Application( aChef );
                     window.m_frame.setVisible( true );
                 }catch( final Exception e ){
                     e.printStackTrace();
@@ -69,22 +70,20 @@ public class ADH_Application
     /**
      * Create the application.
      */
-    public ADH_Application()
+    public ADH_Application( final ADH_DataProvider fDataProvider)
     {
         initialize();
-        final ADH_DataProvider aChef = initInfo();
-        final Collection<IClubMember> aAllMembers = aChef.getMembers();
+
+        final Collection<IClubMember> aAllMembers = fDataProvider.getMembers();
         final IClubMember[] aMemberArr = new IClubMember[aAllMembers.size()] ;
         final JComboBox<IClubMember> aCB_Members = m_panel.getCB_Members();
         aCB_Members.setModel( new MemberComboBoxModel( aAllMembers.toArray( aMemberArr ) ) );
-
-        final IInvoicingPeriod aInvoicingPeriod = new Halfyear( Year.of( 2014 ), EPart.SECOND );
-        aChef.calculateDutyCharges( aInvoicingPeriod );
-        aChef.joinRelatives();
-        aChef.balanceRelatives();
-
-        final ActionListener aListener = new MemberSelectedListener( m_panel, aChef );
+        final ActionListener aListener = new MemberSelectedListener( m_panel, fDataProvider );
         aCB_Members.addActionListener( aListener );
+
+        final JComboBox<String> aCB_InvoicingPeriod = m_panel.getCB_InvoicingPeriod();
+        aCB_InvoicingPeriod.setModel( new InvoicingPeriodBoxModel() );
+        aCB_InvoicingPeriod.addActionListener( new InvoicingPeriodSelectedListener(m_panel, fDataProvider) );
     }
 
     /**

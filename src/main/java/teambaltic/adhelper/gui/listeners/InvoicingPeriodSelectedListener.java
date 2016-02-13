@@ -1,7 +1,7 @@
 /**
- * MemberSelectedListener.java
+ * InvoicingPeriodSelectedListener.java
  *
- * Created on 11.02.2016
+ * Created on 12.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
  * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
@@ -19,14 +19,15 @@ import javax.swing.JComboBox;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IInvoicingPeriod;
 
 // ############################################################################
-public class MemberSelectedListener implements ActionListener
+public class InvoicingPeriodSelectedListener implements ActionListener
 {
     private final MainPanel m_Panel;
     private final ADH_DataProvider m_DataProvider;
 
-    public MemberSelectedListener(
+    public InvoicingPeriodSelectedListener(
             final MainPanel fPanel,
             final ADH_DataProvider fDataProvider)
     {
@@ -37,15 +38,20 @@ public class MemberSelectedListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-//        @SuppressWarnings("unchecked")
-//        final JComboBox<IClubMember> aCB = (JComboBox<IClubMember>) fE.getSource();
-        final JComboBox<IClubMember> aCB = m_Panel.getCB_Members();
-        final IClubMember aSelectedItem = (IClubMember) aCB.getSelectedItem();
-        final int aMemberID = aSelectedItem.getID();
-        GUIUpdater.updateGUI( aMemberID, m_Panel, m_DataProvider );
+        @SuppressWarnings("unchecked")
+        final JComboBox<String> aCB = (JComboBox<String>) fE.getSource();
+        final IInvoicingPeriod aInvoicingPeriod = (IInvoicingPeriod) aCB.getSelectedItem();
 
+        m_DataProvider.calculateDutyCharges( aInvoicingPeriod );
+        m_DataProvider.balanceRelatives();
+
+        final JComboBox<IClubMember> aCb_Members = m_Panel.getCB_Members();
+        final IClubMember aSelectedItem = (IClubMember) aCb_Members.getSelectedItem();
+        final int aMemberID = aSelectedItem.getID();
+
+        GUIUpdater.updateGUI( aMemberID, m_Panel, m_DataProvider );
     }
 
-
 }
+
 // ############################################################################

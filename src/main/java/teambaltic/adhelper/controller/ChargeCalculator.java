@@ -13,10 +13,8 @@ package teambaltic.adhelper.controller;
 
 import java.util.List;
 
-import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IInvoicingPeriod;
 import teambaltic.adhelper.model.WorkEventsAttended;
 
@@ -46,21 +44,18 @@ public class ChargeCalculator
     }
 
     public DutyCharge calculate(
-            final IClubMember        fMember,
-            final Balance            fBalance,
+            final DutyCharge aCharge,
             final WorkEventsAttended fWorkEventsAttended,
             final FreeFromDuty       fFreeFromDuty)
     {
-        final int aMemberID = fMember.getID();
         final IInvoicingPeriod aInvoicingPeriod = getDC().getInvoicingPeriod();
-        final int aBalanceValue = getBalanceValue( fBalance );
-        final DutyCharge aCharge = new DutyCharge(aMemberID, aBalanceValue );
         final int aHoursWorked = fWorkEventsAttended == null ? 0 : fWorkEventsAttended.getTotalHoursWorked( aInvoicingPeriod );
         aCharge.setHoursWorked( aHoursWorked );
 
         final int aHoursDue = getDC().calculateHoursToWork( fFreeFromDuty );
         aCharge.setHoursDue( aHoursDue );
 
+        final int aBalanceValue = aCharge.getBalance_Original();
         int aBalanceCharged = aBalanceValue + aHoursWorked - aHoursDue;
         if( aBalanceCharged < 0 ){
             aBalanceCharged = 0;
@@ -113,14 +108,6 @@ public class ChargeCalculator
             }
         }
         fCharge.setHoursToPayTotal( aHoursToPayTotal );
-    }
-
-    private static int getBalanceValue( final Balance fBalance )
-    {
-        if( fBalance == null ){
-            return 0;
-        }
-        return fBalance.getValue();
     }
 
 }

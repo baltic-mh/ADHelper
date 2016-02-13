@@ -20,6 +20,7 @@ import java.util.Map;
 
 import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.model.Balance;
+import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -103,9 +104,12 @@ public class BaseInfoReader
             fInfo.setFreeFromDuty( aFFD );
         }
         final Balance aBalance = m_BalanceFactory.createItem( aID, fAttributes);
+        int aBalanceValue = 0;
         if( aBalance != null ){
             fInfo.setBalance( aBalance );
+            aBalanceValue = aBalance.getValue();
         }
+        fInfo.setDutyCharge( new DutyCharge(aID, aBalanceValue ) );
     }
 
 }

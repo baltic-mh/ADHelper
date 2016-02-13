@@ -43,8 +43,13 @@ public class MainPanel extends JPanel
     private final JTable m_tbl_DutyCharges;
 
     // ------------------------------------------------------------------------
-    private final JComboBox<IClubMember> m_CB_Members;
-    public JComboBox<IClubMember> getCB_Members(){ return m_CB_Members; }
+    private final JComboBox<IClubMember> m_cmb_Members;
+    public JComboBox<IClubMember> getCB_Members(){ return m_cmb_Members; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    final JComboBox<String> m_cmb_InvoicingPeriod;
+    public JComboBox<String> getCB_InvoicingPeriod(){ return m_cmb_InvoicingPeriod; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -77,6 +82,8 @@ public class MainPanel extends JPanel
                 FormSpecs.RELATED_GAP_ROWSPEC,
                 FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,
+                FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC,
                 RowSpec.decode("max(58dlu;default)"),
                 FormSpecs.RELATED_GAP_ROWSPEC,
                 RowSpec.decode("max(55dlu;default)"),
@@ -87,7 +94,7 @@ public class MainPanel extends JPanel
         final JLabel lblMitglied = new JLabel("Mitglied");
         add(lblMitglied, "2, 2, right, default");
 
-        m_CB_Members = new JComboBox<>();
+        m_cmb_Members = new JComboBox<>();
         add(getCB_Members(), "4, 2, 9, 1, fill, default");
 
         getCB_Members().getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
@@ -115,10 +122,16 @@ public class MainPanel extends JPanel
                 }
             } } );
 
-        final JPanel panel = new JPanel();
-        panel.setBorder(new TitledBorder(null, "Abrechnungen", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        add(panel, "2, 4, 11, 1, fill, fill");
-        panel.setLayout(new FormLayout(new ColumnSpec[] {
+        final JLabel lblAbrechnungszeitraum = new JLabel("Abrechnungszeitraum");
+        add(lblAbrechnungszeitraum, "2, 4, right, default");
+
+        m_cmb_InvoicingPeriod = new JComboBox<>();
+        add(m_cmb_InvoicingPeriod, "4, 4, 9, 1, fill, default");
+
+        final JPanel m_pnl_Accountings = new JPanel();
+        m_pnl_Accountings.setBorder(new TitledBorder(null, "Abrechnungen", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        add(m_pnl_Accountings, "2, 6, 11, 1, fill, fill");
+        m_pnl_Accountings.setLayout(new FormLayout(new ColumnSpec[] {
                 FormSpecs.RELATED_GAP_COLSPEC,
                 ColumnSpec.decode("default:grow"),
                 FormSpecs.RELATED_GAP_COLSPEC,
@@ -134,7 +147,7 @@ public class MainPanel extends JPanel
                 FormSpecs.DEFAULT_ROWSPEC,}));
 
         final JScrollPane scrollPane_1 = new JScrollPane();
-        panel.add(scrollPane_1, "2, 2, 7, 1, fill, fill");
+        m_pnl_Accountings.add(scrollPane_1, "2, 2, 7, 1, fill, fill");
 
         m_tbl_DutyCharges = new JTable();
         ((JLabel)m_tbl_DutyCharges.getDefaultRenderer(String.class)).setHorizontalAlignment (JLabel.RIGHT);
@@ -144,16 +157,16 @@ public class MainPanel extends JPanel
         scrollPane_1.setViewportView(m_tbl_DutyCharges);
 
         final JLabel lblZuZahlendeStunden = new JLabel("Zu zahlende Stunden");
-        panel.add(lblZuZahlendeStunden, "2, 4");
+        m_pnl_Accountings.add(lblZuZahlendeStunden, "2, 4");
 
         m_tf_HoursToPay = new JTextField();
-        panel.add(m_tf_HoursToPay, "6, 4, fill, default");
+        m_pnl_Accountings.add(m_tf_HoursToPay, "6, 4, fill, default");
         m_tf_HoursToPay.setColumns(10);
 
-        final JPanel panel_1 = new JPanel();
-        panel_1.setBorder(new TitledBorder(null, "Arbeitsdienste", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        add(panel_1, "2, 6, 11, 1, fill, fill");
-        panel_1.setLayout(new FormLayout(new ColumnSpec[] {
+        final JPanel m_pnl_WorkEvents = new JPanel();
+        m_pnl_WorkEvents.setBorder(new TitledBorder(null, "Arbeitsdienste", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        add(m_pnl_WorkEvents, "2, 8, 11, 1, fill, fill");
+        m_pnl_WorkEvents.setLayout(new FormLayout(new ColumnSpec[] {
                 FormSpecs.RELATED_GAP_COLSPEC,
                 ColumnSpec.decode("default:grow"),
                 FormSpecs.RELATED_GAP_COLSPEC,
@@ -172,7 +185,7 @@ public class MainPanel extends JPanel
 
 
         final JScrollPane scrollPane = new JScrollPane();
-        panel_1.add(scrollPane, "2, 2, 9, 1, fill, fill");
+        m_pnl_WorkEvents.add(scrollPane, "2, 2, 9, 1, fill, fill");
 
         m_tbl_WorkEvents = new JTable();
         ((JLabel)m_tbl_WorkEvents.getDefaultRenderer(String.class)).setHorizontalAlignment (JLabel.RIGHT);
@@ -181,11 +194,8 @@ public class MainPanel extends JPanel
         m_tbl_WorkEvents.setFillsViewportHeight(true);
         scrollPane.setViewportView(m_tbl_WorkEvents);
 
-        final JButton btnBerechnen = new JButton("Berechnen");
-        panel_1.add(btnBerechnen, "4, 4");
-
         final JButton btnEntfernen = new JButton("Entfernen");
-        panel_1.add(btnEntfernen, "6, 4");
+        m_pnl_WorkEvents.add(btnEntfernen, "6, 4");
 
         final JButton btnBearbeiten = new JButton("Bearbeiten");
         btnBearbeiten.addActionListener(new ActionListener() {
@@ -193,13 +203,13 @@ public class MainPanel extends JPanel
             public void actionPerformed(final ActionEvent arg0) {
             }
         });
-        panel_1.add(btnBearbeiten, "8, 4");
+        m_pnl_WorkEvents.add(btnBearbeiten, "8, 4");
 
         final JButton btnNeu = new JButton("Neu");
-        panel_1.add(btnNeu, "10, 4");
+        m_pnl_WorkEvents.add(btnNeu, "10, 4");
 
-        final JButton btnAusgabe = new JButton("Ausgabe");
-        add(btnAusgabe, "12, 8");
+                final JButton btnAusgabe = new JButton("Ausgabe");
+                add(btnAusgabe, "12, 10");
 
     }
 
