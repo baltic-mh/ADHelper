@@ -30,13 +30,11 @@ import com.jgoodies.forms.layout.RowSpec;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.listeners.InvoicingPeriodSelectedListener;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
+import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
+import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.InvoicingPeriodBoxModel;
 import teambaltic.adhelper.gui.model.MemberComboBoxModel;
 import teambaltic.adhelper.model.IClubMember;
-
-//import com.jgoodies.forms.layout.ColumnSpec;
-//import com.jgoodies.forms.layout.FormLayout;
-//import com.jgoodies.forms.layout.RowSpec;
 
 // ############################################################################
 public class ADH_Application
@@ -77,13 +75,28 @@ public class ADH_Application
         final Collection<IClubMember> aAllMembers = fDataProvider.getMembers();
         final IClubMember[] aMemberArr = new IClubMember[aAllMembers.size()] ;
         final JComboBox<IClubMember> aCB_Members = m_panel.getCB_Members();
-        aCB_Members.setModel( new MemberComboBoxModel( aAllMembers.toArray( aMemberArr ) ) );
-        final ActionListener aListener = new MemberSelectedListener( m_panel, fDataProvider );
-        aCB_Members.addActionListener( aListener );
+        final MemberComboBoxModel aMemberModel = new MemberComboBoxModel( aAllMembers.toArray( aMemberArr ) );
+        aCB_Members.setModel( aMemberModel );
+        final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_panel, fDataProvider );
+        aCB_Members.addActionListener( aMemberSelectedListener );
 
         final JComboBox<String> aCB_InvoicingPeriod = m_panel.getCB_InvoicingPeriod();
         aCB_InvoicingPeriod.setModel( new InvoicingPeriodBoxModel() );
         aCB_InvoicingPeriod.addActionListener( new InvoicingPeriodSelectedListener(m_panel, fDataProvider) );
+
+
+        // WorkEventEditor
+        final WorkEventEditor aWorkEventEditor = new WorkEventEditor();
+        final WorkEventEditorActionListener aWEEListener = new WorkEventEditorActionListener(aWorkEventEditor, m_panel, fDataProvider);
+
+        final JComboBox<IClubMember> aCb_Members_WEE = aWorkEventEditor.getCB_Members();
+        aWorkEventEditor.setWorkEventEditorListeners(aWEEListener);
+        aCb_Members_WEE.setModel( aMemberModel );
+        aCb_Members_WEE.addActionListener( aMemberSelectedListener );
+
+        // Der WorkEventEditor wird noch mal gebraucht:
+        final WorkEventTableListener aWorkEventTableListener = new WorkEventTableListener(aWorkEventEditor, m_panel, fDataProvider);
+        m_panel.setWorkEventTableListener(aWorkEventTableListener);
     }
 
     /**

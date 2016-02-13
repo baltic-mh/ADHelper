@@ -114,6 +114,22 @@ public class WorkEventsAttended implements IIdentifiedItem
         }
         return aSB.toString();
     }
+
+    public void remove( final WorkEvent fWE )
+    {
+        WorkEvent aMoriturus = null;
+        synchronized( m_WorkEvents ){
+            for( final WorkEvent aWorkEvent : m_WorkEvents ){
+                if( fWE.getDate().equals( aWorkEvent.getDate() )){
+                    aMoriturus = aWorkEvent;
+                    break;
+                }
+            }
+            if( aMoriturus != null ){
+                m_WorkEvents.remove( aMoriturus );
+            }
+        }
+    }
 }
 
 // ############################################################################

@@ -18,7 +18,6 @@ import javax.swing.JComboBox;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.MainPanel;
-import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IInvoicingPeriod;
 
 // ############################################################################
@@ -45,9 +44,7 @@ public class InvoicingPeriodSelectedListener implements ActionListener
         m_DataProvider.calculateDutyCharges( aInvoicingPeriod );
         m_DataProvider.balanceRelatives();
 
-        final JComboBox<IClubMember> aCb_Members = m_Panel.getCB_Members();
-        final IClubMember aSelectedItem = (IClubMember) aCb_Members.getSelectedItem();
-        final int aMemberID = aSelectedItem.getID();
+        final int aMemberID = m_Panel.getSelectedMemberID();
 
         GUIUpdater.updateGUI( aMemberID, m_Panel, m_DataProvider );
     }

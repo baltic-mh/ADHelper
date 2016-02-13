@@ -11,27 +11,28 @@
 // ############################################################################
 package teambaltic.adhelper.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
+import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.WorkEventTableModel;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.WorkEvent;
 
 // ############################################################################
 public class MainPanel extends JPanel
@@ -55,6 +56,16 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
     private final DutyChargeTableModel m_DutyChargeDataModel;
     public DutyChargeTableModel getDutyChargeDataModel(){ return m_DutyChargeDataModel; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final JButton m_btnNew;
+    private JButton getBtnNew(){ return m_btnNew; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final JButton m_btnDelete;
+    private JButton getBtnDelete(){ return m_btnDelete; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -97,30 +108,8 @@ public class MainPanel extends JPanel
         m_cmb_Members = new JComboBox<>();
         add(getCB_Members(), "4, 2, 9, 1, fill, default");
 
-        getCB_Members().getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased( final KeyEvent e )
-            {
-                if( e.getKeyCode() != 38 && e.getKeyCode() != 40 && e.getKeyCode() != 10 ){
-                    final int aItemCount = getCB_Members().getItemCount();
-                    final String a = getCB_Members().getEditor().getItem().toString();
-                    getCB_Members().removeAllItems();
-                    int st = 0;
-
-                    for( int i = 0; i < aItemCount; i++ ){
-                        final IClubMember aItem = getCB_Members().getItemAt( i );
-                        if( aItem.toString().startsWith( a ) ){
-                            getCB_Members().addItem( aItem );
-                            st++;
-                        }
-                    }
-                    getCB_Members().getEditor().setItem( new String( a ) );
-                    getCB_Members().hidePopup();
-                    if( st != 0 ){
-                        getCB_Members().showPopup();
-                    }
-                }
-            } } );
+        final JComboBox<IClubMember> aCb_Members = getCB_Members();
+        UIUtils.setItemStartsWithSelector( aCb_Members );
 
         final JLabel lblAbrechnungszeitraum = new JLabel("Abrechnungszeitraum");
         add(lblAbrechnungszeitraum, "2, 4, right, default");
@@ -191,25 +180,20 @@ public class MainPanel extends JPanel
         ((JLabel)m_tbl_WorkEvents.getDefaultRenderer(String.class)).setHorizontalAlignment (JLabel.RIGHT);
         m_WorkEventDataModel = new WorkEventTableModel();
         m_tbl_WorkEvents.setModel(m_WorkEventDataModel);
+
         m_tbl_WorkEvents.setFillsViewportHeight(true);
         scrollPane.setViewportView(m_tbl_WorkEvents);
 
-        final JButton btnEntfernen = new JButton("Entfernen");
-        m_pnl_WorkEvents.add(btnEntfernen, "6, 4");
+        m_btnDelete = new JButton("Entfernen");
+        m_btnDelete.setActionCommand( "Delete" );
+        m_pnl_WorkEvents.add(m_btnDelete, "8, 4");
 
-        final JButton btnBearbeiten = new JButton("Bearbeiten");
-        btnBearbeiten.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent arg0) {
-            }
-        });
-        m_pnl_WorkEvents.add(btnBearbeiten, "8, 4");
+        m_btnNew = new JButton("Neu");
+        m_btnNew.setActionCommand( "New" );
+        m_pnl_WorkEvents.add(m_btnNew, "10, 4");
 
-        final JButton btnNeu = new JButton("Neu");
-        m_pnl_WorkEvents.add(btnNeu, "10, 4");
-
-                final JButton btnAusgabe = new JButton("Ausgabe");
-                add(btnAusgabe, "12, 10");
+        final JButton btnAusgabe = new JButton("Ausgabe");
+        add(btnAusgabe, "12, 10");
 
     }
 
@@ -218,6 +202,60 @@ public class MainPanel extends JPanel
         m_tf_HoursToPay.setText( String.valueOf( fF ) );
     }
 
+    public void setWorkEventTableListener( final WorkEventTableListener fWorkEventTableListener )
+    {
+        getBtnNew().addActionListener(fWorkEventTableListener);
+        getBtnDelete().addActionListener(fWorkEventTableListener);
+    }
+
+    public boolean removeSelectedWorkEventRow()
+    {
+        final int aSelectedRow = m_tbl_WorkEvents.getSelectedRow();
+        if( aSelectedRow == -1 ){
+            return false;
+        }
+        final Object[] options = {"Ich weiß, was ich tue!", "Nein, das war ein Versehen!"};
+        final int n = JOptionPane.showOptionDialog(null,
+            "Soll der Arbeitsdiensteintrag wirklich gelöscht werden?",
+            "Sind Sie ganz sicher?",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            options,
+            options[1]);
+        switch( n ){
+            case 0:
+                ((DefaultTableModel)m_tbl_WorkEvents.getModel()).removeRow( aSelectedRow );
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public WorkEvent getSelectedWorkEvent()
+    {
+        final int aSelectedRow = m_tbl_WorkEvents.getSelectedRow();
+        if( aSelectedRow == -1 ){
+            return null;
+        }
+        final Integer aWorkerID = (Integer)   m_tbl_WorkEvents.getValueAt( aSelectedRow, 0 );
+        final LocalDate aDate   = (LocalDate) m_tbl_WorkEvents.getValueAt( aSelectedRow, 2 );
+        final WorkEvent aWorkEvent = new WorkEvent( aWorkerID );
+        aWorkEvent.setDate( aDate );
+        return aWorkEvent;
+    }
+
+    public IClubMember getSelectedMember()
+    {
+        final IClubMember aSelectedItem = (IClubMember) getCB_Members().getSelectedItem();
+        return aSelectedItem;
+    }
+
+    public int getSelectedMemberID()
+    {
+        return getSelectedMember().getID();
+    }
 }
 
 // ############################################################################

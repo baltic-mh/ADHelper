@@ -14,11 +14,8 @@ package teambaltic.adhelper.gui.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JComboBox;
-
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.MainPanel;
-import teambaltic.adhelper.model.IClubMember;
 
 // ############################################################################
 public class MemberSelectedListener implements ActionListener
@@ -37,13 +34,8 @@ public class MemberSelectedListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-//        @SuppressWarnings("unchecked")
-//        final JComboBox<IClubMember> aCB = (JComboBox<IClubMember>) fE.getSource();
-        final JComboBox<IClubMember> aCB = m_Panel.getCB_Members();
-        final IClubMember aSelectedItem = (IClubMember) aCB.getSelectedItem();
-        final int aMemberID = aSelectedItem.getID();
+        final int aMemberID = m_Panel.getSelectedMemberID();
         GUIUpdater.updateGUI( aMemberID, m_Panel, m_DataProvider );
-
     }
 
 

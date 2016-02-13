@@ -46,28 +46,32 @@ public class GUIUpdater
         }
 
         final List<WorkEventsAttended> aAllWorkEventsAttended = aWorkEventsAttended.getAllWorkEventsAttended();
-        for( final WorkEventsAttended aWorkEventsAttended2 : aAllWorkEventsAttended ){
-            final String aMemberName = fDataProvider.getMemberName( aWorkEventsAttended2.getMemberID() );
-            addWorkEventsForSingleMember( aDataModel, aMemberName, aWorkEventsAttended2 );
+        for( final WorkEventsAttended aThisWorkEventsAttended : aAllWorkEventsAttended ){
+            final int aMemberID = aThisWorkEventsAttended.getMemberID();
+            final String aMemberName = fDataProvider.getMemberName( aMemberID );
+            addWorkEventsForSingleMember( aDataModel, aMemberName, aMemberID, aThisWorkEventsAttended );
         }
     }
 
     private static void addWorkEventsForSingleMember(
             final WorkEventTableModel fDataModel,
             final String fMemberName,
+            final int    fMemberID,
             final WorkEventsAttended fWorkEventsAttended )
     {
         for( final WorkEvent aWorkEvent : fWorkEventsAttended.getWorkEvents() ){
-            addWorkEventRow( fDataModel, fMemberName, aWorkEvent );
+            addWorkEventRow( fDataModel, fMemberName, fMemberID, aWorkEvent );
         }
     }
 
     private static void addWorkEventRow(
             final WorkEventTableModel fDataModel,
             final String fMemberName,
+            final int    fMemberID,
             final WorkEvent fWorkEvent )
     {
         final Vector<Object> rowData = new Vector<>();
+        rowData.addElement( Integer.valueOf( fMemberID ) );
         rowData.addElement( fMemberName );
         rowData.addElement( fWorkEvent.getDate() );
         rowData.addElement( fWorkEvent.getHours()/100.0f );

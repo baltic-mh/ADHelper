@@ -22,7 +22,7 @@ public class WorkEventTableModel extends DefaultTableModel
     {
         super( null,
                 new String[] {
-                       "Arbeiter", "Arbeitdienst am", "Stunden gearbeitet", "Abgerechnet am"
+                       "ID", "Arbeiter", "Arbeitdienst am", "Stunden gearbeitet", "Abgerechnet am"
                     }
                 );
     }
