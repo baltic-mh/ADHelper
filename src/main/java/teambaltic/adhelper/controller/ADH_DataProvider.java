@@ -12,6 +12,15 @@
 package teambaltic.adhelper.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,6 +33,7 @@ import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.DateUtils;
@@ -35,11 +45,25 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     private final GlobalParameters m_GPs;
 
-    private ChargeCalculator m_ChargeCalculator;
+    // ------------------------------------------------------------------------
+    private File m_BaseInfoFile;
+    public File getBaseInfoFile(){ return m_BaseInfoFile; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private File m_WorkEventFile;
+    public File getWorkEventFile(){ return m_WorkEventFile; }
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private Collection<IClubMember> m_Members;
     public Collection<IClubMember> getMembers(){ return m_Members; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private ChargeCalculator m_ChargeCalculator;
+    public ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
+    public IInvoicingPeriod getInvoicingPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getInvoicingPeriod();}
     // ------------------------------------------------------------------------
 
     public ADH_DataProvider()
@@ -50,7 +74,8 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void readBaseInfo( final File fFileToReadFrom )
     {
         clear();
-        final BaseInfoReader aReader = new BaseInfoReader( fFileToReadFrom );
+        m_BaseInfoFile = fFileToReadFrom;
+        final BaseInfoReader aReader = new BaseInfoReader( m_BaseInfoFile );
         try{
             m_Members = aReader.read( this );
         }catch( final Exception fEx ){
@@ -61,6 +86,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     public void readWorkEvents( final File fFileToReadFrom )
     {
+        m_WorkEventFile = fFileToReadFrom;
         final WorkEventReader aReader = new WorkEventReader( fFileToReadFrom );
         try{
             aReader.read( this );
@@ -157,19 +183,19 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void reportCharge( final InfoForSingleMember fSingleInfo, final boolean fOnlyPayers )
     {
         final DutyCharge aCharge = fSingleInfo.getDutyCharge();
-        final List<DutyCharge> aAllDutyCharges = aCharge.getAllDutyCharges();
-        final FreeFromDuty aFreeFromDuty = fSingleInfo.getFreeFromDuty();
         final IClubMember aMember = fSingleInfo.getMember();
         if( fOnlyPayers && aMember.getLinkID() != 0 ){
             return;
         }
         sm_Log.info( "==========================================================================" );
+        final FreeFromDuty aFreeFromDuty = fSingleInfo.getFreeFromDuty();
         if( isFreeFromDutyEffective( aCharge, aFreeFromDuty ) ){
             sm_Log.info( aMember.getName() + ": AD befreit "+aFreeFromDuty);
         } else {
             sm_Log.info( String.format("%-27s  %6s %6s %6s %6s %6s %6s",
                     "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
             sm_Log.info( "--------------------------------------------------------------------------" );
+            final List<DutyCharge> aAllDutyCharges = aCharge.getAllDutyCharges();
             for( final DutyCharge aC : aAllDutyCharges ){
                 final IClubMember aRelatedMember = getMember( aC.getMemberID() );
                 sm_Log.info( String.format("%-27s %6.2f %6.2f   %6.2f  %6.2f  %6.2f  %6.2f",
@@ -230,6 +256,97 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         return aMember.getName();
     }
 
+    public void export(final Path fOutputFolder)
+    {
+        final File aBIF = getBaseInfoFile();
+        copyFileToFolder( aBIF, fOutputFolder );
+        final File aWEF = getWorkEventFile();
+        copyFileToFolder( aWEF, fOutputFolder );
+
+        final IInvoicingPeriod aIP = getInvoicingPeriod();
+        exportWorkEvents( fOutputFolder, aIP );
+        exportObligations( fOutputFolder );
+        exportBalances( fOutputFolder, aIP );
+    }
+
+    private void exportWorkEvents( final Path fOutputFolder, final IInvoicingPeriod fIP )
+    {
+        // TODO Die Arbeitsdiensteinträge müssen "Abgerechnet am" erhalten"!
+        // => alle, deren Datum vor dem Enddatum des Abrechnungszeitraumes liegt!
+
+    }
+
+    private void exportObligations( final Path fOutputFolder )
+    {
+        try{
+            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/ZuZahlendeStunden.csv", "ISO-8859-1");
+            aFileWriter.write( String.format("%s;%s;%s\r\n", IKnownColumns.MEMBERID, IKnownColumns.NAME, IKnownColumns.HOURSTOPAY ) );
+            for( final InfoForSingleMember aSingleInfo : getAll() ){
+                final DutyCharge aCharge = aSingleInfo.getDutyCharge();
+                final IClubMember aMember = aSingleInfo.getMember();
+                if( aMember.getLinkID() != 0 ){
+                    continue;
+                }
+                final int aMemberID = aCharge.getMemberID();
+                final int aHoursToPay = aCharge.getHoursToPayTotal();
+                if( aHoursToPay == 0 ){
+                    continue;
+                }
+                final String aLine = String.format( "%s;%s;%.2f\r\n", aMemberID, getMemberName( aMemberID ), aHoursToPay/100.0f );
+//                sm_Log.info( aLine );
+                aFileWriter.write( aLine );
+            }
+            aFileWriter.close();
+        }catch( final FileNotFoundException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }catch( final UnsupportedEncodingException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
+
+    private void exportBalances( final Path fOutputFolder, final IInvoicingPeriod fIP )
+    {
+        final String aBalanceAt = getNewBalanceDateString( fIP.getEnd() );
+        try{
+            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", "ISO-8859-1");
+            aFileWriter.write( String.format("%s;%s;%s;%s;%s\r\n",
+                    IKnownColumns.MEMBERID, IKnownColumns.NAME,
+                    IKnownColumns.GUTHABEN_WERT_ALT, IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
+            for( final InfoForSingleMember aSingleInfo : getAll() ){
+                final DutyCharge aCharge = aSingleInfo.getDutyCharge();
+                final int aMemberID = aCharge.getMemberID();
+                final int aBalance_Old = aCharge.getBalance_Original();
+                final int aBalance_New = aCharge.getBalance_ChargedAndAdjusted();
+                if( aBalance_Old == 0 && aBalance_New == 0 ){
+                    continue;
+                }
+                final String aLine = String.format( "%s;%s;%.2f;%.2f;%s\r\n",
+                        aMemberID, getMemberName( aMemberID ), aBalance_Old/100.0f, aBalance_New/100.0f, aBalanceAt );
+                sm_Log.info( aLine );
+                aFileWriter.write( aLine );
+            }
+            aFileWriter.close();
+        }catch( final FileNotFoundException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }catch( final UnsupportedEncodingException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
+    private static void copyFileToFolder( final File aFile, final Path fOutputFolder )
+    {
+        final Path aOUT_BIF = Paths.get( fOutputFolder.toString(), aFile.getName() );
+        try{
+            Files.copy( aFile.toPath(), aOUT_BIF, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES );
+        }catch( final IOException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
+
+    private static String getNewBalanceDateString( final LocalDate fDate )
+    {
+        final LocalDate aDate = fDate.plusDays( 1 );
+        return String.format( "%02d.%02d.%04d", aDate.getDayOfMonth(), aDate.getMonthValue(), aDate.getYear() );
+    }
 }
 
 // ############################################################################

@@ -34,12 +34,17 @@ public interface IKnownColumns
     String AD_FREE_FROM   = "AD-Frei.von";
     String AD_FREE_UNTIL  = "AD-Frei.bis";
 
-    String GUTHABEN_PREFIX = "Guthaben ";   // Momentan taucht in dieser Überschrift das Daum mit auf.
+    String GUTHABEN_PREFIX = "Guthaben ";   // Momentan taucht in dieser Überschrift das Datum mit auf.
                                             // Besser wären zwei Spalten: Guthaben.Wert und Guthaben.am
                                             // Es werden nur zwei Stellen hinter dem Komma ausgewertet!
+    String GUTHABEN_WERT     = "Guthaben.Wert";
+    String GUTHABEN_AM       = "Guthaben.Am";
+    String GUTHABEN_WERT_ALT = "Guthaben.Wert.Alt";
 
     // Tabelle der Arbeitsdienste:
     String HOURSWORKED = "Gel.Stunden";
+    // Tabelle der ZuZahlendenStunden:
+    String HOURSTOPAY = "Zu zahl. Stunden";
 
 }
 

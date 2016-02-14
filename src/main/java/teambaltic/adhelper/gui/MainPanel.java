@@ -22,6 +22,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -66,6 +68,11 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
     private final JButton m_btnDelete;
     private JButton getBtnDelete(){ return m_btnDelete; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final JButton m_btnExport;
+    public JButton getBtnExport(){ return m_btnExport; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -183,17 +190,26 @@ public class MainPanel extends JPanel
 
         m_tbl_WorkEvents.setFillsViewportHeight(true);
         scrollPane.setViewportView(m_tbl_WorkEvents);
-
+        m_tbl_WorkEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(final ListSelectionEvent event) {
+                final int aSelectedRow = m_tbl_WorkEvents.getSelectedRow();
+                final boolean aEnable = aSelectedRow >= 0 && m_tbl_WorkEvents.getValueAt(aSelectedRow, 4) == null;
+                m_btnDelete.setEnabled( aEnable );
+            }
+        });
         m_btnDelete = new JButton("Entfernen");
         m_btnDelete.setActionCommand( "Delete" );
+        m_btnDelete.setEnabled( false );
         m_pnl_WorkEvents.add(m_btnDelete, "8, 4");
 
         m_btnNew = new JButton("Neu");
         m_btnNew.setActionCommand( "New" );
         m_pnl_WorkEvents.add(m_btnNew, "10, 4");
 
-        final JButton btnAusgabe = new JButton("Ausgabe");
-        add(btnAusgabe, "12, 10");
+        m_btnExport = new JButton("Ausgabe");
+        m_btnExport.setActionCommand( "Export" );
+        add(m_btnExport, "12, 10");
 
     }
 

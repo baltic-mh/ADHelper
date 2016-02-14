@@ -6,7 +6,9 @@ bin/
 
 *.class
 
-/Ausgabe.txt
+# Dateien, die zum Laufzeitsystem des Programmes gehören:
+Daten/
+Ausgabe.txt
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
