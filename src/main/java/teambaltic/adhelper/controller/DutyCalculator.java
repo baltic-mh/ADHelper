@@ -19,7 +19,7 @@ import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.utils.DateUtils;
 
 // ############################################################################
@@ -34,15 +34,15 @@ public class DutyCalculator
     private static final Logger sm_Log = Logger.getLogger(DutyCalculator.class);
 
     // ------------------------------------------------------------------------
-    private final IInvoicingPeriod m_InvoicingPeriod;
-    public IInvoicingPeriod getInvoicingPeriod(){ return m_InvoicingPeriod; }
+    private final IPeriod m_InvoicingPeriod;
+    public IPeriod getInvoicingPeriod(){ return m_InvoicingPeriod; }
     // ------------------------------------------------------------------------
 
     private final GlobalParameters m_GPs;
     private GlobalParameters getGPs(){ return m_GPs; }
 
     public DutyCalculator(
-            final IInvoicingPeriod fInvoicingPeriod,
+            final IPeriod fInvoicingPeriod,
             final GlobalParameters fGlobalParameters)
     {
         m_InvoicingPeriod   = fInvoicingPeriod;
@@ -136,8 +136,8 @@ public class DutyCalculator
         if( fFreeFromDuty == null ){
             return getGPs().getDutyHoursPerInvoicePeriod();
         }
-        final IInvoicingPeriod aIP = getInvoicingPeriod();
-        if( DateUtils.coversFreeFromDuty_InvoicingPeriod( fFreeFromDuty, aIP ) ){
+        final IPeriod aIP = getInvoicingPeriod();
+        if( DateUtils.getCoverageInMonths( fFreeFromDuty, aIP ) == getGPs().getMonthsPerInvoicePeriod() ){
             return 0;
         }
         final LocalDate aFreeFrom = fFreeFromDuty.getFrom();
@@ -148,7 +148,7 @@ public class DutyCalculator
 
     private static int calcDuty(
             final GlobalParameters fGPs,
-            final IInvoicingPeriod fInvoicingPeriod,
+            final IPeriod fInvoicingPeriod,
             final LocalDate fFreeFrom,
             final LocalDate fFreeUntil )
     {

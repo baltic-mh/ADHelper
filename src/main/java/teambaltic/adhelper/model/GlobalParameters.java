@@ -11,8 +11,14 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 // ############################################################################
 public class GlobalParameters implements IGlobalParameters
@@ -21,21 +27,36 @@ public class GlobalParameters implements IGlobalParameters
     // Alle Stundenwerte werden in 100stel Stunden angegeben!
     private final Map<EKey, Integer> m_HourValues;
 
-    public GlobalParameters()
+    public GlobalParameters(final String fDataFoldername) throws Exception
     {
         m_IntegerValues = new HashMap<>();
         m_HourValues    = new HashMap<>();
-        init();
+        init(fDataFoldername);
     }
 
-    private void init()
+    private void init(final String fDataFoldername) throws FileNotFoundException, IOException
     {
-        m_IntegerValues.put( EKey.PROTECTION_TIME, Integer.valueOf( 6 ) );
-        m_IntegerValues.put( EKey.MIN_AGE_FOR_DUTY, Integer.valueOf( 16 ) );
-        m_IntegerValues.put( EKey.MAX_AGE_FOR_DUTY, Integer.valueOf( 60 ) );
-        m_IntegerValues.put( EKey.MONTHS_PER_INVOICEPERIOD, Integer.valueOf( 6 ) );
+        final Path aClubPropsFile = Paths.get(fDataFoldername, "Einstellungen", "Vereinsparameter.prop" );
+        final Properties aClubProps = new Properties();
+        aClubProps.load( new FileInputStream( aClubPropsFile.toFile() ) );
 
-        m_HourValues.put( EKey.DUTYHOURS_PER_INVOICEPERIOD, Integer.valueOf( 300 ) );
+        storeIntegerValue( EKey.PROTECTION_TIME, aClubProps );
+        storeIntegerValue( EKey.MIN_AGE_FOR_DUTY, aClubProps );
+        storeIntegerValue( EKey.MAX_AGE_FOR_DUTY, aClubProps );
+        storeIntegerValue( EKey.MONTHS_PER_INVOICEPERIOD, aClubProps );
+
+        storeHourValue( EKey.DUTYHOURS_PER_INVOICEPERIOD, aClubProps );
+    }
+
+    private void storeIntegerValue( final EKey fKey, final Properties fProps )
+    {
+        m_IntegerValues.put( fKey, Integer.valueOf( fProps.getProperty( fKey.toString() ) ) );
+    }
+
+    private void storeHourValue( final EKey fKey, final Properties fProps )
+    {
+        final int aHoursInt = Integer.parseInt( fProps.getProperty( fKey.toString() ) );
+        m_HourValues.put( fKey, Integer.valueOf( aHoursInt*100 ) );
     }
 
     public int getProtectedTime()

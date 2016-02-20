@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
@@ -66,7 +66,7 @@ public class Exporter
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder )
     {
-        final IInvoicingPeriod aIP = fDataProvider.getInvoicingPeriod();
+        final IPeriod aIP = fDataProvider.getInvoicingPeriod();
         final LocalDate aToday = LocalDate.now();
         try{
             // Die Arbeitsdiensteinträge erhalten "Abgerechnet am"
@@ -89,7 +89,7 @@ public class Exporter
                 }
                 for( final WorkEvent aWorkEvent : aWorkEvents ){
                     final LocalDate aWorkEventDate = aWorkEvent.getDate();
-                    if( aIP.isBeforeEnd( aWorkEventDate ) ){
+                    if( aIP.isBeforeMyEnd( aWorkEventDate ) ){
                        aWorkEvent.setCleared( aToday );
                     }
                     final String aLine = String.format( "%s;%s;%s;%.2f;%s\r\n",
@@ -144,7 +144,7 @@ public class Exporter
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder)
     {
-        final IInvoicingPeriod aIP = fDataProvider.getInvoicingPeriod();
+        final IPeriod aIP = fDataProvider.getInvoicingPeriod();
         final String aBalanceAt = getNewBalanceDateString( aIP.getEnd() );
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", "ISO-8859-1");

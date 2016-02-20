@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import teambaltic.adhelper.utils.InvoicingPeriodFolderFilter;
 
 // ############################################################################
-public class Halfyear extends AInvoicingPeriod
+public class Halfyear extends APeriod
 {
     private static final DateTimeFormatter FORM = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -52,9 +52,10 @@ public class Halfyear extends AInvoicingPeriod
     }
     public Halfyear(final int fYear, final EPart fPart)
     {
+
         m_Year = fYear;
         m_Part = fPart;
-        m_Start = calcStart( fYear, fPart);
+        m_Start = calcStart( fYear, fPart );
         m_End   = calcEnd( fYear, fPart);
     }
 

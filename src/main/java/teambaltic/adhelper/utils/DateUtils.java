@@ -13,8 +13,7 @@ package teambaltic.adhelper.utils;
 
 import java.time.LocalDate;
 
-import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
 public final class DateUtils
@@ -24,22 +23,35 @@ public final class DateUtils
 
     private DateUtils(){/**/}
 
-    public static boolean coversFreeFromDuty_InvoicingPeriod(
-            final FreeFromDuty fFreeFromDuty,
-            final IInvoicingPeriod fInvoicingPeriod)
+    public static int getCoverageInMonths(
+            final IPeriod fCoveringPeriod,
+            final IPeriod fPeriodToCover)
     {
-        final LocalDate aFrom = fFreeFromDuty.getFrom() != null ? fFreeFromDuty.getFrom() : DateUtils.MIN_DATE;
-        final LocalDate aUntil = fFreeFromDuty.getUntil() != null ? fFreeFromDuty.getUntil(): DateUtils.MAX_DATE;
+        if( fCoveringPeriod == null ){
+            return 0;
+        }
+        final LocalDate aCovering_Start = fCoveringPeriod.getStart() != null ? fCoveringPeriod.getStart() : MIN_DATE;
+        final LocalDate aCovering_End   = fCoveringPeriod.getEnd()   != null ? fCoveringPeriod.getEnd()   : MAX_DATE;
 
-        final LocalDate aIPStart = fInvoicingPeriod.getStart();
-        final LocalDate aIPEnd = fInvoicingPeriod.getEnd();
-        if( aIPStart.compareTo( aFrom ) < 0 ){
-            return false;
+        if( !fPeriodToCover.isBeforeMyEnd( aCovering_Start ) ){
+            return 0;
         }
-        if( aIPEnd.compareTo( aUntil ) > 0 ){
-            return false;
+
+        if( !fPeriodToCover.isAfterMyStart( aCovering_End ) ){
+            return 0;
         }
-        return true;
+
+        final LocalDate aToCover_Start = fPeriodToCover.getStart() != null ? fPeriodToCover.getStart() : MIN_DATE;
+        final LocalDate aToCover_End   = fPeriodToCover.getEnd()   != null ? fPeriodToCover.getEnd()   : MAX_DATE;
+
+        final LocalDate aMax_Start = aCovering_Start.compareTo( aToCover_Start ) > 0 ? aCovering_Start : aToCover_Start;
+        final LocalDate aMin_End   = aCovering_End  .compareTo( aToCover_End )   < 0 ? aCovering_End   : aToCover_End;
+
+        final int aYears  = aMin_End.getYear() - aMax_Start.getYear();
+        final int aMonths = aMin_End.getMonthValue() - aMax_Start.getMonthValue() +1;
+
+        final int aCoverageInMonths = aYears*12 + aMonths;
+        return aCoverageInMonths;
     }
 }
 

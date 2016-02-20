@@ -14,7 +14,6 @@ package teambaltic.adhelper.gui;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.Collection;
 
 import javax.swing.Box;
@@ -23,7 +22,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.log4j.Logger;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -42,7 +45,7 @@ import teambaltic.adhelper.utils.Log4J;
 // ############################################################################
 public class ADH_Application
 {
-//    private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
+    private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
 
     private JFrame m_frame;
     MainPanel m_panel;
@@ -63,20 +66,19 @@ public class ADH_Application
             {
                 try{
                     aAppWindow.m_frame.setVisible( true );
-                    // TODO Die Überprüfung, ob die Dateien existieren, muss mal woanders hin wandern.
-//                    final String aMsg = assertExistenceOfDataFiles( aBaseInfoFile, aWorkEventFile );
-//                    if( aMsg != null ){
-//                        sm_Log.error(aMsg);
-//                        JOptionPane.showMessageDialog(aAppWindow.m_frame,aMsg,
-//                                "Fataler Fehler!",
-//                                JOptionPane.ERROR_MESSAGE);
-//                        System.exit( 1 );
-//                    }
-                    final ADH_DataProvider aDataProvider = new ADH_DataProvider();
-                    aDataProvider.init();
-                    aAppWindow.populate( aDataProvider );
-                }catch( final Exception e ){
-                    e.printStackTrace();
+                    try{
+                        final ADH_DataProvider aDataProvider = new ADH_DataProvider();
+                        aDataProvider.init();
+                        aAppWindow.populate( aDataProvider );
+                    }catch( final Exception fEx ){
+                        sm_Log.error( "Unerwartete Exception: ", fEx );
+                        final String aMsg = ExceptionUtils.getStackTrace(fEx);
+                        JOptionPane.showMessageDialog( aAppWindow.m_frame, aMsg, "Fataler Fehler!",
+                                    JOptionPane.ERROR_MESSAGE );
+                        System.exit( 1 );
+                    }
+                }catch( final Exception fEx ){
+                    sm_Log.error( "Unerwartete Exception: ", fEx );
                 }
             }
 
@@ -156,23 +158,6 @@ public class ADH_Application
         menuBar.add(mnHilfe);
     }
 
-    private static String assertExistenceOfDataFiles( final File fBaseInfoFile, final File fWorkEventFile )
-    {
-        String aMsg = "Folgende Dateien existieren nicht: \n\t";
-        final boolean aExists_BIF = fBaseInfoFile.exists();
-        if( !aExists_BIF ){
-            aMsg += fBaseInfoFile.getAbsolutePath();
-        }
-        final boolean aExists_WEF = fWorkEventFile.exists();
-        if( !aExists_WEF ){
-            if( !aExists_BIF ){
-                aMsg += ",";
-            }
-            aMsg += "\n\t"+fWorkEventFile.getAbsolutePath();
-        }
-
-        return aExists_BIF && aExists_WEF ? null : aMsg;
-    }
 }
 
 // ############################################################################

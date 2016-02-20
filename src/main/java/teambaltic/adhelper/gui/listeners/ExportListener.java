@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.ApplicationProperties;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
 public class ExportListener implements ActionListener
@@ -47,7 +47,7 @@ public class ExportListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-        final IInvoicingPeriod aInvoicingPeriod = m_DataProvider.getInvoicingPeriod();
+        final IPeriod aInvoicingPeriod = m_DataProvider.getInvoicingPeriod();
         if( aInvoicingPeriod == null ){
             JOptionPane.showMessageDialog(m_Panel, "Es wurde noch kein Abrechnungszeitraum ausgewählt!",
                     "Ups!",

@@ -70,13 +70,13 @@ public class HalfyearTest
     public void testIsBeforeMyEnd()
     {
 
-        final boolean aBeforeMyEnd1 = HY.isBeforeEnd( sm_RefDate1 );
+        final boolean aBeforeMyEnd1 = HY.isBeforeMyEnd( sm_RefDate1 );
         assertTrue("BeforeMyEnd1", aBeforeMyEnd1 );
-        final boolean aBeforeMyEnd2 = HY.isBeforeEnd( sm_RefDate2 );
+        final boolean aBeforeMyEnd2 = HY.isBeforeMyEnd( sm_RefDate2 );
         assertTrue("BeforeMyEnd2", aBeforeMyEnd2 );
-        final boolean aBeforeMyEnd3 = HY.isBeforeEnd( sm_RefDate1_PreviousDay );
+        final boolean aBeforeMyEnd3 = HY.isBeforeMyEnd( sm_RefDate1_PreviousDay );
         assertTrue("BeforeMyEnd3", aBeforeMyEnd3 );
-        final boolean aBeforeMyEnd4 = HY.isBeforeEnd( sm_RefDate2_NextDay );
+        final boolean aBeforeMyEnd4 = HY.isBeforeMyEnd( sm_RefDate2_NextDay );
         assertFalse("BeforeMyEnd4", aBeforeMyEnd4 );
 
     }
@@ -84,26 +84,26 @@ public class HalfyearTest
     @Test
     public void testIsAfterMyStart()
     {
-        final boolean aAfterMyStart1 = HY.isAfterStart( sm_RefDate1 );
+        final boolean aAfterMyStart1 = HY.isAfterMyStart( sm_RefDate1 );
         assertTrue("AfterMyStart1", aAfterMyStart1 );
-        final boolean aAfterMyStart2 = HY.isAfterStart( sm_RefDate2 );
+        final boolean aAfterMyStart2 = HY.isAfterMyStart( sm_RefDate2 );
         assertTrue("AfterMyStart2", aAfterMyStart2 );
-        final boolean aAfterMyStart3 = HY.isAfterStart( sm_RefDate1_PreviousDay );
+        final boolean aAfterMyStart3 = HY.isAfterMyStart( sm_RefDate1_PreviousDay );
         assertFalse("AfterMyStart3", aAfterMyStart3 );
-        final boolean aAfterMyStart4 = HY.isAfterStart( sm_RefDate2_NextDay );
+        final boolean aAfterMyStart4 = HY.isAfterMyStart( sm_RefDate2_NextDay );
         assertTrue("AfterMyStart4", aAfterMyStart4 );
     }
 
     @Test
     public void testIsWithinMyBounds()
     {
-        final boolean aWithinMyBounds1 = HY.isWithinPeriod( sm_RefDate1 );
+        final boolean aWithinMyBounds1 = HY.isWithinMyPeriod( sm_RefDate1 );
         assertTrue("WithinMyBounds1", aWithinMyBounds1 );
-        final boolean aWithinMyBounds2 = HY.isWithinPeriod( sm_RefDate2 );
+        final boolean aWithinMyBounds2 = HY.isWithinMyPeriod( sm_RefDate2 );
         assertTrue("WithinMyBounds2", aWithinMyBounds2 );
-        final boolean aWithinMyBounds3 = HY.isWithinPeriod( sm_RefDate1_PreviousDay );
+        final boolean aWithinMyBounds3 = HY.isWithinMyPeriod( sm_RefDate1_PreviousDay );
         assertFalse("WithinMyBounds3", aWithinMyBounds3 );
-        final boolean aWithinMyBounds4 = HY.isWithinPeriod( sm_RefDate2_NextDay );
+        final boolean aWithinMyBounds4 = HY.isWithinMyPeriod( sm_RefDate2_NextDay );
         assertFalse("WithinMyBounds4", aWithinMyBounds4 );
     }
 }

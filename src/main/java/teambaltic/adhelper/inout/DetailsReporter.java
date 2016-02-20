@@ -23,7 +23,7 @@ import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.DateUtils;
 
@@ -42,11 +42,9 @@ public class DetailsReporter
             final Path fOutputFolder,
             final boolean fOnlyPayers )
     {
+        final IPeriod aInvoicingPeriod = fDataProvider.getInvoicingPeriod();
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Details.txt", "ISO-8859-1");
-            aFileWriter.write( "########################################################################\r\n" );
-            final IInvoicingPeriod aInvoicingPeriod = fDataProvider.getInvoicingPeriod();
-            aFileWriter.write( "Abrechnungszeitraum: "+aInvoicingPeriod+"\r\n" );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
                 report( fDataProvider, aFileWriter, aSingleInfo, aInvoicingPeriod, fOnlyPayers );
             }
@@ -63,59 +61,47 @@ public class DetailsReporter
             final ADH_DataProvider fDataProvider,
             final PrintWriter fWriter,
             final InfoForSingleMember fSingleInfo,
-            final IInvoicingPeriod fInvoicingPeriod,
+            final IPeriod fInvoicingPeriod,
             final boolean fOnlyPayers )
     {
-        final DutyCharge aCharge = fSingleInfo.getDutyCharge();
         final IClubMember aMember = fSingleInfo.getMember();
         if( fOnlyPayers && aMember.getLinkID() != 0 ){
             return;
         }
-        fWriter.write( "==========================================================================\r\n" );
+        fWriter.write( "##########################################################################\r\n" );
+        fWriter.write( String.format( "(%d) %-21s Abrechnungszeitraum: %s\r\n",
+                aMember.getID(), aMember.getName(), fInvoicingPeriod ));
+        final DutyCharge aCharge = fSingleInfo.getDutyCharge();
         final FreeFromDuty aFreeFromDuty = fSingleInfo.getFreeFromDuty();
-        if( isFreeFromDutyEffective( fInvoicingPeriod, aCharge, aFreeFromDuty ) ){
-            fWriter.write( String.format( "%-30s: %s\r\n", aMember.getName(), aFreeFromDuty ));
-        } else {
-            fWriter.write( String.format("%-27s  %6s %6s %6s %6s %6s %6s\r\n",
-                    "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
+        final int aFreeFromDutyInMonths = DateUtils.getCoverageInMonths(aFreeFromDuty, fInvoicingPeriod );
+        if( aFreeFromDutyInMonths > 0 ){
             fWriter.write( "--------------------------------------------------------------------------\r\n" );
-            final List<DutyCharge> aAllDutyCharges = aCharge.getAllDutyCharges();
-            for( final DutyCharge aC : aAllDutyCharges ){
-                final IClubMember aRelatedMember = fDataProvider.getMember( aC.getMemberID() );
-                fWriter.write( String.format("%-27s %6.2f %6.2f   %6.2f  %6.2f  %6.2f  %6.2f\r\n",
-                        aRelatedMember.getName(),
-                        aC.getBalance_Original()/100.0,
-                        aC.getHoursWorked()/100.0,
-                        aC.getHoursDue()/100.0,
-                        aC.getBalance_Charged()/100.0,
-                        aC.getHoursToPay()/100.0,
-                        aC.getBalance_ChargedAndAdjusted()/100.0
-                        ) );
-            }
-            fWriter.write( "--------------------------------------------------------------------------\r\n" );
-            fWriter.write(String.format( "Verbleibende Stunden zu zahlen:   %7.2f\r\n",
-                    aCharge.getHoursToPayTotal()/100.0));
+            fWriter.write( String.format( "AD-Befreit (%d Monate) wegen: %s\r\n",
+                    aFreeFromDutyInMonths, aFreeFromDuty ));
         }
+
+        fWriter.write( "==========================================================================\r\n" );
+        fWriter.write( String.format("%-27s  %6s %6s %6s %6s %6s %6s\r\n",
+                "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
+        fWriter.write( "--------------------------------------------------------------------------\r\n" );
+        final List<DutyCharge> aAllDutyCharges = aCharge.getAllDutyCharges();
+        for( final DutyCharge aC : aAllDutyCharges ){
+            final IClubMember aRelatedMember = fDataProvider.getMember( aC.getMemberID() );
+            fWriter.write( String.format("%-27s %6.2f %6.2f   %6.2f  %6.2f  %6.2f  %6.2f\r\n",
+                    aRelatedMember.getName(),
+                    aC.getBalance_Original()/100.0,
+                    aC.getHoursWorked()/100.0,
+                    aC.getHoursDue()/100.0,
+                    aC.getBalance_Charged()/100.0,
+                    aC.getHoursToPay()/100.0,
+                    aC.getBalance_ChargedAndAdjusted()/100.0
+                    ) );
+        }
+        fWriter.write( "--------------------------------------------------------------------------\r\n" );
+        fWriter.write(String.format( "Verbleibende Stunden zu zahlen:   %7.2f\r\n",
+                aCharge.getHoursToPayTotal()/100.0));
+        fWriter.write( "==========================================================================\r\n\r\n" );
     }
-
-
-    private static boolean isFreeFromDutyEffective(
-            final IInvoicingPeriod fIP,
-            final DutyCharge fCharge,
-            final FreeFromDuty fFreeFromDuty )
-    {
-        if( fFreeFromDuty == null ){
-            return false;
-        }
-        if( fCharge.getAllDutyCharges().size() > 1 ){
-            return false;
-        }
-        if( fCharge.getHoursToPayTotal() > 0 ){
-            return false;
-        }
-        return DateUtils.coversFreeFromDuty_InvoicingPeriod( fFreeFromDuty, fIP );
-    }
-
 
 }
 

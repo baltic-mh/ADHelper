@@ -13,6 +13,7 @@ package teambaltic.adhelper.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 
@@ -42,7 +43,11 @@ public class DutyCalculatorTest
     public static void initOnceBeforeStart()
     {
         Log4J.initLog4J();
-        GPs = new GlobalParameters();
+        try{
+            GPs = new GlobalParameters("Daten");
+        }catch( final Exception fEx ){
+            fail("Exception: "+ fEx.getMessage() );
+        }
     }
 
     @Before

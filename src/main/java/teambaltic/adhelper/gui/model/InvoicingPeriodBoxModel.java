@@ -17,7 +17,7 @@ import javax.swing.DefaultComboBoxModel;
 
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
 public class InvoicingPeriodBoxModel extends DefaultComboBoxModel<String>
@@ -42,7 +42,7 @@ public class InvoicingPeriodBoxModel extends DefaultComboBoxModel<String>
     }
 
     @Override
-    public IInvoicingPeriod getSelectedItem()
+    public IPeriod getSelectedItem()
     {
         final String aSelected = (String) super.getSelectedItem();
 

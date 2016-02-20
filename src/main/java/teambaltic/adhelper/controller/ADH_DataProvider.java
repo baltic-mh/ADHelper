@@ -27,7 +27,7 @@ import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.FileUtils;
@@ -62,12 +62,12 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
     private ChargeCalculator m_ChargeCalculator;
     public ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
-    public IInvoicingPeriod getInvoicingPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getInvoicingPeriod();}
+    public IPeriod getInvoicingPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getInvoicingPeriod();}
     // ------------------------------------------------------------------------
 
-    public ADH_DataProvider()
+    public ADH_DataProvider() throws Exception
     {
-        m_GPs = new GlobalParameters();
+        m_GPs = new GlobalParameters( ApplicationProperties.INSTANCE.getDataFolderName() );
     }
 
     public void init()
@@ -78,7 +78,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         // Bestimme daraus den folgenden Abrechnungszeitraum:
          final Halfyear aLatestProcessed = Halfyear.create( aFolderOfNewestInvoicingPeriod.getName() );
 
-         final IInvoicingPeriod aInvoicingPeriod = Halfyear.next( aLatestProcessed );
+         final IPeriod aInvoicingPeriod = Halfyear.next( aLatestProcessed );
         m_ChargeCalculator = createChargeCalculator( aInvoicingPeriod );
 
         // Das BaseInfoFile liegt immer im Verzeichnis "Daten"
@@ -94,11 +94,6 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         balanceRelatives();
 
     }
-
-//    public static void main(final String[] fArgs)
-//    {
-//        final File aNewestInvoicingPeriodFolder = FileUtils.determineNewestInvoicingPeriodFolder( new File("Daten") );
-//    }
 
     public void readBaseInfo( final File fFileToReadFrom )
     {
@@ -137,7 +132,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         }
     }
 
-    public void calculateDutyCharges(final IInvoicingPeriod fInvoicingPeriod)
+    public void calculateDutyCharges(final IPeriod fInvoicingPeriod)
     {
         final DutyCalculator aDC = m_ChargeCalculator.getDutyCalculator();
 
@@ -158,7 +153,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             m_ChargeCalculator.calculate( aDutyCharge, aWorkEventsAttended, aFreeFromDuty );
         }
     }
-    private ChargeCalculator createChargeCalculator( final IInvoicingPeriod fInvoicingPeriod )
+    private ChargeCalculator createChargeCalculator( final IPeriod fInvoicingPeriod )
     {
         final ChargeCalculator aChargeCalculator = new ChargeCalculator( fInvoicingPeriod, m_GPs );
         return aChargeCalculator;

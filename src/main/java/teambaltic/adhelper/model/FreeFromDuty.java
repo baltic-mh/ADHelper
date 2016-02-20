@@ -14,7 +14,7 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class FreeFromDuty implements IIdentifiedItem
+public class FreeFromDuty extends APeriod implements IIdentifiedItem
 {
     public enum REASON{
         // Aus Mitgliedsdaten berechnete Gründe:
@@ -57,12 +57,16 @@ public class FreeFromDuty implements IIdentifiedItem
     // ------------------------------------------------------------------------
     private LocalDate m_From;
     public LocalDate getFrom(){ return m_From; }
+    @Override
+    public LocalDate getStart(){ return getFrom(); }
     public void setFrom( final LocalDate fFrom ){ m_From = fFrom; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private LocalDate m_Until;
     public LocalDate getUntil(){ return m_Until; }
+    @Override
+    public LocalDate getEnd(){ return getUntil(); }
     public void setUntil( final LocalDate fUntil ){ m_Until = fUntil; }
     // ------------------------------------------------------------------------
 

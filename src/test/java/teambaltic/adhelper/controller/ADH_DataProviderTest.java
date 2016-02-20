@@ -171,10 +171,16 @@ public class ADH_DataProviderTest
     {
         final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/Mitglieder.csv");
         final File aWorkEventFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
-        final ADH_DataProvider aChef = new ADH_DataProvider();
-        aChef.readBaseInfo( aBaseInfoFile );
-        aChef.readWorkEvents( aWorkEventFile );
-        return aChef;
+        try{
+            final ADH_DataProvider aChef = new ADH_DataProvider();
+            aChef.readBaseInfo( aBaseInfoFile );
+            aChef.readWorkEvents( aWorkEventFile );
+            return aChef;
+        }catch( final Exception fEx ){
+            // TODO Auto-generated catch block
+            sm_Log.warn("Exception: ", fEx );
+        }
+        return null;
     }
 
 }

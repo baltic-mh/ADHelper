@@ -11,6 +11,8 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
+import static org.junit.Assert.fail;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,7 +31,7 @@ import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.Log4J;
@@ -66,7 +68,11 @@ public class ChargeCalculatorTest
     public static void initOnceBeforeStart()
     {
         Log4J.initLog4J();
-        GPs = new GlobalParameters();
+        try{
+            GPs = new GlobalParameters("Daten");
+        }catch( final Exception fEx ){
+            fail("Exception: "+fEx.getMessage() );
+        }
         MemberListProvider  = new ListProvider<>();
         BalanceListProvider = new ListProvider<>();
         WorkEventsAttendedListProvider = new ListProvider<>();
@@ -92,7 +98,7 @@ public class ChargeCalculatorTest
     {
         final String aMethodName = TestUtils.getMethodName();
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
-        final IInvoicingPeriod aInvoicingPeriod = new Halfyear( 2016, EPart.FIRST );
+        final IPeriod aInvoicingPeriod = new Halfyear( 2016, EPart.FIRST );
 
         final ChargeCalculator aCC = new ChargeCalculator( aInvoicingPeriod, GPs );
         final DutyCharge aCharge_MHW = new DutyCharge(MHW.getID(), MHW_Balance.getValue());

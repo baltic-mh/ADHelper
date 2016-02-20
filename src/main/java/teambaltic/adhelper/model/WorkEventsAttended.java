@@ -65,7 +65,7 @@ public class WorkEventsAttended implements IIdentifiedItem
         }
     }
 
-    public List<WorkEvent> getWorkEvents( final IInvoicingPeriod fInvoicingPeriod )
+    public List<WorkEvent> getWorkEvents( final IPeriod fInvoicingPeriod )
     {
         final List<WorkEvent> aWorkEvents = getWorkEvents();
         if( fInvoicingPeriod == null ){
@@ -73,14 +73,14 @@ public class WorkEventsAttended implements IIdentifiedItem
         }
         final List<WorkEvent> aMatchingEvents = new ArrayList<>();
         for( final WorkEvent aEvent : aWorkEvents ){
-            if( fInvoicingPeriod.isWithinPeriod( aEvent.getDate() )){
+            if( fInvoicingPeriod.isWithinMyPeriod( aEvent.getDate() )){
                 aMatchingEvents.add( aEvent );
             }
         }
         return aMatchingEvents;
     }
 
-    public int getTotalHoursWorked(  final IInvoicingPeriod fInvoicingPeriod )
+    public int getTotalHoursWorked(  final IPeriod fInvoicingPeriod )
     {
         int aTotalHoursWorked = 0;
         final List<WorkEvent> aWorkEvents = getWorkEvents( fInvoicingPeriod );

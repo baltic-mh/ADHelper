@@ -16,7 +16,7 @@ import java.util.List;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.GlobalParameters;
-import teambaltic.adhelper.model.IInvoicingPeriod;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.WorkEventsAttended;
 
 // ############################################################################
@@ -34,12 +34,12 @@ public class ChargeCalculator
     public DutyCalculator getDutyCalculator(){ return m_DutyCalculator; }
     // ------------------------------------------------------------------------
 
-    public ChargeCalculator(final IInvoicingPeriod fInvoicingPeriod, final GlobalParameters fGPs)
+    public ChargeCalculator(final IPeriod fInvoicingPeriod, final GlobalParameters fGPs)
     {
         m_DutyCalculator = new DutyCalculator( fInvoicingPeriod, fGPs );
     }
 
-    public IInvoicingPeriod getInvoicingPeriod()
+    public IPeriod getInvoicingPeriod()
     {
         return getDutyCalculator().getInvoicingPeriod();
     }
@@ -49,7 +49,7 @@ public class ChargeCalculator
             final WorkEventsAttended fWorkEventsAttended,
             final FreeFromDuty       fFreeFromDuty)
     {
-        final IInvoicingPeriod aInvoicingPeriod = getDutyCalculator().getInvoicingPeriod();
+        final IPeriod aInvoicingPeriod = getDutyCalculator().getInvoicingPeriod();
         final int aHoursWorked = fWorkEventsAttended == null ? 0 : fWorkEventsAttended.getTotalHoursWorked( aInvoicingPeriod );
         aCharge.setHoursWorked( aHoursWorked );
 

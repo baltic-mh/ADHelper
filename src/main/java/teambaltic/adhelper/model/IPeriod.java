@@ -1,5 +1,5 @@
 /**
- * IInvoicingPeriod.java
+ * IPeriod.java
  *
  * Created on 01.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -14,14 +14,14 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public interface IInvoicingPeriod
+public interface IPeriod
 {
     LocalDate getStart();
     LocalDate getEnd();
 
-    boolean isAfterStart  ( LocalDate fEvent );
-    boolean isBeforeEnd   ( LocalDate fEvent );
-    boolean isWithinPeriod( LocalDate fEvent );
+    boolean isAfterMyStart  ( LocalDate fEvent );
+    boolean isBeforeMyEnd   ( LocalDate fEvent );
+    boolean isWithinMyPeriod( LocalDate fEvent );
 }
 
 // ############################################################################

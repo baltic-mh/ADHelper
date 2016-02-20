@@ -14,26 +14,27 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public abstract class AInvoicingPeriod implements IInvoicingPeriod
+public abstract class APeriod implements IPeriod
 {
+
     @Override
-    public boolean isAfterStart(  final LocalDate fDate )
+    public boolean isAfterMyStart(  final LocalDate fDate )
     {
         final int aComparedTo = getStart().compareTo( fDate );
         return aComparedTo <= 0;
     }
 
     @Override
-    public boolean isBeforeEnd(  final LocalDate fDate )
+    public boolean isBeforeMyEnd(  final LocalDate fDate )
     {
         final int aComparedTo = getEnd().compareTo( fDate );
         return aComparedTo >= 0;
     }
 
     @Override
-    public boolean isWithinPeriod( final LocalDate fDate )
+    public boolean isWithinMyPeriod( final LocalDate fDate )
     {
-        return isAfterStart( fDate ) && isBeforeEnd( fDate );
+        return isAfterMyStart( fDate ) && isBeforeMyEnd( fDate );
     }
 
 
