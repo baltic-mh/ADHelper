@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.Year;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -37,7 +36,7 @@ public class HalfyearTest
     private static final LocalDate sm_RefDate1_PreviousDay = sm_RefDate1.minusDays( 1 );
     private static final LocalDate sm_RefDate2_NextDay = sm_RefDate2.plusDays( 1 );
 
-    private static final Halfyear HY = new Halfyear( Year.of( 2016 ), EPart.FIRST );
+    private static final Halfyear HY = new Halfyear( 2016, EPart.FIRST );
 
     // ########################################################################
     // INITIALISIERUNG

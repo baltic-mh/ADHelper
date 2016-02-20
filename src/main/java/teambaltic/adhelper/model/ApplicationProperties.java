@@ -31,6 +31,11 @@ public enum ApplicationProperties
     public String getFileName_WorkEvents(){return m_FileName_WorkEvents; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private final String m_FileName_Balances = "Guthaben.csv";
+    public String getFileName_Balances(){return m_FileName_Balances; }
+    // ------------------------------------------------------------------------
+
 }
 
 // ############################################################################

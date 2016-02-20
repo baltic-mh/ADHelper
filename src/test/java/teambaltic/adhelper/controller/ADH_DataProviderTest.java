@@ -14,7 +14,7 @@ package teambaltic.adhelper.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.time.Year;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teambaltic.adhelper.inout.BaseInfoReader;
+import teambaltic.adhelper.inout.DetailsReporter;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
@@ -93,12 +94,12 @@ public class ADH_DataProviderTest
     {
         final ADH_DataProvider aChef = init();
 
-        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2014 ), EPart.SECOND );
+        final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
 
         aChef.calculateDutyCharges( aInvoicingPeriod );
         aChef.joinRelatives();
         aChef.balanceRelatives();
-        aChef.reportCharges();
+        DetailsReporter.report( aChef, Paths.get( "." ) );
 
     }
 
@@ -121,11 +122,12 @@ public class ADH_DataProviderTest
         final ADH_DataProvider aChef = new ADH_DataProvider();
         aChef.add( aInfo );
 
-        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2014 ), EPart.SECOND );
+        final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
         aChef.calculateDutyCharges( aInvoicingPeriod );
         final int aHoursToPayTotal = aInfo.getDutyCharge().getHoursToPayTotal();
         assertEquals("Merle muss 1,5h zahlen!", 150, aHoursToPayTotal);
-        aChef.reportCharges();
+
+        DetailsReporter.report( aChef, Paths.get( "." ) );
 
     }
 
@@ -149,14 +151,15 @@ public class ADH_DataProviderTest
         final ADH_DataProvider aChef = new ADH_DataProvider();
         aChef.add( aInfo );
 
-        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2014 ), EPart.SECOND );
+        final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
         aChef.calculateDutyCharges( aInvoicingPeriod );
         final DutyCharge aDutyCharge = aInfo.getDutyCharge();
         final int aHoursToPayTotal = aDutyCharge.getHoursToPayTotal();
         assertEquals("Lukas muss 0 Stunden zahlen!", 0, aHoursToPayTotal);
         final int aBalance = aDutyCharge.getBalance_ChargedAndAdjusted();
         assertEquals("... weil er noch 10,5 Stunden Guthaben hat!", 1050, aBalance);
-        aChef.reportCharges();
+
+        DetailsReporter.report( aChef, Paths.get( "." ) );
 
     }
 

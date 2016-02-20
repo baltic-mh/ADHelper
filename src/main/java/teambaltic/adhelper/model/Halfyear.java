@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 
+import teambaltic.adhelper.utils.InvoicingPeriodFolderFilter;
+
 // ############################################################################
 public class Halfyear extends AInvoicingPeriod
 {
@@ -23,8 +25,8 @@ public class Halfyear extends AInvoicingPeriod
     public enum EPart { FIRST, SECOND; }
 
     // ------------------------------------------------------------------------
-    private final Year m_Year;
-    public Year getYear(){ return m_Year; }
+    private final int m_Year;
+    public int getYear(){ return m_Year; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -46,25 +48,29 @@ public class Halfyear extends AInvoicingPeriod
 
     public Halfyear(final Year fYear, final EPart fPart)
     {
+        this( fYear.getValue(), fPart );
+    }
+    public Halfyear(final int fYear, final EPart fPart)
+    {
         m_Year = fYear;
         m_Part = fPart;
         m_Start = calcStart( fYear, fPart);
         m_End   = calcEnd( fYear, fPart);
     }
 
-    private static LocalDate calcStart( final Year fYear, final EPart fPart )
+    private static LocalDate calcStart( final int fYear, final EPart fPart )
     {
         final String aMonth = EPart.FIRST.equals( fPart ) ? "01" : "07";
-        final String aDateText = String.format( "01.%s.%d", aMonth, fYear.getValue() );
+        final String aDateText = String.format( "01.%s.%d", aMonth, fYear );
         final LocalDate aStartDate = LocalDate.parse(aDateText, FORM);
         return aStartDate;
     }
 
-    private static LocalDate calcEnd( final Year fYear, final EPart fPart )
+    private static LocalDate calcEnd( final int fYear, final EPart fPart )
     {
         final String aDay   = EPart.FIRST.equals( fPart ) ? "30" : "31";
         final String aMonth = EPart.FIRST.equals( fPart ) ? "06" : "12";
-        final String aDateText = String.format( "%s.%s.%d", aDay, aMonth, fYear.getValue() );
+        final String aDateText = String.format( "%s.%s.%d", aDay, aMonth, fYear );
         final LocalDate aStartDate = LocalDate.parse(aDateText, FORM);
         return aStartDate;
     }
@@ -73,6 +79,23 @@ public class Halfyear extends AInvoicingPeriod
     public String toString()
     {
         return String.format( "%s - %s", getStart(), getEnd() );
+    }
+
+    public static Halfyear create(final String fString)
+    {
+        final String[] aParts = fString.split( InvoicingPeriodFolderFilter.sm_SplitRegex );
+        final int aYearInt  = Integer.parseInt( aParts[0] );
+        final int aMonthInt = Integer.parseInt( aParts[1] );
+
+        return new Halfyear( aYearInt, aMonthInt > 6 ? EPart.SECOND : EPart.FIRST );
+    }
+
+    public static Halfyear next( final Halfyear fPrevious )
+    {
+        if( EPart.FIRST.equals( fPrevious.getPart() ) ){
+            return new Halfyear( fPrevious.getYear(), EPart.SECOND );
+        }
+        return new Halfyear( fPrevious.getYear()+1, EPart.FIRST );
     }
 }
 

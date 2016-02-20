@@ -11,6 +11,8 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.time.LocalDate;
+
 // ############################################################################
 public class Balance implements IIdentifiedItem
 {
@@ -26,6 +28,12 @@ public class Balance implements IIdentifiedItem
     // ------------------------------------------------------------------------
     private final int m_Value;
     public int getValue(){return m_Value; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private LocalDate m_ValidOn;
+    public LocalDate getValidOn(){ return m_ValidOn; }
+    public void setValidOn( final LocalDate fNewVal ){ m_ValidOn = fNewVal; }
     // ------------------------------------------------------------------------
 
     public Balance( final int fMemberID, final int fValue )

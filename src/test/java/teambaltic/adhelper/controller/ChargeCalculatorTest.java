@@ -12,7 +12,6 @@
 package teambaltic.adhelper.controller;
 
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -93,10 +92,9 @@ public class ChargeCalculatorTest
     {
         final String aMethodName = TestUtils.getMethodName();
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
-        final IInvoicingPeriod aInvoicingPeriod = new Halfyear( Year.of( 2016 ), EPart.FIRST );
-        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs );
+        final IInvoicingPeriod aInvoicingPeriod = new Halfyear( 2016, EPart.FIRST );
 
-        final ChargeCalculator aCC = new ChargeCalculator( aDC );
+        final ChargeCalculator aCC = new ChargeCalculator( aInvoicingPeriod, GPs );
         final DutyCharge aCharge_MHW = new DutyCharge(MHW.getID(), MHW_Balance.getValue());
         aCC.calculate( aCharge_MHW, MHW_WorkEventsAttended, MHW_FreeFromDuty );
         final DutyCharge aCharge_MTW = new DutyCharge(MTW.getID(), 0);

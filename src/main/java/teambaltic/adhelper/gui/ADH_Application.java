@@ -23,9 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
+import javax.swing.JTextField;
 
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
@@ -34,21 +32,17 @@ import com.jgoodies.forms.layout.RowSpec;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.listeners.ExportListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
-import teambaltic.adhelper.gui.listeners.InvoicingPeriodSelectedListener;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
 import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
 import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
-import teambaltic.adhelper.gui.model.InvoicingPeriodBoxModel;
 import teambaltic.adhelper.gui.model.MemberComboBoxModel;
-import teambaltic.adhelper.model.ApplicationProperties;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
 public class ADH_Application
 {
-    private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
-
+//    private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
 
     private JFrame m_frame;
     MainPanel m_panel;
@@ -60,11 +54,6 @@ public class ADH_Application
     {
         System.setProperty( "appname", "ADHelper" );
         Log4J.initLog4J();
-        final String aDataFolder    = ApplicationProperties.INSTANCE.getDataFolderName();
-        final String aFN_BaseInfo   = ApplicationProperties.INSTANCE.getFileName_BaseInfo();
-        final String aFN_WorkEvents = ApplicationProperties.INSTANCE.getFileName_WorkEvents();
-        final File aBaseInfoFile  = new File(aDataFolder, aFN_BaseInfo);
-        final File aWorkEventFile = new File(aDataFolder, aFN_WorkEvents);
 
         final ADH_Application aAppWindow = new ADH_Application();
 
@@ -74,15 +63,17 @@ public class ADH_Application
             {
                 try{
                     aAppWindow.m_frame.setVisible( true );
-                    final String aMsg = assertExistenceOfDataFiles( aBaseInfoFile, aWorkEventFile );
-                    if( aMsg != null ){
-                        sm_Log.error(aMsg);
-                        JOptionPane.showMessageDialog(aAppWindow.m_frame,aMsg,
-                                "Fataler Fehler!",
-                                JOptionPane.ERROR_MESSAGE);
-                        System.exit( 1 );
-                    }
-                    final ADH_DataProvider aDataProvider = initInfo(aBaseInfoFile, aWorkEventFile);
+                    // TODO Die Überprüfung, ob die Dateien existieren, muss mal woanders hin wandern.
+//                    final String aMsg = assertExistenceOfDataFiles( aBaseInfoFile, aWorkEventFile );
+//                    if( aMsg != null ){
+//                        sm_Log.error(aMsg);
+//                        JOptionPane.showMessageDialog(aAppWindow.m_frame,aMsg,
+//                                "Fataler Fehler!",
+//                                JOptionPane.ERROR_MESSAGE);
+//                        System.exit( 1 );
+//                    }
+                    final ADH_DataProvider aDataProvider = new ADH_DataProvider();
+                    aDataProvider.init();
                     aAppWindow.populate( aDataProvider );
                 }catch( final Exception e ){
                     e.printStackTrace();
@@ -110,10 +101,8 @@ public class ADH_Application
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_panel, fDataProvider );
         aCB_Members.addActionListener( aMemberSelectedListener );
 
-        final JComboBox<String> aCB_InvoicingPeriod = m_panel.getCB_InvoicingPeriod();
-        aCB_InvoicingPeriod.setModel( new InvoicingPeriodBoxModel() );
-        aCB_InvoicingPeriod.addActionListener( new InvoicingPeriodSelectedListener(m_panel, fDataProvider) );
-
+        final JTextField aWidget_InvoicingPeriod = m_panel.getWidget_InvoicingPeriod();
+        aWidget_InvoicingPeriod.setText( fDataProvider.getInvoicingPeriod().toString() );
 
         // WorkEventEditor
         final WorkEventEditor aWorkEventEditor = new WorkEventEditor();
@@ -165,15 +154,6 @@ public class ADH_Application
 
         final JMenu mnHilfe = new JMenu("Hilfe");
         menuBar.add(mnHilfe);
-    }
-
-    private static ADH_DataProvider initInfo(final File fBaseInfoFile, final File fWorkEventFile)
-    {
-        final ADH_DataProvider aDataProvider = new ADH_DataProvider();
-        aDataProvider.readBaseInfo( fBaseInfoFile );
-        aDataProvider.readWorkEvents( fWorkEventFile );
-        aDataProvider.joinRelatives();
-        return aDataProvider;
     }
 
     private static String assertExistenceOfDataFiles( final File fBaseInfoFile, final File fWorkEventFile )

@@ -95,6 +95,43 @@ public final class FileUtils
         return aMap;
     }
 
+    public static File determineNewestInvoicingPeriodFolder( final File fDataFolder )
+    {
+        final File[] aChildren = fDataFolder.listFiles( new InvoicingPeriodFolderFilter() );
+        if( aChildren.length == 0 ){
+            return null;
+        }
+        if( aChildren.length == 1 ){
+            return aChildren[0];
+        }
+        File aResult = null;
+        final int aMostRecentYear  = 0;
+        final int aMostRecentMonth = 0;
+        for( int aIdx = 0; aIdx < aChildren.length; aIdx++ ){
+            final String[] aParts = aChildren[aIdx].getName().split( InvoicingPeriodFolderFilter.sm_SplitRegex );
+            final int aYear  = Integer.parseInt( aParts[0] );
+            final int aMonth = Integer.parseInt( aParts[1] );
+            if( aYear > aMostRecentYear ){
+                aResult = aChildren[aIdx];
+            } else if ( aYear == aMostRecentYear && aMonth > aMostRecentMonth ){
+                aResult = aChildren[aIdx];
+            }
+        }
+        return aResult;
+    }
+
+    public static void checkFile( final File fFile ) throws Exception
+    {
+        if( !fFile.exists() ){
+            throw new Exception("File does not exist: "+fFile.getPath());
+        }
+        if( !fFile.isFile() ){
+            throw new Exception("File is no regular file: "+fFile.getPath());
+        }
+        if( !fFile.canRead() ){
+            throw new Exception("Cannot read file: "+fFile.getPath());
+        }
+    }
 }
 
 // ############################################################################

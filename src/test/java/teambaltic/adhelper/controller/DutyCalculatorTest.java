@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.time.LocalDate;
-import java.time.Year;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -63,7 +62,7 @@ public class DutyCalculatorTest
     @Test
     public void test_TOO_OLD()
     {
-        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
+        final Halfyear aInvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs );
 
         final ClubMember aMember1 = new ClubMember(1);
@@ -95,7 +94,7 @@ public class DutyCalculatorTest
     @Test
     public void test_NORMAL_MEMBER()
     {
-        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
+        final Halfyear aInvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs  );
 
         final ClubMember aMember3 = new ClubMember(3);
@@ -156,7 +155,7 @@ public class DutyCalculatorTest
     @Test
     public void test_TOO_YOUNG()
     {
-        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
+        final Halfyear aInvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs  );
 
         final ClubMember aMember4 = new ClubMember(4);

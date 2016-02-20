@@ -53,15 +53,7 @@ public class BaseInfoReader
     public Collection<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
     {
         final File aFile = getFile();
-        if( !aFile.exists() ){
-            throw new Exception("File does not exist: "+aFile.getPath());
-        }
-        if( !aFile.isFile() ){
-            throw new Exception("File is no regular file: "+aFile.getPath());
-        }
-        if( !aFile.canRead() ){
-            throw new Exception("Cannot read file: "+aFile.getPath());
-        }
+        FileUtils.checkFile( aFile );
 
         final List<IClubMember> aAllMembers = new ArrayList<>();
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );

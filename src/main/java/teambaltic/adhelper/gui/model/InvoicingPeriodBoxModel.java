@@ -12,7 +12,6 @@
 package teambaltic.adhelper.gui.model;
 
 import java.time.LocalDate;
-import java.time.Year;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -49,9 +48,8 @@ public class InvoicingPeriodBoxModel extends DefaultComboBoxModel<String>
 
         final String[] aParts = aSelected.split( " " );
         final int aYearInt = Integer.parseInt( aParts[0] );
-        final Year aYear = Year.of( aYearInt );
         final EPart aPart = aParts[1].startsWith( "1" ) ? EPart.FIRST : EPart.SECOND;
-        final Halfyear aHalfyear = new Halfyear( aYear, aPart );
+        final Halfyear aHalfyear = new Halfyear( aYearInt, aPart );
         return aHalfyear;
     }
 
