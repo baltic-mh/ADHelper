@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.inout.BalanceReader;
 import teambaltic.adhelper.inout.BaseInfoReader;
 import teambaltic.adhelper.inout.Exporter;
-import teambaltic.adhelper.inout.WorkEventReader;
 import teambaltic.adhelper.model.ApplicationProperties;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;

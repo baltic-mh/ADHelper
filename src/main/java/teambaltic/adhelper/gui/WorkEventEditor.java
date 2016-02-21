@@ -15,12 +15,10 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,13 +27,15 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.jdatepicker.DateModel;
+import org.jdatepicker.JDateComponentFactory;
+import org.jdatepicker.JDatePicker;
+
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-import net.sf.nachocalendar.CalendarFactory;
-import net.sf.nachocalendar.components.DateField;
 import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.WorkEvent;
@@ -69,15 +69,14 @@ public class WorkEventEditor extends JDialog
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private DateField m_DateField;
+//    private DateField m_DateField;
+    private JDatePicker m_DateField;
     private LocalDate getDate()
     {
-        final Date aDateValue = (Date) m_DateField.getValue();
-        final Calendar aC = new GregorianCalendar();
-        aC.setTime( aDateValue );
-        final int aYear  = aC.get( Calendar.YEAR );
-        final int aMonth = aC.get( Calendar.MONTH ) +1;
-        final int aDay   = aC.get( Calendar.DAY_OF_MONTH );
+        final DateModel<?> aModel = m_DateField.getModel();
+        final int aYear = aModel.getYear();
+        final int aMonth= aModel.getMonth()+1;
+        final int aDay= aModel.getDay();
         return LocalDate.of( aYear, aMonth, aDay );
     }
     // ------------------------------------------------------------------------
@@ -129,8 +128,10 @@ public class WorkEventEditor extends JDialog
             m_contentPanel.add(lblDatum, "2, 4, right, default");
         }
         {
-            m_DateField = CalendarFactory.createDateField();
-            m_contentPanel.add(m_DateField, "4, 4, fill, default");
+//            m_DateField = CalendarFactory.createDateField();
+            final JDateComponentFactory aDCFactory = new JDateComponentFactory();
+            m_DateField = aDCFactory.createJDatePicker();
+            m_contentPanel.add( (JComponent)m_DateField, "4, 4, fill, default");
         }
         {
             final JLabel lblStundenGearbeitet = new JLabel("Stunden gearbeitet");

@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teambaltic.adhelper.controller.ListProvider;
+import teambaltic.adhelper.controller.WorkEventReader;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.Log4J;

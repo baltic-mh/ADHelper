@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.controller.IItemFactory;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.IKnownColumns;

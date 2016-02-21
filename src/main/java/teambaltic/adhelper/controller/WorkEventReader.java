@@ -9,7 +9,7 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.inout;
+package teambaltic.adhelper.controller;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;

@@ -9,7 +9,7 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.inout;
+package teambaltic.adhelper.controller;
 
 import java.time.LocalDate;
 import java.util.Map;

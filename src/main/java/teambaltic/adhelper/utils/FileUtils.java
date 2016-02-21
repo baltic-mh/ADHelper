@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
+
 // ############################################################################
 public final class FileUtils
 {
@@ -132,6 +134,16 @@ public final class FileUtils
             throw new Exception("Cannot read file: "+fFile.getPath());
         }
     }
+
+    public static String getFileNameWithPostfixAppended(
+            final File fFile, final String fPostfix )
+    {
+        final String aBaseName = FilenameUtils.getBaseName( fFile.getName() );
+        final String aExt = FilenameUtils.getExtension( fFile.getName() );
+        final String aNewName = String.format( "%s%s.%s", aBaseName, fPostfix, aExt );
+        return aNewName;
+    }
+
 }
 
 // ############################################################################

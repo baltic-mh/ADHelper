@@ -1,7 +1,7 @@
 /**
- * IItemFactory.java
+ * MD5CreatorTest.java
  *
- * Created on 02.02.2016
+ * Created on 20.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
  * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
@@ -9,16 +9,30 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.inout;
+package teambaltic.adhelper.utils;
 
-import java.util.Map;
+import static org.junit.Assert.fail;
 
-import teambaltic.adhelper.model.IIdentifiedItem;
+import java.io.File;
+
+import org.junit.Test;
 
 // ############################################################################
-public interface IItemFactory<ItemType extends IIdentifiedItem>
+public class MD5CreatorTest
 {
-    ItemType createItem( int fID, final Map<String, String> fAttributes);
+
+    @Test
+    public void test()
+    {
+        final MD5Creator aMD5Creator = new MD5Creator();
+        try{
+            aMD5Creator.process( new File("Ausgabe.txt") );
+        }catch( final Exception fEx ){
+            fail( fEx.getMessage() );
+        }
+
+    }
+
 }
 
 // ############################################################################

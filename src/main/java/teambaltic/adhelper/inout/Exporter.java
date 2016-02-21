@@ -28,11 +28,12 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.IKnownColumns;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public class Exporter
@@ -54,7 +55,8 @@ public class Exporter
         final File aBIF = getDataProvider().getBaseInfoFile();
         copyFileToFolder( aBIF, fOutputFolder );
         final File aWEF = getDataProvider().getWorkEventFile();
-        copyFileToFolder( aWEF, fOutputFolder );
+        final String aNewName = FileUtils.getFileNameWithPostfixAppended( aWEF, "_old" );
+        copyFileUnderNewNameToFolder( aWEF, fOutputFolder, aNewName );
 
         exportWorkEvents( getDataProvider(), fOutputFolder );
         exportObligations( getDataProvider(), fOutputFolder );
@@ -71,7 +73,7 @@ public class Exporter
         try{
             // Die Arbeitsdiensteinträge erhalten "Abgerechnet am"
             // wenn ihr Datum vor dem Enddatum des Abrechnungszeitraumes liegt.
-            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste-neu.csv", "ISO-8859-1");
+            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste.csv", "ISO-8859-1");
             aFileWriter.write( String.format("%s;%s;%s;%s;%s\r\n",
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.DATE, IKnownColumns.HOURSWORKED,
@@ -173,11 +175,19 @@ public class Exporter
         }
     }
 
-    private static void copyFileToFolder( final File aFile, final Path fOutputFolder )
+    private static void copyFileToFolder( final File fFile, final Path fOutputFolder )
     {
-        final Path aOUT_BIF = Paths.get( fOutputFolder.toString(), aFile.getName() );
+        copyFileUnderNewNameToFolder( fFile, fOutputFolder, fFile.getName());
+    }
+
+    private static void copyFileUnderNewNameToFolder(
+            final File fFile, final Path fTargetFolder, final String fNewFileName )
+    {
+        final Path aTargetPath = Paths.get( fTargetFolder.toString(), fNewFileName );
         try{
-            Files.copy( aFile.toPath(), aOUT_BIF, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES );
+            Files.copy( fFile.toPath(), aTargetPath,
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.COPY_ATTRIBUTES );
         }catch( final IOException fEx ){
             sm_Log.warn("Exception: ", fEx );
         }

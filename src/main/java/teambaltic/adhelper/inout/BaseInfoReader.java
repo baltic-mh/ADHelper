@@ -18,7 +18,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import teambaltic.adhelper.controller.IItemFactory;
 import teambaltic.adhelper.controller.ListProvider;
+import teambaltic.adhelper.controller.MemberFactory;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
