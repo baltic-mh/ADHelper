@@ -127,7 +127,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             aReader.read( this );
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block
-            sm_Log.warn("Exception: ", fEx );
+            sm_Log.warn("Exception: "+ fEx.getMessage() );
         }
     }
 

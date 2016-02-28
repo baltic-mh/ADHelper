@@ -19,13 +19,14 @@ public class InvoicingPeriodFolderFilter implements FilenameFilter
 {
 
     public static final String sm_SplitRegex = "\\s*-\\s*";
+    public static final String sm_MatchRegex = "\\d{4}-\\d{2}-\\d{2} - \\d{4}-\\d{2}-\\d{2}";
 
     @Override
     public boolean accept( final File fDir, final String fName )
     {
-
-        final String[] aParts = fName.split( sm_SplitRegex );
-        return aParts.length == 6;
+        return fName.matches( sm_MatchRegex );
+//        final String[] aParts = fName.split( sm_SplitRegex );
+//        return aParts.length == 6;
     }
 
 }
