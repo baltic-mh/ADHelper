@@ -11,6 +11,10 @@
 3. SourceTree
     - OpenSSH benutzen!
     
+	
+Launch4J installieren
+	launch4j: http://launch4j.sourceforge.net/
+	
 FAQ:
     Gradle:
         Neues Jar-Archiv hinzufügen:

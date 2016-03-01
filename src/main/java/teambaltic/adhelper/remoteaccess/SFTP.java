@@ -9,7 +9,7 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.transfer;
+package teambaltic.adhelper.remoteaccess;
 
 import java.io.File;
 import java.util.Properties;
@@ -26,7 +26,7 @@ public class SFTP
 {
     public static void main(final String[] args)
     {
-        final SFTP aSFTP = new SFTP( "diskstation", "Test" );
+        final SFTP aSFTP = new SFTP( "syniphos", "Test" );
 //        final boolean aSuccess = aSFTP.upload( "Anmerkungen.txt" );
         try{
             aSFTP.init();
@@ -116,7 +116,6 @@ public class SFTP
     public boolean upload(final String fileToFTP)
     {
 
-        final StandardFileSystemManager manager = new StandardFileSystemManager();
 
         try{
 
@@ -133,7 +132,7 @@ public class SFTP
                 throw new RuntimeException( "Error. Local file not found" );
 
             // Initializes the file manager
-            manager.init();
+            getFS_Manager().init();
 
             // Setup our SFTP configuration
             final FileSystemOptions opts = new FileSystemOptions();
@@ -147,10 +146,10 @@ public class SFTP
                     + fileToFTP;
 
             // Create local file object
-            final FileObject localFile = manager.resolveFile( file.getAbsolutePath() );
+            final FileObject localFile = getFS_Manager().resolveFile( file.getAbsolutePath() );
 
             // Create remote file object
-            final FileObject remoteFile = manager.resolveFile( sftpUri, opts );
+            final FileObject remoteFile = getFS_Manager().resolveFile( sftpUri, opts );
 
             // Copy local file to sftp server
             remoteFile.copyFrom( localFile, Selectors.SELECT_SELF );
@@ -160,7 +159,7 @@ public class SFTP
             ex.printStackTrace();
             return false;
         }finally{
-            manager.close();
+            getFS_Manager().close();
         }
 
         return true;

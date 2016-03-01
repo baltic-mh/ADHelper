@@ -4,6 +4,8 @@ bin/
 # Grade's privates Verzeichnis:
 .gradle/
 
+misc/SandBox
+
 *.class
 
 # Dateien, die zum Laufzeitsystem des Programmes gehören:
@@ -71,3 +73,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/Test.zip
