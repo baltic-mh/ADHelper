@@ -46,7 +46,6 @@ import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
-import teambaltic.adhelper.remoteaccess.UserDataDialog;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################

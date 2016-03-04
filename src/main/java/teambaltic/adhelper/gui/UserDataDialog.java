@@ -9,7 +9,7 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.remoteaccess;
+package teambaltic.adhelper.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
