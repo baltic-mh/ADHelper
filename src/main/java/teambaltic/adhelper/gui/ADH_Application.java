@@ -19,6 +19,7 @@ import java.util.Collection;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -36,10 +37,16 @@ import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.listeners.ExportListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
+import teambaltic.adhelper.gui.listeners.UserSettingsListener;
 import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
 import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.MemberComboBoxModel;
+import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IAppSettings;
+import teambaltic.adhelper.model.settings.IUserSettings;
+import teambaltic.adhelper.remoteaccess.UserDataDialog;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
@@ -48,7 +55,13 @@ public class ADH_Application
     private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
 
     private JFrame m_frame;
-    MainPanel m_panel;
+    private MainPanel m_panel;
+
+    // ------------------------------------------------------------------------
+    private String m_DataFolderName;
+    private String getDataFolderName(){ return m_DataFolderName; }
+    private void setDataFolderName( final String fNewVal ){ m_DataFolderName = fNewVal; }
+    // ------------------------------------------------------------------------
 
     /**
      * Launch the application.
@@ -65,9 +78,14 @@ public class ADH_Application
             public void run()
             {
                 try{
-                    aAppWindow.m_frame.setVisible( true );
                     try{
-                        final ADH_DataProvider aDataProvider = new ADH_DataProvider();
+                        AllSettings.INSTANCE.init();
+                        final String aDFN = AllSettings.INSTANCE.getAppSettings().getStringValue( IAppSettings.EKey.FOLDERNAME_DATA );
+                        aAppWindow.setDataFolderName( aDFN );
+                        checkAndInitUserData( AllSettings.INSTANCE.getUserSettings() );
+
+                        aAppWindow.m_frame.setVisible( true );
+                        final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE);
                         aDataProvider.init();
                         aAppWindow.populate( aDataProvider );
                     }catch( final Exception fEx ){
@@ -83,6 +101,22 @@ public class ADH_Application
             }
 
         } );
+    }
+
+    private static void checkAndInitUserData(final IUserSettings fUserSettings) throws Exception
+    {
+        final String aRoleStr = fUserSettings.getStringValue( IUserSettings.EKey.ROLE );
+        if( aRoleStr != null && !ERole.ESKIMO.toString().equals( aRoleStr ) ){
+            return;
+        }
+
+        final UserDataDialog aUserDataDialog = new UserDataDialog();
+        final JButton aBtn_OK = aUserDataDialog.getBtn_OK();
+        final UserSettingsListener l = new UserSettingsListener( aUserDataDialog,fUserSettings );
+        aBtn_OK.addActionListener( l );
+        aUserDataDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
+        aUserDataDialog.setVisible( true );
+        fUserSettings.writeToFile();
     }
 
     /**
@@ -120,7 +154,7 @@ public class ADH_Application
         m_panel.setWorkEventTableListener(aWorkEventTableListener);
 
         final JButton aBtnExport = m_panel.getBtnExport();
-        aBtnExport.addActionListener( new ExportListener( m_panel, fDataProvider ) );
+        aBtnExport.addActionListener( new ExportListener( m_panel, fDataProvider, getDataFolderName() ) );
 
         GUIUpdater.updateGUI( m_panel.getSelectedMemberID(), m_panel, fDataProvider );
     }

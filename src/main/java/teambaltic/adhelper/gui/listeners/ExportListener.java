@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.MainPanel;
-import teambaltic.adhelper.model.ApplicationProperties;
 import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
@@ -34,13 +33,16 @@ public class ExportListener implements ActionListener
 
     private final MainPanel m_Panel;
     private final ADH_DataProvider m_DataProvider;
+    private final String m_DataFolderName;
 
     public ExportListener(
             final MainPanel fPanel,
-            final ADH_DataProvider fDataProvider)
+            final ADH_DataProvider fDataProvider,
+            final String fDataFolderName)
     {
         m_Panel = fPanel;
         m_DataProvider = fDataProvider;
+        m_DataFolderName = fDataFolderName;
     }
 
 
@@ -54,8 +56,7 @@ public class ExportListener implements ActionListener
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-        final String aDataFolderName = ApplicationProperties.INSTANCE.getDataFolderName();
-        final Path aOutputFolder = Paths.get( aDataFolderName, aInvoicingPeriod.toString() );
+        final Path aOutputFolder = Paths.get( m_DataFolderName, aInvoicingPeriod.toString() );
         if( Files.exists( aOutputFolder ) ){
             final Object[] options = {"Ich weiﬂ, was ich tue!", "Nein, das war ein Versehen!"};
             final int n = JOptionPane.showOptionDialog(null,

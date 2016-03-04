@@ -20,15 +20,15 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.inout.BalanceReader;
 import teambaltic.adhelper.inout.BaseInfoReader;
 import teambaltic.adhelper.inout.Exporter;
-import teambaltic.adhelper.model.ApplicationProperties;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.model.settings.IAllSettings;
+import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
@@ -36,7 +36,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 {
     private static final Logger sm_Log = Logger.getLogger(ADH_DataProvider.class);
 
-    private final GlobalParameters m_GPs;
+    private final IAllSettings m_AllSettings;
 
     // ------------------------------------------------------------------------
     private File m_BaseInfoFile;
@@ -64,14 +64,15 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public IPeriod getInvoicingPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getInvoicingPeriod();}
     // ------------------------------------------------------------------------
 
-    public ADH_DataProvider() throws Exception
+    public ADH_DataProvider(final IAllSettings fSettings) throws Exception
     {
-        m_GPs = new GlobalParameters( ApplicationProperties.INSTANCE.getDataFolderName() );
+        m_AllSettings = fSettings;
     }
 
-    public void init()
+    public void init() throws Exception
     {
-        final String aDataFoldername = ApplicationProperties.INSTANCE.getDataFolderName();
+        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
+        final String aDataFoldername = aAppSettings.getStringValue(IAppSettings.EKey.FOLDERNAME_DATA);
         // Bestimme das Verzeichnis mit den neuesten Abrechnungsdaten
         final File aFolderOfNewestInvoicingPeriod = FileUtils.determineNewestInvoicingPeriodFolder( new File(aDataFoldername) );
         // Bestimme daraus den folgenden Abrechnungszeitraum:
@@ -81,11 +82,11 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         m_ChargeCalculator = createChargeCalculator( aInvoicingPeriod );
 
         // Das BaseInfoFile liegt immer im Verzeichnis "Daten"
-        readBaseInfo( new File(aDataFoldername, ApplicationProperties.INSTANCE.getFileName_BaseInfo() ) );
+        readBaseInfo( new File(aDataFoldername, aAppSettings.getStringValue(IAppSettings.EKey.FILENAME_BASEINFO) ) );
         // Das WorkEventFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readWorkEvents( new File(aFolderOfNewestInvoicingPeriod, ApplicationProperties.INSTANCE.getFileName_WorkEvents() ) );
+        readWorkEvents( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getStringValue(IAppSettings.EKey.FILENAME_WORKEVENTS) ) );
         // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readBalances( new File(aFolderOfNewestInvoicingPeriod, ApplicationProperties.INSTANCE.getFileName_Balances() ) );
+        readBalances( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getStringValue(IAppSettings.EKey.FILENAME_BALANCES) ) );
 
         joinRelatives();
 
@@ -94,17 +95,12 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     }
 
-    public void readBaseInfo( final File fFileToReadFrom )
+    public void readBaseInfo( final File fFileToReadFrom ) throws Exception
     {
         clear();
         m_BaseInfoFile = fFileToReadFrom;
         final BaseInfoReader aReader = new BaseInfoReader( m_BaseInfoFile );
-        try{
-            m_Members = aReader.read( this );
-        }catch( final Exception fEx ){
-            // TODO Auto-generated catch block
-            sm_Log.warn("Exception: ", fEx );
-        }
+        m_Members = aReader.read( this );
     }
 
     public void readWorkEvents( final File fFileToReadFrom )
@@ -154,7 +150,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     }
     private ChargeCalculator createChargeCalculator( final IPeriod fInvoicingPeriod )
     {
-        final ChargeCalculator aChargeCalculator = new ChargeCalculator( fInvoicingPeriod, m_GPs );
+        final ChargeCalculator aChargeCalculator = new ChargeCalculator( fInvoicingPeriod, m_AllSettings.getClubSettings() );
         return aChargeCalculator;
     }
 

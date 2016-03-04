@@ -13,6 +13,7 @@ package teambaltic.adhelper.controller;
 
 import static org.junit.Assert.fail;
 
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,9 +28,9 @@ import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
-import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
+import teambaltic.adhelper.model.settings.ClubSettings;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.WorkEvent;
@@ -41,7 +42,7 @@ import teambaltic.adhelper.utils.TestUtils;
 public class ChargeCalculatorTest
 {
     private static final Logger sm_Log = Logger.getLogger(ChargeCalculatorTest.class);
-    private static GlobalParameters GPs;
+    private static ClubSettings CLUBSETTINGS;
 
     private static ClubMember MHW;
     private static ClubMember MTW;
@@ -69,7 +70,7 @@ public class ChargeCalculatorTest
     {
         Log4J.initLog4J();
         try{
-            GPs = new GlobalParameters("Daten");
+            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/Vereinsparameter.prop") );
         }catch( final Exception fEx ){
             fail("Exception: "+fEx.getMessage() );
         }
@@ -100,7 +101,7 @@ public class ChargeCalculatorTest
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
         final IPeriod aInvoicingPeriod = new Halfyear( 2016, EPart.FIRST );
 
-        final ChargeCalculator aCC = new ChargeCalculator( aInvoicingPeriod, GPs );
+        final ChargeCalculator aCC = new ChargeCalculator( aInvoicingPeriod, CLUBSETTINGS );
         final DutyCharge aCharge_MHW = new DutyCharge(MHW.getID(), MHW_Balance.getValue());
         aCC.calculate( aCharge_MHW, MHW_WorkEventsAttended, MHW_FreeFromDuty );
         final DutyCharge aCharge_MTW = new DutyCharge(MTW.getID(), 0);

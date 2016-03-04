@@ -12,6 +12,7 @@
 package teambaltic.adhelper.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -35,6 +36,7 @@ import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -50,6 +52,11 @@ public class ADH_DataProviderTest
     public static void initOnceBeforeStart()
     {
         Log4J.initLog4J();
+        try{
+            AllSettings.INSTANCE.init();
+        }catch( final Exception fEx ){
+            fail("Exception: "+ fEx.getMessage() );
+        }
     }
 
     @Before
@@ -119,7 +126,7 @@ public class ADH_DataProviderTest
         final InfoForSingleMember aInfo = new InfoForSingleMember(aID);
         aReader.populateInfoForSingleMember( aInfo, aAttributes );
 
-        final ADH_DataProvider aChef = new ADH_DataProvider();
+        final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE);
         aChef.add( aInfo );
 
         final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
@@ -148,7 +155,7 @@ public class ADH_DataProviderTest
         final InfoForSingleMember aInfo = new InfoForSingleMember(aID);
         aReader.populateInfoForSingleMember( aInfo, aAttributes );
 
-        final ADH_DataProvider aChef = new ADH_DataProvider();
+        final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE);
         aChef.add( aInfo );
 
         final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
@@ -172,7 +179,7 @@ public class ADH_DataProviderTest
         final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/Mitglieder.csv");
         final File aWorkEventFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
         try{
-            final ADH_DataProvider aChef = new ADH_DataProvider();
+            final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE);
             aChef.readBaseInfo( aBaseInfoFile );
             aChef.readWorkEvents( aWorkEventFile );
             return aChef;

@@ -15,9 +15,9 @@ import java.util.List;
 
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.GlobalParameters;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.model.settings.IClubSettings;
 
 // ############################################################################
 /**
@@ -34,9 +34,9 @@ public class ChargeCalculator
     public DutyCalculator getDutyCalculator(){ return m_DutyCalculator; }
     // ------------------------------------------------------------------------
 
-    public ChargeCalculator(final IPeriod fInvoicingPeriod, final GlobalParameters fGPs)
+    public ChargeCalculator(final IPeriod fInvoicingPeriod, final IClubSettings fClubSettings)
     {
-        m_DutyCalculator = new DutyCalculator( fInvoicingPeriod, fGPs );
+        m_DutyCalculator = new DutyCalculator( fInvoicingPeriod, fClubSettings );
     }
 
     public IPeriod getInvoicingPeriod()

@@ -98,7 +98,7 @@ public class SFTPWithKey implements IRemoteAccess
 
         try {
             // Initializes the file manager
-            getFS_Manager().init();
+            aFS_Manager.init();
 
             final FileObject aLocalObj = getLocalFileObject( fLocalPath, aFS_Manager );
             final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
@@ -118,7 +118,7 @@ public class SFTPWithKey implements IRemoteAccess
 
         try {
             // Initializes the file manager
-            getFS_Manager().init();
+            aFS_Manager.init();
             final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
             aRemoteObj.delete();
 
@@ -134,7 +134,7 @@ public class SFTPWithKey implements IRemoteAccess
 
         try {
             // Initializes the file manager
-            getFS_Manager().init();
+            aFS_Manager.init();
             final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
             return aRemoteObj.exists();
 
