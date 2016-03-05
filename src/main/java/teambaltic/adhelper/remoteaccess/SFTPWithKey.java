@@ -162,7 +162,7 @@ public class SFTPWithKey implements IRemoteAccess
         return localFile;
     }
 
-    public String createConnectionString(final String fRemotePath) {
+    private String createConnectionString(final String fRemotePath) {
 
         return String.format( "sftp://%s@%s:%d/%s/%s",
                 getUser(), getServer(), getPort(), getRemoteRootDir(), fRemotePath );

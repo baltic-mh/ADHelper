@@ -13,16 +13,21 @@ package teambaltic.adhelper.gui.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
-import teambaltic.adhelper.gui.UserDataDialog;
+import org.apache.log4j.Logger;
+
+import teambaltic.adhelper.gui.UserSettingsDialog;
 import teambaltic.adhelper.model.settings.IUserSettings;
 
 // ############################################################################
 public class UserSettingsListener implements ActionListener
 {
+    private static final Logger sm_Log = Logger.getLogger(UserSettingsListener.class);
+
     // ------------------------------------------------------------------------
-    private final UserDataDialog m_Dialog;
-    public UserDataDialog getDialog(){ return m_Dialog; }
+    private final UserSettingsDialog m_Dialog;
+    public UserSettingsDialog getDialog(){ return m_Dialog; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -30,7 +35,7 @@ public class UserSettingsListener implements ActionListener
     public IUserSettings getUserSettings(){ return m_UserSettings; }
     // ------------------------------------------------------------------------
 
-    public UserSettingsListener(final UserDataDialog fDialog, final IUserSettings fUserSettings)
+    public UserSettingsListener(final UserSettingsDialog fDialog, final IUserSettings fUserSettings)
     {
         m_Dialog = fDialog;
         m_UserSettings = fUserSettings;
@@ -39,6 +44,7 @@ public class UserSettingsListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
+        getDialog().setVisible(true);
         final IUserSettings aUserSettings = getUserSettings();
         final String aName  = getDialog().getTf_Name().getText();
         aUserSettings.setStringValue( IUserSettings.EKey.NAME, aName );
@@ -46,6 +52,12 @@ public class UserSettingsListener implements ActionListener
         aUserSettings.setStringValue( IUserSettings.EKey.EMAIL, aEMail );
         final Object aSelectedRole = getDialog().getCb_Role().getSelectedItem();
         aUserSettings.setStringValue( IUserSettings.EKey.ROLE, aSelectedRole.toString() );
+        getDialog().setVisible(false);
+        try{
+            getUserSettings().writeToFile();
+        }catch( final IOException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
     }
 
 }

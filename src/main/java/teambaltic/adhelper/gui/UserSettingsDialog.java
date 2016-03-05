@@ -13,6 +13,8 @@ package teambaltic.adhelper.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,7 +32,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import teambaltic.adhelper.model.ERole;
 
 // ############################################################################
-public class UserDataDialog extends JDialog
+public class UserSettingsDialog extends JDialog
 {
     private static final long serialVersionUID = 531136141766493612L;
 
@@ -62,8 +64,7 @@ public class UserDataDialog extends JDialog
     public static void main( final String[] args )
     {
         try{
-            final UserDataDialog dialog = new UserDataDialog();
-            dialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
+            final UserSettingsDialog dialog = new UserSettingsDialog();
             dialog.setVisible( true );
         }catch( final Exception e ){
             e.printStackTrace();
@@ -73,10 +74,10 @@ public class UserDataDialog extends JDialog
     /**
      * Create the dialog.
      */
-    public UserDataDialog()
+    public UserSettingsDialog()
     {
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
         setTitle("Bitte gib deine Benutzerdaten an:");
         setBounds( 100, 100, 450, 300 );
         getContentPane().setLayout( new BorderLayout() );
@@ -135,6 +136,12 @@ public class UserDataDialog extends JDialog
             }
             {
                 final JButton cancelButton = new JButton( "Cancel" );
+                cancelButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(final ActionEvent e) {
+                        setVisible(false);
+                    }
+                });
                 cancelButton.setActionCommand( "Cancel" );
                 buttonPane.add( cancelButton );
             }

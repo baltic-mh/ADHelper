@@ -19,10 +19,10 @@ import java.util.Collection;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -57,6 +57,12 @@ public class ADH_Application
     private MainPanel m_panel;
 
     // ------------------------------------------------------------------------
+    private UserSettingsListener m_UserSettingsListener;
+    private UserSettingsListener getUserSettingsListener(){ return m_UserSettingsListener; }
+    private void setUserSettingsListener( final UserSettingsListener fNewVal ){ m_UserSettingsListener = fNewVal; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private String m_DataFolderName;
     private String getDataFolderName(){ return m_DataFolderName; }
     private void setDataFolderName( final String fNewVal ){ m_DataFolderName = fNewVal; }
@@ -73,6 +79,7 @@ public class ADH_Application
         final ADH_Application aAppWindow = new ADH_Application();
 
         EventQueue.invokeLater( new Runnable() {
+
             @Override
             public void run()
             {
@@ -81,9 +88,12 @@ public class ADH_Application
                         AllSettings.INSTANCE.init();
                         final String aDFN = AllSettings.INSTANCE.getAppSettings().getStringValue( IAppSettings.EKey.FOLDERNAME_DATA );
                         aAppWindow.setDataFolderName( aDFN );
-                        checkAndInitUserData( AllSettings.INSTANCE.getUserSettings() );
+                        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+                        aAppWindow.setUserSettingsListener( initUserSettings( aUserSettings ) );
 
+                        aAppWindow.initialize();
                         aAppWindow.m_frame.setVisible( true );
+
                         final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE);
                         aDataProvider.init();
                         aAppWindow.populate( aDataProvider );
@@ -102,20 +112,19 @@ public class ADH_Application
         } );
     }
 
-    private static void checkAndInitUserData(final IUserSettings fUserSettings) throws Exception
+    private static UserSettingsListener initUserSettings(final IUserSettings fUserSettings)
     {
+        final UserSettingsDialog aDialog = new UserSettingsDialog();
+        final JButton aBtn_OK = aDialog.getBtn_OK();
+        final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings );
+        aBtn_OK.addActionListener( l );
+
         final String aRoleStr = fUserSettings.getStringValue( IUserSettings.EKey.ROLE );
-        if( aRoleStr != null && !ERole.ESKIMO.toString().equals( aRoleStr ) ){
-            return;
+        if( aRoleStr == null || ERole.ESKIMO.toString().equals( aRoleStr ) ){
+            aDialog.setVisible( true );
         }
 
-        final UserDataDialog aUserDataDialog = new UserDataDialog();
-        final JButton aBtn_OK = aUserDataDialog.getBtn_OK();
-        final UserSettingsListener l = new UserSettingsListener( aUserDataDialog,fUserSettings );
-        aBtn_OK.addActionListener( l );
-        aUserDataDialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
-        aUserDataDialog.setVisible( true );
-        fUserSettings.writeToFile();
+        return l;
     }
 
     /**
@@ -123,7 +132,7 @@ public class ADH_Application
      */
     public ADH_Application()
     {
-        initialize();
+//        initialize();
     }
 
     public void populate( final ADH_DataProvider fDataProvider )
@@ -181,8 +190,15 @@ public class ADH_Application
         final JMenu mnDatei = new JMenu("Datei");
         menuBar.add(mnDatei);
 
+        final JMenuItem mntmBeenden = new JMenuItem("Beenden");
+        mnDatei.add(mntmBeenden);
+
         final JMenu mnAktionen = new JMenu("Aktionen");
         menuBar.add(mnAktionen);
+
+        final JMenuItem m_mnit_UserSettings = new JMenuItem("Benutzerdaten...");
+        m_mnit_UserSettings.addActionListener( getUserSettingsListener() );
+        mnAktionen.add(m_mnit_UserSettings);
 
         final Component horizontalGlue = Box.createHorizontalGlue();
         menuBar.add(horizontalGlue);
