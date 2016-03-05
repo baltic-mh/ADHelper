@@ -42,11 +42,11 @@ public enum AllSettings implements IAllSettings
         m_AppSettings = new AppSettings();
         final Path aPath_Settings = getPath_Settings();
 
-        final String aFileName_ClubSettings = m_AppSettings.getStringValue( IAppSettings.EKey.FILENAME_CLUBDATA );
+        final String aFileName_ClubSettings = m_AppSettings.getFileName_ClubData();
         final Path aClubFile = Paths.get( aPath_Settings.toString(), aFileName_ClubSettings );
         m_ClubSettings = new ClubSettings( aClubFile );
 
-        final String aFileName_UserSettings = m_AppSettings.getStringValue( IAppSettings.EKey.FILENAME_USERDATA );
+        final String aFileName_UserSettings = m_AppSettings.getFileName_UserData();
         final Path aUserFile = Paths.get( aPath_Settings.toString(), aFileName_UserSettings );
         m_UserSettings = new UserSettings( aUserFile );
 
@@ -54,8 +54,8 @@ public enum AllSettings implements IAllSettings
 
     private Path getPath_Settings()
     {
-        final String aFolderName_Data = m_AppSettings.getStringValue( IAppSettings.EKey.FOLDERNAME_DATA );
-        final String aFolderName_Settings = m_AppSettings.getStringValue( IAppSettings.EKey.FOLDERNAME_SETTINGS );
+        final String aFolderName_Data = m_AppSettings.getFolderName_Data();
+        final String aFolderName_Settings = m_AppSettings.getFolderName_Settings();
         final Path aPath_Settings = Paths.get( aFolderName_Data, aFolderName_Settings );
         return aPath_Settings;
     }

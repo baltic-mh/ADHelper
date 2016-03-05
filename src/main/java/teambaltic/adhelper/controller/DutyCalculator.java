@@ -61,7 +61,7 @@ public class DutyCalculator
         if( aBirthday == null ){
             sm_Log.warn("Kein Geburtsdatum gefunden für: "+fMember);
         } else {
-            final LocalDate aFreeByAgeFrom = aBirthday.plusYears( getClubSettings().getIntValue(IClubSettings.EKey.MAX_AGE_FOR_DUTY) );
+            final LocalDate aFreeByAgeFrom = aBirthday.plusYears( getClubSettings().getMaxAgeForDuty() );
             if( aFreeByAgeFrom.compareTo( getInvoicingPeriod().getEnd() ) < 0 ) {
                 final FreeFromDuty aFreeFromDuty;
                 if( aFreeByNoLongerMember != null
@@ -75,7 +75,7 @@ public class DutyCalculator
                 return aFreeFromDuty;
             }
 
-            final LocalDate aFreeByAgeUntil = aBirthday.plusYears( getClubSettings().getIntValue( IClubSettings.EKey.MIN_AGE_FOR_DUTY) );
+            final LocalDate aFreeByAgeUntil = aBirthday.plusYears( getClubSettings().getMinAgeForDuty() );
             if( aFreeByAgeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
                 final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.TOO_YOUNG );
                 aFreeFromDuty.setUntil( aFreeByAgeUntil );
@@ -122,7 +122,7 @@ public class DutyCalculator
         if( aMemberFrom == null ){
             return null;
         }
-        final long aProtectedTime = getClubSettings().getIntValue( IClubSettings.EKey.PROTECTION_TIME);
+        final long aProtectedTime = getClubSettings().getProtectionTime();
         final LocalDate aFreeUntil = aMemberFrom.plusMonths( aProtectedTime ).minusDays( 1 );
         if( aFreeUntil.compareTo( getInvoicingPeriod().getStart() ) > 0 ) {
             final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.DUTY_NOT_YET_EFFECTIVE );
@@ -135,10 +135,10 @@ public class DutyCalculator
     public int calculateHoursToWork( final FreeFromDuty fFreeFromDuty )
     {
         if( fFreeFromDuty == null ){
-            return getClubSettings().getHourValue(IClubSettings.EKey.DUTYHOURS_PER_INVOICEPERIOD);
+            return getClubSettings().getDutyHoursPerInvoicePeriod();
         }
         final IPeriod aIP = getInvoicingPeriod();
-        final int aMontsPerInvoicePeriod = getClubSettings().getIntValue( IClubSettings.EKey.MONTHS_PER_INVOICEPERIOD );
+        final int aMontsPerInvoicePeriod = getClubSettings().getMontsPerInvoicePeriod();
         if( DateUtils.getCoverageInMonths( fFreeFromDuty, aIP ) == aMontsPerInvoicePeriod ){
             return 0;
         }
@@ -178,7 +178,7 @@ public class DutyCalculator
             final int aInvoicingPeriodEndMonth = aInvoicingPeriodEnd.getMonth().getValue();
             aNumMonthsInPeriod -= aInvoicingPeriodEndMonth - aFreeFromMonth+1;
         }
-        return fClubSettings.getHourValue(IClubSettings.EKey.DUTYHOURS_PER_INVOICEPERIOD) * aNumMonthsInPeriod / 6;
+        return fClubSettings.getDutyHoursPerInvoicePeriod() * aNumMonthsInPeriod / 6;
     }
 
 }

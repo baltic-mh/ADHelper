@@ -30,6 +30,42 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     protected EKey[] getKeyValues(){ return EKey.values(); }
 
+    @Override
+    public String getFolderName_Data()
+    {
+        return getStringValue( EKey.FOLDERNAME_DATA );
+    }
+    @Override
+    public String getFolderName_Settings()
+    {
+        return getStringValue( EKey.FOLDERNAME_SETTINGS );
+    }
+    @Override
+    public String getFileName_BaseInfo()
+    {
+        return getStringValue( EKey.FILENAME_BASEINFO );
+    }
+    @Override
+    public String getFileName_WorkEvents()
+    {
+        return getStringValue( EKey.FILENAME_WORKEVENTS );
+    }
+    @Override
+    public String getFileName_Balances()
+    {
+        return getStringValue( EKey.FILENAME_BALANCES );
+    }
+    @Override
+    public String getFileName_UserData()
+    {
+        return getStringValue( EKey.FILENAME_USERDATA );
+    }
+    @Override
+    public String getFileName_ClubData()
+    {
+        return getStringValue( EKey.FILENAME_CLUBDATA );
+    }
+
 }
 
 // ############################################################################

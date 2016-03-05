@@ -26,6 +26,36 @@ public class ClubSettings extends ASettings<IClubSettings.EKey>
     @Override
     protected EKey[] getKeyValues(){ return EKey.values(); }
 
+    @Override
+    public int getMinAgeForDuty()
+    {
+        return getIntValue( EKey.MIN_AGE_FOR_DUTY );
+    }
+
+    @Override
+    public int getMaxAgeForDuty()
+    {
+        return getIntValue( EKey.MAX_AGE_FOR_DUTY );
+    }
+
+    @Override
+    public int getProtectionTime()
+    {
+        return getIntValue( EKey.PROTECTION_TIME );
+    }
+
+    @Override
+    public int getMontsPerInvoicePeriod()
+    {
+        return getIntValue( EKey.MONTHS_PER_INVOICEPERIOD );
+    }
+
+    @Override
+    public int getDutyHoursPerInvoicePeriod()
+    {
+        return getHourValue( EKey.DUTYHOURS_PER_INVOICEPERIOD );
+    }
+
 }
 
 // ############################################################################

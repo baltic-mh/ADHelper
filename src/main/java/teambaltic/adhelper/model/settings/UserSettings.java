@@ -14,6 +14,8 @@ package teambaltic.adhelper.model.settings;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import teambaltic.adhelper.model.ERole;
+
 // ############################################################################
 public class UserSettings extends ASettings<IUserSettings.EKey>
     implements IUserSettings
@@ -30,5 +32,28 @@ public class UserSettings extends ASettings<IUserSettings.EKey>
     @Override
     protected EKey[] getKeyValues(){ return EKey.values(); }
 
+    @Override
+    public String getName()
+    {
+        return getStringValue(EKey.NAME);
+    }
+
+    @Override
+    public String getEMail()
+    {
+        return getStringValue(EKey.EMAIL);
+    }
+
+    @Override
+    public ERole getRole()
+    {
+        final String aRoleStringValue = getStringValue(EKey.ROLE);
+        try{
+            final ERole aRole = ERole.valueOf( aRoleStringValue );
+            return aRole;
+        }catch( final Exception fEx ){
+            return ERole.ESKIMO;
+        }
+    }
 }
 // ############################################################################

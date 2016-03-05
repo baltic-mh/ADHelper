@@ -40,6 +40,11 @@ public interface IClubSettings extends ISettings<IClubSettings.EKey>
 
     }
 
+    int getMinAgeForDuty();
+    int getMaxAgeForDuty();
+    int getProtectionTime();
+    int getMontsPerInvoicePeriod();
+    int getDutyHoursPerInvoicePeriod();
 }
 
 // ############################################################################

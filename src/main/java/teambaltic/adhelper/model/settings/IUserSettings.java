@@ -12,6 +12,7 @@
 package teambaltic.adhelper.model.settings;
 
 import teambaltic.adhelper.model.EPropType;
+import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IKey;
 
 // ############################################################################
@@ -39,6 +40,10 @@ public interface IUserSettings extends ISettings<IUserSettings.EKey>
            m_PropType = fPropType;
        }
     }
+
+    String getName();
+    String getEMail();
+    ERole getRole();
 
 }
 

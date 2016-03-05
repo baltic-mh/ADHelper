@@ -72,7 +72,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void init() throws Exception
     {
         final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        final String aDataFoldername = aAppSettings.getStringValue(IAppSettings.EKey.FOLDERNAME_DATA);
+        final String aDataFoldername = aAppSettings.getFolderName_Data();
         // Bestimme das Verzeichnis mit den neuesten Abrechnungsdaten
         final File aFolderOfNewestInvoicingPeriod = FileUtils.determineNewestInvoicingPeriodFolder( new File(aDataFoldername) );
         // Bestimme daraus den folgenden Abrechnungszeitraum:
@@ -82,11 +82,11 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         m_ChargeCalculator = createChargeCalculator( aInvoicingPeriod );
 
         // Das BaseInfoFile liegt immer im Verzeichnis "Daten"
-        readBaseInfo( new File(aDataFoldername, aAppSettings.getStringValue(IAppSettings.EKey.FILENAME_BASEINFO) ) );
+        readBaseInfo( new File(aDataFoldername, aAppSettings.getFileName_BaseInfo() ) );
         // Das WorkEventFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readWorkEvents( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getStringValue(IAppSettings.EKey.FILENAME_WORKEVENTS) ) );
+        readWorkEvents( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_WorkEvents() ) );
         // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readBalances( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getStringValue(IAppSettings.EKey.FILENAME_BALANCES) ) );
+        readBalances( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_Balances() ) );
 
         joinRelatives();
 

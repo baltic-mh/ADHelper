@@ -44,6 +44,14 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
        }
     }
 
+    String getFolderName_Data();
+    String getFolderName_Settings();
+
+    String getFileName_BaseInfo();
+    String getFileName_WorkEvents();
+    String getFileName_Balances();
+    String getFileName_UserData();
+    String getFileName_ClubData();
 
 }
 
