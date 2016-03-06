@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
 import teambaltic.adhelper.remoteaccess.SFTPWithKey;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -69,7 +70,7 @@ public class SFTPWithKeyTest
         }
         final Path aRemotePath = Paths.get( "Anmerkungen.txt" );
         try{
-            aSFTPWithKey.download( aRemotePath, aLocalPath );
+            aSFTPWithKey.download( new LocalRemotePathPair( aLocalPath, aRemotePath ) );
             assertTrue("Downloaded file exists", Files.exists( aLocalPath ));
         }catch( final Exception fEx ){
             fail("Exception: "+fEx );
@@ -93,7 +94,7 @@ public class SFTPWithKeyTest
                 }
             }
             assertFalse("Remote file exists1", aSFTPWithKey.exists( aRemotePath ));
-            aSFTPWithKey.upload( aLocalPath, aRemotePath );
+            aSFTPWithKey.upload(  new LocalRemotePathPair( aLocalPath, aRemotePath ) );
             assertTrue("Uploaded file exists", aSFTPWithKey.exists( aRemotePath ));
         }catch( final Exception fEx ){
             fail("Exception: "+fEx );

@@ -44,7 +44,6 @@ import teambaltic.adhelper.gui.model.MemberComboBoxModel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.settings.AllSettings;
-import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -85,18 +84,16 @@ public class ADH_Application
             {
                 try{
                     try{
-                        AllSettings.INSTANCE.init();
-                        final String aDFN = AllSettings.INSTANCE.getAppSettings().getStringValue( IAppSettings.EKey.FOLDERNAME_DATA );
-                        aAppWindow.setDataFolderName( aDFN );
-                        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
-                        aAppWindow.setUserSettingsListener( initUserSettings( aUserSettings ) );
+                        initSettings( aAppWindow );
 
                         aAppWindow.initialize();
-                        aAppWindow.m_frame.setVisible( true );
+                        aAppWindow.setVisible( true );
 
                         final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE);
                         aDataProvider.init();
+
                         aAppWindow.populate( aDataProvider );
+
                     }catch( final Exception fEx ){
                         sm_Log.error( "Unerwartete Exception: ", fEx );
                         final String aMsg = ExceptionUtils.getStackTrace(fEx);
@@ -112,6 +109,15 @@ public class ADH_Application
         } );
     }
 
+    private static void initSettings( final ADH_Application fAppWindow ) throws Exception
+    {
+        AllSettings.INSTANCE.init();
+        final String aDFN = AllSettings.INSTANCE.getAppSettings().getFolderName_Data();
+        fAppWindow.setDataFolderName( aDFN );
+        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+        fAppWindow.setUserSettingsListener( initUserSettings( aUserSettings ) );
+    }
+
     private static UserSettingsListener initUserSettings(final IUserSettings fUserSettings)
     {
         final UserSettingsDialog aDialog = new UserSettingsDialog();
@@ -119,8 +125,8 @@ public class ADH_Application
         final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings );
         aBtn_OK.addActionListener( l );
 
-        final String aRoleStr = fUserSettings.getStringValue( IUserSettings.EKey.ROLE );
-        if( aRoleStr == null || ERole.ESKIMO.toString().equals( aRoleStr ) ){
+        final ERole aRole = fUserSettings.getRole();
+        if( ERole.ESKIMO.equals( aRole ) ){
             aDialog.setVisible( true );
         }
 
@@ -133,6 +139,11 @@ public class ADH_Application
     public ADH_Application()
     {
 //        initialize();
+    }
+
+    protected void setVisible( final boolean fB )
+    {
+        m_frame.setVisible( fB );
     }
 
     public void populate( final ADH_DataProvider fDataProvider )

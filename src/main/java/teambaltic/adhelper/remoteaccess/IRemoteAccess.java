@@ -12,12 +12,17 @@
 package teambaltic.adhelper.remoteaccess;
 
 import java.nio.file.Path;
+import java.util.List;
 
 // ############################################################################
 public interface IRemoteAccess
 {
-    void upload  ( final Path fLocalPath, final Path fRemotePath ) throws Exception;
-    void download( final Path fRemotePath, final Path fLocalPath ) throws Exception;
+    void upload  ( final LocalRemotePathPair fPathPair ) throws Exception;
+    void upload  ( final List<LocalRemotePathPair> fPathPairs ) throws Exception;
+
+    void download( final LocalRemotePathPair fPathPair ) throws Exception;
+    void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception;
+
     void delete  ( final Path fRemotePath ) throws Exception;
     boolean exists( final Path fRemotePath ) throws Exception;
 }

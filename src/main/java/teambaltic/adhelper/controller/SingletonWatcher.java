@@ -23,6 +23,7 @@ import java.util.Scanner;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.remoteaccess.IRemoteAccess;
+import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
 
 // ############################################################################
 public class SingletonWatcher
@@ -33,6 +34,7 @@ public class SingletonWatcher
     private static final String sm_BusyFileBaseName = "BusyFile";
     private static final String sm_BusyFileExt = ".txt";
     private static final String sm_BusyFileName = sm_BusyFileBaseName+sm_BusyFileExt;
+    private static final Path   sm_RemoteBusyFilePath = Paths.get( sm_BusyFileName );
 
     // ------------------------------------------------------------------------
     private final String m_Info;
@@ -65,7 +67,8 @@ public class SingletonWatcher
     {
         try{
             final Path aLocalFile = Files.createTempFile( sm_BusyFileBaseName, sm_BusyFileExt );
-            getRemoteAccess().download( Paths.get( sm_BusyFileName ), aLocalFile );
+            final LocalRemotePathPair aPathPair = createLocalRemotePathPair( aLocalFile );
+            getRemoteAccess().download( aPathPair );
             boolean aIamAlone = false;
             if( isOutDated( aLocalFile ) ){
                 getRemoteAccess().delete( Paths.get( sm_BusyFileName ) );
@@ -79,6 +82,11 @@ public class SingletonWatcher
             // gegangen ist:
             return true;
         }
+    }
+
+    private static LocalRemotePathPair createLocalRemotePathPair( final Path fLocalFile )
+    {
+        return new LocalRemotePathPair( fLocalFile, sm_RemoteBusyFilePath );
     }
 
     public void start()
@@ -128,7 +136,7 @@ public class SingletonWatcher
     private void removeBusyFlag()
     {
         try{
-            getRemoteAccess().delete( Paths.get( sm_BusyFileName ) );
+            getRemoteAccess().delete( sm_RemoteBusyFilePath );
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block
             sm_Log.warn("Exception: ", fEx );
@@ -153,7 +161,8 @@ public class SingletonWatcher
     private void uploadBusyFile( final Path fBusyFile )
     {
         try{
-            getRemoteAccess().upload( fBusyFile, Paths.get( sm_BusyFileName ) );
+            final LocalRemotePathPair aPathPair = createLocalRemotePathPair( fBusyFile );
+            getRemoteAccess().upload( aPathPair );
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block
             sm_Log.warn("Exception: ", fEx );

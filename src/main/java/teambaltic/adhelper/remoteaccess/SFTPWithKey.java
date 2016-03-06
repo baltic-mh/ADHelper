@@ -14,6 +14,8 @@ package teambaltic.adhelper.remoteaccess;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
@@ -72,7 +74,14 @@ public class SFTPWithKey implements IRemoteAccess
     }
 
     @Override
-    public void upload( final Path fLocalPath, final Path fRemotePath ) throws Exception
+    public void upload( final LocalRemotePathPair fPathPair ) throws Exception
+    {
+        final List<LocalRemotePathPair> aList = new ArrayList<>();
+        aList.add( fPathPair );
+        upload( aList );
+    }
+    @Override
+    public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
@@ -80,11 +89,13 @@ public class SFTPWithKey implements IRemoteAccess
             // Initializes the file manager
             getFS_Manager().init();
 
-            final FileObject aLocalObj = getLocalFileObject( fLocalPath, aFS_Manager );
-            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+            for( final LocalRemotePathPair aPathPair : fPathPairs ){
+                final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
+                final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
+                // upload der Datei
+                aRemoteObj.copyFrom(aLocalObj, Selectors.SELECT_SELF);
+            }
 
-            // upload der Datei
-            aRemoteObj.copyFrom(aLocalObj, Selectors.SELECT_SELF);
 
         }finally{
             aFS_Manager.close();
@@ -92,7 +103,14 @@ public class SFTPWithKey implements IRemoteAccess
     }
 
     @Override
-    public void download( final Path fRemotePath, final Path fLocalPath ) throws Exception
+    public void download( final LocalRemotePathPair fPathPair ) throws Exception
+    {
+        final List<LocalRemotePathPair> aList = new ArrayList<>();
+        aList.add( fPathPair );
+        download( aList );
+    }
+    @Override
+    public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
@@ -100,11 +118,12 @@ public class SFTPWithKey implements IRemoteAccess
             // Initializes the file manager
             aFS_Manager.init();
 
-            final FileObject aLocalObj = getLocalFileObject( fLocalPath, aFS_Manager );
-            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
-
-            //download der Datei
-            aLocalObj.copyFrom(aRemoteObj, Selectors.SELECT_SELF);
+            for( final LocalRemotePathPair aPathPair : fPathPairs ){
+                final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
+                final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
+                //download der Datei
+                aLocalObj.copyFrom(aRemoteObj, Selectors.SELECT_SELF);
+            }
 
         }finally{
             aFS_Manager.close();

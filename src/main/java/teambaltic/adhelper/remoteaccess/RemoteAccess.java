@@ -13,6 +13,8 @@ package teambaltic.adhelper.remoteaccess;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -30,15 +32,29 @@ public class RemoteAccess implements IRemoteAccess
     }
 
     @Override
-    public void upload( final Path fLocalPath, final Path fRemotePath ) throws Exception
+    public void upload( final LocalRemotePathPair fPathPair ) throws Exception
     {
-        m_RemoteEngine.upload( fLocalPath, fRemotePath );
+        final List<LocalRemotePathPair> aList = new ArrayList<>();
+        aList.add( fPathPair );
+        m_RemoteEngine.upload( aList );
+    }
+    @Override
+    public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception
+    {
+        m_RemoteEngine.upload( fPathPairs );
     }
 
     @Override
-    public void download( final Path fRemotePath, final Path fLocalPath ) throws Exception
+    public void download( final LocalRemotePathPair fPathPair ) throws Exception
     {
-        m_RemoteEngine.download( fRemotePath, fLocalPath );
+        final List<LocalRemotePathPair> aList = new ArrayList<>();
+        aList.add( fPathPair );
+        m_RemoteEngine.download( aList );
+    }
+    @Override
+    public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
+    {
+        m_RemoteEngine.download( fPathPairs );
     }
 
     @Override

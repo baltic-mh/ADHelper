@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,6 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teambaltic.adhelper.remoteaccess.IRemoteAccess;
+import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
@@ -88,17 +90,17 @@ public class SingletonWatcherTest
         private final Path aMyRemotePath = Paths.get( "misc", "SandBox", "BusyFile.txt" );
 
         @Override
-        public void upload( final Path fLocalPath, final Path fRemotePath ) throws Exception
+        public void upload( final LocalRemotePathPair fPathPair ) throws Exception
         {
             m_Cnt_Upload++;
-            Files.copy( fLocalPath, aMyRemotePath, StandardCopyOption.REPLACE_EXISTING );
+            Files.copy( fPathPair.getLocal(), aMyRemotePath, StandardCopyOption.REPLACE_EXISTING );
         }
 
         @Override
-        public void download( final Path fRemotePath, final Path fLocalPath ) throws Exception
+        public void download( final LocalRemotePathPair fPathPair ) throws Exception
         {
             m_Cnt_Download++;
-            Files.copy( aMyRemotePath, fLocalPath, StandardCopyOption.REPLACE_EXISTING );
+            Files.copy( aMyRemotePath, fPathPair.getLocal(), StandardCopyOption.REPLACE_EXISTING );
         }
 
         @Override
@@ -112,6 +114,18 @@ public class SingletonWatcherTest
         public boolean exists( final Path fRemotePath ) throws Exception
         {
             return Files.exists( aMyRemotePath );
+        }
+
+        @Override
+        public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception
+        {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
+        {
+            // TODO Auto-generated method stub
         }
 
     }
