@@ -11,16 +11,21 @@
 // ############################################################################
 package teambaltic.adhelper.transfer;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,7 +38,7 @@ import teambaltic.adhelper.utils.Log4J;
 // ############################################################################
 public class SFTPWithKeyTest
 {
-//    private static final Logger sm_Log = Logger.getLogger(SFTPWithKeyTest.class);
+    private static final Logger sm_Log = Logger.getLogger(SFTPWithKeyTest.class);
 
     // ########################################################################
     // INITIALISIERUNG
@@ -57,6 +62,44 @@ public class SFTPWithKeyTest
     // ########################################################################
     // TESTS
     // ########################################################################
+
+    @Test
+    public void test_List()
+    {
+        final SFTPWithKey aSFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Daten/Einstellungen/ssh/id_rsa"));
+
+        final Path aRemotePath = Paths.get( "SubDir" );
+        try{
+            final List<URL> aURLs = aSFTPWithKey.list( aRemotePath );
+            assertNotNull("list", aURLs);
+            for( final URL aURL : aURLs ){
+                sm_Log.info( "List: File found:"+aURL );
+            }
+            assertEquals( "URLs.size", 4, aURLs.size() );
+        }catch( final Exception fEx ){
+            fail("Exception: "+fEx );
+        }
+    }
+
+    @Test
+    public void test_ListByExtension()
+    {
+        final SFTPWithKey aSFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Daten/Einstellungen/ssh/id_rsa"));
+
+        final Path aRemotePath = Paths.get( "SubDir" );
+        try{
+            final List<URL> aURLs = aSFTPWithKey.list( aRemotePath, "md5" );
+            assertNotNull("list", aURLs);
+            for( final URL aURL : aURLs ){
+                sm_Log.info( "List md5: File found:"+aURL );
+                assertTrue("Endswith md5", aURL.toString().toLowerCase().endsWith( "md5" ));
+            }
+            assertEquals( "URLs.size", 2, aURLs.size() );
+
+        }catch( final Exception fEx ){
+            fail("Exception: "+fEx );
+        }
+    }
 
     @Test
     public void test_Download()

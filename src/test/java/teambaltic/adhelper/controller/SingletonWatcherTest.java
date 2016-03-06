@@ -14,6 +14,7 @@ package teambaltic.adhelper.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -126,6 +127,20 @@ public class SingletonWatcherTest
         public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
         {
             // TODO Auto-generated method stub
+        }
+
+        @Override
+        public List<URL> list( final Path fRemotePath ) throws Exception
+        {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public List<URL> list( final Path fRemotePath, final String fExt ) throws Exception
+        {
+            // TODO Auto-generated method stub
+            return null;
         }
 
     }

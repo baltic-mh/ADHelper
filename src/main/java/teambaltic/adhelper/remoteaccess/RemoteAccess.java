@@ -12,6 +12,7 @@
 package teambaltic.adhelper.remoteaccess;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,35 @@ public class RemoteAccess implements IRemoteAccess
     }
 
     @Override
+    public List<URL> list( final Path fRemotePath ) throws Exception
+    {
+        return list( fRemotePath, null );
+    }
+
+    @Override
+    public List<URL> list( final Path fRemotePath, final String fExt ) throws Exception
+    {
+        return m_RemoteEngine.list( fRemotePath, fExt );
+    }
+
+    @Override
+    public boolean exists( final Path fRemotePath ) throws Exception
+    {
+        return m_RemoteEngine.exists( fRemotePath );
+    }
+
+    @Override
+    public void delete( final Path fRemotePath ) throws Exception
+    {
+        m_RemoteEngine.delete( fRemotePath );
+    }
+
+    @Override
     public void upload( final LocalRemotePathPair fPathPair ) throws Exception
     {
         final List<LocalRemotePathPair> aList = new ArrayList<>();
         aList.add( fPathPair );
-        m_RemoteEngine.upload( aList );
+        upload( aList );
     }
     @Override
     public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception
@@ -55,18 +80,6 @@ public class RemoteAccess implements IRemoteAccess
     public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
     {
         m_RemoteEngine.download( fPathPairs );
-    }
-
-    @Override
-    public void delete( final Path fRemotePath ) throws Exception
-    {
-        m_RemoteEngine.delete( fRemotePath );
-    }
-
-    @Override
-    public boolean exists( final Path fRemotePath ) throws Exception
-    {
-        return m_RemoteEngine.exists( fRemotePath );
     }
 
     private static IRemoteAccess createRemoteEngine(final Properties fProperties)

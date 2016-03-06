@@ -1,5 +1,5 @@
 /**
- * MD5CreatorTest.java
+ * CheckSumCreatorTest.java
  *
  * Created on 20.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -17,14 +17,16 @@ import java.io.File;
 
 import org.junit.Test;
 
+import teambaltic.adhelper.utils.CheckSumCreator.Type;
+
 // ############################################################################
-public class MD5CreatorTest
+public class CheckSumCreatorTest
 {
 
     @Test
-    public void test()
+    public void test_MD5()
     {
-        final MD5Creator aMD5Creator = new MD5Creator();
+        final CheckSumCreator aMD5Creator = new CheckSumCreator(Type.MD5);
         try{
             aMD5Creator.process( new File("Ausgabe.txt") );
         }catch( final Exception fEx ){

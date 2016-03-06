@@ -13,11 +13,16 @@ package teambaltic.adhelper.remoteaccess;
 
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.vfs2.FileName;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSelectInfo;
+import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.Selectors;
@@ -131,6 +136,40 @@ public class SFTPWithKey implements IRemoteAccess
     }
 
     @Override
+    public List<URL> list( final Path fRemotePath ) throws Exception
+    {
+        return list( fRemotePath, null );
+    }
+    @Override
+    public List<URL> list( final Path fRemotePath, final String fExt ) throws Exception
+    {
+        final StandardFileSystemManager aFS_Manager = getFS_Manager();
+
+        try {
+            // Initializes the file manager
+            aFS_Manager.init();
+            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+            List<FileObject> aSelected = new ArrayList<>();
+
+            if( fExt != null && !"".equals( fExt )){
+                final FileSelector selector = createExtensionSelector(fExt);
+                aRemoteObj.findFiles( selector, false, aSelected );
+            } else {
+                final FileObject[] aChildren = aRemoteObj.getChildren();
+                aSelected = Arrays.asList( aChildren );
+            }
+            final List<URL>aURLs = new ArrayList<>(aSelected.size());
+            for( final FileObject aFileObject : aSelected ){
+                aURLs.add( aFileObject.getURL() );
+            }
+            return  aURLs;
+
+        }finally{
+            aFS_Manager.close();
+        }
+    }
+
+    @Override
     public void delete( final Path fRemotePath ) throws Exception
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
@@ -193,13 +232,36 @@ public class SFTPWithKey implements IRemoteAccess
         final FileSystemOptions options = new FileSystemOptions();
         //ssh key
         SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(options, "no");
-        //set root directory to user home
+        // set root directory to user home
         SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(options, true);
         //timeout
         SftpFileSystemConfigBuilder.getInstance().setTimeout(options, 10000);
         SftpFileSystemConfigBuilder.getInstance().setIdentities(options, new File[] {fKeyFile});
 
         return options;
+    }
+
+    private static FileSelector createExtensionSelector(final String fExt)
+    {
+        final FileSelector selector = new FileSelector() {
+
+            @Override
+            public boolean traverseDescendents( final FileSelectInfo fFileInfo ) throws Exception
+            {
+//                final FileObject aBaseFolder = fFileInfo.getBaseFolder();
+//                final FileObject aFile = fFileInfo.getFile();
+//                return aBaseFolder.equals( aFile );
+                return fFileInfo.getDepth() == 0;
+            }
+
+            @Override
+            public boolean includeFile( final FileSelectInfo fFileInfo ) throws Exception
+            {
+                final FileName aFileName = fFileInfo.getFile().getName();
+                return fExt.equalsIgnoreCase( aFileName.getExtension() );
+            }
+        };
+        return selector;
     }
 
 }
