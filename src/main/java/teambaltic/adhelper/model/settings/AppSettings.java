@@ -18,7 +18,11 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
 
     public AppSettings()
     {
-        setStringValue( EKey.FOLDERNAME_DATA,       "Daten" );
+        this("Daten");
+    }
+    public AppSettings(final String fFolderName_Data)
+    {
+        setStringValue( EKey.FOLDERNAME_DATA,       fFolderName_Data );
         setStringValue( EKey.FOLDERNAME_SETTINGS,   "Einstellungen" );
         setStringValue( EKey.FILENAME_BASEINFO,     "BasisDaten.csv" );
         setStringValue( EKey.FILENAME_WORKEVENTS,   "Arbeitsdienste.csv" );
