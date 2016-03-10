@@ -114,7 +114,7 @@ public class ADH_DataProviderTest
     @Test
     public void test_MerleWeber() throws Exception
     {
-        final File aFile = new File("misc/TestResources/Tabellen/Mitglieder.csv");
+        final File aFile = new File("misc/TestResources/Tabellen/BasisDaten.csv");
         final BaseInfoReader aReader = new BaseInfoReader( aFile );
 
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
@@ -143,7 +143,7 @@ public class ADH_DataProviderTest
     @Test
     public void test_LukasBal() throws Exception
     {
-        final File aFile = new File("misc/TestResources/Tabellen/Mitglieder.csv");
+        final File aFile = new File("misc/TestResources/Tabellen/BasisDaten.csv");
         final BaseInfoReader aReader = new BaseInfoReader( aFile );
 
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
@@ -180,7 +180,7 @@ public class ADH_DataProviderTest
 
     private static ADH_DataProvider init()
     {
-        final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/Mitglieder.csv");
+        final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/BasisDaten.csv");
         final File aWorkEventFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
         try{
             final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE);
