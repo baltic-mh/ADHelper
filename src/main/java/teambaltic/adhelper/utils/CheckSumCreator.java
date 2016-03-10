@@ -16,9 +16,12 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FilenameUtils;
 
 // ############################################################################
 public class CheckSumCreator
@@ -28,20 +31,23 @@ public class CheckSumCreator
         SHA512;
     }
 
+    // ------------------------------------------------------------------------
     private final Type m_Type;
     private Type getType(){ return m_Type; }
+    // ------------------------------------------------------------------------
 
     public CheckSumCreator(final Type fType)
     {
         m_Type = fType;
     }
 
-    public String process( final File fFile ) throws Exception
+    public Path process( final Path fFile ) throws Exception
     {
         FileInputStream fis = null;
         String aMD5Hash = "0";
+        final File aFile = fFile.toFile();
         try{
-            fis = new FileInputStream( fFile );
+            fis = new FileInputStream( aFile );
             switch( getType() ){
                 case MD5:
                     aMD5Hash = DigestUtils.md5Hex(fis);
@@ -53,29 +59,30 @@ public class CheckSumCreator
                 default:
                     throw new IllegalStateException( "Unbekannter Checksummentyp: "+getType());
             }
-            return aMD5Hash;
+            final Path aOutPath = Paths.get( aFile.getPath() + getExtension() );
+            write( aOutPath, aMD5Hash );
+            return aOutPath;
         }finally{
             if( fis != null ){
                 fis.close();
-                write( fFile, aMD5Hash );
             }
         }
     }
 
-    private void write( final File fFile, final String fMD5Hash )
+    private static void write( final Path fOutPath, final String fMD5Hash ) throws Exception
     {
         Writer fw = null;
         try{
-            fw = new FileWriter( fFile.getPath() + getExtension() );
+            final File aFile = fOutPath.toFile();
+            final String aBaseName = FilenameUtils.getBaseName(aFile.getName());
+            fw = new FileWriter( aFile );
             final Date aTimeStamp = new Date();
             fw.write( "#TimeStamp;TimeStamp(HR);FileName");
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-            fw.append( String.format( "#%d;%s;%s",aTimeStamp.getTime(), aTimeStamp, fFile.getName() ) );
+            fw.append( String.format( "#%d;%s;%s",aTimeStamp.getTime(), aTimeStamp, aBaseName ) );
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-            fw.append( String.format( "%s *%s",fMD5Hash, fFile.getName() ) );
+            fw.append( String.format( "%s *%s",fMD5Hash, aBaseName ) );
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-        }catch( final IOException e ){
-            System.err.println( "Konnte Datei nicht erstellen" );
         }finally{
             if( fw != null )
                 try{
