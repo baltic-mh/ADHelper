@@ -30,11 +30,11 @@ import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
-import teambaltic.adhelper.model.settings.ClubSettings;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.model.settings.ClubSettings;
 import teambaltic.adhelper.utils.Log4J;
 import teambaltic.adhelper.utils.TestUtils;
 
@@ -70,7 +70,7 @@ public class ChargeCalculatorTest
     {
         Log4J.initLog4J();
         try{
-            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/Vereinsparameter.prop") );
+            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/VereinsDaten.prop") );
         }catch( final Exception fEx ){
             fail("Exception: "+fEx.getMessage() );
         }
