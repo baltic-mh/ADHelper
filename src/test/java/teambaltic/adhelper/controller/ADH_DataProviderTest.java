@@ -102,6 +102,7 @@ public class ADH_DataProviderTest
         final ADH_DataProvider aChef = init();
 
         final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
+        aChef.setChargeCalculator( aChef.createChargeCalculator(aInvoicingPeriod) );
 
         aChef.calculateDutyCharges( aInvoicingPeriod );
         aChef.joinRelatives();
@@ -130,6 +131,7 @@ public class ADH_DataProviderTest
         aChef.add( aInfo );
 
         final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
+        aChef.setChargeCalculator( aChef.createChargeCalculator(aInvoicingPeriod) );
         aChef.calculateDutyCharges( aInvoicingPeriod );
         final int aHoursToPayTotal = aInfo.getDutyCharge().getHoursToPayTotal();
         assertEquals("Merle muss 1,5h zahlen!", 150, aHoursToPayTotal);
@@ -159,6 +161,8 @@ public class ADH_DataProviderTest
         aChef.add( aInfo );
 
         final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
+        aChef.setChargeCalculator( aChef.createChargeCalculator(aInvoicingPeriod) );
+
         aChef.calculateDutyCharges( aInvoicingPeriod );
         final DutyCharge aDutyCharge = aInfo.getDutyCharge();
         final int aHoursToPayTotal = aDutyCharge.getHoursToPayTotal();

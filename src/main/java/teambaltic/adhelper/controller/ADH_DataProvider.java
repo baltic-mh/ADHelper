@@ -60,6 +60,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     // ------------------------------------------------------------------------
     private ChargeCalculator m_ChargeCalculator;
+    public void setChargeCalculator( final ChargeCalculator fNewVal ){ m_ChargeCalculator = fNewVal; }
     public ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
     public IPeriod getInvoicingPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getInvoicingPeriod();}
     // ------------------------------------------------------------------------
@@ -76,9 +77,9 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         // Bestimme das Verzeichnis mit den neuesten Abrechnungsdaten
         final File aFolderOfNewestInvoicingPeriod = FileUtils.determineNewestInvoicingPeriodFolder( new File(aDataFoldername) );
         // Bestimme daraus den folgenden Abrechnungszeitraum:
-         final Halfyear aLatestProcessed = Halfyear.create( aFolderOfNewestInvoicingPeriod.getName() );
+        final Halfyear aLatestProcessed = Halfyear.create( aFolderOfNewestInvoicingPeriod.getName() );
 
-         final IPeriod aInvoicingPeriod = Halfyear.next( aLatestProcessed );
+        final IPeriod aInvoicingPeriod = Halfyear.next( aLatestProcessed );
         m_ChargeCalculator = createChargeCalculator( aInvoicingPeriod );
 
         // Das BaseInfoFile liegt immer im Verzeichnis "Daten"
@@ -148,7 +149,8 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             m_ChargeCalculator.calculate( aDutyCharge, aWorkEventsAttended, aFreeFromDuty );
         }
     }
-    private ChargeCalculator createChargeCalculator( final IPeriod fInvoicingPeriod )
+
+    public ChargeCalculator createChargeCalculator( final IPeriod fInvoicingPeriod )
     {
         final ChargeCalculator aChargeCalculator = new ChargeCalculator( fInvoicingPeriod, m_AllSettings.getClubSettings() );
         return aChargeCalculator;
