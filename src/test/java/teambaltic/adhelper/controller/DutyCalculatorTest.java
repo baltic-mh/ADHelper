@@ -45,7 +45,7 @@ public class DutyCalculatorTest
     {
         Log4J.initLog4J();
         try{
-            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/Vereinsparameter.prop") );
+            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/VereinsDaten.prop") );
         }catch( final Exception fEx ){
             fail("Exception: "+ fEx.getMessage() );
         }
