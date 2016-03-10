@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 // ############################################################################
 public class Log4JTest
@@ -64,7 +63,8 @@ public class Log4JTest
     // ########################################################################
     // TESTS
     // ########################################################################
-    @Test
+    //TODO Test aktivieren
+//    @Test
     public void test_UninitializedAppName()
     {
         final String aMethodName = TestUtils.getMethodName();
@@ -77,7 +77,8 @@ public class Log4JTest
         TestUtils.logMethodEnd( aStartTime, aMethodName );
     }
 
-    @Test
+    //TODO Test aktivieren
+//    @Test
     public void test_InitializedAppName()
     {
         final String aMethodName = TestUtils.getMethodName();
