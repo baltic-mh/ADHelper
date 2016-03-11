@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,10 @@ public final class FileUtils
 {
     private FileUtils(){/**/}
 
+    public static String readFirstLine( final Path fFile )
+    {
+        return readFirstLine( fFile.toFile() );
+    }
     public static String readFirstLine( final File fFile )
     {
         String aLine = null;
@@ -47,9 +52,17 @@ public final class FileUtils
         return aLine;
     }
 
+    public static List<String> readAllLines( final Path fFile )
+    {
+        return readAllLines( fFile.toFile(), 0 );
+    }
     public static List<String> readAllLines( final File fFile )
     {
         return readAllLines( fFile, 0 );
+    }
+    public static List<String> readAllLines( final Path fFile, final int fSkipLines )
+    {
+        return readAllLines(fFile.toFile(), fSkipLines);
     }
     public static List<String> readAllLines( final File fFile, final int fSkipLines )
     {
