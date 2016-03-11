@@ -18,19 +18,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.remoteaccess.IRemoteAccess;
 import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
+import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public class SingletonWatcher
 {
     private static final Logger sm_Log = Logger.getLogger(SingletonWatcher.class);
 
-    private static final String sm_FileHeader = "TimeStamp;TimeStamp(human readable);Info\r\n";
+    private static final String sm_FileHeader = "#TimeStamp;TimeStamp(human readable);Info\r\n";
     private static final String sm_BusyFileBaseName = "BusyFile";
     private static final String sm_BusyFileExt = ".txt";
     private static final String sm_BusyFileName = sm_BusyFileBaseName+sm_BusyFileExt;
@@ -63,24 +65,24 @@ public class SingletonWatcher
         m_RemoteAccess  = fRemoteAccess;
     }
 
-    public boolean amIAlone()
+    public String getRemoteInfo()
     {
         try{
             final Path aLocalFile = Files.createTempFile( sm_BusyFileBaseName, sm_BusyFileExt );
             final LocalRemotePathPair aPathPair = createLocalRemotePathPair( aLocalFile );
             getRemoteAccess().download( aPathPair );
-            boolean aIamAlone = false;
             if( isOutDated( aLocalFile ) ){
                 getRemoteAccess().delete( Paths.get( sm_BusyFileName ) );
-                aIamAlone = true;
+                return null;
             }
+            final List<String> aLines = FileUtils.readAllLines( aLocalFile, 1 );
             Files.delete( aLocalFile );
-            return aIamAlone;
+            return aLines.get( 0 );
         }catch( final Exception fEx ){
             // Das ist zwar etwas gewagt, aber ich gehe mal davon aus, dass
             // niemand sonst am Machen ist, wenn etwas mit dem Download schief
             // gegangen ist:
-            return true;
+            return null;
         }
     }
 
@@ -89,8 +91,12 @@ public class SingletonWatcher
         return new LocalRemotePathPair( fLocalFile, sm_RemoteBusyFilePath );
     }
 
-    public void start()
+    public void start() throws Exception
     {
+        final String aRemoteInfo = getRemoteInfo();
+        if( aRemoteInfo != null ){
+            throw new Exception("Es läuft schon eine andere Applikation: "+aRemoteInfo);
+        }
         if( m_Thread != null ){
             return;
         }
@@ -183,7 +189,7 @@ public class SingletonWatcher
             final String aTimeStr = aParts[0];
             final long aTimeStamp= Long.parseLong( aTimeStr );
             final long aNow = System.currentTimeMillis();
-            return ( aNow - aTimeStamp > 2*getCycleTime() );
+            return ( aNow - aTimeStamp > 3*getCycleTime() );
 
         } catch( final FileNotFoundException fEx ){
             return true;

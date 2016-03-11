@@ -15,14 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
@@ -41,7 +36,7 @@ public class CheckSumCreatorTest
         try{
             final Path aFileMD5 = aMD5Creator.process( FILE1 );
             assertNotNull("FileMD5", aFileMD5);
-            final List<String> aLines = readLines( aFileMD5.toFile() );
+            final List<String> aLines = FileUtils.readAllLines( aFileMD5.toFile() );
             assertEquals("FileMD5-Lines", 3, aLines.size());
             final String aLine2 = aLines.get( 2 );
             final String[] aParts = aLine2.split( " " );
@@ -54,26 +49,6 @@ public class CheckSumCreatorTest
 
     }
 
-    private static List<String> readLines( final File fFile)
-    {
-        final List<String> aLines = new ArrayList<>();
-        BufferedReader in = null;
-        try{
-            in = new BufferedReader(new FileReader(fFile));
-
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                aLines.add( line );
-            }
-        }catch( final IOException fEx ){
-            fail("Exception: "+fEx.getMessage() );
-        } finally {
-            if( in != null){
-                try { in.close(); } catch ( final Exception e ) {/**/}
-            }
-        }
-        return aLines;
-    }
 }
 
 // ############################################################################
