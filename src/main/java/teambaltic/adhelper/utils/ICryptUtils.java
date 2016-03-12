@@ -1,7 +1,7 @@
 /**
- * IAllSettings.java
+ * ICryptUtils.java
  *
- * Created on 04.03.2016
+ * Created on 12.03.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
  * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
@@ -9,15 +9,17 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.model.settings;
+package teambaltic.adhelper.utils;
+
+import java.nio.file.Path;
 
 // ############################################################################
-public interface IAllSettings
+public interface ICryptUtils
 {
-    IAppSettings  getAppSettings();
-    IClubSettings getClubSettings();
-    IUserSettings getUserSettings();
-    IRemoteAccessSettings getRemoteAccessSettings();
+    Path encrypt( Path fFile ) throws Exception;
+    Path decrypt( Path fFile ) throws Exception;
+    byte[] encrypt( String fText );
+    String decrypt( byte[] fText );
 }
 
 // ############################################################################

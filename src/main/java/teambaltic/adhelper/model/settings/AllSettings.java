@@ -12,7 +12,6 @@
 package teambaltic.adhelper.model.settings;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 // ############################################################################
 public enum AllSettings implements IAllSettings
@@ -23,6 +22,12 @@ public enum AllSettings implements IAllSettings
     private IAppSettings m_AppSettings;
     @Override
     public IAppSettings getAppSettings(){ return m_AppSettings; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private IRemoteAccessSettings m_RemoteAccessSettings;
+    @Override
+    public IRemoteAccessSettings getRemoteAccessSettings(){ return m_RemoteAccessSettings; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -40,24 +45,16 @@ public enum AllSettings implements IAllSettings
     public void init() throws Exception
     {
         m_AppSettings = new AppSettings();
-        final Path aPath_Settings = getPath_Settings();
 
-        final String aFileName_ClubSettings = m_AppSettings.getFileName_ClubData();
-        final Path aClubFile = Paths.get( aPath_Settings.toString(), aFileName_ClubSettings );
+        final Path aClubFile = m_AppSettings.getFile_ClubData();
         m_ClubSettings = new ClubSettings( aClubFile );
 
-        final String aFileName_UserSettings = m_AppSettings.getFileName_UserData();
-        final Path aUserFile = Paths.get( aPath_Settings.toString(), aFileName_UserSettings );
+        final Path aUserFile = m_AppSettings.getFile_UserSettings();
         m_UserSettings = new UserSettings( aUserFile );
 
-    }
+        final Path aRemoteAccessFile = m_AppSettings.getFile_RemoteAccessSettings();
+        m_RemoteAccessSettings = new RemoteAccessSettings( aRemoteAccessFile );
 
-    private Path getPath_Settings()
-    {
-        final String aFolderName_Data = m_AppSettings.getFolderName_Data();
-        final String aFolderName_Settings = m_AppSettings.getFolderName_Settings();
-        final Path aPath_Settings = Paths.get( aFolderName_Data, aFolderName_Settings );
-        return aPath_Settings;
     }
 
 }

@@ -45,6 +45,12 @@ public class UserSettings extends ASettings<IUserSettings.EKey>
     }
 
     @Override
+    public String getDecoratedEMail()
+    {
+        return String.format("%s <%s>",getName(), getEMail());
+    }
+
+    @Override
     public ERole getRole()
     {
         final String aRoleStringValue = getStringValue(EKey.ROLE);

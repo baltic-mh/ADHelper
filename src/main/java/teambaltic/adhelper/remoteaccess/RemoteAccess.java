@@ -16,9 +16,10 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
+
+import teambaltic.adhelper.model.settings.IRemoteAccessSettings;
 
 // ############################################################################
 public class RemoteAccess implements IRemoteAccess
@@ -27,9 +28,9 @@ public class RemoteAccess implements IRemoteAccess
 
     private final IRemoteAccess m_RemoteEngine;
 
-    public RemoteAccess(final Properties fProperties)
+    public RemoteAccess(final IRemoteAccessSettings fRASettings)
     {
-        m_RemoteEngine = createRemoteEngine(fProperties);
+        m_RemoteEngine = createRemoteEngine(fRASettings);
     }
 
     @Override
@@ -82,13 +83,13 @@ public class RemoteAccess implements IRemoteAccess
         m_RemoteEngine.download( fPathPairs );
     }
 
-    private static IRemoteAccess createRemoteEngine(final Properties fProperties)
+    private static IRemoteAccess createRemoteEngine(final IRemoteAccessSettings fRASettings)
     {
-        final String aProtocol = fProperties.getProperty( "protocol", "sftp" );
+        final String aProtocol = fRASettings.getProtocol();
         IRemoteAccess aRemoteEngine = null;
         switch( aProtocol ){
             case "sftp":
-                aRemoteEngine = createRemoteEngine_SFTP( fProperties );
+                aRemoteEngine = createRemoteEngine_SFTP( fRASettings );
                 break;
 
             default:
@@ -98,14 +99,13 @@ public class RemoteAccess implements IRemoteAccess
         return aRemoteEngine;
     }
 
-    private static IRemoteAccess createRemoteEngine_SFTP( final Properties fProperties )
+    private static IRemoteAccess createRemoteEngine_SFTP( final IRemoteAccessSettings fSettings )
     {
-        final String aRemoteRootDir = fProperties.getProperty( "remoterootdir" );
-        final String aServer        = fProperties.getProperty( "server" );
-        final String aPortStr       = fProperties.getProperty( "port" );
-        final String aUser          = fProperties.getProperty( "user" );
-        final String aKeyFileName   = fProperties.getProperty( "keyfile" );
-        final int aPort = Integer.parseInt( aPortStr );
+        final String aServer        = fSettings.getServerName();
+        final int aPort             = fSettings.getPort();
+        final String aUser          = fSettings.getUserName();
+        final String aRemoteRootDir = fSettings.getRemoteRootDir();
+        final String aKeyFileName   = fSettings.getKeyFile();
         final File aKeyFile = new File(aKeyFileName);
         final SFTPWithKey aRemoteEngine = new SFTPWithKey(aRemoteRootDir, aServer, aPort, aUser, aKeyFile);
         return aRemoteEngine;

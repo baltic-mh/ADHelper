@@ -28,7 +28,7 @@ import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
-public class SingletonWatcher
+public class SingletonWatcher implements ISingletonWatcher
 {
     private static final Logger sm_Log = Logger.getLogger(SingletonWatcher.class);
 

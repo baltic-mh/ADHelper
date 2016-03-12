@@ -34,6 +34,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.controller.ITransferController;
+import teambaltic.adhelper.controller.InitHelper;
 import teambaltic.adhelper.gui.listeners.ExportListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
@@ -58,13 +60,13 @@ public class ADH_Application
     // ------------------------------------------------------------------------
     private UserSettingsListener m_UserSettingsListener;
     private UserSettingsListener getUserSettingsListener(){ return m_UserSettingsListener; }
-    private void setUserSettingsListener( final UserSettingsListener fNewVal ){ m_UserSettingsListener = fNewVal; }
+    void setUserSettingsListener( final UserSettingsListener fNewVal ){ m_UserSettingsListener = fNewVal; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private String m_DataFolderName;
     private String getDataFolderName(){ return m_DataFolderName; }
-    private void setDataFolderName( final String fNewVal ){ m_DataFolderName = fNewVal; }
+    void setDataFolderName( final String fNewVal ){ m_DataFolderName = fNewVal; }
     // ------------------------------------------------------------------------
 
     /**
@@ -89,8 +91,9 @@ public class ADH_Application
                         aAppWindow.initialize();
                         aAppWindow.setVisible( true );
 
-                        final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE);
-                        aDataProvider.init();
+                        final ITransferController aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+
+                        final ADH_DataProvider aDataProvider = InitHelper.initDataProvider();
 
                         aAppWindow.populate( aDataProvider );
 
@@ -107,30 +110,6 @@ public class ADH_Application
             }
 
         } );
-    }
-
-    private static void initSettings( final ADH_Application fAppWindow ) throws Exception
-    {
-        AllSettings.INSTANCE.init();
-        final String aDFN = AllSettings.INSTANCE.getAppSettings().getFolderName_Data();
-        fAppWindow.setDataFolderName( aDFN );
-        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
-        fAppWindow.setUserSettingsListener( initUserSettings( aUserSettings ) );
-    }
-
-    private static UserSettingsListener initUserSettings(final IUserSettings fUserSettings)
-    {
-        final UserSettingsDialog aDialog = new UserSettingsDialog();
-        final JButton aBtn_OK = aDialog.getBtn_OK();
-        final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings );
-        aBtn_OK.addActionListener( l );
-
-        final ERole aRole = fUserSettings.getRole();
-        if( ERole.ESKIMO.equals( aRole ) ){
-            aDialog.setVisible( true );
-        }
-
-        return l;
     }
 
     /**
@@ -216,6 +195,30 @@ public class ADH_Application
 
         final JMenu mnHilfe = new JMenu("Hilfe");
         menuBar.add(mnHilfe);
+    }
+
+    public static void initSettings( final ADH_Application fAppWindow ) throws Exception
+    {
+        AllSettings.INSTANCE.init();
+        final String aDFN = AllSettings.INSTANCE.getAppSettings().getFolderName_Data();
+        fAppWindow.setDataFolderName( aDFN );
+        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+        fAppWindow.setUserSettingsListener( populateUserSettings( aUserSettings ) );
+    }
+
+    public static UserSettingsListener populateUserSettings(final IUserSettings fUserSettings)
+    {
+        final UserSettingsDialog aDialog = new UserSettingsDialog();
+        final JButton aBtn_OK = aDialog.getBtn_OK();
+        final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings );
+        aBtn_OK.addActionListener( l );
+
+        final ERole aRole = fUserSettings.getRole();
+        if( ERole.ESKIMO.equals( aRole ) ){
+            aDialog.setVisible( true );
+        }
+
+        return l;
     }
 
 }

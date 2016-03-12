@@ -46,7 +46,7 @@ import javax.naming.OperationNotSupportedException;
  *
  *  You keep private_key.pem around for reference, but you hand the DER versions to your Java programs.
  */
-public class CryptUtils
+public class CryptUtils implements ICryptUtils
 {
     public static final String ALGORITHM = "RSA";
 
@@ -71,11 +71,13 @@ public class CryptUtils
      * @return TargetPath
      * @throws Exception
      */
+    @Override
     public Path encrypt( final Path fFile ) throws Exception
     {
         // TODO
         throw new OperationNotSupportedException( "Noch nicht implementiert!" );
     }
+    @Override
     public Path decrypt( final Path fFile ) throws Exception
     {
         // TODO
@@ -89,6 +91,7 @@ public class CryptUtils
      * @return Encrypted text
      * @throws java.lang.Exception
      */
+    @Override
     public byte[] encrypt(final String text)
     {
         byte[] cipherText = null;
@@ -113,6 +116,7 @@ public class CryptUtils
      * @return plain text
      * @throws java.lang.Exception
      */
+    @Override
     public String decrypt(final byte[] text)
     {
         byte[] decryptedText = null;
