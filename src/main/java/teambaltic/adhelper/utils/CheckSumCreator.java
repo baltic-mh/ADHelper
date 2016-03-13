@@ -16,12 +16,14 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FilenameUtils;
+
+import teambaltic.adhelper.model.CheckSumInfo;
 
 // ############################################################################
 public class CheckSumCreator
@@ -41,27 +43,29 @@ public class CheckSumCreator
         m_Type = fType;
     }
 
-    public Path process( final Path fFile ) throws Exception
+    public CheckSumInfo calculate( final Path fFile ) throws Exception
     {
+        if( !Files.exists( fFile ) ){
+            return null;
+        }
         FileInputStream fis = null;
-        String aMD5Hash = "0";
+        String aHash = "0";
         final File aFile = fFile.toFile();
         try{
             fis = new FileInputStream( aFile );
             switch( getType() ){
                 case MD5:
-                    aMD5Hash = DigestUtils.md5Hex(fis);
+                    aHash = DigestUtils.md5Hex(fis);
                     break;
 
                 case SHA512:
-                    aMD5Hash = DigestUtils.sha512Hex(fis);
+                    aHash = DigestUtils.sha512Hex(fis);
                     break;
                 default:
                     throw new IllegalStateException( "Unbekannter Checksummentyp: "+getType());
             }
-            final Path aOutPath = Paths.get( aFile.getPath() + getExtension() );
-            write( aOutPath, aMD5Hash );
-            return aOutPath;
+            final CheckSumInfo aCSI = new CheckSumInfo(System.currentTimeMillis(), aHash, aFile.getName());
+            return aCSI;
         }finally{
             if( fis != null ){
                 fis.close();
@@ -69,20 +73,28 @@ public class CheckSumCreator
         }
     }
 
-    private static void write( final Path fOutPath, final String fMD5Hash ) throws Exception
+    public Path getCheckSumFile( final Path fFile )
     {
+        final Path aOutPath = Paths.get( fFile.toString() + getExtension() );
+        return aOutPath;
+    }
+
+    public Path write( final Path fFile, final CheckSumInfo fCSI ) throws Exception
+    {
+        final Path aOutPath = getCheckSumFile( fFile );
+        final File aFile = aOutPath.toFile();
         Writer fw = null;
         try{
-            final File aFile = fOutPath.toFile();
-            final String aBaseName = FilenameUtils.getBaseName(aFile.getName());
             fw = new FileWriter( aFile );
-            final Date aTimeStamp = new Date();
+            final long aTS = fCSI.getTimeStamp();
             fw.write( "#TimeStamp;TimeStamp(HR);FileName");
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-            fw.append( String.format( "#%d;%s;%s",aTimeStamp.getTime(), aTimeStamp, aBaseName ) );
+            fw.append( String.format( "#%d;%s;%s", aTS, new Date(aTS), fCSI.getFileName() ) );
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-            fw.append( String.format( "%s *%s",fMD5Hash, aBaseName ) );
+            fw.append( String.format( "%s *%s",fCSI.getHash(), fCSI.getFileName() ) );
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
+
+            return aOutPath;
         }finally{
             if( fw != null )
                 try{

@@ -52,8 +52,14 @@ public enum AllSettings implements IAllSettings
         final Path aUserFile = m_AppSettings.getFile_UserSettings();
         m_UserSettings = new UserSettings( aUserFile );
 
+        // Wenn es keine Zugangsdaten zum Server gibt, arbeiten wir eben lokal!
         final Path aRemoteAccessFile = m_AppSettings.getFile_RemoteAccessSettings();
-        m_RemoteAccessSettings = new RemoteAccessSettings( aRemoteAccessFile );
+        RemoteAccessSettings aRASettings = null;
+        try{
+            aRASettings = new RemoteAccessSettings( aRemoteAccessFile );
+        }catch( final Exception fEx ){
+        }
+        m_RemoteAccessSettings = aRASettings;
 
     }
 

@@ -13,6 +13,8 @@ package teambaltic.adhelper.controller;
 
 import java.nio.file.Path;
 
+import org.apache.log4j.Logger;
+
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IRemoteAccessSettings;
@@ -25,13 +27,23 @@ import teambaltic.adhelper.utils.ICryptUtils;
 // ############################################################################
 public class InitHelper
 {
+    private static final Logger sm_Log = Logger.getLogger(InitHelper.class);
+
     public static ITransferController initTransferController(final AllSettings fAllSettings)
     {
+        IRemoteAccess aRA = null;
         final IRemoteAccessSettings aRASettings = fAllSettings.getRemoteAccessSettings();
-        final IRemoteAccess aRA = new RemoteAccess( aRASettings );
+        if( aRASettings != null ){
+            try{
+                aRA = new RemoteAccess( aRASettings );
+                aRA.init();
+            }catch( final Exception fEx ){
+                sm_Log.warn("Exception: ", fEx );
+            }
+        }
 
         final IAppSettings aAppSettings = fAllSettings.getAppSettings();
-        final Path aSandBox = aAppSettings.getFolderSandBox();
+        final Path aSandBox = aAppSettings.getFolder_SandBox();
         final Path aFile_Crypt_Priv = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PRIV );
         final Path aFile_Crypt_Publ = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PUBL );
         final ICryptUtils aCryptUtils = new CryptUtils( aFile_Crypt_Priv.toFile(), aFile_Crypt_Publ.toFile() );

@@ -20,7 +20,8 @@ import teambaltic.adhelper.model.IKey;
 public interface IAppSettings extends ISettings<IAppSettings.EKey>
 {
     public enum EKey implements IKey {
-        FOLDERNAME_DATA
+        FOLDERNAME_ROOT
+       ,FOLDERNAME_DATA
        ,FOLDERNAME_SETTINGS
        ,FOLDERNAME_SECRETS
        ,FOLDERNAME_SANDBOX
@@ -56,12 +57,16 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
        }
     }
 
+    String getFolderName_Root();
+    Path getFolder_Root();
     String getFolderName_Data();
+    Path getFolder_Data();
     String getFolderName_Settings();
     Path getFolder_Settings();
     String getFolderName_Secrets();
+    Path getFolder_Secrets();
     String getFolderName_SandBox();
-    Path getFolderSandBox();
+    Path getFolder_SandBox();
 
     String getFileName_BaseInfo();
     String getFileName_WorkEvents();

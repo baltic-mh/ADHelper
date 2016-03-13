@@ -12,11 +12,11 @@
 package teambaltic.adhelper.remoteaccess;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.settings.IRemoteAccessSettings;
@@ -28,21 +28,39 @@ public class RemoteAccess implements IRemoteAccess
 
     private final IRemoteAccess m_RemoteEngine;
 
-    public RemoteAccess(final IRemoteAccessSettings fRASettings)
+    public RemoteAccess(final IRemoteAccessSettings fRASettings) throws Exception
     {
         m_RemoteEngine = createRemoteEngine(fRASettings);
     }
 
     @Override
-    public List<URL> list( final Path fRemotePath ) throws Exception
+    public void init() throws Exception
+    {
+        m_RemoteEngine.init();
+    }
+
+    @Override
+    public void close()
+    {
+        m_RemoteEngine.close();
+    }
+
+    @Override
+    public List<String> list( final Path fRemotePath ) throws Exception
     {
         return list( fRemotePath, null );
     }
 
     @Override
-    public List<URL> list( final Path fRemotePath, final String fExt ) throws Exception
+    public List<String> list( final Path fRemotePath, final String fExt ) throws Exception
     {
         return m_RemoteEngine.list( fRemotePath, fExt );
+    }
+
+    @Override
+    public List<String> listFolders( final Path fRemotePath ) throws Exception
+    {
+        return m_RemoteEngine.listFolders( fRemotePath );
     }
 
     @Override
@@ -54,7 +72,15 @@ public class RemoteAccess implements IRemoteAccess
     @Override
     public void delete( final Path fRemotePath ) throws Exception
     {
-        m_RemoteEngine.delete( fRemotePath );
+        try{
+            m_RemoteEngine.delete( fRemotePath );
+        }catch( final Exception fEx ){
+            if( !m_RemoteEngine.exists( fRemotePath ) ){
+                // Was wollen wir mehr!
+            } else {
+                throw fEx;
+            }
+        }
     }
 
     @Override
@@ -84,6 +110,7 @@ public class RemoteAccess implements IRemoteAccess
     }
 
     private static IRemoteAccess createRemoteEngine(final IRemoteAccessSettings fRASettings)
+            throws Exception
     {
         final String aProtocol = fRASettings.getProtocol();
         IRemoteAccess aRemoteEngine = null;
@@ -99,7 +126,7 @@ public class RemoteAccess implements IRemoteAccess
         return aRemoteEngine;
     }
 
-    private static IRemoteAccess createRemoteEngine_SFTP( final IRemoteAccessSettings fSettings )
+    private static IRemoteAccess createRemoteEngine_SFTP( final IRemoteAccessSettings fSettings ) throws FileSystemException
     {
         final String aServer        = fSettings.getServerName();
         final int aPort             = fSettings.getPort();

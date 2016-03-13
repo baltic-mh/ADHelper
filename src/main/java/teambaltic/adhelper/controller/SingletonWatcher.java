@@ -53,6 +53,13 @@ public class SingletonWatcher implements ISingletonWatcher
     private IRemoteAccess getRemoteAccess(){ return m_RemoteAccess; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private boolean m_Connected;
+    @Override
+    public boolean isConnected(){ return m_Connected; }
+    private void setConnected( final boolean fConnected ){ m_Connected = fConnected; }
+    // ------------------------------------------------------------------------
+
     private Thread m_Thread;
 
     public SingletonWatcher(
@@ -65,8 +72,12 @@ public class SingletonWatcher implements ISingletonWatcher
         m_RemoteAccess  = fRemoteAccess;
     }
 
+    @Override
     public String getRemoteInfo()
     {
+        if( getRemoteAccess() == null ){
+            return null;
+        }
         try{
             final Path aLocalFile = Files.createTempFile( sm_BusyFileBaseName, sm_BusyFileExt );
             final LocalRemotePathPair aPathPair = createLocalRemotePathPair( aLocalFile );
@@ -79,9 +90,7 @@ public class SingletonWatcher implements ISingletonWatcher
             Files.delete( aLocalFile );
             return aLines.get( 0 );
         }catch( final Exception fEx ){
-            // Das ist zwar etwas gewagt, aber ich gehe mal davon aus, dass
-            // niemand sonst am Machen ist, wenn etwas mit dem Download schief
-            // gegangen ist:
+            sm_Log.warn( "Unexpected exception: ", fEx );
             return null;
         }
     }
@@ -91,8 +100,15 @@ public class SingletonWatcher implements ISingletonWatcher
         return new LocalRemotePathPair( fLocalFile, sm_RemoteBusyFilePath );
     }
 
+    @Override
     public void start() throws Exception
     {
+        final IRemoteAccess aRemoteAccess = getRemoteAccess();
+        if( aRemoteAccess == null ){
+            sm_Log.warn("No remote access object!");
+            return;
+        }
+
         final String aRemoteInfo = getRemoteInfo();
         if( aRemoteInfo != null ){
             throw new Exception("Es läuft schon eine andere Applikation: "+aRemoteInfo);
@@ -100,13 +116,15 @@ public class SingletonWatcher implements ISingletonWatcher
         if( m_Thread != null ){
             return;
         }
+        // Damit es schon einmal gemacht ist, bevor die Methode beendet ist:
+        uploadBusyFlag();
         m_Thread = new Thread("BusyController"){
             @Override
             public void run(){
                 while( true ){
                     try{
-                        uploadBusyFlag();
                         Thread.sleep( getCycleTime() );
+                        uploadBusyFlag();
                     }catch( final InterruptedException fEx ){
                         break;
                     }
@@ -117,6 +135,7 @@ public class SingletonWatcher implements ISingletonWatcher
         m_Thread.start();
     }
 
+    @Override
     public void stop()
     {
         if( m_Thread == null ){
@@ -166,11 +185,16 @@ public class SingletonWatcher implements ISingletonWatcher
 
     private void uploadBusyFile( final Path fBusyFile )
     {
+        final IRemoteAccess aRemoteAccess = getRemoteAccess();
+        if( aRemoteAccess == null ){
+            return;
+        }
         try{
             final LocalRemotePathPair aPathPair = createLocalRemotePathPair( fBusyFile );
-            getRemoteAccess().upload( aPathPair );
+            aRemoteAccess.upload( aPathPair );
+            setConnected(true);
         }catch( final Exception fEx ){
-            // TODO Auto-generated catch block
+            setConnected(false);
             sm_Log.warn("Exception: ", fEx );
         }
 

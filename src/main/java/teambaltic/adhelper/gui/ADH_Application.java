@@ -92,6 +92,7 @@ public class ADH_Application
                         aAppWindow.setVisible( true );
 
                         final ITransferController aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+                        aTC.start();
 
                         final ADH_DataProvider aDataProvider = InitHelper.initDataProvider();
 
@@ -102,7 +103,7 @@ public class ADH_Application
                         final String aMsg = ExceptionUtils.getStackTrace(fEx);
                         JOptionPane.showMessageDialog( aAppWindow.m_frame, aMsg, "Fataler Fehler!",
                                     JOptionPane.ERROR_MESSAGE );
-                        System.exit( 1 );
+                        aAppWindow.shutdown(1);
                     }
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
@@ -209,6 +210,9 @@ public class ADH_Application
     public static UserSettingsListener populateUserSettings(final IUserSettings fUserSettings)
     {
         final UserSettingsDialog aDialog = new UserSettingsDialog();
+        aDialog.getTf_Name().setText( fUserSettings.getName() );
+        aDialog.getTf_EMail().setText( fUserSettings.getEMail() );
+        aDialog.getCb_Role().setSelectedItem( fUserSettings.getRole() );
         final JButton aBtn_OK = aDialog.getBtn_OK();
         final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings );
         aBtn_OK.addActionListener( l );
@@ -219,6 +223,11 @@ public class ADH_Application
         }
 
         return l;
+    }
+
+    private void shutdown(final int fExitCode)
+    {
+        System.exit( fExitCode );
     }
 
 }

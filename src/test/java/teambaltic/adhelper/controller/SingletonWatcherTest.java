@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -181,31 +180,19 @@ public class SingletonWatcherTest
         }
 
         @Override
-        public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception
-        {
-            // TODO Auto-generated method stub
-        }
-
+        public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception{}
         @Override
-        public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
-        {
-            // TODO Auto-generated method stub
-        }
-
+        public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception{}
         @Override
-        public List<URL> list( final Path fRemotePath ) throws Exception
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
+        public List<String> list( final Path fRemotePath ) throws Exception{ return null; }
         @Override
-        public List<URL> list( final Path fRemotePath, final String fExt ) throws Exception
-        {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
+        public List<String> list( final Path fRemotePath, final String fExt ) throws Exception{ return null; }
+        @Override
+        public List<String> listFolders( final Path fRemotePath ) throws Exception{ return null; }
+        @Override
+        public void init() throws Exception{}
+        @Override
+        public void close(){}
     }
 }
 

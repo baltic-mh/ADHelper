@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +26,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,10 +43,27 @@ public class SFTPWithKeyTest
     // ########################################################################
     // INITIALISIERUNG
     // ########################################################################
+
+    private static SFTPWithKey sm_SFTPWithKey;
     @BeforeClass
     public static void initOnceBeforeStart()
     {
         Log4J.initLog4J();
+        sm_SFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Einstellungen/ssh/id_rsa"));
+        try{
+            sm_SFTPWithKey.init();
+        }catch( final Exception fEx ){
+            sm_Log.error("Exception: ", fEx );
+            fail(fEx.getMessage());
+        }
+
+    }
+    @AfterClass
+    public static void shutdownWhenFinished()
+    {
+        if( sm_SFTPWithKey != null ){
+            sm_SFTPWithKey.close();
+        }
     }
 
     @Before
@@ -66,16 +83,15 @@ public class SFTPWithKeyTest
     @Test
     public void test_List()
     {
-        final SFTPWithKey aSFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Daten/Einstellungen/ssh/id_rsa"));
 
         final Path aRemotePath = Paths.get( "SubDir" );
         try{
-            final List<URL> aURLs = aSFTPWithKey.list( aRemotePath );
-            assertNotNull("list", aURLs);
-            for( final URL aURL : aURLs ){
-                sm_Log.info( "List: File found:"+aURL );
+            final List<String> aPaths = sm_SFTPWithKey.list( aRemotePath );
+            assertNotNull("list", aPaths);
+            for( final String aPath : aPaths ){
+                sm_Log.info( "List: File found: "+aPath );
             }
-            assertEquals( "URLs.size", 4, aURLs.size() );
+            assertEquals( "Paths.size", 4, aPaths.size() );
         }catch( final Exception fEx ){
             fail("Exception: "+fEx );
         }
@@ -84,17 +100,34 @@ public class SFTPWithKeyTest
     @Test
     public void test_ListByExtension()
     {
-        final SFTPWithKey aSFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Daten/Einstellungen/ssh/id_rsa"));
 
         final Path aRemotePath = Paths.get( "SubDir" );
         try{
-            final List<URL> aURLs = aSFTPWithKey.list( aRemotePath, "md5" );
-            assertNotNull("list", aURLs);
-            for( final URL aURL : aURLs ){
-                sm_Log.info( "List md5: File found:"+aURL );
-                assertTrue("Endswith md5", aURL.toString().toLowerCase().endsWith( "md5" ));
+            final List<String> aPaths = sm_SFTPWithKey.list( aRemotePath, "md5" );
+            assertNotNull("list", aPaths);
+            for( final String aPath : aPaths ){
+                sm_Log.info( "List md5: File found: "+aPath );
+                assertTrue("Endswith md5", aPath.toString().toLowerCase().endsWith( "md5" ));
             }
-            assertEquals( "URLs.size", 2, aURLs.size() );
+            assertEquals( "Paths.size", 2, aPaths.size() );
+
+        }catch( final Exception fEx ){
+            fail("Exception: "+fEx );
+        }
+    }
+
+    @Test
+    public void test_ListFolder()
+    {
+
+        final Path aRemotePath = Paths.get( "." );
+        try{
+            final List<String> aPaths = sm_SFTPWithKey.listFolders( aRemotePath );
+            assertNotNull("list", aPaths);
+            for( final String aPath : aPaths ){
+                sm_Log.info( "List : Folder found: "+aPath );
+            }
+            assertEquals( "Paths.size", 2, aPaths.size() );
 
         }catch( final Exception fEx ){
             fail("Exception: "+fEx );
@@ -104,7 +137,6 @@ public class SFTPWithKeyTest
     @Test
     public void test_Download()
     {
-        final SFTPWithKey aSFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Daten/Einstellungen/ssh/id_rsa"));
         final Path aLocalPath = Paths.get("misc/SandBox/File-Downloaded.txt");
         try{
             Files.delete( aLocalPath );
@@ -113,7 +145,7 @@ public class SFTPWithKeyTest
         }
         final Path aRemotePath = Paths.get( "Anmerkungen.txt" );
         try{
-            aSFTPWithKey.download( new LocalRemotePathPair( aLocalPath, aRemotePath ) );
+            sm_SFTPWithKey.download( new LocalRemotePathPair( aLocalPath, aRemotePath ) );
             assertTrue("Downloaded file exists", Files.exists( aLocalPath ));
         }catch( final Exception fEx ){
             fail("Exception: "+fEx );
@@ -123,22 +155,21 @@ public class SFTPWithKeyTest
     @Test
     public void test_Upload()
     {
-        final SFTPWithKey aSFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Daten/Einstellungen/ssh/id_rsa"));
         final Path aLocalPath = Paths.get("README");
 
         final Path aRemotePath = Paths.get( "README" );
         try{
-            final boolean aExistsOnServer = aSFTPWithKey.exists( aRemotePath );
+            final boolean aExistsOnServer = sm_SFTPWithKey.exists( aRemotePath );
             if(aExistsOnServer){
                 try{
-                    aSFTPWithKey.delete( aRemotePath );
+                    sm_SFTPWithKey.delete( aRemotePath );
                 }catch( final Exception fEx ){
                     /*Da kommt zwar ne Exception, die Datei ist aber trotzdem gelöscht*/
                 }
             }
-            assertFalse("Remote file exists1", aSFTPWithKey.exists( aRemotePath ));
-            aSFTPWithKey.upload(  new LocalRemotePathPair( aLocalPath, aRemotePath ) );
-            assertTrue("Uploaded file exists", aSFTPWithKey.exists( aRemotePath ));
+            assertFalse("Remote file exists1", sm_SFTPWithKey.exists( aRemotePath ));
+            sm_SFTPWithKey.upload(  new LocalRemotePathPair( aLocalPath, aRemotePath ) );
+            assertTrue("Uploaded file exists", sm_SFTPWithKey.exists( aRemotePath ));
         }catch( final Exception fEx ){
             fail("Exception: "+fEx );
         }

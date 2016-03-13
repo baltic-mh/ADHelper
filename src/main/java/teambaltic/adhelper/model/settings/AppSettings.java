@@ -21,11 +21,12 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
 
     public AppSettings()
     {
-        this(System.getProperty( "adhelper.folder.data", "Daten"));
+        this(System.getProperty( "adhelper.folder.data", "."));
     }
-    public AppSettings(final String fFolderName_Data)
+    public AppSettings(final String fFolderName_Root)
     {
-        setStringValue( EKey.FOLDERNAME_DATA,       fFolderName_Data );
+        setStringValue( EKey.FOLDERNAME_ROOT,       fFolderName_Root );
+        setStringValue( EKey.FOLDERNAME_DATA,       "Daten" );
         setStringValue( EKey.FOLDERNAME_SETTINGS,   "Einstellungen" );
         setStringValue( EKey.FOLDERNAME_SANDBOX,    "Sandkiste" );
         setStringValue( EKey.FOLDERNAME_SECRETS,    "ssh" );
@@ -47,9 +48,24 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     protected EKey[] getKeyValues(){ return EKey.values(); }
 
     @Override
+    public String getFolderName_Root()
+    {
+        return getStringValue( EKey.FOLDERNAME_ROOT );
+    }
+    @Override
+    public Path getFolder_Root()
+    {
+        return getFolder( getFolderName_Root() );
+    }
+    @Override
     public String getFolderName_Data()
     {
         return getStringValue( EKey.FOLDERNAME_DATA );
+    }
+    @Override
+    public Path getFolder_Data()
+    {
+        return getFolder( getFolderName_Data() );
     }
     @Override
     public String getFolderName_Settings()
@@ -59,11 +75,8 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public Path getFolder_Settings()
     {
-        final String aFolderName = getFolderName_Settings();
-        final Path aPath = Paths.get( aFolderName );
-        return aPath;
+        return getFolder( getFolderName_Settings() );
     }
-
 
     @Override
     public String getFolderName_Secrets()
@@ -71,17 +84,19 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getStringValue( EKey.FOLDERNAME_SECRETS );
     }
     @Override
+    public Path getFolder_Secrets()
+    {
+        return getFolder( getFolderName_Secrets() );
+    }
+    @Override
     public String getFolderName_SandBox()
     {
         return getStringValue( EKey.FOLDERNAME_SANDBOX );
     }
     @Override
-    public Path getFolderSandBox()
+    public Path getFolder_SandBox()
     {
-        final String aFolderName = getFolderName_Secrets();
-        final String aFileName   = getStringValue( EKey.FOLDERNAME_SANDBOX );
-        final Path aPath = Paths.get( aFolderName, aFileName );
-        return aPath;
+        return getFolder( getFolderName_SandBox() );
     }
     @Override
     public String getFileName_BaseInfo()
@@ -106,10 +121,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public Path getFile_UserSettings()
     {
-        final String aFolderName = getFolderName_Settings();
-        final String aFileName   = getStringValue( EKey.FILENAME_USERDATA);
-        final Path aPath = Paths.get( aFolderName, aFileName );
-        return aPath;
+        return getFile( getFolderName_Settings(), getFileName_UserSettings() );
     }
     @Override
     public String getFileName_ClubData()
@@ -119,10 +131,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public Path getFile_ClubData()
     {
-        final String aFolderName = getFolderName_Settings();
-        final String aFileName   = getStringValue( EKey.FILENAME_CLUBDATA);
-        final Path aPath = Paths.get( aFolderName, aFileName );
-        return aPath;
+        return getFile( getFolderName_Settings(), getFileName_ClubData() );
     }
     @Override
     public String getFileName_RemoteAccessSettings()
@@ -134,8 +143,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     {
         final String aFolderName = getFolderName_Settings();
         final String aFileName   = getStringValue( EKey.FILENAME_REMOTEACCESSDATA);
-        final Path aPath = Paths.get( aFolderName, aFileName );
-        return aPath;
+        return getFile( aFolderName, aFileName );
     }
 
     @Override
@@ -155,9 +163,18 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public Path getFile_Crypt( final EKey fPrivOrPub )
     {
-        final String aFolderName_Secrets = getFolderName_Secrets();
-        final String aFileName_Crypt = getFileName_Crypt( fPrivOrPub );
-        final Path aPath = Paths.get( aFolderName_Secrets, aFileName_Crypt );
+        return getFile( getFolderName_Secrets(), getFileName_Crypt( fPrivOrPub ) );
+    }
+
+    private Path getFile( final String fFolderName, final String fFileName )
+    {
+        final Path aPath = Paths.get( getFolderName_Root(), fFolderName, fFileName );
+        return aPath;
+    }
+
+    private Path getFolder( final String fFolderName )
+    {
+        final Path aPath = Paths.get( getFolderName_Root(), fFolderName );
         return aPath;
     }
 }

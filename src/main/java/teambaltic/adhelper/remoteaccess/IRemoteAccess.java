@@ -11,15 +11,18 @@
 // ############################################################################
 package teambaltic.adhelper.remoteaccess;
 
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
 // ############################################################################
 public interface IRemoteAccess
 {
-    List<URL> list( Path fRemotePath ) throws Exception;
-    List<URL> list( Path fRemotePath, String fExt ) throws Exception;
+    void init() throws Exception;
+    void close();
+
+    List<String> list( Path fRemotePath ) throws Exception;
+    List<String> list( Path fRemotePath, String fExt ) throws Exception;
+    List<String> listFolders( Path fRemotePath ) throws Exception;
 
     void delete   ( Path fRemotePath ) throws Exception;
     boolean exists( Path fRemotePath ) throws Exception;

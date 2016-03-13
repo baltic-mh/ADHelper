@@ -24,7 +24,9 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.FileType;
 import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
@@ -33,10 +35,7 @@ import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 //############################################################################
 public class SFTPWithKey implements IRemoteAccess
 {
-    // ------------------------------------------------------------------------
-    private final StandardFileSystemManager m_FS_Manager;
-    private StandardFileSystemManager getFS_Manager(){ return m_FS_Manager; }
-    // ------------------------------------------------------------------------
+//    private static final Logger sm_Log = Logger.getLogger(SFTPWithKey.class);
 
     // ------------------------------------------------------------------------
     private final String m_RemoteRootDir;
@@ -63,6 +62,16 @@ public class SFTPWithKey implements IRemoteAccess
     private int getPort(){ return m_Port; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private StandardFileSystemManager m_FS_Manager;
+    private StandardFileSystemManager getFS_Manager(){ return m_FS_Manager; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final String m_PathPrefix;
+    private String getPathPrefix(){ return m_PathPrefix; }
+    // ------------------------------------------------------------------------
+
     public SFTPWithKey(
             final String fRemoteRootDir,
             final String fServer,
@@ -70,12 +79,43 @@ public class SFTPWithKey implements IRemoteAccess
             final String fUser,
             final File fKeyFile )
     {
-        m_FS_Manager = new StandardFileSystemManager();
         m_RemoteRootDir = fRemoteRootDir;
         m_Server    = fServer;
         m_Port      = fPort;
         m_User      = fUser;
         m_KeyFile   = fKeyFile;
+
+        m_PathPrefix = createPathPrefix(getUser(), getServer(), getPort(), getRemoteRootDir());
+    }
+
+    @Override
+    public void init() throws Exception
+    {
+        m_FS_Manager = initFileSystemManager();
+    }
+
+    @Override
+    public void close()
+    {
+        final StandardFileSystemManager aFS_Manager = getFS_Manager();
+        if( aFS_Manager == null ){
+            return;
+        }
+        aFS_Manager.close();
+    }
+
+    private static StandardFileSystemManager initFileSystemManager() throws FileSystemException
+    {
+        final StandardFileSystemManager aFS_Manager = new StandardFileSystemManager();
+//        final File aTempDir = new File(System.getProperty("java.io.tmpdir"));
+//        sm_Log.info("Tempdir is: "+aTempDir);
+//        aFS_Manager.setTemporaryFileStore( new DefaultFileReplicator( aTempDir) );
+//        aFS_Manager.setLogger( null );
+
+        // Initializes the file manager
+        aFS_Manager.init();
+
+        return aFS_Manager;
     }
 
     @Override
@@ -90,20 +130,11 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        try {
-            // Initializes the file manager
-            getFS_Manager().init();
-
-            for( final LocalRemotePathPair aPathPair : fPathPairs ){
-                final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
-                final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
-                // upload der Datei
-                aRemoteObj.copyFrom(aLocalObj, Selectors.SELECT_SELF);
-            }
-
-
-        }finally{
-            aFS_Manager.close();
+        for( final LocalRemotePathPair aPathPair : fPathPairs ){
+            final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
+            final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
+            // upload der Datei
+            aRemoteObj.copyFrom(aLocalObj, Selectors.SELECT_SELF);
         }
     }
 
@@ -119,54 +150,58 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        try {
-            // Initializes the file manager
-            aFS_Manager.init();
-
-            for( final LocalRemotePathPair aPathPair : fPathPairs ){
-                final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
-                final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
-                //download der Datei
-                aLocalObj.copyFrom(aRemoteObj, Selectors.SELECT_SELF);
-            }
-
-        }finally{
-            aFS_Manager.close();
+        for( final LocalRemotePathPair aPathPair : fPathPairs ){
+            final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
+            final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
+            //download der Datei
+            aLocalObj.copyFrom(aRemoteObj, Selectors.SELECT_SELF);
         }
+
     }
 
     @Override
-    public List<URL> list( final Path fRemotePath ) throws Exception
+    public List<String> list( final Path fRemotePath ) throws Exception
     {
-        return list( fRemotePath, null );
+        return list( fRemotePath, (FileSelector)null );
     }
     @Override
-    public List<URL> list( final Path fRemotePath, final String fExt ) throws Exception
+    public List<String> list( final Path fRemotePath, final String fExt ) throws Exception
+    {
+        FileSelector selector = null;
+        if( fExt != null && !"".equals( fExt )){
+            selector = createExtensionSelector(fExt);
+        }
+        return list( fRemotePath, selector );
+
+    }
+    @Override
+    public List<String> listFolders( final Path fRemotePath ) throws Exception
+    {
+        final FileSelector selector = createFolderSelector( getPathPrefix() );
+        return list( fRemotePath, selector );
+
+    }
+    private List<String> list( final Path fRemotePath, final FileSelector fSelector ) throws Exception
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        try {
-            // Initializes the file manager
-            aFS_Manager.init();
-            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
-            List<FileObject> aSelected = new ArrayList<>();
+        final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+        List<FileObject> aSelected = new ArrayList<>();
 
-            if( fExt != null && !"".equals( fExt )){
-                final FileSelector selector = createExtensionSelector(fExt);
-                aRemoteObj.findFiles( selector, false, aSelected );
-            } else {
-                final FileObject[] aChildren = aRemoteObj.getChildren();
-                aSelected = Arrays.asList( aChildren );
-            }
-            final List<URL>aURLs = new ArrayList<>(aSelected.size());
-            for( final FileObject aFileObject : aSelected ){
-                aURLs.add( aFileObject.getURL() );
-            }
-            return  aURLs;
-
-        }finally{
-            aFS_Manager.close();
+        if( fSelector != null ){
+            aRemoteObj.findFiles( fSelector, false, aSelected );
+        } else {
+            final FileObject[] aChildren = aRemoteObj.getChildren();
+            aSelected = Arrays.asList( aChildren );
         }
+        final List<String>aRelativePaths = new ArrayList<>(aSelected.size());
+        for( final FileObject aFileObject : aSelected ){
+            final URL aURL = aFileObject.getURL();
+            final String aRelativePath = makeRelative( getPathPrefix(), aURL );
+            aRelativePaths.add( aRelativePath );
+        }
+        return  aRelativePaths;
+
     }
 
     @Override
@@ -174,15 +209,9 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        try {
-            // Initializes the file manager
-            aFS_Manager.init();
-            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
-            aRemoteObj.delete();
+        final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+        aRemoteObj.delete();
 
-        }finally{
-            aFS_Manager.close();
-        }
     }
 
     @Override
@@ -190,40 +219,40 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        try {
-            // Initializes the file manager
-            aFS_Manager.init();
-            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
-            return aRemoteObj.exists();
+        final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+        return aRemoteObj.exists();
 
-        }finally{
-            aFS_Manager.close();
-        }
     }
 
     private FileObject getRemoteFileObject( final Path fRemotePath,
-            final StandardFileSystemManager fFS_Manager )
+            final FileSystemManager fFS_Manager )
             throws FileSystemException
     {
         final String aConnectionString = createConnectionString(
-                fRemotePath.toString());
+                getPathPrefix(), fRemotePath.toString());
         final FileSystemOptions aDefaultOptions = createDefaultOptions( getKeyFile() );
         final FileObject aRemoteObj = fFS_Manager.resolveFile(
                 aConnectionString, aDefaultOptions);
         return aRemoteObj;
     }
 
-    private static FileObject getLocalFileObject( final Path fLocalPath, final StandardFileSystemManager fFS_Manager )
+    private static FileObject getLocalFileObject( final Path fLocalPath, final FileSystemManager fFS_Manager )
             throws FileSystemException
     {
         final FileObject localFile = fFS_Manager.resolveFile(fLocalPath.toFile().getAbsolutePath());
         return localFile;
     }
 
-    private String createConnectionString(final String fRemotePath) {
-
-        return String.format( "sftp://%s@%s:%d/%s/%s",
-                getUser(), getServer(), getPort(), getRemoteRootDir(), fRemotePath );
+    private static String createConnectionString( final String fPathPrefix, final String fRemotePath )
+    {
+        return String.format( "%s/%s", fPathPrefix, fRemotePath );
+    }
+    private static String createPathPrefix(
+            final String fUser, final String fServer, final int fPort, final String fRemoteRootDir)
+    {
+        final String aPrefix = String.format( "sftp://%s@%s:%d/%s/",
+                fUser, fServer, fPort, fRemoteRootDir );
+        return aPrefix;
     }
 
     private static FileSystemOptions createDefaultOptions(final File fKeyFile) throws FileSystemException{
@@ -239,6 +268,45 @@ public class SFTPWithKey implements IRemoteAccess
         SftpFileSystemConfigBuilder.getInstance().setIdentities(options, new File[] {fKeyFile});
 
         return options;
+    }
+
+    private static String makeRelative( final String fPathPrefix, final URL fURL )
+    {
+        final String aExternalForm = fURL.toExternalForm();
+        final String aLocalPath = aExternalForm.replaceFirst( fPathPrefix, "" );
+        return aLocalPath;
+    }
+
+    private static FileSelector createFolderSelector(final String fRootFolder)
+    {
+        final FileSelector selector = new FileSelector() {
+
+            private final String m_RootFolder = fRootFolder.replaceFirst( "/$", "" );
+            @Override
+            public boolean traverseDescendents( final FileSelectInfo fFileInfo ) throws Exception
+            {
+//                final FileObject aBaseFolder = fFileInfo.getBaseFolder();
+//                final FileObject aFile = fFileInfo.getFile();
+//                return aBaseFolder.equals( aFile );
+                return fFileInfo.getDepth() == 0;
+            }
+
+            @Override
+            public boolean includeFile( final FileSelectInfo fFileInfo ) throws Exception
+            {
+                final FileObject aFile = fFileInfo.getFile();
+                final FileType aFileType = aFile.getType();
+                if( !FileType.FOLDER.equals( aFileType ) ){
+                    return false;
+                }
+                final FileName aFileName = aFile.getName();
+                if(m_RootFolder.equals( aFileName.toString() )){
+                    return false;
+                }
+                return true;
+            }
+        };
+        return selector;
     }
 
     private static FileSelector createExtensionSelector(final String fExt)

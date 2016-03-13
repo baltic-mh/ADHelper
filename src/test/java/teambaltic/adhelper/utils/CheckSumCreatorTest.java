@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import teambaltic.adhelper.model.CheckSumInfo;
 import teambaltic.adhelper.utils.CheckSumCreator.Type;
 
 // ############################################################################
@@ -34,7 +35,23 @@ public class CheckSumCreatorTest
     {
         final CheckSumCreator aMD5Creator = new CheckSumCreator(Type.MD5);
         try{
-            final Path aFileMD5 = aMD5Creator.process( FILE1 );
+            final CheckSumInfo aCSI = aMD5Creator.calculate( FILE1 );
+            assertNotNull("aCSI", aCSI);
+            assertEquals("CSI-Hash", "4ddac5efbbbc3bae3961a798011cf07d", aCSI.getHash());
+            assertEquals("CSI-FileName", "Anmerkungen.txt", aCSI.getFileName());
+        }catch( final Exception fEx ){
+            fail( fEx.getMessage() );
+        }
+
+    }
+
+    @Test
+    public void test_write()
+    {
+        final CheckSumCreator aMD5Creator = new CheckSumCreator(Type.MD5);
+        try{
+            final CheckSumInfo aCSI = aMD5Creator.calculate( FILE1 );
+            final Path aFileMD5 = aMD5Creator.write( FILE1, aCSI );
             assertNotNull("FileMD5", aFileMD5);
             final List<String> aLines = FileUtils.readAllLines( aFileMD5.toFile() );
             assertEquals("FileMD5-Lines", 3, aLines.size());
