@@ -11,6 +11,11 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.nio.file.Path;
+import java.util.List;
+
+import teambaltic.adhelper.utils.FileUtils;
+
 // ############################################################################
 public class CheckSumInfo
 {
@@ -36,9 +41,15 @@ public class CheckSumInfo
         m_FileName  = fFileName;
     }
 
-    public static CheckSumInfo readFromFile()
+    public static CheckSumInfo readFromFile( final Path fCheckSumFile)
     {
-        return null;
+        final List<String> aLines = FileUtils.readAllLines( fCheckSumFile.toFile(), 1 );
+        String[] aParts = aLines.get( 0 ).split( ";" );
+        final long aTS = Long.parseLong( aParts[0].replaceFirst( "^#", "" ) );
+        final String aFileName = aParts[2];
+        aParts = aLines.get( 1 ).split( " " );
+        final String aHash = aParts[0];
+        return new CheckSumInfo(aTS, aHash, aFileName);
     }
 }
 

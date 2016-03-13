@@ -11,7 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
-import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
+import java.nio.file.Path;
 
 // ############################################################################
 public interface ITransferController
@@ -19,7 +19,8 @@ public interface ITransferController
     void start() throws Exception;
     void shutdown() throws Exception;
     boolean isConnected();
-    void upload( LocalRemotePathPair fPathPair );
+    void upload  ( Path fFileToUpload );
+    void download( Path fFileToDownload );
 }
 
 // ############################################################################

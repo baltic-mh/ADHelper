@@ -18,10 +18,9 @@ import java.nio.file.Paths;
 public class AppSettings extends ASettings<IAppSettings.EKey>
     implements IAppSettings
 {
-
     public AppSettings()
     {
-        this(System.getProperty( "adhelper.folder.data", "."));
+        this(System.getProperty( EKey.FOLDERNAME_ROOT.name(), "."));
     }
     public AppSettings(final String fFolderName_Root)
     {
@@ -55,7 +54,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public Path getFolder_Root()
     {
-        return getFolder( getFolderName_Root() );
+        return Paths.get( getFolderName_Root() );
     }
     @Override
     public String getFolderName_Data()
@@ -81,7 +80,8 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public String getFolderName_Secrets()
     {
-        return getStringValue( EKey.FOLDERNAME_SECRETS );
+        final Path aFullFolderName = Paths.get( getFolderName_Settings(), getStringValue( EKey.FOLDERNAME_SECRETS ) );
+        return aFullFolderName.toString();
     }
     @Override
     public Path getFolder_Secrets()
@@ -141,9 +141,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public Path getFile_RemoteAccessSettings()
     {
-        final String aFolderName = getFolderName_Settings();
-        final String aFileName   = getStringValue( EKey.FILENAME_REMOTEACCESSDATA);
-        return getFile( aFolderName, aFileName );
+        return getFile( getFolderName_Settings(), getFileName_RemoteAccessSettings() );
     }
 
     @Override

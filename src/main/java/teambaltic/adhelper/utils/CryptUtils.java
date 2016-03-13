@@ -14,7 +14,10 @@ package teambaltic.adhelper.utils;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -23,9 +26,21 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
-import javax.naming.OperationNotSupportedException;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 
 // ############################################################################
+/**
+ * Im ersten Ansatz hat diese Verschlüsselung nur funktioniert, wenn man weniger
+ * als 245 Bytes zu verschlüsseln hat :-/
+ *
+ * Ich habe das Thema nun erst mal nach hinten gestellt und geben als verschlüsselte
+ * Datei einfach die Original-Datei zurück.
+ *
+ * Einge ganz gute Quelle scheint mir folgendes zu sein:
+ * http://www.torsten-horn.de/techdocs/java-crypto.htm
+ */
 /**
  * http://codeartisan.blogspot.de/2009/05/public-key-cryptography-in-java.html
  *
@@ -48,6 +63,8 @@ import javax.naming.OperationNotSupportedException;
  */
 public class CryptUtils implements ICryptUtils
 {
+    private static final Logger sm_Log = Logger.getLogger(CryptUtils.class);
+
     public static final String ALGORITHM = "RSA";
 
     // ------------------------------------------------------------------------
@@ -60,12 +77,24 @@ public class CryptUtils implements ICryptUtils
     private File getPrivateKeyFile(){ return m_PrivateKeyFile; }
     // ------------------------------------------------------------------------
 
-    public CryptUtils(final File fPrivateKeyFile, final File fPublicKeyFile)
+    // ------------------------------------------------------------------------
+    private final Cipher m_Cipher;
+    private Cipher getCipher(){ return m_Cipher; }
+    // ------------------------------------------------------------------------
+
+    public CryptUtils(final File fPrivateKeyFile, final File fPublicKeyFile) throws Exception
     {
+        // get an RSA cipher object
+        m_Cipher = initCipher();
         m_PrivateKeyFile = fPrivateKeyFile;
         m_PublicKeyFile  = fPublicKeyFile;
     }
 
+    private static Cipher initCipher() throws Exception
+    {
+        final Cipher aCipher = Cipher.getInstance( ALGORITHM );
+        return aCipher;
+    }
     /**
      * @param fFile
      * @return TargetPath
@@ -74,36 +103,50 @@ public class CryptUtils implements ICryptUtils
     @Override
     public Path encrypt( final Path fFile ) throws Exception
     {
-        // TODO
-        throw new OperationNotSupportedException( "Noch nicht implementiert!" );
+        final Path aPath_Cry = Paths.get( fFile.toString()+".cry" );
+        Files.copy( fFile, aPath_Cry, StandardCopyOption.REPLACE_EXISTING );
+        return aPath_Cry;
     }
+
     @Override
     public Path decrypt( final Path fFile ) throws Exception
     {
-        // TODO
-        throw new OperationNotSupportedException( "Noch nicht implementiert!" );
+        final String aFilenameWithout_Cry = FilenameUtils.getBaseName( fFile.toFile().getPath() );
+        final Path aPath_Decry = Paths.get( fFile.getParent().toString(), aFilenameWithout_Cry );
+        Files.copy( fFile, aPath_Decry, StandardCopyOption.REPLACE_EXISTING );
+        return aPath_Decry;
+
+//        final byte[] aData_Cry = Files.readAllBytes( fFile );
+//        final byte[] aData     = decrypt( aData_Cry );
+//        final String aFilenameWithout_Cry = FilenameUtils.getBaseName( fFile.toFile().getPath() );
+//        final Path aPath_Decry = Paths.get( aFilenameWithout_Cry );
+//        Files.write(aPath_Decry, aData );
+//        return aPath_Decry;
     }
     /**
      * Encrypt the plain text using public key.
      *
-     * @param text
+     * @param fText
      *            : original plain text
      * @return Encrypted text
      * @throws java.lang.Exception
      */
-    @Override
-    public byte[] encrypt(final String text)
+    public byte[] encrypt(final String fText)
+    {
+        final byte[] aToEncrypt = fText.getBytes();
+        return encrypt( aToEncrypt );
+
+    }
+    public byte[] encrypt( final byte[] fText )
     {
         byte[] cipherText = null;
         try {
-            // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance( ALGORITHM );
-            final Key aPublicKey = getPublicKey( getPublicKeyFile() );
+            final Key aKey = getPublicKey( getPublicKeyFile() );
             // encrypt the plain text using the public key
-            cipher.init( Cipher.ENCRYPT_MODE, aPublicKey );
-            cipherText = cipher.doFinal( text.getBytes() );
-        } catch (final Exception e) {
-            e.printStackTrace();
+            m_Cipher.init( Cipher.ENCRYPT_MODE, aKey );
+            cipherText = m_Cipher.doFinal( fText );
+        } catch (final Exception fEx) {
+            sm_Log.warn("Problem:", fEx);
         }
         return cipherText;
     }
@@ -116,23 +159,20 @@ public class CryptUtils implements ICryptUtils
      * @return plain text
      * @throws java.lang.Exception
      */
-    @Override
-    public String decrypt(final byte[] text)
+    public byte[] decrypt(final byte[] text)
     {
         byte[] decryptedText = null;
         try {
-            // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance( ALGORITHM );
-            final PrivateKey aPublicKey = getPrivateKey( getPrivateKeyFile() );
+            final PrivateKey aKey = getPrivateKey( getPrivateKeyFile() );
+            getCipher().init( Cipher.DECRYPT_MODE, aKey );
             // decrypt the text using the private key
-            cipher.init( Cipher.DECRYPT_MODE, aPublicKey );
-            decryptedText = cipher.doFinal( text );
+            decryptedText = getCipher().doFinal( text );
 
         } catch (final Exception ex) {
             ex.printStackTrace();
         }
 
-        return new String( decryptedText );
+        return decryptedText;
     }
 
     private static PublicKey getPublicKey(final File fPublicKeyFile)

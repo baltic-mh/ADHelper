@@ -18,8 +18,6 @@ public interface ICryptUtils
 {
     Path encrypt( Path fFile ) throws Exception;
     Path decrypt( Path fFile ) throws Exception;
-    byte[] encrypt( String fText );
-    String decrypt( byte[] fText );
 }
 
 // ############################################################################

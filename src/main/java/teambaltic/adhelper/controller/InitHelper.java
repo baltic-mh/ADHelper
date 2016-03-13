@@ -46,9 +46,15 @@ public class InitHelper
         final Path aSandBox = aAppSettings.getFolder_SandBox();
         final Path aFile_Crypt_Priv = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PRIV );
         final Path aFile_Crypt_Publ = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PUBL );
-        final ICryptUtils aCryptUtils = new CryptUtils( aFile_Crypt_Priv.toFile(), aFile_Crypt_Publ.toFile() );
+        ICryptUtils aCryptUtils = null;
+        try{
+            aCryptUtils = new CryptUtils( aFile_Crypt_Priv.toFile(), aFile_Crypt_Publ.toFile() );
+        }catch( final Exception fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
         final ISingletonWatcher aSW = initSingletonWatcher( fAllSettings, aRA);
-        final ITransferController aTC = new TransferController(aSandBox, aCryptUtils, aRA, aSW);
+        final ITransferController aTC = new TransferController(
+                aAppSettings.getFolder_Root(), aSandBox, aCryptUtils, aRA, aSW);
         return aTC;
     }
 

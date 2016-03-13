@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.apache.log4j.Logger;
 
@@ -29,6 +30,16 @@ import teambaltic.adhelper.utils.ICryptUtils;
 public class TransferController implements ITransferController
 {
     private static final Logger sm_Log = Logger.getLogger(TransferController.class);
+
+    // ------------------------------------------------------------------------
+    private final Path m_SandBox;
+    private Path getSandBox(){ return m_SandBox; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final Path m_RootFolder;
+    private Path getRootFolder(){ return m_RootFolder; }
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final CheckSumCreator   m_CheckSumCreator;
@@ -50,19 +61,16 @@ public class TransferController implements ITransferController
     private ISingletonWatcher getSingletonWatcher(){ return m_SingletonWatcher; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private final Path m_SandBox;
-    private Path getSandBox(){ return m_SandBox; }
-    // ------------------------------------------------------------------------
-
     public TransferController(
+            final Path              fRootFolder,
             final Path              fSandBox,
             final ICryptUtils       fCryptUtils,
             final IRemoteAccess     fRemoteAccess,
             final ISingletonWatcher fSingletonWatcher )
     {
         m_CheckSumCreator   = new CheckSumCreator( Type.MD5 );
-        m_SandBox           = fSandBox;
+        m_RootFolder        = fRootFolder;
+        m_SandBox           = initSandBox(fSandBox);
         m_CryptUtils        = fCryptUtils;
         m_RemoteAccess      = fRemoteAccess;
         m_SingletonWatcher  = fSingletonWatcher;
@@ -84,6 +92,7 @@ public class TransferController implements ITransferController
     {
         getSingletonWatcher().stop();
         getRemoteAccess().close();
+        Files.deleteIfExists( getSandBox() );
     }
 
     @Override
@@ -92,62 +101,88 @@ public class TransferController implements ITransferController
         return getSingletonWatcher().isConnected();
     }
 
-    /**
-     * TODO Wie ist das Remote-File angegeben? Hinten mit .cry? Annahme: ohne .cry!
-     *      Wahrscheinlich doch besser MIT .cry!
-     * @param fPathPair -
-     */
-    private void download(final LocalRemotePathPair fPathPair)
+    @Override
+    public void download(final Path fFileToDownload)
     {
-        final Path aDataFileLocal       = fPathPair.getLocal();
-        final Path aDataFileRemote      = fPathPair.getRemote();
-
-        final CheckSumCreator aCSC      = getCheckSumCreator();
-        final Path aCheckSumFileLocal   = aCSC.getCheckSumFile( aDataFileLocal );
-        final Path aCheckSumFileRemote  = aCSC.getCheckSumFile( aDataFileRemote );
+        final CheckSumCreator aCSC  = getCheckSumCreator();
+        final Path aCheckSumFile    = aCSC.getCheckSumFile( fFileToDownload );
 
         try{
-            final CheckSumInfo aCSILocal = aCSC.calculate( aDataFileLocal );
+            final CheckSumInfo aCSILocal = aCSC.calculate( fFileToDownload );
             if( aCSILocal != null ){
-                final Path aCheckSumFileInSandBox = getSandBoxPath( aCheckSumFileLocal );
+                final Path aCheckSumFileInSandBox = getSandBoxPath( aCheckSumFile );
                 final LocalRemotePathPair aPathPair_CheckSum = new LocalRemotePathPair(
-                        aCheckSumFileInSandBox, aCheckSumFileRemote );
+                        aCheckSumFileInSandBox, aCheckSumFile );
                 m_RemoteAccess.download( aPathPair_CheckSum );
-                final CheckSumInfo aCSIRemote = aCSC.calculate( aCheckSumFileInSandBox );
+                final CheckSumInfo aCSIRemote = CheckSumInfo.readFromFile( aCheckSumFileInSandBox );
                 if( aCSILocal.getHash().equals( aCSIRemote.getHash() )){
                     return;
                 }
             }
-            final Path aDataFileInSandBox = getSandBoxPath( aDataFileLocal );
+            final Path aFileToDownloadInSandBox = getSandBoxPath( fFileToDownload );
+            final Path aFileToDownloadInSandBox_Cry = Paths.get( aFileToDownloadInSandBox.toString()+".cry" );
+            final Path aFileToDownload_Cry          = Paths.get( fFileToDownload+".cry" );
             final LocalRemotePathPair aPathPair_DataFiles = new LocalRemotePathPair(
-                    aDataFileInSandBox, aDataFileRemote );
+                    aFileToDownloadInSandBox_Cry, aFileToDownload_Cry );
             m_RemoteAccess.download( aPathPair_DataFiles );
-            final Path aDataFileInSandBox_Decrypted = getCryptUtils().decrypt( aDataFileInSandBox );
-            Files.copy( aDataFileInSandBox_Decrypted, aDataFileLocal);
+            final Path aDataFileInSandBox_Decrypted = getCryptUtils().decrypt( aFileToDownloadInSandBox_Cry );
+            Files.copy( aDataFileInSandBox_Decrypted, fFileToDownload);
         }catch( final Exception fEx ){
             sm_Log.warn("Exception: ", fEx );
         }
     }
 
     @Override
-    public void upload(final LocalRemotePathPair fPathPair)
+    public void upload(final Path fFileToUpload)
     {
-        final Path aLocal = fPathPair.getLocal();
+        final ICryptUtils aCryptUtils = getCryptUtils();
+        if( aCryptUtils == null ){
+            sm_Log.warn( "Kein Verschlüsselungsobjekt! Hochladen nicht möglich!" );
+            return;
+        }
+        final Path aLocalFile_RelativeToRoot = Paths.get( getRootFolder().toString(), fFileToUpload.toString() );
+        if(Files.isDirectory( aLocalFile_RelativeToRoot )){
+            throw new UnsupportedOperationException("Noch nicht implementiert!");
+        }
+        uploadFile( aLocalFile_RelativeToRoot );
+    }
+    private void uploadFile(final Path fFileToUpload)
+    {
+        final ICryptUtils aCryptUtils = getCryptUtils();
+        final CheckSumCreator aCSC = getCheckSumCreator();
         try{
-            final Path aLocalFileInSandBox = copyFileToSandBox( aLocal );
-            final CheckSumInfo aLocal_CSI = getCheckSumCreator().calculate( aLocalFileInSandBox );
-            final Path aLocal_Encrypted = getCryptUtils().encrypt( aLocal );
-//            m_RemoteAccess.upload( aPathPair_Crypted );
-//            m_RemoteAccess.upload( aPathPair_CheckSum );
-            // MD5-Datei und verschlüsselte Quelldatei hochladen.
+            final Path aFileToUploadInSandBox = copyFileToSandBox( fFileToUpload );
+            final CheckSumInfo aCSI  = aCSC.calculate( aFileToUploadInSandBox );
+            final Path aFileToUploadInSandBox_Encrypted = aCryptUtils.encrypt( aFileToUploadInSandBox );
+            final LocalRemotePathPair aPathPair_Files = new LocalRemotePathPair(
+                    aFileToUploadInSandBox_Encrypted, aFileToUploadInSandBox_Encrypted );
+            m_RemoteAccess.upload( aPathPair_Files );
+
+            final Path aCheckSumFile = aCSC.write( aFileToUploadInSandBox, aCSI );
+            final LocalRemotePathPair aPathPair_CheckSum = new LocalRemotePathPair(
+                    aCheckSumFile, aCheckSumFile );
+            m_RemoteAccess.upload( aPathPair_CheckSum );
         }catch( final Exception fEx ){
             sm_Log.warn("Exception: ", fEx );
         }
     }
 
+    private static Path initSandBox( final Path fSandBox )
+    {
+        if( Files.exists( fSandBox )){
+            return fSandBox;
+        }
+        try{
+            Files.createDirectories( fSandBox );
+            return fSandBox;
+        }catch( final IOException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+            return null;
+        }
+    }
     private Path copyFileToSandBox( final Path fFile ) throws IOException
     {
-        final Path aFileInSandBox = Files.copy( fFile, getSandBoxPath( fFile ) );
+        final Path aFileInSandBox = Files.copy( fFile, getSandBoxPath( fFile ), StandardCopyOption.REPLACE_EXISTING );
         return aFileInSandBox;
     }
 

@@ -1,0 +1,6 @@
+Zum Starten des Programmes müssen folgende Dateien vorhanden sein:
+
+	./Einstellungen/ServerZugangsDaten.prop
+	./Einstellungen/ssh/
+		mit komplettem Inhalt!
+	./Einstellungen/VereinsDaten.prop (Soll später vom Server geladen werden)
