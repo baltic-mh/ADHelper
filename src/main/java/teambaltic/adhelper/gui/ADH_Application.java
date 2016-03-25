@@ -36,6 +36,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.InitHelper;
+import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.listeners.ExportListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
@@ -85,7 +86,7 @@ public class ADH_Application
                 try{
                     initSettings( aAppWindow );
 
-                    InitHelper.assertDataIntegrity( AllSettings.INSTANCE );
+                    IntegrityChecker.check( AllSettings.INSTANCE );
 
                     aAppWindow.initialize();
                     aAppWindow.setVisible( true );

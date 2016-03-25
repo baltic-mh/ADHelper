@@ -12,37 +12,37 @@
 package teambaltic.adhelper.controller;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IAppSettings;
+import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
-public class IntegrityChecker
+public final class IntegrityChecker
 {
-    public IntegrityChecker()
+    private IntegrityChecker(){/**/}
+
+    public static void check(
+            final AllSettings fAllSettings
+            ) throws Exception
     {
-
-    }
-
-    public void check() throws Exception
-    {
-
-    }
-
-    private static String assertExistenceOfDataFiles( final File fBaseInfoFile, final File fWorkEventFile )
-    {
-        String aMsg = "Folgende Dateien existieren nicht: \n\t";
-        final boolean aExists_BIF = fBaseInfoFile.exists();
-        if( !aExists_BIF ){
-            aMsg += fBaseInfoFile.getAbsolutePath();
+        final IAppSettings aAppSettings = fAllSettings.getAppSettings();
+        final Path aDataFolder = aAppSettings.getFolder_Data();
+        if( !Files.exists( aDataFolder )){
+            throw new Exception( "Benötigtes Verzeichnis nicht gefunden: "+aDataFolder.toString() );
         }
-        final boolean aExists_WEF = fWorkEventFile.exists();
-        if( !aExists_WEF ){
-            if( !aExists_BIF ){
-                aMsg += ",";
-            }
-            aMsg += "\n\t"+fWorkEventFile.getAbsolutePath();
+        final Path aFile_BaseData = aAppSettings.getFile_BaseData();
+        if( !Files.exists( aFile_BaseData )){
+            throw new Exception( "Benötigte Datei nicht gefunden: "+aFile_BaseData.toString() );
         }
-
-        return aExists_BIF && aExists_WEF ? null : aMsg;
+        final File[] aInvoicingPeriodFolders = FileUtils.getInvoicingPeriodFolders( aDataFolder.toFile() );
+        if( aInvoicingPeriodFolders == null || aInvoicingPeriodFolders.length == 0 ){
+            throw new Exception( "Keine Unterverzeichnisse mit Abrechnungsdaten gefunden in: "+aDataFolder.toString() );
+        }
     }
+
 
 }
 

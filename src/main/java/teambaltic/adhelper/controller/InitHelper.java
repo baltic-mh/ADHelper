@@ -11,8 +11,6 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.log4j.Logger;
@@ -24,7 +22,6 @@ import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.remoteaccess.IRemoteAccess;
 import teambaltic.adhelper.remoteaccess.RemoteAccess;
 import teambaltic.adhelper.utils.CryptUtils;
-import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.ICryptUtils;
 
 // ############################################################################
@@ -71,25 +68,6 @@ public class InitHelper
         final int aCycleTime = fAllSettings.getAppSettings().getCycleTime_SingletonWatcher();
         final SingletonWatcher aSW = new SingletonWatcher(aInfo, aCycleTime, fRemoteAccess);
         return aSW;
-    }
-
-    public static void assertDataIntegrity(
-            final AllSettings fAllSettings
-            ) throws Exception
-    {
-        final IAppSettings aAppSettings = fAllSettings.getAppSettings();
-        final Path aDataFolder = aAppSettings.getFolder_Data();
-        if( !Files.exists( aDataFolder )){
-            throw new Exception( "Benötigtes Verzeichnis nicht gefunden: "+aDataFolder.toString() );
-        }
-        final Path aFile_BaseData = aAppSettings.getFile_BaseData();
-        if( !Files.exists( aFile_BaseData )){
-            throw new Exception( "Benötigte Datei nicht gefunden: "+aFile_BaseData.toString() );
-        }
-        final File[] aInvoicingPeriodFolders = FileUtils.getInvoicingPeriodFolders( aDataFolder.toFile() );
-        if( aInvoicingPeriodFolders == null || aInvoicingPeriodFolders.length == 0 ){
-            throw new Exception( "Keine Unterverzeichnisse mit Abrechnungsdaten gefunden in: "+aDataFolder.toString() );
-        }
     }
 
     public static ADH_DataProvider initDataProvider() throws Exception
