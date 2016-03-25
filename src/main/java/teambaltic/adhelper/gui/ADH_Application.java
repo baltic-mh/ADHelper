@@ -54,19 +54,17 @@ public class ADH_Application
 {
     private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
 
+    // ------------------------------------------------------------------------
     private JFrame m_frame;
+    public  JFrame getFrame(){ return m_frame; }
+    // ------------------------------------------------------------------------
+
     private MainPanel m_panel;
 
     // ------------------------------------------------------------------------
     private UserSettingsListener m_UserSettingsListener;
     private UserSettingsListener getUserSettingsListener(){ return m_UserSettingsListener; }
     void setUserSettingsListener( final UserSettingsListener fNewVal ){ m_UserSettingsListener = fNewVal; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private String m_DataFolderName;
-    private String getDataFolderName(){ return m_DataFolderName; }
-    void setDataFolderName( final String fNewVal ){ m_DataFolderName = fNewVal; }
     // ------------------------------------------------------------------------
 
     /**
@@ -155,7 +153,7 @@ public class ADH_Application
         m_panel.setWorkEventTableListener(aWorkEventTableListener);
 
         final JButton aBtnExport = m_panel.getBtnExport();
-        aBtnExport.addActionListener( new ExportListener( m_panel, fDataProvider, getDataFolderName() ) );
+        aBtnExport.addActionListener( new ExportListener( this, fDataProvider ) );
 
         GUIUpdater.updateGUI( m_panel.getSelectedMemberID(), m_panel, fDataProvider );
     }
@@ -203,8 +201,6 @@ public class ADH_Application
     public static void initSettings( final ADH_Application fAppWindow ) throws Exception
     {
         AllSettings.INSTANCE.init();
-        final String aDFN = AllSettings.INSTANCE.getAppSettings().getFolderName_Data();
-        fAppWindow.setDataFolderName( aDFN );
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         fAppWindow.setUserSettingsListener( populateUserSettings( aUserSettings ) );
     }
@@ -227,7 +223,7 @@ public class ADH_Application
         return l;
     }
 
-    private void shutdown(final int fExitCode)
+    public void shutdown(final int fExitCode)
     {
         System.exit( fExitCode );
     }

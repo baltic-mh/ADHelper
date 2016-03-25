@@ -20,25 +20,22 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
-import teambaltic.adhelper.gui.MainPanel;
+import teambaltic.adhelper.gui.ADH_Application;
 
 // ############################################################################
 public class ExportListener implements ActionListener
 {
     private static final Logger sm_Log = Logger.getLogger(ExportListener.class);
 
-    private final MainPanel m_Panel;
+    private final ADH_Application  m_App;
     private final ADH_DataProvider m_DataProvider;
-    private final String m_DataFolderName;
 
     public ExportListener(
-            final MainPanel fPanel,
-            final ADH_DataProvider fDataProvider,
-            final String fDataFolderName)
+            final ADH_Application fFrame,
+            final ADH_DataProvider fDataProvider)
     {
-        m_Panel = fPanel;
+        m_App = fFrame;
         m_DataProvider = fDataProvider;
-        m_DataFolderName = fDataFolderName;
     }
 
 
@@ -65,9 +62,10 @@ public class ExportListener implements ActionListener
 
         try{
             m_DataProvider.export( true );
+            System.exit(0);
         }catch( final IOException fEx ){
             final String aMsg = "Probleme beim Export der Daten: "+fEx.getMessage();
-            JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
+            JOptionPane.showMessageDialog(m_App.getFrame(), aMsg, "Schwerwiegender Fehler!",
                     JOptionPane.ERROR_MESSAGE);
             sm_Log.warn("Exception: "+aMsg, fEx );
         }
