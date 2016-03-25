@@ -114,7 +114,7 @@ public final class FileUtils
     public static File determineNewestInvoicingPeriodFolder(
             final File fDataFolder, final String fFinishedFileName )
     {
-        final File[] aChildFolders = fDataFolder.listFiles( new InvoicingPeriodFolderFilter() );
+        final File[] aChildFolders = getInvoicingPeriodFolders( fDataFolder );
         if( aChildFolders.length == 0 ){
             return null;
         }
@@ -138,6 +138,12 @@ public final class FileUtils
             }
         }
         return aResult;
+    }
+
+    public static File[] getInvoicingPeriodFolders( final File fDataFolder )
+    {
+        final File[] aChildFolders = fDataFolder.listFiles( new InvoicingPeriodFolderFilter() );
+        return aChildFolders;
     }
 
     private static boolean isFinished( final File fChildFolder, final String fFinishedFileName )

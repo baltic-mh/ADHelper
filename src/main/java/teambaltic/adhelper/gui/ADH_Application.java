@@ -85,28 +85,30 @@ public class ADH_Application
             public void run()
             {
                 try{
-                    try{
-                        initSettings( aAppWindow );
+                    initSettings( aAppWindow );
 
-                        aAppWindow.initialize();
-                        aAppWindow.setVisible( true );
+                    InitHelper.assertDataIntegrity( AllSettings.INSTANCE );
 
+                    aAppWindow.initialize();
+                    aAppWindow.setVisible( true );
+
+                    if( !stayLocal() ){
                         final ITransferController aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
-                        aTC.start();
-
-                        final ADH_DataProvider aDataProvider = InitHelper.initDataProvider();
-
-                        aAppWindow.populate( aDataProvider );
-
-                    }catch( final Exception fEx ){
-                        sm_Log.error( "Unerwartete Exception: ", fEx );
-                        final String aMsg = ExceptionUtils.getStackTrace(fEx);
-                        JOptionPane.showMessageDialog( aAppWindow.m_frame, aMsg, "Fataler Fehler!",
-                                    JOptionPane.ERROR_MESSAGE );
-                        aAppWindow.shutdown(1);
+                        if( aTC != null ){
+                            aTC.start();
+                        }
                     }
+
+                    final ADH_DataProvider aDataProvider = InitHelper.initDataProvider();
+
+                    aAppWindow.populate( aDataProvider );
+
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
+                    final String aMsg = ExceptionUtils.getStackTrace(fEx);
+                    JOptionPane.showMessageDialog( aAppWindow.m_frame, aMsg, "Fataler Fehler!",
+                                JOptionPane.ERROR_MESSAGE );
+                    aAppWindow.shutdown(1);
                 }
             }
 
@@ -228,6 +230,12 @@ public class ADH_Application
     private void shutdown(final int fExitCode)
     {
         System.exit( fExitCode );
+    }
+
+    private static boolean stayLocal()
+    {
+        final boolean aSysPropStayLocal = Boolean.getBoolean( "staylocal" );
+        return aSysPropStayLocal;
     }
 
 }

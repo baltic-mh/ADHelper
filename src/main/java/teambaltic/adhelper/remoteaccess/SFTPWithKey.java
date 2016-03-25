@@ -113,7 +113,7 @@ public class SFTPWithKey implements IRemoteAccess
 //        aFS_Manager.setLogger( null );
 
         // Initializes the file manager
-        aFS_Manager.init();
+//        aFS_Manager.init();
 
         return aFS_Manager;
     }
@@ -129,12 +129,16 @@ public class SFTPWithKey implements IRemoteAccess
     public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
-
-        for( final LocalRemotePathPair aPathPair : fPathPairs ){
-            final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
-            final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
-            // upload der Datei
-            aRemoteObj.copyFrom(aLocalObj, Selectors.SELECT_SELF);
+        try{
+            aFS_Manager.init();
+            for( final LocalRemotePathPair aPathPair : fPathPairs ){
+                final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
+                final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
+                // upload der Datei
+                aRemoteObj.copyFrom(aLocalObj, Selectors.SELECT_SELF);
+            }
+        }finally{
+            aFS_Manager.close();
         }
     }
 
@@ -150,11 +154,16 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        for( final LocalRemotePathPair aPathPair : fPathPairs ){
-            final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
-            final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
-            //download der Datei
-            aLocalObj.copyFrom(aRemoteObj, Selectors.SELECT_SELF);
+        try{
+            aFS_Manager.init();
+            for( final LocalRemotePathPair aPathPair : fPathPairs ){
+                final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
+                final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
+                //download der Datei
+                aLocalObj.copyFrom(aRemoteObj, Selectors.SELECT_SELF);
+            }
+        }finally{
+            aFS_Manager.close();
         }
 
     }
@@ -185,22 +194,27 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
-        List<FileObject> aSelected = new ArrayList<>();
+        try{
+            aFS_Manager.init();
+            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+            List<FileObject> aSelected = new ArrayList<>();
 
-        if( fSelector != null ){
-            aRemoteObj.findFiles( fSelector, false, aSelected );
-        } else {
-            final FileObject[] aChildren = aRemoteObj.getChildren();
-            aSelected = Arrays.asList( aChildren );
+            if( fSelector != null ){
+                aRemoteObj.findFiles( fSelector, false, aSelected );
+            } else {
+                final FileObject[] aChildren = aRemoteObj.getChildren();
+                aSelected = Arrays.asList( aChildren );
+            }
+            final List<String>aRelativePaths = new ArrayList<>(aSelected.size());
+            for( final FileObject aFileObject : aSelected ){
+                final URL aURL = aFileObject.getURL();
+                final String aRelativePath = makeRelative( getPathPrefix(), aURL );
+                aRelativePaths.add( aRelativePath );
+            }
+            return  aRelativePaths;
+        }finally{
+            aFS_Manager.close();
         }
-        final List<String>aRelativePaths = new ArrayList<>(aSelected.size());
-        for( final FileObject aFileObject : aSelected ){
-            final URL aURL = aFileObject.getURL();
-            final String aRelativePath = makeRelative( getPathPrefix(), aURL );
-            aRelativePaths.add( aRelativePath );
-        }
-        return  aRelativePaths;
 
     }
 
@@ -209,8 +223,13 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
-        aRemoteObj.delete();
+        try{
+            aFS_Manager.init();
+            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+            aRemoteObj.delete();
+        }finally{
+            aFS_Manager.close();
+        }
 
     }
 
@@ -219,8 +238,13 @@ public class SFTPWithKey implements IRemoteAccess
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
-        final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
-        return aRemoteObj.exists();
+        try{
+            aFS_Manager.init();
+            final FileObject aRemoteObj = getRemoteFileObject( fRemotePath, aFS_Manager );
+            return aRemoteObj.exists();
+        }finally{
+            aFS_Manager.close();
+        }
 
     }
 

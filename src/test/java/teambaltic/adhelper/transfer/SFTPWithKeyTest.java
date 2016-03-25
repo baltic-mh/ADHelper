@@ -50,30 +50,30 @@ public class SFTPWithKeyTest
     {
         Log4J.initLog4J();
         sm_SFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Einstellungen/ssh/id_rsa"));
+
+    }
+    @AfterClass
+    public static void shutdownWhenFinished()
+    {
+    }
+
+    @Before
+    public void initBeforeEachTest()
+    {
         try{
             sm_SFTPWithKey.init();
         }catch( final Exception fEx ){
             sm_Log.error("Exception: ", fEx );
             fail(fEx.getMessage());
         }
-
-    }
-    @AfterClass
-    public static void shutdownWhenFinished()
-    {
-        if( sm_SFTPWithKey != null ){
-            sm_SFTPWithKey.close();
-        }
-    }
-
-    @Before
-    public void initBeforeEachTest()
-    {
     }
 
     @After
     public void cleanupAfterEachTest()
     {
+        if( sm_SFTPWithKey != null ){
+            sm_SFTPWithKey.close();
+        }
     }
 
     // ########################################################################

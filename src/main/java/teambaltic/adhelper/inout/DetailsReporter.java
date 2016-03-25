@@ -25,6 +25,8 @@ import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
+import teambaltic.adhelper.model.WorkEvent;
+import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.DateUtils;
 
 // ############################################################################
@@ -80,26 +82,49 @@ public class DetailsReporter
                     aFreeFromDutyInMonths, aFreeFromDuty ));
         }
 
-        fWriter.write( "==========================================================================\r\n" );
-        fWriter.write( String.format("%-27s  %6s %6s %6s %6s %6s %6s\r\n",
+        int aTotalDue = 0;
+        final StringBuffer aSB = new StringBuffer("--------------------------------------------------------------------------\r\n");
+        aSB.append( "Besuchte Arbeitsdienste:\r\n" );
+        final WorkEventsAttended aWorkEventsAttended = fSingleInfo.getWorkEventsAttended();
+        if( aWorkEventsAttended == null ){
+            aSB.append( "\t- Keine -" );
+        } else {
+            final List<WorkEvent> aWorkEvents = aWorkEventsAttended.getWorkEvents( fInvoicingPeriod );
+            if( aWorkEvents == null || aWorkEvents.size() == 0 ){
+                aSB.append( "\t- Keine -" );
+            } else {
+                aWorkEvents.forEach( aWorkEvent -> {
+                    aSB.append( String.format("\t%s:%5.2fh", aWorkEvent.getDate(), aWorkEvent.getHours()/100.0 ) );
+                } );
+            }
+        }
+        aSB.append( "\r\n" );
+
+        aSB.append( "==========================================================================\r\n" );
+        aSB.append( String.format("%-27s  %6s %6s %6s %6s %6s %6s\r\n",
                 "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
-        fWriter.write( "--------------------------------------------------------------------------\r\n" );
+        aSB.append( "--------------------------------------------------------------------------\r\n" );
         final List<DutyCharge> aAllDutyCharges = aCharge.getAllDutyCharges();
         for( final DutyCharge aC : aAllDutyCharges ){
             final IClubMember aRelatedMember = fDataProvider.getMember( aC.getMemberID() );
-            fWriter.write( String.format("%-27s %6.2f %6.2f   %6.2f  %6.2f  %6.2f  %6.2f\r\n",
+            final int aHoursDue = aC.getHoursDue();
+            aTotalDue += aHoursDue;
+            aSB.append( String.format("%-27s %6.2f %6.2f   %6.2f  %6.2f  %6.2f  %6.2f\r\n",
                     aRelatedMember.getName(),
                     aC.getBalance_Original()/100.0,
                     aC.getHoursWorked()/100.0,
-                    aC.getHoursDue()/100.0,
+                    aHoursDue/100.0,
                     aC.getBalance_Charged()/100.0,
                     aC.getHoursToPay()/100.0,
                     aC.getBalance_ChargedAndAdjusted()/100.0
                     ) );
         }
-        fWriter.write( "--------------------------------------------------------------------------\r\n" );
-        fWriter.write(String.format( "Verbleibende Stunden zu zahlen:   %7.2f\r\n",
+        aSB.append( "--------------------------------------------------------------------------\r\n" );
+        aSB.append(String.format( "Verbleibende Stunden zu zahlen:   %7.2f\r\n",
                 aCharge.getHoursToPayTotal()/100.0));
+        if( aTotalDue > 0 ){
+            fWriter.write( aSB.toString() );
+        }
         fWriter.write( "==========================================================================\r\n\r\n" );
     }
 

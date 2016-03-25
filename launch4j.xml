@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- http://launch4j.sourceforge.net/docs.html -->
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>.\misc\ADHelper-Runnable.jar</jar>
-  <outfile>.\Test\ADHelper.exe</outfile>
+  <jar>.\build\app\ADHelper-Runnable.jar</jar>
+  <outfile>.\build\app\ADHelper.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
