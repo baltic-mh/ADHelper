@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import teambaltic.adhelper.inout.BaseInfoReader;
+import teambaltic.adhelper.inout.BaseDataReader;
 import teambaltic.adhelper.inout.DetailsReporter;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
@@ -115,7 +116,7 @@ public class ADH_DataProviderTest
     public void test_MerleWeber() throws Exception
     {
         final File aFile = new File("misc/TestResources/Tabellen/BasisDaten.csv");
-        final BaseInfoReader aReader = new BaseInfoReader( aFile );
+        final BaseDataReader aReader = new BaseDataReader( aFile );
 
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
 
@@ -144,7 +145,7 @@ public class ADH_DataProviderTest
     public void test_LukasBal() throws Exception
     {
         final File aFile = new File("misc/TestResources/Tabellen/BasisDaten.csv");
-        final BaseInfoReader aReader = new BaseInfoReader( aFile );
+        final BaseDataReader aReader = new BaseDataReader( aFile );
 
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
 
@@ -180,11 +181,11 @@ public class ADH_DataProviderTest
 
     private static ADH_DataProvider init()
     {
-        final File aBaseInfoFile  = new File("misc/TestResources/Tabellen/BasisDaten.csv");
+        final Path aBaseInfoFile  = Paths.get("misc/TestResources/Tabellen/BasisDaten.csv");
         final File aWorkEventFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
         try{
             final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE);
-            aChef.readBaseInfo( aBaseInfoFile );
+            aChef.readBaseData( aBaseInfoFile );
             aChef.readWorkEvents( aWorkEventFile );
             return aChef;
         }catch( final Exception fEx ){

@@ -61,7 +61,7 @@ public class BaseInfoReaderTest
     public void test()
     {
         final File aFile = new File("misc/TestResources/Tabellen/BasisDaten.csv");
-        final BaseInfoReader aReader = new BaseInfoReader( aFile );
+        final BaseDataReader aReader = new BaseDataReader( aFile );
         final ListProvider<InfoForSingleMember> aInfoListProvider = new ListProvider<>();
         try{
             aReader.read(  aInfoListProvider );

@@ -12,15 +12,16 @@
 package teambaltic.adhelper.controller;
 
 import java.util.Collection;
+import java.util.List;
 
 import teambaltic.adhelper.model.IIdentifiedItem;
 
 // ############################################################################
-public interface IListProvider<ItemType extends IIdentifiedItem>
+public interface IListProvider<ItemType extends IIdentifiedItem<ItemType>>
 {
     void add( ItemType fItem );
     ItemType get( int fID );
-    Collection<ItemType> getAll();
+    List<ItemType> getAll();
     void addAll( Collection<ItemType> fItems );
     void clear();
 }

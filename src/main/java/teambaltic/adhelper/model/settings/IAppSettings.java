@@ -31,6 +31,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
        ,FILENAME_BALANCES
        ,FILENAME_USERDATA
        ,FILENAME_CLUBDATA
+       ,FILENAME_FINISHED
        ,FILENAME_REMOTEACCESSDATA
 
        ,FILENAME_CRYPT_PRIV
@@ -68,7 +69,8 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     String getFolderName_SandBox();
     Path getFolder_SandBox();
 
-    String getFileName_BaseInfo();
+    String getFileName_BaseData();
+    Path getFile_BaseData();
     String getFileName_WorkEvents();
     String getFileName_Balances();
     String getFileName_UserSettings();
@@ -77,6 +79,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     Path getFile_ClubData();
     String getFileName_RemoteAccessSettings();
     Path getFile_RemoteAccessSettings();
+    String getFileName_Finished();
 
     String getFileName_Crypt( EKey fPrivOrPub);
     Path getFile_Crypt( EKey fPrivOrPub );

@@ -13,7 +13,9 @@ package teambaltic.adhelper.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -21,7 +23,7 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.model.IIdentifiedItem;
 
 // ############################################################################
-public class ListProvider<ItemType extends IIdentifiedItem> implements IListProvider<ItemType>
+public class ListProvider<ItemType extends IIdentifiedItem<ItemType>> implements IListProvider<ItemType>
 {
     private static final Logger sm_Log = Logger.getLogger(ListProvider.class);
 
@@ -70,10 +72,12 @@ public class ListProvider<ItemType extends IIdentifiedItem> implements IListProv
     }
 
     @Override
-    public Collection<ItemType> getAll()
+    public List<ItemType> getAll()
     {
         synchronized( m_Items ){
-            return new ArrayList<ItemType>( m_Items.values() );
+            final List<ItemType> aArrayList = new ArrayList<>(m_Items.values());
+            Collections.sort( aArrayList );
+            return aArrayList;
         }
     }
 

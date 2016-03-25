@@ -35,6 +35,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         setStringValue( EKey.FILENAME_BALANCES,     "Guthaben.csv" );
         setStringValue( EKey.FILENAME_USERDATA,     "BenutzerDaten.prop" );
         setStringValue( EKey.FILENAME_CLUBDATA,     "VereinsDaten.prop" );
+        setStringValue( EKey.FILENAME_FINISHED,     "Abgeschlossen.txt" );
         setStringValue( EKey.FILENAME_REMOTEACCESSDATA, "ServerZugangsDaten.prop" );
 
         setStringValue( EKey.FILENAME_CRYPT_PRIV,   "private_key.der" );
@@ -99,9 +100,14 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getFolder( getFolderName_SandBox() );
     }
     @Override
-    public String getFileName_BaseInfo()
+    public String getFileName_BaseData()
     {
         return getStringValue( EKey.FILENAME_BASEINFO );
+    }
+    @Override
+    public Path getFile_BaseData()
+    {
+        return getFile( getFolderName_Data(), getFileName_BaseData() );
     }
     @Override
     public String getFileName_WorkEvents()
@@ -142,6 +148,11 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     public Path getFile_RemoteAccessSettings()
     {
         return getFile( getFolderName_Settings(), getFileName_RemoteAccessSettings() );
+    }
+    @Override
+    public String getFileName_Finished()
+    {
+        return getStringValue( EKey.FILENAME_FINISHED );
     }
 
     @Override

@@ -14,7 +14,7 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class WorkEvent implements IIdentifiedItem
+public class WorkEvent implements IIdentifiedItem<WorkEvent>
 {
     // ------------------------------------------------------------------------
     private final int m_MemberID;
@@ -44,6 +44,12 @@ public class WorkEvent implements IIdentifiedItem
     public WorkEvent( final int fMemberID )
     {
         m_MemberID = fMemberID;
+    }
+
+    @Override
+    public int compareTo( final WorkEvent fOther )
+    {
+        return getDate().compareTo( fOther.getDate() );
     }
 }
 

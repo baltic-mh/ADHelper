@@ -12,13 +12,16 @@
 package teambaltic.adhelper.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.inout.BalanceReader;
-import teambaltic.adhelper.inout.BaseInfoReader;
+import teambaltic.adhelper.inout.BaseDataReader;
 import teambaltic.adhelper.inout.Exporter;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
@@ -29,6 +32,7 @@ import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
+import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
@@ -39,8 +43,8 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     private final IAllSettings m_AllSettings;
 
     // ------------------------------------------------------------------------
-    private File m_BaseInfoFile;
-    public File getBaseInfoFile(){ return m_BaseInfoFile; }
+    private File m_BaseDataFile;
+    public File getBaseInfoFile(){ return m_BaseDataFile; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -54,8 +58,18 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private Collection<IClubMember> m_Members;
-    public Collection<IClubMember> getMembers(){ return m_Members; }
+    private List<IClubMember> m_Members;
+    public List<IClubMember> getMembers(){ return m_Members; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final String m_FinishedFileName;
+    private final String getFinishedFileName(){ return m_FinishedFileName; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final String m_UserInfo;
+    private final String getUserInfo(){ return m_UserInfo; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -68,40 +82,50 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public ADH_DataProvider(final IAllSettings fSettings) throws Exception
     {
         m_AllSettings = fSettings;
+        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
+        m_FinishedFileName = aAppSettings.getFileName_Finished();
+        final IUserSettings aUserSettings = m_AllSettings.getUserSettings();
+        m_UserInfo = aUserSettings.getDecoratedEMail();
     }
 
     public void init() throws Exception
     {
         final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        final String aDataFoldername = aAppSettings.getFolderName_Data();
         // Bestimme das Verzeichnis mit den neuesten Abrechnungsdaten
-        final File aFolderOfNewestInvoicingPeriod = FileUtils.determineNewestInvoicingPeriodFolder( new File(aDataFoldername) );
+        final Path aDataFolder = getDataFolder();
+        final File aFolderOfNewestInvoicingPeriod =
+                FileUtils.determineNewestInvoicingPeriodFolder( aDataFolder.toFile(), getFinishedFileName() );
         // Bestimme daraus den folgenden Abrechnungszeitraum:
         final Halfyear aLatestProcessed = Halfyear.create( aFolderOfNewestInvoicingPeriod.getName() );
-
-        final IPeriod aInvoicingPeriod = Halfyear.next( aLatestProcessed );
+        final Path aOutputFolder = getOutputFolder( aLatestProcessed );
+        final boolean aIsOutputFinished = isOutputFinished( aOutputFolder );
+        final IPeriod aInvoicingPeriod = aIsOutputFinished
+                ? Halfyear.next( aLatestProcessed )
+                : aLatestProcessed;
         m_ChargeCalculator = createChargeCalculator( aInvoicingPeriod );
 
-        // Das BaseInfoFile liegt immer im Verzeichnis "Daten"
-        readBaseInfo( new File(aDataFoldername, aAppSettings.getFileName_BaseInfo() ) );
+        readBaseData( aAppSettings.getFile_BaseData() );
         // Das WorkEventFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
         readWorkEvents( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_WorkEvents() ) );
         // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readBalances( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_Balances() ) );
+        readBalances( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_Balances() ), !aIsOutputFinished );
 
         joinRelatives();
 
         calculateDutyCharges( aInvoicingPeriod );
         balanceRelatives();
 
+        // Erst mal die Daten sichern:
+        export( false );
     }
 
-    public void readBaseInfo( final File fFileToReadFrom ) throws Exception
+    public void readBaseData( final Path fFileToReadFrom ) throws Exception
     {
         clear();
-        m_BaseInfoFile = fFileToReadFrom;
-        final BaseInfoReader aReader = new BaseInfoReader( m_BaseInfoFile );
+        m_BaseDataFile = fFileToReadFrom.toFile();
+        final BaseDataReader aReader = new BaseDataReader( m_BaseDataFile );
         m_Members = aReader.read( this );
+        Collections.sort( m_Members );
     }
 
     public void readWorkEvents( final File fFileToReadFrom )
@@ -116,10 +140,10 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         }
     }
 
-    public void readBalances( final File fFileToReadFrom )
+    public void readBalances( final File fFileToReadFrom, final boolean fTakePreviousBalanceValues )
     {
         m_BalanceFile = fFileToReadFrom;
-        final BalanceReader aReader = new BalanceReader( fFileToReadFrom );
+        final BalanceReader aReader = new BalanceReader( fFileToReadFrom, fTakePreviousBalanceValues );
         try{
             aReader.read( this );
         }catch( final Exception fEx ){
@@ -227,10 +251,46 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         return aMember.getName();
     }
 
-    public void export(final Path fOutputFolder)
+    public void export( final boolean fSetFinished ) throws IOException
     {
-        final Exporter aExporter = new Exporter( this );
-        aExporter.export( fOutputFolder );
+        final Path fOutputFolder = getOutputFolder();
+        final Exporter aExporter = new Exporter( this, getFinishedFileName() );
+        aExporter.export( fOutputFolder, getUserInfo(), fSetFinished );
+    }
+
+    public Path getOutputFolder()
+    {
+        return getOutputFolder( getInvoicingPeriod() );
+    }
+
+    private Path getOutputFolder( final IPeriod fInvoicingPeriod )
+    {
+        final Path aOutputFolder = getDataFolder().resolve( fInvoicingPeriod.toString() );
+        return aOutputFolder;
+    }
+
+    private Path getDataFolder()
+    {
+        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
+        final Path aDataFolder = aAppSettings.getFolder_Data();
+        return aDataFolder;
+    }
+
+    public boolean isOutputFinished()
+    {
+        return isOutputFinished( getOutputFolder() );
+
+    }
+    private boolean isOutputFinished(final Path fOutputFolder)
+    {
+        final String aFinishedFileName = getFinishedFileName();
+        final Path aFinishedFile = fOutputFolder.resolve( aFinishedFileName );
+        return Files.exists( aFinishedFile );
+    }
+
+    public void exportWorkEvents()
+    {
+        Exporter.exportWorkEvents( this, getOutputFolder() );
     }
 
 }

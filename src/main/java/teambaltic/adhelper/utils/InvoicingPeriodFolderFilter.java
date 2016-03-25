@@ -24,6 +24,9 @@ public class InvoicingPeriodFolderFilter implements FilenameFilter
     @Override
     public boolean accept( final File fDir, final String fName )
     {
+        if( !fDir.isDirectory() ){
+            return false;
+        }
         return fName.matches( sm_MatchRegex );
 //        final String[] aParts = fName.split( sm_SplitRegex );
 //        return aParts.length == 6;

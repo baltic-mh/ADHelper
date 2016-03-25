@@ -12,7 +12,7 @@
 package teambaltic.adhelper.model;
 
 // ############################################################################
-public class InfoForSingleMember implements IIdentifiedItem
+public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
 {
 
     // ------------------------------------------------------------------------
@@ -54,6 +54,14 @@ public class InfoForSingleMember implements IIdentifiedItem
     public InfoForSingleMember(final int fID)
     {
         m_ID = fID;
+    }
+
+    @Override
+    public int compareTo( final InfoForSingleMember fOther )
+    {
+        final IClubMember aThisMember   = getMember();
+        final IClubMember aOtherMember  = fOther.getMember();
+        return aThisMember.compareTo( aOtherMember );
     }
 
 

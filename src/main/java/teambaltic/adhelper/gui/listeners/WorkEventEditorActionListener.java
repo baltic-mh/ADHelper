@@ -84,6 +84,7 @@ public final class WorkEventEditorActionListener implements ActionListener
             }
         }
         aWorkEventsAttended.addWorkEvent( aWorkEvent );
+        m_DataProvider.exportWorkEvents();
         m_WorkEventEditor.reset();
         GUIUpdater.updateGUI( aMemberID, m_Panel, m_DataProvider );
     }

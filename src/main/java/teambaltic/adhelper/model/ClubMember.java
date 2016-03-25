@@ -67,6 +67,14 @@ public class ClubMember implements IClubMember
     {
         return String.format( "%s (%d)", getName(), getID() );
     }
+
+    @Override
+    public int compareTo( final IClubMember fOther )
+    {
+        final String aThisName  = getName();
+        final String aOtherName = fOther.getName();
+        return aThisName.compareTo( aOtherName );
+    }
 }
 
 // ############################################################################

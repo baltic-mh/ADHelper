@@ -16,7 +16,7 @@ import java.util.Map;
 import teambaltic.adhelper.model.IIdentifiedItem;
 
 // ############################################################################
-public interface IItemFactory<ItemType extends IIdentifiedItem>
+public interface IItemFactory<ItemType extends IIdentifiedItem<ItemType>>
 {
     ItemType createItem( int fID, final Map<String, String> fAttributes);
 }

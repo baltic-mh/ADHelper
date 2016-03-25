@@ -14,9 +14,6 @@ package teambaltic.adhelper.gui.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.swing.JOptionPane;
 
@@ -24,7 +21,6 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.gui.MainPanel;
-import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
 public class ExportListener implements ActionListener
@@ -49,18 +45,10 @@ public class ExportListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-        final IPeriod aInvoicingPeriod = m_DataProvider.getInvoicingPeriod();
-        if( aInvoicingPeriod == null ){
-            JOptionPane.showMessageDialog(m_Panel, "Es wurde noch kein Abrechnungszeitraum ausgewählt!",
-                    "Ups!",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        final Path aOutputFolder = Paths.get( m_DataFolderName, aInvoicingPeriod.toString() );
-        if( Files.exists( aOutputFolder ) ){
+        if( m_DataProvider.isOutputFinished() ){
             final Object[] options = {"Ich weiß, was ich tue!", "Nein, das war ein Versehen!"};
             final int n = JOptionPane.showOptionDialog(null,
-                "Es hat bereits eine Ausgabe für diesen Abrechnungszeitraum stattgefunden! Sollen die Daten überschrieben werden??",
+                "Dieser Abrechnungszeitraum ist bereits abgeschlossen! Sollen die Daten überschrieben werden??",
                 "Sind Sie ganz sicher?",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE,
@@ -73,19 +61,18 @@ public class ExportListener implements ActionListener
 
                 default:
             }
-        } else {
-            try{
-                Files.createDirectories( aOutputFolder );
-            }catch( final IOException fEx ){
-                final String aMsg = "Konnte Verzeichnis nicht anlegen: "+aOutputFolder;
-                JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
-                        JOptionPane.ERROR_MESSAGE);
-                sm_Log.warn("Exception: "+aMsg, fEx );
-            }
         }
 
-        m_DataProvider.export( aOutputFolder );
+        try{
+            m_DataProvider.export( true );
+        }catch( final IOException fEx ){
+            final String aMsg = "Probleme beim Export der Daten: "+fEx.getMessage();
+            JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
+                    JOptionPane.ERROR_MESSAGE);
+            sm_Log.warn("Exception: "+aMsg, fEx );
+        }
     }
+
 
 }
 

@@ -25,13 +25,22 @@ public class BalanceFactoryNew implements IItemFactory<Balance>
 {
     private static final Logger sm_Log = Logger.getLogger(BalanceFactoryNew.class);
 
+    // ------------------------------------------------------------------------
+    private final String m_Columnname_BalanceValue;
+    // ------------------------------------------------------------------------
+
+    public BalanceFactoryNew(final boolean fTakePreviousBalanceValues)
+    {
+        m_Columnname_BalanceValue = fTakePreviousBalanceValues ? IKnownColumns.GUTHABEN_WERT_ALT : IKnownColumns.GUTHABEN_WERT;
+    }
+
     @Override
     public Balance createItem( final int fID, final Map<String, String> fAttributes )
     {
         String aBalanceValueString   = null;
         String aBalanceValidOnString = null;
         for( final String aColumnName : fAttributes.keySet() ){
-            if( IKnownColumns.GUTHABEN_WERT.equals( aColumnName )){
+            if( m_Columnname_BalanceValue.equals( aColumnName )){
                 aBalanceValueString = fAttributes.get( aColumnName );
             } else if( IKnownColumns.GUTHABEN_AM.equals( aColumnName ) ){
                 aBalanceValidOnString = fAttributes.get( aColumnName );

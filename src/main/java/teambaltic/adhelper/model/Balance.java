@@ -14,7 +14,7 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class Balance implements IIdentifiedItem
+public class Balance implements IIdentifiedItem<Balance>
 {
 //    private static final Logger sm_Log = Logger.getLogger(Balance.class);
 
@@ -46,6 +46,20 @@ public class Balance implements IIdentifiedItem
     public String toString()
     {
         return String.format("%5.1f", getValue() / 100.0f);
+    }
+
+    @Override
+    public int compareTo( final Balance fOther )
+    {
+        final int aThisValue = getValue();
+        final int aOtherValue = fOther.getValue();
+        if( aThisValue < aOtherValue ){
+            return -1;
+        }
+        if( aThisValue > aOtherValue ){
+            return 1;
+        }
+        return 0;
     }
 }
 

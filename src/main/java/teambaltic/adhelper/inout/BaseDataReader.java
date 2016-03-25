@@ -1,5 +1,5 @@
 /**
- * BaseInfoReader.java
+ * BaseDataReader.java
  *
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -13,7 +13,6 @@ package teambaltic.adhelper.inout;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,7 @@ import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
-public class BaseInfoReader
+public class BaseDataReader
 {
 //    private static final Logger sm_Log = Logger.getLogger(BaseInfoReader.class);
 
@@ -43,7 +42,7 @@ public class BaseInfoReader
     private final IItemFactory<FreeFromDuty>    m_FreeFromDutyFactory;
     private final IItemFactory<Balance>         m_BalanceFactory;
 
-    public BaseInfoReader(final File fFile)
+    public BaseDataReader(final File fFile)
     {
         m_File = fFile;
 
@@ -52,7 +51,7 @@ public class BaseInfoReader
         m_BalanceFactory        = new BalanceFactory();
     }
 
-    public Collection<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
+    public List<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
     {
         final File aFile = getFile();
         FileUtils.checkFile( aFile );

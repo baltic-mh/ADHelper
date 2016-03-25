@@ -12,7 +12,7 @@
 package teambaltic.adhelper.model;
 
 // ############################################################################
-public interface IIdentifiedItem
+public interface IIdentifiedItem<ItemType> extends Comparable<ItemType>
 {
     int getID();
 }

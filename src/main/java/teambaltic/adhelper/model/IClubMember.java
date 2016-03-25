@@ -14,7 +14,7 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public interface IClubMember extends IIdentifiedItem
+public interface IClubMember extends IIdentifiedItem< IClubMember >
 {
     int getLinkID();
     String getName();

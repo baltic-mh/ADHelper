@@ -31,12 +31,16 @@ public class FileUtilsTest
     {
         try{
             final Path aTempDirectory = Files.createTempDirectory("DataDir");
-            Files.createDirectory( Paths.get(aTempDirectory.toString(), "2011-01-01 - 2011-06-30") );
-            Files.createDirectory( Paths.get(aTempDirectory.toString(), "2011-07-01 - 2011-12-31") );
-            Files.createDirectory( Paths.get(aTempDirectory.toString(), "2031-01-01 - 2031-06-30") );
+            Path aFolder = Paths.get(aTempDirectory.toString(), "2011-01-01 - 2011-06-30");
+            Files.createDirectory( aFolder );
+            Files.createFile( aFolder.resolve( "Finished.txt" ) );
+            aFolder = Paths.get(aTempDirectory.toString(), "2011-07-01 - 2011-12-31");
+            Files.createDirectory( aFolder );
+            aFolder = Paths.get(aTempDirectory.toString(), "2031-01-01 - 2031-06-30");
+            Files.createDirectory( aFolder );
 
-            final File aResult = FileUtils.determineNewestInvoicingPeriodFolder( aTempDirectory.toFile() );
-            assertEquals("Neuestes Verzeichnis", "2031-01-01 - 2031-06-30", aResult.getName());
+            final File aResult = FileUtils.determineNewestInvoicingPeriodFolder( aTempDirectory.toFile(), "Finished.txt" );
+            assertEquals("Neuestes Verzeichnis", "2011-07-01 - 2011-12-31", aResult.getName());
         }catch( final IOException fEx ){
             fail( "Exception: "+fEx.getMessage() );
         }

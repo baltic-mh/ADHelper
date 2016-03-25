@@ -19,7 +19,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class DutyCharge implements IIdentifiedItem
+public class DutyCharge implements IIdentifiedItem<DutyCharge>
 {
     private static final Logger sm_Log = Logger.getLogger(DutyCharge.class);
 
@@ -108,6 +108,20 @@ public class DutyCharge implements IIdentifiedItem
     {
         return String.format( "Guthaben: %5.2f | Pflicht: %5.2f | Gearbeitet: %5.2f | Zu zahlen: %5.2f",
                 getBalance_Original()/100.0f, getHoursDue()/100.0f, getHoursWorked()/100.0f, getHoursToPay()/100.0f );
+    }
+
+    @Override
+    public int compareTo( final DutyCharge fOther )
+    {
+        final int aThisValue = getBalance_ChargedAndAdjusted();
+        final int aOtherValue = fOther.getBalance_ChargedAndAdjusted();
+        if( aThisValue < aOtherValue ){
+            return -1;
+        }
+        if( aThisValue > aOtherValue ){
+            return 1;
+        }
+        return 0;
     }
 }
 

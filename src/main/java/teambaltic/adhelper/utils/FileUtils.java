@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,29 +111,39 @@ public final class FileUtils
         return aMap;
     }
 
-    public static File determineNewestInvoicingPeriodFolder( final File fDataFolder )
+    public static File determineNewestInvoicingPeriodFolder(
+            final File fDataFolder, final String fFinishedFileName )
     {
-        final File[] aChildren = fDataFolder.listFiles( new InvoicingPeriodFolderFilter() );
-        if( aChildren.length == 0 ){
+        final File[] aChildFolders = fDataFolder.listFiles( new InvoicingPeriodFolderFilter() );
+        if( aChildFolders.length == 0 ){
             return null;
         }
-        if( aChildren.length == 1 ){
-            return aChildren[0];
+        if( aChildFolders.length == 1 ){
+            return aChildFolders[0];
         }
         File aResult = null;
         final int aMostRecentYear  = 0;
         final int aMostRecentMonth = 0;
-        for( int aIdx = 0; aIdx < aChildren.length; aIdx++ ){
-            final String[] aParts = aChildren[aIdx].getName().split( InvoicingPeriodFolderFilter.sm_SplitRegex );
+        for( final File aChildFolder : aChildFolders ){
+            if( !isFinished( aChildFolder, fFinishedFileName ) ){
+                return aChildFolder;
+            }
+            final String[] aParts = aChildFolder.getName().split( InvoicingPeriodFolderFilter.sm_SplitRegex );
             final int aYear  = Integer.parseInt( aParts[0] );
             final int aMonth = Integer.parseInt( aParts[1] );
             if( aYear > aMostRecentYear ){
-                aResult = aChildren[aIdx];
+                aResult = aChildFolder;
             } else if ( aYear == aMostRecentYear && aMonth > aMostRecentMonth ){
-                aResult = aChildren[aIdx];
+                aResult = aChildFolder;
             }
         }
         return aResult;
+    }
+
+    private static boolean isFinished( final File fChildFolder, final String fFinishedFileName )
+    {
+        final Path aFinishedFile = fChildFolder.toPath().resolve( fFinishedFileName );
+        return Files.exists( aFinishedFile );
     }
 
     public static void checkFile( final File fFile ) throws Exception

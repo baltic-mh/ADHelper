@@ -14,7 +14,7 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class FreeFromDuty extends APeriod implements IIdentifiedItem
+public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDuty>
 {
     public enum REASON{
         // Aus Mitgliedsdaten berechnete Gründe:
@@ -89,6 +89,20 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem
             aSB.append( " bis "+aUntil );
         }
         return aSB.toString();
+    }
+
+    @Override
+    public int compareTo( final FreeFromDuty fOther )
+    {
+        final int aThisValue = getID();
+        final int aOtherValue = fOther.getID();
+        if( aThisValue < aOtherValue ){
+            return -1;
+        }
+        if( aThisValue > aOtherValue ){
+            return 1;
+        }
+        return 0;
     }
 }
 

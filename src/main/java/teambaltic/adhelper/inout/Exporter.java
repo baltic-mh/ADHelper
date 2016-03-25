@@ -13,14 +13,19 @@ package teambaltic.adhelper.inout;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -45,13 +50,26 @@ public class Exporter
     private ADH_DataProvider getDataProvider(){ return m_DataProvider; }
     // ------------------------------------------------------------------------
 
-    public Exporter(final ADH_DataProvider fDataProvider)
+    // ------------------------------------------------------------------------
+    private final String m_FinishedFileName;
+    private String getFinishedFileName(){ return m_FinishedFileName; }
+    // ------------------------------------------------------------------------
+
+    public Exporter(
+            final ADH_DataProvider fDataProvider,
+            final String fFinishedFileName)
     {
         m_DataProvider = fDataProvider;
+        m_FinishedFileName = fFinishedFileName;
     }
 
-    public void export( final Path fOutputFolder )
+    public void export( final Path fOutputFolder, final String fInfo, final boolean fSetFinished )
+            throws IOException
     {
+        if( !Files.exists( fOutputFolder )){
+            Files.createDirectories( fOutputFolder );
+        }
+
         final File aBIF = getDataProvider().getBaseInfoFile();
         copyFileToFolder( aBIF, fOutputFolder );
         final File aWEF = getDataProvider().getWorkEventFile();
@@ -62,15 +80,20 @@ public class Exporter
         exportObligations( getDataProvider(), fOutputFolder );
         exportBalances( getDataProvider(), fOutputFolder );
         DetailsReporter.report( getDataProvider(), fOutputFolder );
+
+        if( fSetFinished ){
+            writeFinishedFile( fOutputFolder, fInfo );
+        }
     }
 
-    private static void exportWorkEvents(
+    public static void exportWorkEvents(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder )
     {
         final IPeriod aIP = fDataProvider.getInvoicingPeriod();
         final LocalDate aToday = LocalDate.now();
         try{
+            final List<WorkEvent> aAllWorkEvents = getAllWorkEvents( fDataProvider );
             // Die Arbeitsdiensteinträge erhalten "Abgerechnet am"
             // wenn ihr Datum vor dem Enddatum des Abrechnungszeitraumes liegt.
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste.csv", "ISO-8859-1");
@@ -78,29 +101,19 @@ public class Exporter
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.DATE, IKnownColumns.HOURSWORKED,
                     IKnownColumns.CLEARED) );
-            for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
-                final WorkEventsAttended aWorkEventsAttended = aSingleInfo.getWorkEventsAttended();
-                if( aWorkEventsAttended == null ){
-                    continue;
+            for( final WorkEvent aWorkEvent : aAllWorkEvents ){
+                final LocalDate aWorkEventDate = aWorkEvent.getDate();
+                if( aIP.isBeforeMyEnd( aWorkEventDate ) ){
+                   aWorkEvent.setCleared( aToday );
                 }
-                final int aMemberID = aWorkEventsAttended.getMemberID();
+                final int aMemberID = aWorkEvent.getMemberID();
                 final String aMemberName = fDataProvider.getMemberName( aMemberID );
-                final List<WorkEvent> aWorkEvents = aWorkEventsAttended.getWorkEvents();
-                if( aWorkEvents == null ){
-                    continue;
-                }
-                for( final WorkEvent aWorkEvent : aWorkEvents ){
-                    final LocalDate aWorkEventDate = aWorkEvent.getDate();
-                    if( aIP.isBeforeMyEnd( aWorkEventDate ) ){
-                       aWorkEvent.setCleared( aToday );
-                    }
-                    final String aLine = String.format( "%s;%s;%s;%.2f;%s\r\n",
-                            aMemberID, aMemberName,
-                            toStringWithDots(aWorkEventDate),
-                            aWorkEvent.getHours()/100.0f,
-                            toStringWithDots(aWorkEvent.getCleared()) );
-                    aFileWriter.write( aLine );
-                }
+                final String aLine = String.format( "%s;%s;%s;%.2f;%s\r\n",
+                        aMemberID, aMemberName,
+                        toStringWithDots(aWorkEventDate),
+                        aWorkEvent.getHours()/100.0f,
+                        toStringWithDots(aWorkEvent.getCleared()) );
+                aFileWriter.write( aLine );
             }
             aFileWriter.close();
         }catch( final FileNotFoundException fEx ){
@@ -109,6 +122,24 @@ public class Exporter
             sm_Log.warn("Exception: ", fEx );
         }
 
+    }
+
+    private static List<WorkEvent> getAllWorkEvents( final ADH_DataProvider fDataProvider )
+    {
+        final List<WorkEvent>aAllWorkEvents = new ArrayList<>();
+        for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
+            final WorkEventsAttended aWorkEventsAttended = aSingleInfo.getWorkEventsAttended();
+            if( aWorkEventsAttended == null ){
+                continue;
+            }
+            final List<WorkEvent> aWorkEvents = aWorkEventsAttended.getWorkEvents();
+            if( aWorkEvents == null ){
+                continue;
+            }
+            aAllWorkEvents.addAll( aWorkEvents );
+        }
+        Collections.sort( aAllWorkEvents );
+        return aAllWorkEvents;
     }
 
     private static void exportObligations(
@@ -206,6 +237,29 @@ public class Exporter
         return String.format( "%02d.%02d.%04d", fDate.getDayOfMonth(), fDate.getMonthValue(), fDate.getYear() );
     }
 
+    private void writeFinishedFile(
+            final Path fOutputFolder,  final String fInfo )
+                    throws IOException
+    {
+        final File aFile = fOutputFolder.resolve( getFinishedFileName() ).toFile();
+        Writer fw = null;
+        try{
+            fw = new FileWriter( aFile );
+            final long aTS = System.currentTimeMillis();
+            fw.write( "#TimeStamp;TimeStamp(HR);Info");
+            fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
+            fw.append( String.format( "%d;%s;%s", aTS, new Date(aTS), fInfo ) );
+            fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
+
+        }finally{
+            if( fw != null )
+                try{
+                    fw.close();
+                }catch( final IOException e ){
+                    e.printStackTrace();
+                }
+        }
+    }
 }
 
 // ############################################################################

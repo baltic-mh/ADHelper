@@ -19,7 +19,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class WorkEventsAttended implements IIdentifiedItem
+public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
 {
     private static final Logger sm_Log = Logger.getLogger(WorkEventsAttended.class);
 
@@ -129,6 +129,20 @@ public class WorkEventsAttended implements IIdentifiedItem
                 m_WorkEvents.remove( aMoriturus );
             }
         }
+    }
+
+    @Override
+    public int compareTo( final WorkEventsAttended fOther )
+    {
+        final int aThisValue = getMemberID();
+        final int aOtherValue = fOther.getMemberID();
+        if( aThisValue < aOtherValue ){
+            return -1;
+        }
+        if( aThisValue > aOtherValue ){
+            return 1;
+        }
+        return 0;
     }
 }
 

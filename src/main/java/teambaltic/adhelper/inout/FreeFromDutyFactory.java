@@ -48,6 +48,9 @@ public class FreeFromDutyFactory implements IItemFactory<FreeFromDuty>
 
     private static REASON convertStringToReason( final String fReasonString )
     {
+        if( fReasonString == null ){
+            return null;
+        }
         final String aReasonString = fReasonString.trim();
         if( aReasonString == null || "".equals( aReasonString ) ){
             return null;
