@@ -12,23 +12,36 @@
 package teambaltic.adhelper.utils;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.file.Files;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 // ############################################################################
 /**
@@ -65,7 +78,8 @@ public class CryptUtils implements ICryptUtils
 {
     private static final Logger sm_Log = Logger.getLogger(CryptUtils.class);
 
-    public static final String ALGORITHM = "RSA";
+    static final String ALGORITHM_ASYM = "RSA";
+    static final String ALGORITHM_SYM  = "AES";
 
     // ------------------------------------------------------------------------
     private final File m_PublicKeyFile;
@@ -77,24 +91,17 @@ public class CryptUtils implements ICryptUtils
     private File getPrivateKeyFile(){ return m_PrivateKeyFile; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private final Cipher m_Cipher;
-    private Cipher getCipher(){ return m_Cipher; }
-    // ------------------------------------------------------------------------
+    private final BASE64Encoder m_Base64Encoder;
+    private final BASE64Decoder m_Base64Decoder;
 
     public CryptUtils(final File fPrivateKeyFile, final File fPublicKeyFile) throws Exception
     {
-        // get an RSA cipher object
-        m_Cipher = initCipher();
+        m_Base64Encoder  = new BASE64Encoder();
+        m_Base64Decoder  = new BASE64Decoder();
         m_PrivateKeyFile = fPrivateKeyFile;
         m_PublicKeyFile  = fPublicKeyFile;
     }
 
-    private static Cipher initCipher() throws Exception
-    {
-        final Cipher aCipher = Cipher.getInstance( ALGORITHM );
-        return aCipher;
-    }
     /**
      * @param fFile
      * @return TargetPath
@@ -103,26 +110,91 @@ public class CryptUtils implements ICryptUtils
     @Override
     public Path encrypt( final Path fFile ) throws Exception
     {
-        final Path aPath_Cry = Paths.get( fFile.toString()+".cry" );
-        Files.copy( fFile, aPath_Cry, StandardCopyOption.REPLACE_EXISTING );
-        return aPath_Cry;
+        final Path aFile_Encrypted = Paths.get( fFile.toString()+".cry" );
+
+        final InputStream      aInStream   = new FileInputStream( fFile.toFile() );
+        final FileOutputStream aOutStream  = new FileOutputStream( aFile_Encrypted.toFile() );
+
+        encrypt( aInStream, aOutStream );
+        return aFile_Encrypted;
+    }
+
+    /** Verschluesseln (Streams werden mit close() geschlossen) */
+    private void encrypt(
+            final InputStream inpStream,
+            final OutputStream encryptedOutStream )
+            throws Exception
+    {
+        try{
+            final KeyGenerator keyGen = KeyGenerator.getInstance( ALGORITHM_SYM );
+            keyGen.init( Math.min( 256, Cipher.getMaxAllowedKeyLength( ALGORITHM_SYM ) ) );
+            final SecretKey symKey = keyGen.generateKey();
+            final Key publicKey = getPublicKey();
+
+            Cipher cipher = Cipher.getInstance( ALGORITHM_ASYM );
+            cipher.init( Cipher.WRAP_MODE, publicKey );
+            final byte[] wrappedKey = cipher.wrap( symKey );
+
+            final DataOutputStream out = new DataOutputStream( encryptedOutStream );
+            try{
+                out.writeInt( wrappedKey.length );
+                out.write( wrappedKey );
+                cipher = Cipher.getInstance( ALGORITHM_SYM );
+                cipher.init( Cipher.ENCRYPT_MODE, symKey );
+                transform( inpStream, out, cipher );
+            }finally{
+                out.close();
+            }
+        }finally{
+            inpStream.close();
+            encryptedOutStream.close();
+        }
     }
 
     @Override
     public Path decrypt( final Path fFile ) throws Exception
     {
         final String aFilenameWithout_Cry = FilenameUtils.getBaseName( fFile.toFile().getPath() );
-        final Path aPath_Decry = Paths.get( fFile.getParent().toString(), aFilenameWithout_Cry );
-        Files.copy( fFile, aPath_Decry, StandardCopyOption.REPLACE_EXISTING );
-        return aPath_Decry;
+        final Path aFile_Decrypted = Paths.get( fFile.getParent().toString(), aFilenameWithout_Cry );
 
-//        final byte[] aData_Cry = Files.readAllBytes( fFile );
-//        final byte[] aData     = decrypt( aData_Cry );
-//        final String aFilenameWithout_Cry = FilenameUtils.getBaseName( fFile.toFile().getPath() );
-//        final Path aPath_Decry = Paths.get( aFilenameWithout_Cry );
-//        Files.write(aPath_Decry, aData );
-//        return aPath_Decry;
+        final InputStream      aInStream   = new FileInputStream( fFile.toFile() );
+        final FileOutputStream aOutStream  = new FileOutputStream( aFile_Decrypted.toFile() );
+        decrypt( aInStream, aOutStream );
+
+        return aFile_Decrypted;
     }
+
+    /** Entschluesseln (Streams werden mit close() geschlossen) */
+    public void decrypt(
+            final InputStream encryptedInpStream,
+            final OutputStream decryptedOutStream)
+          throws Exception
+    {
+        try{
+            final DataInputStream in = new DataInputStream( encryptedInpStream );
+            try{
+                final int length = in.readInt();
+                final byte[] wrappedKey = new byte[length];
+                in.read( wrappedKey, 0, length );
+
+                final Key privateKey = getPrivateKey();
+
+                Cipher cipher = Cipher.getInstance( ALGORITHM_ASYM );
+                cipher.init( Cipher.UNWRAP_MODE, privateKey );
+                final Key symKey = cipher.unwrap( wrappedKey, ALGORITHM_SYM, Cipher.SECRET_KEY );
+
+                cipher = Cipher.getInstance( ALGORITHM_SYM );
+                cipher.init( Cipher.DECRYPT_MODE, symKey );
+                transform( in, decryptedOutStream, cipher );
+            }finally{
+                in.close();
+            }
+        }finally{
+            encryptedInpStream.close();
+            decryptedOutStream.close();
+        }
+    }
+
     /**
      * Encrypt the plain text using public key.
      *
@@ -131,48 +203,59 @@ public class CryptUtils implements ICryptUtils
      * @return Encrypted text
      * @throws java.lang.Exception
      */
-    public byte[] encrypt(final String fText)
+    public String encrypt( final String fText )
     {
-        final byte[] aToEncrypt = fText.getBytes();
-        return encrypt( aToEncrypt );
-
-    }
-    public byte[] encrypt( final byte[] fText )
-    {
-        byte[] cipherText = null;
         try {
-            final Key aKey = getPublicKey( getPublicKeyFile() );
+            final Key aKey = getPublicKey();
             // encrypt the plain text using the public key
-            m_Cipher.init( Cipher.ENCRYPT_MODE, aKey );
-            cipherText = m_Cipher.doFinal( fText );
+            final Cipher aCipher = Cipher.getInstance( ALGORITHM_ASYM );
+            aCipher.init( Cipher.ENCRYPT_MODE, aKey );
+            final byte[] aEncrypted = aCipher.doFinal( fText.getBytes() );
+            // bytes zu Base64-String konvertieren
+            final String aEncryptedBase64 = m_Base64Encoder.encode( aEncrypted );
+            return aEncryptedBase64;
         } catch (final Exception fEx) {
             sm_Log.warn("Problem:", fEx);
+            return null;
         }
-        return cipherText;
     }
 
     /**
      * Decrypt text using private key.
      *
-     * @param text
+     * @param fTextEncryptedBase64
      *            :encrypted text
      * @return plain text
      * @throws java.lang.Exception
      */
-    public byte[] decrypt(final byte[] text)
+    public String decrypt(final String fTextEncryptedBase64)
     {
-        byte[] decryptedText = null;
-        try {
-            final PrivateKey aKey = getPrivateKey( getPrivateKeyFile() );
-            getCipher().init( Cipher.DECRYPT_MODE, aKey );
-            // decrypt the text using the private key
-            decryptedText = getCipher().doFinal( text );
 
-        } catch (final Exception ex) {
-            ex.printStackTrace();
+        try {
+            // BASE64 String zu Byte-Array
+            final byte[] aTextEncrypted = m_Base64Decoder.decodeBuffer( fTextEncryptedBase64 );
+            final PrivateKey aKey = getPrivateKey();
+            final Cipher aCipher = Cipher.getInstance( ALGORITHM_ASYM );
+            aCipher.init( Cipher.DECRYPT_MODE, aKey );
+            // decrypt the text using the private key
+            final byte[] aTextDecrypted_Bytes = aCipher.doFinal( aTextEncrypted );
+            final String aTextDecrypted_String = new String(aTextDecrypted_Bytes);
+            return aTextDecrypted_String;
+        } catch (final Exception fEx) {
+            sm_Log.warn("Problem:", fEx);
+            return null;
         }
 
-        return decryptedText;
+    }
+
+    private PublicKey getPublicKey() throws Exception
+    {
+        return getPublicKey( getPublicKeyFile() );
+    }
+
+    private PrivateKey getPrivateKey() throws Exception
+    {
+        return getPrivateKey( getPrivateKeyFile() );
     }
 
     private static PublicKey getPublicKey(final File fPublicKeyFile)
@@ -202,6 +285,56 @@ public class CryptUtils implements ICryptUtils
         final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec( keyBytes );
         final KeyFactory kf = KeyFactory.getInstance( "RSA" );
         return kf.generatePrivate( spec );
+    }
+
+    private static void transform( final InputStream in, final OutputStream out, final Cipher cipher )
+            throws IOException, GeneralSecurityException
+    {
+        final int blockSize = cipher.getBlockSize();
+        final byte[] input = new byte[blockSize];
+        final byte[] output = new byte[cipher.getOutputSize( blockSize )];
+        int len;
+        while( ( len = in.read( input ) ) == blockSize ){
+            final int outLength = cipher.update( input, 0, blockSize, output );
+            out.write( output, 0, outLength );
+        }
+        out.write( ( len > 0 ) ? cipher.doFinal( input, 0, len ) : cipher.doFinal() );
+    }
+
+    /** Generiere privaten und oeffentlichen RSA-Schluessel */
+    public static void generateKeyPair( final String privateKeyFile, final String publicKeyFile, final int rsaKeySize )
+            throws NoSuchAlgorithmException, IOException
+    {
+        generateKeyPair( new FileOutputStream( privateKeyFile ), new FileOutputStream( publicKeyFile ), rsaKeySize );
+    }
+
+    /**
+     * Generiere privaten und oeffentlichen RSA-Schluessel (Streams werden mit
+     * close() geschlossen)
+     */
+    public static void generateKeyPair( final OutputStream privateKeyFile, final OutputStream publicKeyFile, final int rsaKeySize )
+            throws NoSuchAlgorithmException, IOException
+    {
+        try{
+            final KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance( ALGORITHM_ASYM );
+            keyPairGen.initialize( rsaKeySize );
+            final KeyPair keyPair = keyPairGen.generateKeyPair();
+            ObjectOutputStream out = new ObjectOutputStream( publicKeyFile );
+            try{
+                out.writeObject( keyPair.getPublic() );
+            }finally{
+                out.close();
+            }
+            out = new ObjectOutputStream( privateKeyFile );
+            try{
+                out.writeObject( keyPair.getPrivate() );
+            }finally{
+                out.close();
+            }
+        }finally{
+            privateKeyFile.close();
+            publicKeyFile.close();
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * ExportListener.java
+ * FinishListener.java
  *
  * Created on 14.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -20,27 +20,26 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
-import teambaltic.adhelper.gui.ADH_Application;
+import teambaltic.adhelper.gui.MainPanel;
 
 // ############################################################################
-public class ExportListener implements ActionListener
+public class FinishListener implements ActionListener
 {
-    private static final Logger sm_Log = Logger.getLogger(ExportListener.class);
+    private static final Logger sm_Log = Logger.getLogger(FinishListener.class);
 
-    private final ADH_Application  m_App;
-    private final ADH_DataProvider m_DataProvider;
+    private final MainPanel         m_Panel;
+    private final ADH_DataProvider  m_DataProvider;
 
-    public ExportListener(
-            final ADH_Application fFrame,
+    public FinishListener(
+            final MainPanel fPanel,
             final ADH_DataProvider fDataProvider)
     {
-        m_App = fFrame;
+        m_Panel = fPanel;
         m_DataProvider = fDataProvider;
     }
 
-
     @Override
-    public void actionPerformed( final ActionEvent fE )
+    public void actionPerformed( final ActionEvent fEvent )
     {
         if( m_DataProvider.isOutputFinished() ){
             final Object[] options = {"Ich weiﬂ, was ich tue!", "Nein, das war ein Versehen!"};
@@ -62,10 +61,10 @@ public class ExportListener implements ActionListener
 
         try{
             m_DataProvider.export( true );
-            System.exit(0);
+            m_Panel.setFinished();
         }catch( final IOException fEx ){
             final String aMsg = "Probleme beim Export der Daten: "+fEx.getMessage();
-            JOptionPane.showMessageDialog(m_App.getFrame(), aMsg, "Schwerwiegender Fehler!",
+            JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
                     JOptionPane.ERROR_MESSAGE);
             sm_Log.warn("Exception: "+aMsg, fEx );
         }

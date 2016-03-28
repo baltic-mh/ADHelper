@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.CheckSumInfo;
@@ -80,11 +81,6 @@ public class TransferController implements ITransferController
     public void start() throws Exception
     {
         getSingletonWatcher().start();
-        if( !isConnected() ){
-            sm_Log.warn( "Keine Verbindung zum Server!" );
-            return;
-        }
-        downloadBaseInfoFile();
     }
 
     @Override
@@ -116,6 +112,7 @@ public class TransferController implements ITransferController
                 m_RemoteAccess.download( aPathPair_CheckSum );
                 final CheckSumInfo aCSIRemote = CheckSumInfo.readFromFile( aCheckSumFileInSandBox );
                 if( aCSILocal.getHash().equals( aCSIRemote.getHash() )){
+                    sm_Log.info( "Lokale Datei ist identisch mit Server-Version: "+ fFileToDownload);
                     return;
                 }
             }
@@ -126,45 +123,46 @@ public class TransferController implements ITransferController
                     aFileToDownloadInSandBox_Cry, aFileToDownload_Cry );
             m_RemoteAccess.download( aPathPair_DataFiles );
             final Path aDataFileInSandBox_Decrypted = getCryptUtils().decrypt( aFileToDownloadInSandBox_Cry );
-            Files.copy( aDataFileInSandBox_Decrypted, fFileToDownload);
+            Files.copy( aDataFileInSandBox_Decrypted, fFileToDownload, StandardCopyOption.REPLACE_EXISTING);
+            sm_Log.info("Datei heruntergeladen: "+fFileToDownload);
         }catch( final Exception fEx ){
             sm_Log.warn("Exception: ", fEx );
         }
     }
 
     @Override
-    public void upload(final Path fFileToUpload)
+    public void upload(final Path fFileToUpload) throws Exception
     {
         final ICryptUtils aCryptUtils = getCryptUtils();
         if( aCryptUtils == null ){
             sm_Log.warn( "Kein Verschlüsselungsobjekt! Hochladen nicht möglich!" );
             return;
         }
-        final Path aLocalFile_RelativeToRoot = Paths.get( getRootFolder().toString(), fFileToUpload.toString() );
+        final Path aLocalFile_RelativeToRoot = getRootFolder().resolve( fFileToUpload ).normalize();
         if(Files.isDirectory( aLocalFile_RelativeToRoot )){
             throw new UnsupportedOperationException("Noch nicht implementiert!");
         }
         uploadFile( aLocalFile_RelativeToRoot );
     }
-    private void uploadFile(final Path fFileToUpload)
+    private void uploadFile(final Path fFileToUpload) throws Exception
     {
         final ICryptUtils aCryptUtils = getCryptUtils();
         final CheckSumCreator aCSC = getCheckSumCreator();
-        try{
-            final Path aFileToUploadInSandBox = copyFileToSandBox( fFileToUpload );
-            final CheckSumInfo aCSI  = aCSC.calculate( aFileToUploadInSandBox );
-            final Path aFileToUploadInSandBox_Encrypted = aCryptUtils.encrypt( aFileToUploadInSandBox );
-            final LocalRemotePathPair aPathPair_Files = new LocalRemotePathPair(
-                    aFileToUploadInSandBox_Encrypted, aFileToUploadInSandBox_Encrypted );
-            m_RemoteAccess.upload( aPathPair_Files );
 
-            final Path aCheckSumFile = aCSC.write( aFileToUploadInSandBox, aCSI );
-            final LocalRemotePathPair aPathPair_CheckSum = new LocalRemotePathPair(
-                    aCheckSumFile, aCheckSumFile );
-            m_RemoteAccess.upload( aPathPair_CheckSum );
-        }catch( final Exception fEx ){
-            sm_Log.warn("Exception: ", fEx );
-        }
+        final Path aFileToUploadInSandBox = copyFileToSandBox( fFileToUpload );
+        final CheckSumInfo aCSI  = aCSC.calculate( aFileToUploadInSandBox );
+        final Path aFileToUploadInSandBox_Encrypted = aCryptUtils.encrypt( aFileToUploadInSandBox );
+        final Path aRemotePath_DataFile = Paths.get( fFileToUpload.toString()+"."+FilenameUtils.getExtension( aFileToUploadInSandBox_Encrypted.toString() ) );
+
+        final LocalRemotePathPair aPathPair_Files = new LocalRemotePathPair(
+                aFileToUploadInSandBox_Encrypted, aRemotePath_DataFile );
+        m_RemoteAccess.upload( aPathPair_Files );
+
+        final Path aCheckSumFile = aCSC.write( aFileToUploadInSandBox, aCSI );
+        final Path aRemotePath_CheckSumFile = fFileToUpload.getParent().resolve( aCheckSumFile.getFileName() );
+        final LocalRemotePathPair aPathPair_CheckSum = new LocalRemotePathPair(
+                aCheckSumFile, aRemotePath_CheckSumFile );
+        m_RemoteAccess.upload( aPathPair_CheckSum );
     }
 
     private static Path initSandBox( final Path fSandBox )
@@ -188,13 +186,8 @@ public class TransferController implements ITransferController
 
     private Path getSandBoxPath( final Path fFile )
     {
-        return Paths.get( getSandBox().toString(), fFile.toFile().getName() );
-    }
-
-    private void downloadBaseInfoFile()
-    {
-        // TODO Auto-generated method stub
-
+        final Path aPath = getSandBox().resolve( fFile.getFileName() );
+        return aPath;
     }
 
 }

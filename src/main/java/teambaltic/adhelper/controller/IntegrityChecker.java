@@ -33,10 +33,10 @@ public final class IntegrityChecker
         if( !Files.exists( aDataFolder )){
             throw new Exception( "Benötigtes Verzeichnis nicht gefunden: "+aDataFolder.toString() );
         }
-        final Path aFile_BaseData = aAppSettings.getFile_BaseData();
-        if( !Files.exists( aFile_BaseData )){
-            throw new Exception( "Benötigte Datei nicht gefunden: "+aFile_BaseData.toString() );
-        }
+//        final Path aFile_BaseData = aAppSettings.getFile_BaseData();
+//        if( !Files.exists( aFile_BaseData )){
+//            throw new Exception( "Benötigte Datei nicht gefunden: "+aFile_BaseData.toString() );
+//        }
         final File[] aInvoicingPeriodFolders = FileUtils.getInvoicingPeriodFolders( aDataFolder.toFile() );
         if( aInvoicingPeriodFolders == null || aInvoicingPeriodFolders.length == 0 ){
             throw new Exception( "Keine Unterverzeichnisse mit Abrechnungsdaten gefunden in: "+aDataFolder.toString() );

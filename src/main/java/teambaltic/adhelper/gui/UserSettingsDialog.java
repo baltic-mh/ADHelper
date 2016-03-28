@@ -13,8 +13,6 @@ package teambaltic.adhelper.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -134,17 +132,17 @@ public class UserSettingsDialog extends JDialog
                 buttonPane.add( m_btn_OK );
                 getRootPane().setDefaultButton( m_btn_OK );
             }
-            {
-                final JButton cancelButton = new JButton( "Cancel" );
-                cancelButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(final ActionEvent e) {
-                        setVisible(false);
-                    }
-                });
-                cancelButton.setActionCommand( "Cancel" );
-                buttonPane.add( cancelButton );
-            }
+//            {
+//                final JButton cancelButton = new JButton( "Cancel" );
+//                cancelButton.addActionListener(new ActionListener() {
+//                    @Override
+//                    public void actionPerformed(final ActionEvent e) {
+//                        setVisible(false);
+//                    }
+//                });
+//                cancelButton.setActionCommand( "Cancel" );
+//                buttonPane.add( cancelButton );
+//            }
         }
     }
 

@@ -14,7 +14,7 @@ package teambaltic.adhelper.model;
 // ############################################################################
 public enum ERole
 {
-    ESKIMO,
+//    ESKIMO,
     BAUAUSSCHUSS,
     MITGLIEDERWART;
 }

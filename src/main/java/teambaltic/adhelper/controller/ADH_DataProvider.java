@@ -44,7 +44,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     // ------------------------------------------------------------------------
     private File m_BaseDataFile;
-    public File getBaseInfoFile(){ return m_BaseDataFile; }
+    public File getBaseDataFile(){ return m_BaseDataFile; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------

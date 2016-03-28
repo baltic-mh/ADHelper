@@ -19,7 +19,7 @@ public interface ITransferController
     void start() throws Exception;
     void shutdown() throws Exception;
     boolean isConnected();
-    void upload  ( Path fFileToUpload );
+    void upload  ( Path fFileToUpload ) throws Exception;
     void download( Path fFileToDownload );
 }
 

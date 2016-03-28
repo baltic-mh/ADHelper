@@ -18,6 +18,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.gui.UserSettingsDialog;
+import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.settings.IUserSettings;
 
 // ############################################################################
@@ -44,8 +45,13 @@ public class UserSettingsListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-        getDialog().setVisible(true);
         final IUserSettings aUserSettings = getUserSettings();
+        ERole aRole = aUserSettings.getRole();
+        if( aRole == null ){
+            aRole = ERole.MITGLIEDERWART;
+        }
+        getDialog().getCb_Role().setSelectedItem( aRole );
+        getDialog().setVisible(true);
         final String aName  = getDialog().getTf_Name().getText();
         aUserSettings.setStringValue( IUserSettings.EKey.NAME, aName );
         final String aEMail = getDialog().getTf_EMail().getText();

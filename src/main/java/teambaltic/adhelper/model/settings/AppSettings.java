@@ -55,7 +55,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public Path getFolder_Root()
     {
-        return Paths.get( getFolderName_Root() );
+        return Paths.get( getFolderName_Root() ).normalize();
     }
     @Override
     public String getFolderName_Data()
@@ -81,7 +81,9 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     @Override
     public String getFolderName_Secrets()
     {
-        final Path aFullFolderName = Paths.get( getFolderName_Settings(), getStringValue( EKey.FOLDERNAME_SECRETS ) );
+        final Path aFullFolderName = Paths.get(
+                getFolderName_Settings(),
+                getStringValue( EKey.FOLDERNAME_SECRETS ) ).normalize();
         return aFullFolderName.toString();
     }
     @Override
@@ -183,7 +185,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
 
     private Path getFolder( final String fFolderName )
     {
-        final Path aPath = Paths.get( getFolderName_Root(), fFolderName );
+        final Path aPath = Paths.get( getFolderName_Root(), fFolderName ).normalize();
         return aPath;
     }
 }

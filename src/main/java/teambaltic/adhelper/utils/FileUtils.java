@@ -17,6 +17,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +32,8 @@ import org.apache.commons.io.FilenameUtils;
 // ############################################################################
 public final class FileUtils
 {
+    private static final DateTimeFormatter TIMEFORMAT = DateTimeFormatter.ofPattern("HH-mm-ss");
+
     private FileUtils(){/**/}
 
     public static String readFirstLine( final Path fFile )
@@ -172,6 +178,20 @@ public final class FileUtils
         final String aExt = FilenameUtils.getExtension( fFile.getName() );
         final String aNewName = String.format( "%s%s.%s", aBaseName, fPostfix, aExt );
         return aNewName;
+    }
+
+    public static Path moveToBackup( final Path fFile ) throws IOException
+    {
+        final String aFileName  = fFile.toFile().getName();
+        final String aPath      = FilenameUtils.getPath( fFile.toString() );
+        final String aBaseName  = FilenameUtils.getBaseName( aFileName );
+        final String aExtension = FilenameUtils.getExtension( aFileName );
+        final String aBackupFileName = String.format( "%s_%s_%s.%s",
+                aBaseName, LocalDate.now(), TIMEFORMAT.format( LocalTime.now() ), aExtension );
+        final Path aBackupFile = Paths.get( aPath, aBackupFileName );
+
+        Files.move( fFile, aBackupFile );
+        return aBackupFile;
     }
 
 }

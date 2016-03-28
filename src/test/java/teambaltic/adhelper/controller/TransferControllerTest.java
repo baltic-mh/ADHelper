@@ -75,7 +75,11 @@ public class TransferControllerTest
         assertNotNull("TC.init", aTC);
 
         final Path aLocalFile = Paths.get( "Daten", "BasisDaten.csv" );
-        aTC.upload( aLocalFile );
+        try{
+            aTC.upload( aLocalFile );
+        }catch( final Exception fEx ){
+            fail("Exception: "+fEx.getMessage() );
+        }
     }
 
     @Test

@@ -70,7 +70,7 @@ public class Exporter
             Files.createDirectories( fOutputFolder );
         }
 
-        final File aBIF = getDataProvider().getBaseInfoFile();
+        final File aBIF = getDataProvider().getBaseDataFile();
         copyFileToFolder( aBIF, fOutputFolder );
         final File aWEF = getDataProvider().getWorkEventFile();
         final String aNewName = FileUtils.getFileNameWithPostfixAppended( aWEF, "_old" );
@@ -246,9 +246,9 @@ public class Exporter
         try{
             fw = new FileWriter( aFile );
             final long aTS = System.currentTimeMillis();
-            fw.write( "#TimeStamp;TimeStamp(HR);Info");
+            fw.write( "#TimeStamp;TimeStamp(HR);Aktion;Info");
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-            fw.append( String.format( "%d;%s;%s", aTS, new Date(aTS), fInfo ) );
+            fw.append( String.format( "%d;%s;Abgeschlossen;%s", aTS, new Date(aTS), fInfo ) );
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
 
         }finally{

@@ -33,6 +33,7 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.WorkEventTableModel;
+import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.WorkEvent;
 
@@ -41,9 +42,9 @@ public class MainPanel extends JPanel
 {
     private static final long serialVersionUID = 7281848889524771889L;
 
-    private final JTextField m_tf_HoursToPay;
-    private final JTable m_tbl_WorkEvents;
-    private final JTable m_tbl_DutyCharges;
+    private final JTextField    m_tf_HoursToPay;
+    private final JTable        m_tbl_WorkEvents;
+    private final JTable        m_tbl_DutyCharges;
 
     // ------------------------------------------------------------------------
     private final JComboBox<IClubMember> m_cmb_Members;
@@ -56,23 +57,22 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final DutyChargeTableModel m_DutyChargeDataModel;
-    public DutyChargeTableModel getDutyChargeDataModel(){ return m_DutyChargeDataModel; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
     private final JButton m_btnNew;
     private JButton getBtnNew(){ return m_btnNew; }
-    // ------------------------------------------------------------------------
-
     // ------------------------------------------------------------------------
     private final JButton m_btnDelete;
     private JButton getBtnDelete(){ return m_btnDelete; }
     // ------------------------------------------------------------------------
+    private final JButton m_btnFinish;
+    public JButton getBtnFinish(){ return m_btnFinish; }
+    // ------------------------------------------------------------------------
+    private final JButton m_btnUpload;
+    public JButton getBtnUpload(){ return m_btnUpload; }
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final JButton m_btnExport;
-    public JButton getBtnExport(){ return m_btnExport; }
+    private final DutyChargeTableModel m_DutyChargeDataModel;
+    public DutyChargeTableModel getDutyChargeDataModel(){ return m_DutyChargeDataModel; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -208,9 +208,12 @@ public class MainPanel extends JPanel
         m_btnNew.setActionCommand( "New" );
         m_pnl_WorkEvents.add(m_btnNew, "10, 4");
 
-        m_btnExport = new JButton("Ausgabe");
-        m_btnExport.setActionCommand( "Export" );
-        add(m_btnExport, "12, 10");
+        m_btnUpload = new JButton("Hochladen...");
+        add(m_btnUpload, "10, 10");
+
+        m_btnFinish = new JButton("Abrechnung abschlieﬂen");
+        m_btnFinish.setActionCommand( "Abrechnung abschlieﬂen" );
+        add(m_btnFinish, "12, 10");
 
     }
 
@@ -272,6 +275,34 @@ public class MainPanel extends JPanel
     public int getSelectedMemberID()
     {
         return getSelectedMember().getID();
+    }
+
+    public void setFinished()
+    {
+        m_btnFinish.setEnabled( false );
+        m_btnNew.setEnabled( false );
+    }
+
+    public void setUploaded()
+    {
+        m_btnUpload.setEnabled( false );
+    }
+
+    public void configure( final ERole fRole )
+    {
+        switch( fRole ){
+            case BAUAUSSCHUSS:
+
+                break;
+
+            case MITGLIEDERWART:
+                m_btnNew.setEnabled( false );
+                m_btnFinish.setEnabled( false );
+                break;
+
+            default:
+                break;
+        }
     }
 }
 

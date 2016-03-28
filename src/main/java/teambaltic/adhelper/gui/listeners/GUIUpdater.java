@@ -24,8 +24,10 @@ import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
 
 // ############################################################################
-public class GUIUpdater
+public final class GUIUpdater
 {
+    private GUIUpdater(){/**/}
+
     public static void updateGUI( final int fMemberID,
             final MainPanel fPanel, final ADH_DataProvider fDataProvider )
     {

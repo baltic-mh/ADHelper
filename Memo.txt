@@ -1,1 +1,39 @@
+Nochtun:
 
+- Warte-Cursor am Anfang, wenn versucht wird, Kontakt mit Server herzustellen
+
+- Konfigurieren der Bedienoberfläche in Abhängigkeit von effektiver Rolle
+    - BAUAUSSCHUSS: 
+        "Hochladen" erst aktiviert, wenn Abrechnung abgeschlossen
+    (- MIGLIEDERWART: )
+        ("Neu" deaktiviert)
+        ("Abrechnung abschließen" deaktiviert)
+
+- Verschlüsselung implementieren
+
+- Guthaben nicht mehr aus BasisDaten einlesen, sondern aus separater Datei.
+
+- Hochladen der Abrechnungsdaten
+
+- Abrechnungszeitraum als Combobox
+    - Bei Auswahl bereits abgerechneter Zeiträume müssen alle Bedienknöpfe
+      deaktiviert sein.
+      
+- Weiteres Panel für Detail-Angaben zum ausgewählten Mitglied:
+    - Geburtsdatum
+    - Eintritt
+    - Austritt
+    - ADFrei.Grund - von - bis
+    - Resultat aus Berechnung (wie bei Details.txt)
+
+- Log-Ausgaben
+	- Hochladen einer Datei
+	- Download einer Datei
+	
+- Einfärben der Arbeitsdiensttermine
+	- Termin, der in Abrechnungszeitraum fällt, hervorgehoben
+	- Termin außerhalb des Abrechnungszeitraum gedimmt
+	
+- Aktionen im Menu mit Leben füllen
+
+- Hilfe erstellen

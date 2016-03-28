@@ -58,7 +58,7 @@ public class UserSettings extends ASettings<IUserSettings.EKey>
             final ERole aRole = ERole.valueOf( aRoleStringValue );
             return aRole;
         }catch( final Exception fEx ){
-            return ERole.ESKIMO;
+            return null;
         }
     }
 }

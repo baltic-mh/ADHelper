@@ -31,6 +31,12 @@ public class LocalRemotePathPair
         m_Local  = fLocal;
         m_Remote = fRemote;
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format( "%s -> %s", getLocal(), getRemote() );
+    }
 }
 
 // ############################################################################

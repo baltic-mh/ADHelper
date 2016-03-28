@@ -14,6 +14,9 @@ package teambaltic.adhelper.gui;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 
 import javax.swing.Box;
@@ -37,9 +40,10 @@ import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.InitHelper;
 import teambaltic.adhelper.controller.IntegrityChecker;
-import teambaltic.adhelper.gui.listeners.ExportListener;
+import teambaltic.adhelper.gui.listeners.FinishListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
+import teambaltic.adhelper.gui.listeners.UploadListener;
 import teambaltic.adhelper.gui.listeners.UserSettingsListener;
 import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
 import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
@@ -47,13 +51,16 @@ import teambaltic.adhelper.gui.model.MemberComboBoxModel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
+import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
 public class ADH_Application
 {
     private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
+    private static final String TITLE = "KVK Arbeitsdienst-Helferlein (C) 2016 TeamBaltic";
 
     // ------------------------------------------------------------------------
     private JFrame m_frame;
@@ -91,16 +98,26 @@ public class ADH_Application
                     aAppWindow.initialize();
                     aAppWindow.setVisible( true );
 
+                    ITransferController aTC = null;
+                    boolean aOffline = true;
                     if( !stayLocal() ){
-                        final ITransferController aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+                        aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
                         if( aTC != null ){
                             aTC.start();
+                            if( aTC.isConnected() ){
+                                aOffline = false;
+                                updateBaseData( aTC );
+                            } else {
+                                sm_Log.warn( "Keine Verbindung zum Server!" );
+                            }
+
                         }
                     }
-
+                    aAppWindow.setTitle( aOffline );
                     final ADH_DataProvider aDataProvider = InitHelper.initDataProvider();
 
-                    aAppWindow.populate( aDataProvider );
+                    aAppWindow.configure();
+                    aAppWindow.populate( aDataProvider, aTC );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
@@ -127,7 +144,9 @@ public class ADH_Application
         m_frame.setVisible( fB );
     }
 
-    public void populate( final ADH_DataProvider fDataProvider )
+    private void populate(
+            final ADH_DataProvider fDataProvider,
+            final ITransferController fTransferController )
     {
         final Collection<IClubMember> aAllMembers = fDataProvider.getMembers();
         final IClubMember[] aMemberArr = new IClubMember[aAllMembers.size()] ;
@@ -153,8 +172,13 @@ public class ADH_Application
         final WorkEventTableListener aWorkEventTableListener = new WorkEventTableListener(aWorkEventEditor, m_panel, fDataProvider);
         m_panel.setWorkEventTableListener(aWorkEventTableListener);
 
-        final JButton aBtnExport = m_panel.getBtnExport();
-        aBtnExport.addActionListener( new ExportListener( this, fDataProvider ) );
+        final JButton aBtnFinish = m_panel.getBtnFinish();
+        aBtnFinish.addActionListener( new FinishListener( m_panel, fDataProvider ) );
+
+        final JButton aBtnUpload = m_panel.getBtnUpload();
+        aBtnUpload.addActionListener(
+                new UploadListener( m_panel, fDataProvider, fTransferController,
+                        getUserSettingsListener() ) );
 
         GUIUpdater.updateGUI( m_panel.getSelectedMemberID(), m_panel, fDataProvider );
     }
@@ -165,7 +189,7 @@ public class ADH_Application
     private void initialize()
     {
         m_frame = new JFrame();
-        m_frame.setTitle("KVK Arbeitsdienst-Helferlein (C) 2016 TeamBaltic");
+        m_frame.setTitle(TITLE);
         m_frame.setBounds( 100, 100, 924, 580 );
         m_frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         m_frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
@@ -199,25 +223,25 @@ public class ADH_Application
         menuBar.add(mnHilfe);
     }
 
-    public static void initSettings( final ADH_Application fAppWindow ) throws Exception
+    private static void initSettings( final ADH_Application fAppWindow ) throws Exception
     {
         AllSettings.INSTANCE.init();
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         fAppWindow.setUserSettingsListener( populateUserSettings( aUserSettings ) );
     }
 
-    public static UserSettingsListener populateUserSettings(final IUserSettings fUserSettings)
+    private static UserSettingsListener populateUserSettings(final IUserSettings fUserSettings)
     {
         final UserSettingsDialog aDialog = new UserSettingsDialog();
         aDialog.getTf_Name().setText( fUserSettings.getName() );
         aDialog.getTf_EMail().setText( fUserSettings.getEMail() );
-        aDialog.getCb_Role().setSelectedItem( fUserSettings.getRole() );
         final JButton aBtn_OK = aDialog.getBtn_OK();
         final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings );
         aBtn_OK.addActionListener( l );
 
         final ERole aRole = fUserSettings.getRole();
-        if( ERole.ESKIMO.equals( aRole ) ){
+        if( aRole == null ){
+            aDialog.getCb_Role().setSelectedItem( ERole.MITGLIEDERWART );
             aDialog.setVisible( true );
         }
 
@@ -235,6 +259,33 @@ public class ADH_Application
         return aSysPropStayLocal;
     }
 
+    protected void setTitle( final boolean fOffline )
+    {
+        m_frame.setTitle(String.format("%s (%s)", TITLE, fOffline ? "Offline" : "Online" ));
+    }
+
+    private void configure()
+    {
+        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+        m_panel.configure( aUserSettings.getRole() );
+
+    }
+
+    private static void updateBaseData( final ITransferController fTC ) throws IOException
+    {
+        final IAppSettings aAppSettings = AllSettings.INSTANCE.getAppSettings();
+        final Path aFile_BaseData = aAppSettings.getFile_BaseData();
+        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+        if( Files.exists( aFile_BaseData ) ){
+            if( ERole.MITGLIEDERWART.equals( aUserSettings.getRole() ) ){
+                // Der Mitgliederwart ist der Erzeuger der Basisdaten-Datei!
+                sm_Log.info( "MITGLIEDERWART: Basisdaten werden nicht vom Server geholt!" );
+                return;
+            }
+            FileUtils.moveToBackup( aFile_BaseData );
+        }
+        fTC.download(aFile_BaseData);
+    }
 }
 
 // ############################################################################
