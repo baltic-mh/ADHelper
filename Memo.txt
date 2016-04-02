@@ -1,39 +1,61 @@
 Nochtun:
 
-- Warte-Cursor am Anfang, wenn versucht wird, Kontakt mit Server herzustellen
+(- Runterladen der Abrechnungsdaten vom Server)
 
-- Konfigurieren der Bedienoberfläche in Abhängigkeit von effektiver Rolle
-    - BAUAUSSCHUSS: 
-        "Hochladen" erst aktiviert, wenn Abrechnung abgeschlossen
+(- MITGLIEDERWART: Beim Hochladen der Datei für die Basisdaten Datei auf
+    Konsistenz überprüfen)
+    ( Alle benötigten Spalten enthalten, alle Zeilen haben gültige Werte ) 
+
+(- Konfigurieren der Bedienoberfläche in Abhängigkeit von effektiver Rolle)
+    (- BAUAUSSCHUSS:) 
+        ("Hochladen" erst aktiviert, wenn Abrechnung abgeschlossen)
     (- MIGLIEDERWART: )
         ("Neu" deaktiviert)
         ("Abrechnung abschließen" deaktiviert)
 
-- Verschlüsselung implementieren
+(- Verschlüsselung implementieren)
 
-- Guthaben nicht mehr aus BasisDaten einlesen, sondern aus separater Datei.
+(- Guthaben nicht mehr aus BasisDaten einlesen, sondern aus separater Datei.)
 
-- Hochladen der Abrechnungsdaten
+(- Geregeltes Beenden, bei dem die Heartbeat-Datei gelöscht wird!)
 
-- Abrechnungszeitraum als Combobox
+(- Hochladen der Abrechnungsdaten)
+
+(- Dateien für die Verschlüsselung fest ins Programm einbauen)
+
+RELEASE
+
+- Warte-Cursor am Anfang, wenn versucht wird, Kontakt mit Server herzustellen
+
+- Log-Ausgaben verbessern
+    - Hochladen einer Datei
+    - Download einer Datei
+
+*- BUGFIX: Beim Ändern der Benutzerdaten muss die Aktivierung der Knöpfe
+    angepasst werden. 
+
+*- Dialog nach "Abrechnung abschließen": Nennt Ausgabeverzeichnis und bietet
+    Knopf "Hochladen" an.
+
+*- Abrechnungszeitraum als Combobox
     - Bei Auswahl bereits abgerechneter Zeiträume müssen alle Bedienknöpfe
       deaktiviert sein.
       
-- Weiteres Panel für Detail-Angaben zum ausgewählten Mitglied:
+*- Weiteres Panel für Detail-Angaben zum ausgewählten Mitglied:
     - Geburtsdatum
     - Eintritt
     - Austritt
     - ADFrei.Grund - von - bis
     - Resultat aus Berechnung (wie bei Details.txt)
 
-- Log-Ausgaben
-	- Hochladen einer Datei
-	- Download einer Datei
-	
-- Einfärben der Arbeitsdiensttermine
-	- Termin, der in Abrechnungszeitraum fällt, hervorgehoben
-	- Termin außerhalb des Abrechnungszeitraum gedimmt
-	
 - Aktionen im Menu mit Leben füllen
 
-- Hilfe erstellen
+*- Einfärben der Arbeitsdiensttermine
+    - Termin, der in Abrechnungszeitraum fällt, hervorgehoben
+    - Termin außerhalb des Abrechnungszeitraum gedimmt
+
+*- Sauberer Umgang mit fehlender Internetverbindung
+
+*- Hilfe erstellen
+
+*- Automatisches Update implementieren

@@ -160,10 +160,11 @@ public class SingletonWatcherTest
         }
 
         @Override
-        public void download( final LocalRemotePathPair fPathPair ) throws Exception
+        public boolean download( final LocalRemotePathPair fPathPair ) throws Exception
         {
             m_Cnt_Download++;
             Files.copy( m_MyRemotePath, fPathPair.getLocal(), StandardCopyOption.REPLACE_EXISTING );
+            return true;
         }
 
         @Override
@@ -182,7 +183,7 @@ public class SingletonWatcherTest
         @Override
         public void upload( final List<LocalRemotePathPair> fPathPairs ) throws Exception{}
         @Override
-        public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception{}
+        public boolean download( final List<LocalRemotePathPair> fPathPairs ) throws Exception{ return false; }
         @Override
         public List<String> list( final Path fRemotePath ) throws Exception{ return null; }
         @Override

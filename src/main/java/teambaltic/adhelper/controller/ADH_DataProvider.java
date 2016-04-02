@@ -63,11 +63,6 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final String m_FinishedFileName;
-    private final String getFinishedFileName(){ return m_FinishedFileName; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
     private final String m_UserInfo;
     private final String getUserInfo(){ return m_UserInfo; }
     // ------------------------------------------------------------------------
@@ -82,8 +77,6 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public ADH_DataProvider(final IAllSettings fSettings) throws Exception
     {
         m_AllSettings = fSettings;
-        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        m_FinishedFileName = aAppSettings.getFileName_Finished();
         final IUserSettings aUserSettings = m_AllSettings.getUserSettings();
         m_UserInfo = aUserSettings.getDecoratedEMail();
     }
@@ -94,7 +87,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         // Bestimme das Verzeichnis mit den neuesten Abrechnungsdaten
         final Path aDataFolder = getDataFolder();
         final File aFolderOfNewestInvoicingPeriod =
-                FileUtils.determineNewestInvoicingPeriodFolder( aDataFolder.toFile(), getFinishedFileName() );
+                FileUtils.determineNewestInvoicingPeriodFolder( aDataFolder, getFinishedFileName() );
         // Bestimme daraus den folgenden Abrechnungszeitraum:
         final Halfyear aLatestProcessed = Halfyear.create( aFolderOfNewestInvoicingPeriod.getName() );
         final Path aOutputFolder = getOutputFolder( aLatestProcessed );
@@ -275,6 +268,18 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         final Path aDataFolder = aAppSettings.getFolder_Data();
         return aDataFolder;
     }
+    private String getFinishedFileName()
+    {
+        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
+        return aAppSettings.getFileName_Finished();
+    }
+    private String getUploadedFileName()
+    {
+        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
+        return aAppSettings.getFileName_Uploaded();
+    }
+    // ------------------------------------------------------------------------
+
 
     public boolean isOutputFinished()
     {
@@ -293,6 +298,11 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         Exporter.exportWorkEvents( this, getOutputFolder() );
     }
 
+    public File[] getNotUploadedFolders()
+    {
+        final File[] aFolders_NotUploaded = FileUtils.getFolders_NotUploaded( getDataFolder(), getFinishedFileName(), getUploadedFileName() );
+        return aFolders_NotUploaded;
+    }
 }
 
 // ############################################################################

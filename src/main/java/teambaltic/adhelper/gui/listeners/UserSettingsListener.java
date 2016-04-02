@@ -45,13 +45,28 @@ public class UserSettingsListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-        final IUserSettings aUserSettings = getUserSettings();
-        ERole aRole = aUserSettings.getRole();
-        if( aRole == null ){
-            aRole = ERole.MITGLIEDERWART;
+        switch( fE.getActionCommand() ){
+            case "Editieren":
+                ERole aRole = getUserSettings().getRole();
+                if( aRole == null ){
+                    aRole = ERole.MITGLIEDERWART;
+                }
+                getDialog().getCb_Role().setSelectedItem( aRole );
+                getDialog().setVisible( true );
+                break;
+
+            case "OK":
+                acceptUserDataFromDialog();
+                break;
+
+            default:
+                break;
         }
-        getDialog().getCb_Role().setSelectedItem( aRole );
-        getDialog().setVisible(true);
+    }
+
+    private void acceptUserDataFromDialog()
+    {
+        final IUserSettings aUserSettings = getUserSettings();
         final String aName  = getDialog().getTf_Name().getText();
         aUserSettings.setStringValue( IUserSettings.EKey.NAME, aName );
         final String aEMail = getDialog().getTf_EMail().getText();

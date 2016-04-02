@@ -97,16 +97,16 @@ public class RemoteAccess implements IRemoteAccess
     }
 
     @Override
-    public void download( final LocalRemotePathPair fPathPair ) throws Exception
+    public boolean download( final LocalRemotePathPair fPathPair ) throws Exception
     {
         final List<LocalRemotePathPair> aList = new ArrayList<>();
         aList.add( fPathPair );
-        m_RemoteEngine.download( aList );
+        return m_RemoteEngine.download( aList );
     }
     @Override
-    public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
+    public boolean download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
     {
-        m_RemoteEngine.download( fPathPairs );
+        return m_RemoteEngine.download( fPathPairs );
     }
 
     private static IRemoteAccess createRemoteEngine(final IRemoteAccessSettings fRASettings)

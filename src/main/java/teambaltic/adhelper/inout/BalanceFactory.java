@@ -1,5 +1,5 @@
 /**
- * FreeFromDutyFactory.java
+ * BalanceFactory.java
  *
  * Created on 02.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -11,6 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.inout;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -24,30 +25,45 @@ public class BalanceFactory implements IItemFactory<Balance>
 {
     private static final Logger sm_Log = Logger.getLogger(BalanceFactory.class);
 
+    // ------------------------------------------------------------------------
+    private final String m_Columnname_BalanceValue;
+    // ------------------------------------------------------------------------
+
+    public BalanceFactory(final boolean fTakePreviousBalanceValues)
+    {
+        m_Columnname_BalanceValue = fTakePreviousBalanceValues ? IKnownColumns.GUTHABEN_WERT_ALT : IKnownColumns.GUTHABEN_WERT;
+    }
+
     @Override
     public Balance createItem( final int fID, final Map<String, String> fAttributes )
     {
-        String aBalanceString = null;
+        String aBalanceValueString   = null;
+        String aBalanceValidOnString = null;
         for( final String aColumnName : fAttributes.keySet() ){
-            if( aColumnName.startsWith( IKnownColumns.GUTHABEN_PREFIX )){
-                if( aBalanceString == null ){
-                    aBalanceString = fAttributes.get( aColumnName );
-                } else {
-                    sm_Log.warn("Mehr als eine Spalte beginnt mit "+IKnownColumns.GUTHABEN_PREFIX);
-                    sm_Log.warn("Es wird der Wert der ersten Spalte genommen: "+aBalanceString);
-                }
+            if( m_Columnname_BalanceValue.equals( aColumnName )){
+                aBalanceValueString = fAttributes.get( aColumnName );
+            } else if( IKnownColumns.GUTHABEN_AM.equals( aColumnName ) ){
+                aBalanceValidOnString = fAttributes.get( aColumnName );
             }
         }
-        if( aBalanceString == null || "".equals(aBalanceString) ){
+        if( aBalanceValueString == null || "".equals(aBalanceValueString) ){
             return null;
         }
         try{
-            final float aFloatValue = Float.parseFloat( aBalanceString.replaceAll( ",", "." ) );
+            final float aFloatValue = Float.parseFloat( aBalanceValueString.replaceAll( ",", "." ) );
             final int   aIntValue = Math.round( aFloatValue * 100 );
             final Balance aItem = new Balance( fID, aIntValue );
+            if( aBalanceValidOnString != null && !"".equals( aBalanceValidOnString ) ){
+                final String[] aParts = aBalanceValidOnString.split( "\\." );
+                final int aYear = Integer.parseInt( aParts[2] );
+                final int aMonth = Integer.parseInt( aParts[1] );
+                final int aDayOfMonth = Integer.parseInt( aParts[0] );
+                final LocalDate aValidOn = LocalDate.of( aYear, aMonth, aDayOfMonth );
+                aItem.setValidOn( aValidOn );
+            }
             return aItem;
         }catch( final NumberFormatException fEx ){
-            sm_Log.warn("Guthaben-Angabe ist keine Zahl: "+ aBalanceString );
+            sm_Log.warn("Guthaben-Angabe ist keine Zahl: "+ aBalanceValueString );
             return null;
         }
     }

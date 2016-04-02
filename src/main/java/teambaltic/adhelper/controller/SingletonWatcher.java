@@ -11,6 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -78,8 +79,9 @@ public class SingletonWatcher implements ISingletonWatcher
         if( getRemoteAccess() == null ){
             return null;
         }
+        Path aLocalFile = null;
         try{
-            final Path aLocalFile = Files.createTempFile( sm_BusyFileBaseName, sm_BusyFileExt );
+            aLocalFile = Files.createTempFile( sm_BusyFileBaseName, sm_BusyFileExt );
             final LocalRemotePathPair aPathPair = createLocalRemotePathPair( aLocalFile );
             getRemoteAccess().download( aPathPair );
             if( isOutDated( aLocalFile ) ){
@@ -87,11 +89,18 @@ public class SingletonWatcher implements ISingletonWatcher
                 return null;
             }
             final List<String> aLines = FileUtils.readAllLines( aLocalFile, 1 );
-            Files.delete( aLocalFile );
             return aLines.get( 0 );
         }catch( final Exception fEx ){
             sm_Log.warn( "Unexpected exception: ", fEx );
             return null;
+        } finally {
+            if( aLocalFile != null ){
+                try{
+                    Files.delete( aLocalFile );
+                }catch( final IOException fEx ){
+                    sm_Log.warn("Exception: ", fEx );
+                }
+            }
         }
     }
 
@@ -202,9 +211,16 @@ public class SingletonWatcher implements ISingletonWatcher
 
     private boolean isOutDated( final Path fLocalFile )
     {
+        final File aLocalFile = fLocalFile.toFile();
+        if( aLocalFile.length() == 0 ){
+            return true;
+        }
         Scanner aScanner = null;
         try{
-            aScanner = new Scanner(fLocalFile.toFile());
+            aScanner = new Scanner(aLocalFile);
+            if( !aScanner.hasNextLine() ) {
+                return true;
+            }
             // Titelzeile:
             String aLine = aScanner.nextLine();
             // Zeile mit Inhalt:
@@ -216,7 +232,7 @@ public class SingletonWatcher implements ISingletonWatcher
             return ( aNow - aTimeStamp > 3*getCycleTime() );
 
         } catch( final FileNotFoundException fEx ){
-            return true;
+            return false;
         } finally {
             if( aScanner != null ){
                 aScanner.close();

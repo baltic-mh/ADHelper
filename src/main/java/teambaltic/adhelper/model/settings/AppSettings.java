@@ -18,31 +18,16 @@ import java.nio.file.Paths;
 public class AppSettings extends ASettings<IAppSettings.EKey>
     implements IAppSettings
 {
-    public AppSettings()
+    public AppSettings() throws Exception
     {
         this(System.getProperty( EKey.FOLDERNAME_ROOT.name(), "."));
     }
-    public AppSettings(final String fFolderName_Root)
+    public AppSettings(final String fFolderName_Root) throws Exception
     {
-        setStringValue( EKey.FOLDERNAME_ROOT,       fFolderName_Root );
-        setStringValue( EKey.FOLDERNAME_DATA,       "Daten" );
-        setStringValue( EKey.FOLDERNAME_SETTINGS,   "Einstellungen" );
-        setStringValue( EKey.FOLDERNAME_SANDBOX,    "Sandkiste" );
-        setStringValue( EKey.FOLDERNAME_SECRETS,    "ssh" );
-
-        setStringValue( EKey.FILENAME_BASEINFO,     "BasisDaten.csv" );
-        setStringValue( EKey.FILENAME_WORKEVENTS,   "Arbeitsdienste.csv" );
-        setStringValue( EKey.FILENAME_BALANCES,     "Guthaben.csv" );
-        setStringValue( EKey.FILENAME_USERDATA,     "BenutzerDaten.prop" );
-        setStringValue( EKey.FILENAME_CLUBDATA,     "VereinsDaten.prop" );
-        setStringValue( EKey.FILENAME_FINISHED,     "Abgeschlossen.txt" );
-        setStringValue( EKey.FILENAME_REMOTEACCESSDATA, "ServerZugangsDaten.prop" );
-
-        setStringValue( EKey.FILENAME_CRYPT_PRIV,   "private_key.der" );
-        setStringValue( EKey.FILENAME_CRYPT_PUBL,   "public_key.der" );
-
-        setIntValue( EKey.CYCLETIME_SINGLETONWATCHER, 5000 );
-
+        super();
+        init( Paths.get( fFolderName_Root, "Einstellungen", "AppSettings.prop" ));
+        // Sicher ist sicher!
+        setStringValue( EKey.FOLDERNAME_ROOT, fFolderName_Root );
     }
     @Override
     protected EKey[] getKeyValues(){ return EKey.values(); }
@@ -155,6 +140,11 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     public String getFileName_Finished()
     {
         return getStringValue( EKey.FILENAME_FINISHED );
+    }
+    @Override
+    public String getFileName_Uploaded()
+    {
+        return getStringValue( EKey.FILENAME_UPLOADED );
     }
 
     @Override

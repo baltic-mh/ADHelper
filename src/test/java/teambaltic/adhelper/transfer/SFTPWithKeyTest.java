@@ -102,18 +102,18 @@ public class SFTPWithKeyTest
     {
 
         final Path aRemotePath = Paths.get( "SubDir" );
-        try{
-            final List<String> aPaths = sm_SFTPWithKey.list( aRemotePath, "md5" );
-            assertNotNull("list", aPaths);
-            for( final String aPath : aPaths ){
-                sm_Log.info( "List md5: File found: "+aPath );
-                assertTrue("Endswith md5", aPath.toString().toLowerCase().endsWith( "md5" ));
-            }
-            assertEquals( "Paths.size", 2, aPaths.size() );
+        final List<String> aPaths = listByExtension( aRemotePath, "md5" );
+        assertEquals( "Paths.size", 2, aPaths.size() );
+    }
 
-        }catch( final Exception fEx ){
-            fail("Exception: "+fEx );
-        }
+    @Test
+    public void test_ListByExtendedExtension()
+    {
+        final Path aRemotePath = Paths.get( "SubDir" );
+        List<String> aPaths = listByExtension( aRemotePath, "cry" );
+        assertEquals( "Paths.size", 2, aPaths.size() );
+        aPaths = listByExtension( aRemotePath, "zip.cry" );
+        assertEquals( "Paths.size", 1, aPaths.size() );
     }
 
     @Test
@@ -175,6 +175,26 @@ public class SFTPWithKeyTest
         }
     }
 
+    // ########################################################################
+    // PRIVATE PROPERTY!
+    // ########################################################################
+
+    private static List<String> listByExtension( final Path fRemotePath, final String fExtension )
+    {
+        try{
+            final List<String> aPaths = sm_SFTPWithKey.list( fRemotePath, fExtension );
+            assertNotNull("list", aPaths);
+            for( final String aPath : aPaths ){
+                sm_Log.info( "List md5: File found: "+aPath );
+                assertTrue("Endswith md5", aPath.toString().toLowerCase().endsWith( fExtension ));
+            }
+            return aPaths;
+
+        }catch( final Exception fEx ){
+            fail("Exception: "+fEx );
+            return null;
+        }
+    }
 }
 
 // ############################################################################

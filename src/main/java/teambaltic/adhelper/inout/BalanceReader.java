@@ -40,7 +40,7 @@ public class BalanceReader
     public BalanceReader( final File fFile, final boolean fTakePreviousBalanceValues )
     {
         m_File = fFile;
-        m_ItemFactory = new BalanceFactoryNew( fTakePreviousBalanceValues );
+        m_ItemFactory = new BalanceFactory( fTakePreviousBalanceValues );
     }
 
     public void read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
@@ -61,7 +61,6 @@ public class BalanceReader
             }
 
             final Balance aItem = m_ItemFactory.createItem( aID, aAttributes);
-            compare(aItem, aInfo.getBalance());
             int aBalanceValue = 0;
             if( aItem != null ){
                 aInfo.setBalance( aItem );
@@ -70,24 +69,6 @@ public class BalanceReader
             aInfo.setDutyCharge( new DutyCharge(aID, aBalanceValue ) );
         }
 
-    }
-
-    private static void compare( final Balance fItemFromBalanceFile, final Balance fItemFromMemberFile )
-    {
-        if( fItemFromBalanceFile == null ){
-            if( fItemFromMemberFile != null ){
-                sm_Log.error( "Guthaben aus Gutenhaben-Datei ist null - aus Mitglieder-Datei nicht: "+fItemFromMemberFile.getMemberID() );
-            }
-            return;
-        }
-        if( fItemFromMemberFile == null ){
-            sm_Log.error( "Guthaben aus Gutenhaben-Datei ist nicht null - aus Mitglieder-Datei ist null: "+fItemFromBalanceFile.getMemberID() );
-            return;
-        }
-        if( fItemFromBalanceFile.getValue() != fItemFromMemberFile.getValue() ){
-            sm_Log.error( String.format( "Guthaben für Mitglied %d aus Gutenhaben-Datei und Mitglieder-Datei unterscheiden sich: %d != %d ",
-                    fItemFromMemberFile.getMemberID(), fItemFromBalanceFile.getValue(), fItemFromMemberFile.getValue() ) );
-        }
     }
 
 }

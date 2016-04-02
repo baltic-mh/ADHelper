@@ -39,7 +39,7 @@ public class FileUtilsTest
             aFolder = Paths.get(aTempDirectory.toString(), "2031-01-01 - 2031-06-30");
             Files.createDirectory( aFolder );
 
-            final File aResult = FileUtils.determineNewestInvoicingPeriodFolder( aTempDirectory.toFile(), "Finished.txt" );
+            final File aResult = FileUtils.determineNewestInvoicingPeriodFolder( aTempDirectory, "Finished.txt" );
             assertEquals("Neuestes Verzeichnis", "2011-07-01 - 2011-12-31", aResult.getName());
         }catch( final IOException fEx ){
             fail( "Exception: "+fEx.getMessage() );

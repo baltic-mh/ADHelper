@@ -14,10 +14,11 @@ package teambaltic.adhelper.gui;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -37,6 +38,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.controller.IShutdownListener;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.InitHelper;
 import teambaltic.adhelper.controller.IntegrityChecker;
@@ -53,7 +55,6 @@ import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
-import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
@@ -68,6 +69,8 @@ public class ADH_Application
     // ------------------------------------------------------------------------
 
     private MainPanel m_panel;
+
+    private final List<IShutdownListener> m_ShutdownListeners;
 
     // ------------------------------------------------------------------------
     private UserSettingsListener m_UserSettingsListener;
@@ -106,7 +109,8 @@ public class ADH_Application
                             aTC.start();
                             if( aTC.isConnected() ){
                                 aOffline = false;
-                                updateBaseData( aTC );
+                                updateDataFromServer( aTC );
+                                IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
                             } else {
                                 sm_Log.warn( "Keine Verbindung zum Server!" );
                             }
@@ -114,9 +118,10 @@ public class ADH_Application
                         }
                     }
                     aAppWindow.setTitle( aOffline );
+                    aAppWindow.addShutdownListener( aTC );
                     final ADH_DataProvider aDataProvider = InitHelper.initDataProvider();
 
-                    aAppWindow.configure();
+                    aAppWindow.configure( aDataProvider );
                     aAppWindow.populate( aDataProvider, aTC );
 
                 }catch( final Exception fEx ){
@@ -131,12 +136,24 @@ public class ADH_Application
         } );
     }
 
+    protected void addShutdownListener( final IShutdownListener fSL )
+    {
+        if( fSL == null ){
+            return;
+        }
+        synchronized( m_ShutdownListeners ){
+            if( !m_ShutdownListeners.contains(fSL) ){
+                m_ShutdownListeners.add( fSL );
+            }
+        }
+
+    }
     /**
      * Create the application.
      */
     public ADH_Application()
     {
-//        initialize();
+        m_ShutdownListeners = new ArrayList<>();
     }
 
     protected void setVisible( final boolean fB )
@@ -191,7 +208,13 @@ public class ADH_Application
         m_frame = new JFrame();
         m_frame.setTitle(TITLE);
         m_frame.setBounds( 100, 100, 924, 580 );
-        m_frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        m_frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(final java.awt.event.WindowEvent e) {
+                shutdown(0);
+            }
+        });
+
         m_frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
                 ColumnSpec.decode("906px:grow"),},
             new RowSpec[] {
@@ -213,6 +236,7 @@ public class ADH_Application
         menuBar.add(mnAktionen);
 
         final JMenuItem m_mnit_UserSettings = new JMenuItem("Benutzerdaten...");
+        m_mnit_UserSettings.setActionCommand( "Editieren" );
         m_mnit_UserSettings.addActionListener( getUserSettingsListener() );
         mnAktionen.add(m_mnit_UserSettings);
 
@@ -250,6 +274,15 @@ public class ADH_Application
 
     public void shutdown(final int fExitCode)
     {
+        synchronized( m_ShutdownListeners ){
+            m_ShutdownListeners.forEach( aListener -> {
+                try{
+                    aListener.shutdown();
+                }catch( final Exception fEx ){
+                    sm_Log.warn( "Exception: ", fEx );
+                }
+            } );
+        }
         System.exit( fExitCode );
     }
 
@@ -264,28 +297,25 @@ public class ADH_Application
         m_frame.setTitle(String.format("%s (%s)", TITLE, fOffline ? "Offline" : "Online" ));
     }
 
-    private void configure()
+    private void configure(final ADH_DataProvider fDataProvider)
     {
+        final File[] aFolders_NotUploaded = fDataProvider.getNotUploadedFolders();
+        m_panel.setUploaded( aFolders_NotUploaded.length == 0 );
+
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         m_panel.configure( aUserSettings.getRole() );
-
     }
 
-    private static void updateBaseData( final ITransferController fTC ) throws IOException
+    private static void updateDataFromServer( final ITransferController fTC ) throws Exception
     {
         final IAppSettings aAppSettings = AllSettings.INSTANCE.getAppSettings();
         final Path aFile_BaseData = aAppSettings.getFile_BaseData();
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
-        if( Files.exists( aFile_BaseData ) ){
-            if( ERole.MITGLIEDERWART.equals( aUserSettings.getRole() ) ){
-                // Der Mitgliederwart ist der Erzeuger der Basisdaten-Datei!
-                sm_Log.info( "MITGLIEDERWART: Basisdaten werden nicht vom Server geholt!" );
-                return;
-            }
-            FileUtils.moveToBackup( aFile_BaseData );
-        }
-        fTC.download(aFile_BaseData);
+        final ERole aRole = aUserSettings.getRole();
+        fTC.updateBaseDataFromServer( aFile_BaseData, aRole );
+        fTC.updateBillingDataFromServer();
     }
+
 }
 
 // ############################################################################

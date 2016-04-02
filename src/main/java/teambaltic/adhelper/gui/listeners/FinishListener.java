@@ -13,6 +13,7 @@ package teambaltic.adhelper.gui.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
@@ -62,6 +63,8 @@ public class FinishListener implements ActionListener
         try{
             m_DataProvider.export( true );
             m_Panel.setFinished();
+            final File[] aNotUploadedFolders = m_DataProvider.getNotUploadedFolders();
+            m_Panel.setUploaded( aNotUploadedFolders.length == 0 );
         }catch( final IOException fEx ){
             final String aMsg = "Probleme beim Export der Daten: "+fEx.getMessage();
             JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",

@@ -13,14 +13,18 @@ package teambaltic.adhelper.controller;
 
 import java.nio.file.Path;
 
+import teambaltic.adhelper.model.ERole;
+
 // ############################################################################
-public interface ITransferController
+public interface ITransferController extends IShutdownListener
 {
     void start() throws Exception;
-    void shutdown() throws Exception;
     boolean isConnected();
     void upload  ( Path fFileToUpload ) throws Exception;
-    void download( Path fFileToDownload );
+    boolean download( Path fFileToDownload );
+    boolean uploadBillingData() throws Exception;
+    void updateBaseDataFromServer( Path fFile_BaseData, ERole fRole ) throws Exception;
+    void updateBillingDataFromServer() throws Exception;
 }
 
 // ############################################################################

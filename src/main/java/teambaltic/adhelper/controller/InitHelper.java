@@ -44,7 +44,6 @@ public class InitHelper
         }
 
         final IAppSettings aAppSettings = fAllSettings.getAppSettings();
-        final Path aSandBox = aAppSettings.getFolder_SandBox();
         final Path aFile_Crypt_Priv = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PRIV );
         final Path aFile_Crypt_Publ = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PUBL );
         ICryptUtils aCryptUtils = null;
@@ -55,7 +54,7 @@ public class InitHelper
         }
         final ISingletonWatcher aSW = initSingletonWatcher( fAllSettings, aRA);
         final ITransferController aTC = new TransferController(
-                aAppSettings.getFolder_Root(), aSandBox, aCryptUtils, aRA, aSW);
+                fAllSettings, aCryptUtils, aRA, aSW);
         return aTC;
     }
 

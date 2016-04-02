@@ -30,8 +30,8 @@ public interface IRemoteAccess
     void upload  ( LocalRemotePathPair fPathPair ) throws Exception;
     void upload  ( List<LocalRemotePathPair> fPathPairs ) throws Exception;
 
-    void download( LocalRemotePathPair fPathPair ) throws Exception;
-    void download( List<LocalRemotePathPair> fPathPairs ) throws Exception;
+    boolean download( LocalRemotePathPair fPathPair ) throws Exception;
+    boolean download( List<LocalRemotePathPair> fPathPairs ) throws Exception;
 
 }
 

@@ -1,0 +1,76 @@
+SingletonWatcher
+
+    Die Applikation überprüft, ob bereits eine andere Instanz läuft.
+    
+    Dazu überprüft sie, ob sich auf dem Server eine Datei "BusyFile.txt"
+    befindet und diese noch aktuell ist. Ist beides gegeben, beendet sich die 
+    Applikation.
+    
+    Datei "BusyFile.txt" hat in etwa das folgende Aussehen:
+    
+        #TimeStamp;TimeStamp(human readable);Info
+        1459539625375;Fri Apr 01 21:40:25 CEST 2016;Botschi <B@gmx.de>
+
+    Es ist also der Zeitstempel des Hochlades enthalten (einmal im msecs seit
+    1.1.1970 und einmal in lesbarer Form). Zusätzlich wird noch die aus der
+    Datei der Benutzerdaten entnommene EMail-Adresse des Hochladers angegeben.
+    
+    Die Busy-Datei wird von der aktiven Instanz der Applikation zyklisch auf 
+    den Server hochgeladen. Die Zykluszeit ist in den Applikationseinstellungen
+    (Klasse AppSettings) angegeben und beträgt 5000 msecs.
+    
+    Beim (regulären) Beenden der Applikation wird die Busy-Datei auf dem Server
+    gelöscht. Sollte durch eine irreguläre Beendigung der Applikation die Datei
+    auf dem Server stehen bleiben, wird sie als nicht mehr gültig angesehen,
+    wenn der darin enthaltene Zeitstempel älter als die dreifache Zykluszeit ist.
+    
+    
+Checksummen-Berechnung (MD5)
+    Wenn eine Datei auf den Server hochgeladen wird, wird vorher ein MD5-Hash
+    für diese Datei ermittelt. Dieser Hash wird in eine Datei geschrieben, die
+    denselben Namen hat, wie die zugehörige Datendatei, nur dass hinten noch
+    die Endung ".md5" angehängt wird. 
+    
+    Die Checksummen-Datei hat folgendes Aussehen:
+    
+        #TimeStamp;TimeStamp(HR);FileName;Info
+        #1459583948377;Sat Apr 02 09:59:08 CEST 2016;BasisDaten.csv,Botschi <B@gmx.de>
+        059ccf97b21f3240afa7b206f88d43f1 *BasisDaten.csv
+    
+    Die letzte Zeile ist übliche Notation für Checksummen-Dateien, in der der
+    Hash gefolgt von dem zugehörigen Dateinamen angegeben ist.
+    Die ersten beiden Zeilen sind Zusatzinformationen, aus denen man ersehen
+    kann, wann die Datei hochgeladen wurde und von wem.
+
+Einstellungen
+    Das Programm benötigt mindestens mehrere externe Dateien für seinen
+    geregelten Ablauf, aus denen die Einstellungen eingelesen werden. Sie
+    stehen im Verzeichnis "Einstellungen" und sind im Einzelnen:
+        BenutzerDaten.prop
+        ServerZugangsDaten.prop
+        ssh/id_rsa
+
+    Die erste Datei muss bei Programmstart noch nicht existieren. Wenn dies
+    festgestellt wird, erscheint bei Programmstart ein Dialog, der einige
+    Daten bezüglich des Benutzers abfragt. Der nächste Start erfolgt, ohne dass
+    dieser Dialog angezeigt wird.
+    
+    Die Datei ServerZugangsDaten.prop wird benötigt, um den Server zu
+    identifizieren und die dazugehörigen Angaben abzuspeichern. Um sich 
+    gegenüber dem Server auszuweisen, wird die Datei id_rsa als SSH-Schlüssel
+    benötigt.
+    
+    Alle im Verzeichnis "Einstellungen" liegenden Dateien sind nicht Bestandteil
+    der Applikation und werden separat verteilt!
+    
+Start-Verzeichnis
+    Das Programm sieht das Verzeichnis, in dem sein Executable steht, als sein
+    Wurzelverzeichnis für alle seine Aktivitäten an. Das bedeutet, dass sich
+    alle genannten Pfade immer auf dieses Wurzelverzeichnis beziehen.
+    
+    Es muss sichergestellt sein, dass das Programm in seinem Wurzelverzeichnis
+    Schreibrechte hat. 
+    
+    Über eine Systemproperty kann man dem Programm ein anderes Verzeichnis als
+    Wurzelverzeichnis mitteilen. Der Schlüssel für die Systemproperty ist
+        "FOLDERNAME_ROOT"

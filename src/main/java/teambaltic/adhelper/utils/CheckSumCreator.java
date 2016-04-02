@@ -79,7 +79,7 @@ public class CheckSumCreator
         return aOutPath;
     }
 
-    public Path write( final Path fFile, final CheckSumInfo fCSI ) throws Exception
+    public Path write( final Path fFile, final CheckSumInfo fCSI, final String fInfo ) throws Exception
     {
         final Path aOutPath = getCheckSumFile( fFile );
         final File aFile = aOutPath.toFile();
@@ -87,9 +87,9 @@ public class CheckSumCreator
         try{
             fw = new FileWriter( aFile );
             final long aTS = fCSI.getTimeStamp();
-            fw.write( "#TimeStamp;TimeStamp(HR);FileName");
+            fw.write( "#TimeStamp;TimeStamp(HR);FileName;Info");
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-            fw.append( String.format( "#%d;%s;%s", aTS, new Date(aTS), fCSI.getFileName() ) );
+            fw.append( String.format( "#%d;%s;%s;%s", aTS, new Date(aTS), fCSI.getFileName(), fInfo ) );
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
             fw.append( String.format( "%s *%s",fCSI.getHash(), fCSI.getFileName() ) );
             fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"

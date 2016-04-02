@@ -1,0 +1,20 @@
+# Applikationseinstellungen
+FOLDERNAME_ROOT = .
+FOLDERNAME_DATA = Daten
+FOLDERNAME_SETTINGS = Einstellungen
+FOLDERNAME_SANDBOX = Sandkiste
+FOLDERNAME_SECRETS = ssh
+
+FILENAME_BASEINFO = BasisDaten.csv
+FILENAME_WORKEVENTS = Arbeitsdienste.csv
+FILENAME_BALANCES = Guthaben.csv
+FILENAME_USERDATA = BenutzerDaten.prop
+FILENAME_CLUBDATA = VereinsDaten.prop
+FILENAME_FINISHED = Abgeschlossen.txt
+FILENAME_UPLOADED = Hochgeladen.txt
+FILENAME_REMOTEACCESSDATA = ServerZugangsDaten.prop
+
+FILENAME_CRYPT_PRIV = private.key
+FILENAME_CRYPT_PUBL = public.key
+
+CYCLETIME_SINGLETONWATCHER = 5000

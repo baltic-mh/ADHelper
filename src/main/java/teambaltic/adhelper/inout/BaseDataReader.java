@@ -20,7 +20,6 @@ import java.util.Map;
 import teambaltic.adhelper.controller.IItemFactory;
 import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.controller.MemberFactory;
-import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
@@ -40,7 +39,6 @@ public class BaseDataReader
 
     private final IItemFactory<IClubMember>     m_MemberFactory;
     private final IItemFactory<FreeFromDuty>    m_FreeFromDutyFactory;
-    private final IItemFactory<Balance>         m_BalanceFactory;
 
     public BaseDataReader(final File fFile)
     {
@@ -48,7 +46,6 @@ public class BaseDataReader
 
         m_MemberFactory         = new MemberFactory();
         m_FreeFromDutyFactory   = new FreeFromDutyFactory();
-        m_BalanceFactory        = new BalanceFactory();
     }
 
     public List<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
@@ -96,13 +93,7 @@ public class BaseDataReader
         if( aFFD != null ){
             fInfo.setFreeFromDuty( aFFD );
         }
-        final Balance aBalance = m_BalanceFactory.createItem( aID, fAttributes);
-        int aBalanceValue = 0;
-        if( aBalance != null ){
-            fInfo.setBalance( aBalance );
-            aBalanceValue = aBalance.getValue();
-        }
-        fInfo.setDutyCharge( new DutyCharge(aID, aBalanceValue ) );
+        fInfo.setDutyCharge( new DutyCharge(aID, 0 ) );
     }
 
 }

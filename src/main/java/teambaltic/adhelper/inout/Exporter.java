@@ -13,11 +13,9 @@ package teambaltic.adhelper.inout;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +23,6 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -82,7 +79,7 @@ public class Exporter
         DetailsReporter.report( getDataProvider(), fOutputFolder );
 
         if( fSetFinished ){
-            writeFinishedFile( fOutputFolder, fInfo );
+            FileUtils.writeFinishedFile( fOutputFolder.resolve( getFinishedFileName() ), fInfo );
         }
     }
 
@@ -237,29 +234,6 @@ public class Exporter
         return String.format( "%02d.%02d.%04d", fDate.getDayOfMonth(), fDate.getMonthValue(), fDate.getYear() );
     }
 
-    private void writeFinishedFile(
-            final Path fOutputFolder,  final String fInfo )
-                    throws IOException
-    {
-        final File aFile = fOutputFolder.resolve( getFinishedFileName() ).toFile();
-        Writer fw = null;
-        try{
-            fw = new FileWriter( aFile );
-            final long aTS = System.currentTimeMillis();
-            fw.write( "#TimeStamp;TimeStamp(HR);Aktion;Info");
-            fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-            fw.append( String.format( "%d;%s;Abgeschlossen;%s", aTS, new Date(aTS), fInfo ) );
-            fw.append( System.getProperty( "line.separator" ) ); // e.g. "\n"
-
-        }finally{
-            if( fw != null )
-                try{
-                    fw.close();
-                }catch( final IOException e ){
-                    e.printStackTrace();
-                }
-        }
-    }
 }
 
 // ############################################################################

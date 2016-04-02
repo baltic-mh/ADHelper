@@ -5,7 +5,12 @@ build/
 # Grade's privates Verzeichnis:
 .gradle/
 
+Einstellungen/
+
 misc/SandBox
+
+Daten.save/
+Daten.save2/
 
 *.class
 

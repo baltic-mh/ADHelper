@@ -18,20 +18,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.Key;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -45,51 +43,17 @@ import sun.misc.BASE64Encoder;
 
 // ############################################################################
 /**
- * Im ersten Ansatz hat diese Verschlüsselung nur funktioniert, wenn man weniger
- * als 245 Bytes zu verschlüsseln hat :-/
- *
- * Ich habe das Thema nun erst mal nach hinten gestellt und geben als verschlüsselte
- * Datei einfach die Original-Datei zurück.
- *
- * Einge ganz gute Quelle scheint mir folgendes zu sein:
- * http://www.torsten-horn.de/techdocs/java-crypto.htm
- */
-/**
- * http://codeartisan.blogspot.de/2009/05/public-key-cryptography-in-java.html
- *
- * Creating the keypair.
- *  We are going to create a keypair, saving it in openssl's preferred PEM format.
- *  PEM formats are ASCII and hence easy to email around as needed.
- *  However, we will need to save the keys in the binary DER format so Java can read them.
- *  Without further ado, here is the magical incantation for creating the keys we'll use:
- *      # generate a 2048-bit RSA private key
- *      $ openssl genrsa -out private_key.pem 2048
- *
- *      # convert private Key to PKCS#8 format (so Java can read it)
- *      $ openssl pkcs8 -topk8 -inform PEM -outform DER -in private_key.pem \
- *      -out private_key.der -nocrypt
- *
- *      # output public key portion in DER format (so Java can read it)
- *      $ openssl rsa -in private_key.pem -pubout -outform DER -out public_key.der
- *
- *  You keep private_key.pem around for reference, but you hand the DER versions to your Java programs.
  */
 public class CryptUtils implements ICryptUtils
 {
     private static final Logger sm_Log = Logger.getLogger(CryptUtils.class);
 
-    static final String ALGORITHM_ASYM = "RSA";
-    static final String ALGORITHM_SYM  = "AES";
+    private static final String ALGORITHM_ASYM = "RSA";
+    private static final String ALGORITHM_SYM  = "AES";
 
-    // ------------------------------------------------------------------------
-    private final File m_PublicKeyFile;
-    private File getPublicKeyFile(){ return m_PublicKeyFile; }
-    // ------------------------------------------------------------------------
+    private static final String sm_Resource_KeyPriv ="res/crypt/private.key";
+    private static final String sm_Resource_KeyPubl ="res/crypt/public.key";
 
-    // ------------------------------------------------------------------------
-    private final File m_PrivateKeyFile;
-    private File getPrivateKeyFile(){ return m_PrivateKeyFile; }
-    // ------------------------------------------------------------------------
 
     private final BASE64Encoder m_Base64Encoder;
     private final BASE64Decoder m_Base64Decoder;
@@ -98,8 +62,6 @@ public class CryptUtils implements ICryptUtils
     {
         m_Base64Encoder  = new BASE64Encoder();
         m_Base64Decoder  = new BASE64Decoder();
-        m_PrivateKeyFile = fPrivateKeyFile;
-        m_PublicKeyFile  = fPublicKeyFile;
     }
 
     /**
@@ -248,43 +210,27 @@ public class CryptUtils implements ICryptUtils
 
     }
 
-    private PublicKey getPublicKey() throws Exception
+    private static PublicKey getPublicKey() throws Exception
     {
-        return getPublicKey( getPublicKeyFile() );
+        final InputStream aIS = getResourceAsStream( sm_Resource_KeyPubl );
+        final ObjectInputStream keyIn = new ObjectInputStream( aIS );
+        PublicKey publicKey;
+        try { publicKey = (PublicKey) keyIn.readObject(); } finally { keyIn.close(); }
+
+        return publicKey;
+
     }
 
-    private PrivateKey getPrivateKey() throws Exception
+    private static PrivateKey getPrivateKey() throws Exception
     {
-        return getPrivateKey( getPrivateKeyFile() );
-    }
+        final InputStream aIS = getResourceAsStream( sm_Resource_KeyPriv );
 
-    private static PublicKey getPublicKey(final File fPublicKeyFile)
-            throws Exception
-    {
+        final ObjectInputStream keyIn = new ObjectInputStream( aIS );
+        PrivateKey Key;
+        try { Key = (PrivateKey) keyIn.readObject(); } finally { keyIn.close(); }
 
-        final FileInputStream fis = new FileInputStream( fPublicKeyFile );
-        final DataInputStream dis = new DataInputStream( fis );
-        final byte[] keyBytes = new byte[(int) fPublicKeyFile.length()];
-        dis.readFully( keyBytes );
-        dis.close();
+        return Key;
 
-        final X509EncodedKeySpec spec = new X509EncodedKeySpec( keyBytes );
-        final KeyFactory kf = KeyFactory.getInstance( "RSA" );
-        return kf.generatePublic( spec );
-    }
-
-    private static PrivateKey getPrivateKey(final File fPrivateKeyFile)
-            throws Exception
-    {
-        final FileInputStream fis = new FileInputStream( fPrivateKeyFile );
-        final DataInputStream dis = new DataInputStream( fis );
-        final byte[] keyBytes = new byte[(int) fPrivateKeyFile.length()];
-        dis.readFully( keyBytes );
-        dis.close();
-
-        final PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec( keyBytes );
-        final KeyFactory kf = KeyFactory.getInstance( "RSA" );
-        return kf.generatePrivate( spec );
     }
 
     private static void transform( final InputStream in, final OutputStream out, final Cipher cipher )
@@ -309,8 +255,8 @@ public class CryptUtils implements ICryptUtils
     }
 
     /**
-     * Generiere privaten und oeffentlichen RSA-Schluessel (Streams werden mit
-     * close() geschlossen)
+     * Generiere privaten und oeffentlichen RSA-Schluessel
+     *  (Streams werden mit close() geschlossen)
      */
     public static void generateKeyPair( final OutputStream privateKeyFile, final OutputStream publicKeyFile, final int rsaKeySize )
             throws NoSuchAlgorithmException, IOException
@@ -335,6 +281,25 @@ public class CryptUtils implements ICryptUtils
             privateKeyFile.close();
             publicKeyFile.close();
         }
+    }
+
+    public static void main(final String[] fArgs)
+    {
+        try{
+            generateKeyPair( "private.key", "public.key", 2048);
+        }catch( NoSuchAlgorithmException | IOException fEx ){
+            // TODO Auto-generated catch block
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
+
+    private static InputStream getResourceAsStream( final String aResourceName )
+    {
+        InputStream aIS = CryptUtils.class.getResourceAsStream(aResourceName);
+        if( aIS == null ){
+            aIS = CryptUtils.class.getResourceAsStream("/"+aResourceName);
+        }
+        return aIS;
     }
 
 }

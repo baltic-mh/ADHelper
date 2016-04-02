@@ -283,9 +283,9 @@ public class MainPanel extends JPanel
         m_btnNew.setEnabled( false );
     }
 
-    public void setUploaded()
+    public void setUploaded( final boolean fEverythingUploaded )
     {
-        m_btnUpload.setEnabled( false );
+        m_btnUpload.setEnabled( !fEverythingUploaded );
     }
 
     public void configure( final ERole fRole )
@@ -296,6 +296,7 @@ public class MainPanel extends JPanel
                 break;
 
             case MITGLIEDERWART:
+                m_btnUpload.setEnabled( true );
                 m_btnNew.setEnabled( false );
                 m_btnFinish.setEnabled( false );
                 break;

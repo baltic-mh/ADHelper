@@ -51,7 +51,7 @@ public class CheckSumCreatorTest
         final CheckSumCreator aMD5Creator = new CheckSumCreator(Type.MD5);
         try{
             final CheckSumInfo aCSI = aMD5Creator.calculate( FILE1 );
-            final Path aFileMD5 = aMD5Creator.write( FILE1, aCSI );
+            final Path aFileMD5 = aMD5Creator.write( FILE1, aCSI, "UnitTest" );
             assertNotNull("FileMD5", aFileMD5);
             final List<String> aLines = FileUtils.readAllLines( aFileMD5.toFile() );
             assertEquals("FileMD5-Lines", 3, aLines.size());

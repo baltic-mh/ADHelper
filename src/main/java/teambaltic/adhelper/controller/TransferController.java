@@ -11,21 +11,30 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.CheckSumInfo;
+import teambaltic.adhelper.model.ERole;
+import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IAppSettings;
+import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.remoteaccess.IRemoteAccess;
 import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
 import teambaltic.adhelper.utils.CheckSumCreator;
 import teambaltic.adhelper.utils.CheckSumCreator.Type;
+import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.ICryptUtils;
+import teambaltic.adhelper.utils.ZipUtils;
 
 // ############################################################################
 public class TransferController implements ITransferController
@@ -33,13 +42,16 @@ public class TransferController implements ITransferController
     private static final Logger sm_Log = Logger.getLogger(TransferController.class);
 
     // ------------------------------------------------------------------------
-    private final Path m_SandBox;
-    private Path getSandBox(){ return m_SandBox; }
+    private final AllSettings m_AllSettings;
+    private AllSettings getAllSettings(){ return m_AllSettings; }
     // ------------------------------------------------------------------------
-
+    private IAppSettings getAppSettings(){ return getAllSettings().getAppSettings(); }
     // ------------------------------------------------------------------------
-    private final Path m_RootFolder;
-    private Path getRootFolder(){ return m_RootFolder; }
+    private IUserSettings getUserSettings(){ return getAllSettings().getUserSettings(); }
+    // ------------------------------------------------------------------------
+    private Path getRootFolder(){ return getAppSettings().getFolder_Root(); }
+    // ------------------------------------------------------------------------
+    private Path getSandBox(){ return getAppSettings().getFolder_SandBox(); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -63,18 +75,17 @@ public class TransferController implements ITransferController
     // ------------------------------------------------------------------------
 
     public TransferController(
-            final Path              fRootFolder,
-            final Path              fSandBox,
+            final AllSettings       fAllSettings,
             final ICryptUtils       fCryptUtils,
             final IRemoteAccess     fRemoteAccess,
             final ISingletonWatcher fSingletonWatcher )
     {
         m_CheckSumCreator   = new CheckSumCreator( Type.MD5 );
-        m_RootFolder        = fRootFolder;
-        m_SandBox           = initSandBox(fSandBox);
+        m_AllSettings       = fAllSettings;
         m_CryptUtils        = fCryptUtils;
         m_RemoteAccess      = fRemoteAccess;
         m_SingletonWatcher  = fSingletonWatcher;
+        initSandBox( getSandBox() );
     }
 
     @Override
@@ -88,7 +99,11 @@ public class TransferController implements ITransferController
     {
         getSingletonWatcher().stop();
         getRemoteAccess().close();
-        Files.deleteIfExists( getSandBox() );
+        final File aSandbox = getSandBox().toFile();
+        if( aSandbox.exists() ){
+            sm_Log.info("Lösche Verzeichnis "+aSandbox);
+            org.apache.commons.io.FileUtils.deleteQuietly( aSandbox );
+        }
     }
 
     @Override
@@ -98,7 +113,7 @@ public class TransferController implements ITransferController
     }
 
     @Override
-    public void download(final Path fFileToDownload)
+    public boolean download(final Path fFileToDownload)
     {
         final CheckSumCreator aCSC  = getCheckSumCreator();
         final Path aCheckSumFile    = aCSC.getCheckSumFile( fFileToDownload );
@@ -109,11 +124,15 @@ public class TransferController implements ITransferController
                 final Path aCheckSumFileInSandBox = getSandBoxPath( aCheckSumFile );
                 final LocalRemotePathPair aPathPair_CheckSum = new LocalRemotePathPair(
                         aCheckSumFileInSandBox, aCheckSumFile );
-                m_RemoteAccess.download( aPathPair_CheckSum );
+                final boolean aSuccess = m_RemoteAccess.download( aPathPair_CheckSum );
+                if( !aSuccess ){
+                    sm_Log.warn( "Download fehlgeschlagen: "+fFileToDownload);
+                    return false;
+                }
                 final CheckSumInfo aCSIRemote = CheckSumInfo.readFromFile( aCheckSumFileInSandBox );
                 if( aCSILocal.getHash().equals( aCSIRemote.getHash() )){
                     sm_Log.info( "Lokale Datei ist identisch mit Server-Version: "+ fFileToDownload);
-                    return;
+                    return false;
                 }
             }
             final Path aFileToDownloadInSandBox = getSandBoxPath( fFileToDownload );
@@ -125,8 +144,10 @@ public class TransferController implements ITransferController
             final Path aDataFileInSandBox_Decrypted = getCryptUtils().decrypt( aFileToDownloadInSandBox_Cry );
             Files.copy( aDataFileInSandBox_Decrypted, fFileToDownload, StandardCopyOption.REPLACE_EXISTING);
             sm_Log.info("Datei heruntergeladen: "+fFileToDownload);
+            return true;
         }catch( final Exception fEx ){
             sm_Log.warn("Exception: ", fEx );
+            return false;
         }
     }
 
@@ -158,11 +179,13 @@ public class TransferController implements ITransferController
                 aFileToUploadInSandBox_Encrypted, aRemotePath_DataFile );
         m_RemoteAccess.upload( aPathPair_Files );
 
-        final Path aCheckSumFile = aCSC.write( aFileToUploadInSandBox, aCSI );
+        final String aDecoratedEMail = getUserSettings().getDecoratedEMail();
+        final Path aCheckSumFile = aCSC.write( aFileToUploadInSandBox, aCSI, aDecoratedEMail );
         final Path aRemotePath_CheckSumFile = fFileToUpload.getParent().resolve( aCheckSumFile.getFileName() );
         final LocalRemotePathPair aPathPair_CheckSum = new LocalRemotePathPair(
                 aCheckSumFile, aRemotePath_CheckSumFile );
         m_RemoteAccess.upload( aPathPair_CheckSum );
+        sm_Log.info("Datei hochgeladen: "+fFileToUpload);
     }
 
     private static Path initSandBox( final Path fSandBox )
@@ -190,6 +213,114 @@ public class TransferController implements ITransferController
         return aPath;
     }
 
+    @Override
+    public boolean uploadBillingData() throws Exception
+    {
+        final Path aDataFolder          = getAppSettings().getFolder_Data();
+        final String aFileName_Finished = getAppSettings().getFileName_Finished();
+        final String aFileName_Uploaded = getAppSettings().getFileName_Uploaded();
+        final File[] aNotUploadedFolders = FileUtils.getFolders_NotUploaded( aDataFolder, aFileName_Finished , aFileName_Uploaded );
+        for( final File aFolder : aNotUploadedFolders ){
+            final Path aUploadInfoFile = aFolder.toPath().resolve( aFileName_Uploaded );
+            final String aDecoratedEMail = getUserSettings().getDecoratedEMail();
+            FileUtils.writeUploadInfo( aUploadInfoFile, aDecoratedEMail );
+            final Path aZipped = ZipUtils.zip( aFolder.toPath() );
+            upload( aZipped );
+            Files.delete( aZipped );
+        }
+        return true;
+    }
+
+    @Override
+    public void updateBaseDataFromServer(
+            final Path fFile_BaseData,
+            final ERole fRole )
+                    throws Exception
+    {
+        Path aBackupCopy = null;
+        if( Files.exists( fFile_BaseData ) ){
+            if( ERole.MITGLIEDERWART.equals( fRole ) ){
+                // Der Mitgliederwart ist der Erzeuger der Basisdaten-Datei!
+                sm_Log.info( "MITGLIEDERWART: Basisdaten werden nicht vom Server geholt!" );
+                return;
+            }
+            aBackupCopy = FileUtils.makeBackupCopy( fFile_BaseData );
+        }
+        try{
+            final Path aPathOnServer = Paths.get( fFile_BaseData.toString()+".cry" );
+            final boolean aExistsOnServer = m_RemoteAccess.exists( aPathOnServer );
+            if( !aExistsOnServer ){
+                sm_Log.warn("Datei existiert nicht auf dem Server: "+aPathOnServer );
+                return;
+            }
+            final boolean aActuallyDownloaded = download(fFile_BaseData);
+            if( !aActuallyDownloaded && aBackupCopy != null ){
+                try{
+                    Files.delete( aBackupCopy );
+                }catch( final Exception fEx ){
+                    sm_Log.warn("Exception: ", fEx );
+                }
+            }
+        }catch( final Exception fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        } finally {
+            if( !Files.exists( fFile_BaseData )){
+                throw new IllegalStateException("Keine Arme - keine Kekse! Datei mit BasisDaten nicht verfügbar!");
+            };
+        }
+    }
+
+    @Override
+    public void updateBillingDataFromServer() throws Exception
+    {
+        final Path aDataFolder = getAppSettings().getFolder_Data();
+        final String aFN_Finished = getAppSettings().getFileName_Finished();
+        final String aFN_Uploaded = getAppSettings().getFileName_Uploaded();
+        final File[] aFolders_AlreadyUploaded = FileUtils.getFinishedAndUploadedFolders( aDataFolder, aFN_Finished, aFN_Uploaded );
+
+        final List<String> aRemoteZipFiles = m_RemoteAccess.list( aDataFolder, "zip.cry" );
+        final List<String> aZipsToDownLoad = new ArrayList<>();
+        aRemoteZipFiles.forEach( aRemoteZipFile -> {
+            if( !isLocallyUptodate( aRemoteZipFile, aFolders_AlreadyUploaded ) ){
+                aZipsToDownLoad.add( aRemoteZipFile );
+            }
+        } );
+        if( aZipsToDownLoad.size() == 0 ){
+            sm_Log.info( "Alle lokalen Daten sind aktuell!");
+            return;
+        }
+        for( final String aZipToDownload : aZipsToDownLoad ){
+            downloadDecryptAndUnzip(aZipToDownload);
+        }
+    }
+
+    private static boolean isLocallyUptodate( final String fRemoteZipFile, final File[] fFolders_Uploaded)
+    {
+        if( fFolders_Uploaded == null || fFolders_Uploaded.length == 0 ){
+            return false;
+        }
+        final String aLocalFolderPath = fRemoteZipFile.replaceFirst( "\\.zip\\.cry$", "" );
+        final Path   aPathToMatch = Paths.get( aLocalFolderPath );
+        for( final File aFolder : fFolders_Uploaded ){
+            if( aPathToMatch.equals( aFolder.toPath() ) ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void downloadDecryptAndUnzip( final String fZipToDownload ) throws Exception
+    {
+        final String aFileName = fZipToDownload.replaceFirst( "\\.cry$", "" );
+        final Path aFileToDownload = Paths.get( aFileName );
+        final boolean aDownloaded = download( aFileToDownload );
+        if( !aDownloaded ){
+            sm_Log.error( "Download hat nicht geklappt: "+fZipToDownload );
+            return;
+        }
+        ZipUtils.unzip( aFileToDownload );
+        Files.delete( aFileToDownload );
+    }
 }
 
 // ############################################################################

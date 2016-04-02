@@ -148,26 +148,33 @@ public class SFTPWithKey implements IRemoteAccess
     }
 
     @Override
-    public void download( final LocalRemotePathPair fPathPair ) throws Exception
+    public boolean download( final LocalRemotePathPair fPathPair ) throws Exception
     {
         final List<LocalRemotePathPair> aList = new ArrayList<>();
         aList.add( fPathPair );
-        download( aList );
+        return download( aList );
     }
     @Override
-    public void download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
+    public boolean download( final List<LocalRemotePathPair> fPathPairs ) throws Exception
     {
         final StandardFileSystemManager aFS_Manager = getFS_Manager();
 
         synchronized( aFS_Manager ){
             try{
                 aFS_Manager.init();
+                boolean aDownLoaded = true;
                 for( final LocalRemotePathPair aPathPair : fPathPairs ){
-                    final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
                     final FileObject aRemoteObj = getRemoteFileObject( aPathPair.getRemote(), aFS_Manager );
-                    //download der Datei
-                    aLocalObj.copyFrom( aRemoteObj, Selectors.SELECT_SELF );
+                    if( aRemoteObj.exists() ){
+                        //download der Datei
+                        final FileObject aLocalObj = getLocalFileObject( aPathPair.getLocal(), aFS_Manager );
+                        aLocalObj.copyFrom( aRemoteObj, Selectors.SELECT_SELF );
+                    } else {
+                        // Ein kranker Apfel verdirbt den ganzen Korb :-/
+                        aDownLoaded = false;
+                    }
                 }
+                return aDownLoaded;
             }finally{
                 aFS_Manager.close();
             }
@@ -365,7 +372,9 @@ public class SFTPWithKey implements IRemoteAccess
             public boolean includeFile( final FileSelectInfo fFileInfo ) throws Exception
             {
                 final FileName aFileName = fFileInfo.getFile().getName();
-                return fExt.equalsIgnoreCase( aFileName.getExtension() );
+                final String aFriendlyURI = aFileName.getFriendlyURI();
+                final boolean aMatches = aFriendlyURI.toLowerCase().endsWith( fExt.toLowerCase() );
+                return aMatches;
             }
         };
         return selector;

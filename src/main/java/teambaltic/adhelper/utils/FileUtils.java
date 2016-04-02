@@ -14,15 +14,19 @@ package teambaltic.adhelper.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +122,7 @@ public final class FileUtils
     }
 
     public static File determineNewestInvoicingPeriodFolder(
-            final File fDataFolder, final String fFinishedFileName )
+            final Path fDataFolder, final String fFinishedFileName )
     {
         final File[] aChildFolders = getInvoicingPeriodFolders( fDataFolder );
         if( aChildFolders.length == 0 ){
@@ -131,7 +135,8 @@ public final class FileUtils
         final int aMostRecentYear  = 0;
         final int aMostRecentMonth = 0;
         for( final File aChildFolder : aChildFolders ){
-            if( !isFinished( aChildFolder, fFinishedFileName ) ){
+            final Path aFinishedFile = aChildFolder.toPath().resolve( fFinishedFileName );
+            if( !Files.exists( aFinishedFile ) ){
                 return aChildFolder;
             }
             final String[] aParts = aChildFolder.getName().split( InvoicingPeriodFolderFilter.sm_SplitRegex );
@@ -146,16 +151,34 @@ public final class FileUtils
         return aResult;
     }
 
-    public static File[] getInvoicingPeriodFolders( final File fDataFolder )
+    public static File[] getInvoicingPeriodFolders( final Path fDataFolder )
     {
-        final File[] aChildFolders = fDataFolder.listFiles( new InvoicingPeriodFolderFilter() );
-        return aChildFolders;
+        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_All();
+        return getFolders( fDataFolder, aFilter );
     }
 
-    private static boolean isFinished( final File fChildFolder, final String fFinishedFileName )
+    public static File[] getFolders_NotFinished( final Path fDataFolder, final String fFileName_Finished )
     {
-        final Path aFinishedFile = fChildFolder.toPath().resolve( fFinishedFileName );
-        return Files.exists( aFinishedFile );
+        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_NotFinished(fFileName_Finished);
+        return getFolders( fDataFolder, aFilter );
+    }
+
+    public static File[] getFolders_NotUploaded( final Path fDataFolder, final String fFileName_Finished, final String fFileName_Uploaded )
+    {
+        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_FinishedButNotUploaded(fFileName_Finished, fFileName_Uploaded);
+        return getFolders( fDataFolder, aFilter );
+    }
+
+    public static File[] getFinishedAndUploadedFolders( final Path fDataFolder, final String fFN_Finished, final String fFN_Uploaded )
+    {
+        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_FinishedAndUploaded(fFN_Finished, fFN_Uploaded);
+        return getFolders( fDataFolder, aFilter );
+    }
+
+    private static File[] getFolders( final Path fDataFolder, final InvoicingPeriodFolderFilter fFilter )
+    {
+        final File[] aChildFolders = fDataFolder.toFile().listFiles( fFilter );
+        return aChildFolders;
     }
 
     public static void checkFile( final File fFile ) throws Exception
@@ -180,7 +203,7 @@ public final class FileUtils
         return aNewName;
     }
 
-    public static Path moveToBackup( final Path fFile ) throws IOException
+    public static Path makeBackupCopy( final Path fFile ) throws IOException
     {
         final String aFileName  = fFile.toFile().getName();
         final String aPath      = FilenameUtils.getPath( fFile.toString() );
@@ -190,8 +213,60 @@ public final class FileUtils
                 aBaseName, LocalDate.now(), TIMEFORMAT.format( LocalTime.now() ), aExtension );
         final Path aBackupFile = Paths.get( aPath, aBackupFileName );
 
-        Files.move( fFile, aBackupFile );
+        Files.copy( fFile, aBackupFile, StandardCopyOption.REPLACE_EXISTING );
         return aBackupFile;
+    }
+
+    public static void writeFinishedFile(
+            final Path fFinishedFile, final String fInfo )
+            throws IOException
+    {
+        Writer fw = null;
+        try{
+            fw = new FileWriter( fFinishedFile.toFile() );
+            writeHeader( fw );
+            final long aTS = System.currentTimeMillis();
+            fw.append( String.format( "%d;%s;Abgeschlossen;%s", aTS, new Date(aTS), fInfo ) );
+            fw.append( System.getProperty( "line.separator" ) );
+
+        }finally{
+            if( fw != null )
+                try{
+                    fw.close();
+                }catch( final IOException e ){
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    public static void writeUploadInfo(
+            final Path fUploadInfoFile, final String fInfo )
+            throws IOException
+    {
+        Writer fw = null;
+        try{
+            final boolean aFileExists = Files.exists( fUploadInfoFile );
+            fw = new FileWriter( fUploadInfoFile.toFile(), aFileExists );
+            if( !aFileExists ){
+                writeHeader( fw );
+            }
+            final long aTS = System.currentTimeMillis();
+            fw.append( String.format( "%d;%s;Hochgeladen;%s", aTS, new Date(aTS), fInfo ) );
+            fw.append( System.getProperty( "line.separator" ) );
+
+        }finally{
+            if( fw != null )
+                try{
+                    fw.close();
+                }catch( final IOException e ){
+                    e.printStackTrace();
+                }
+        }
+    }
+    private static void writeHeader( final Writer fw ) throws IOException
+    {
+        fw.write( "#TimeStamp;TimeStamp(HR);Aktion;Info");
+        fw.append( System.getProperty( "line.separator" ) );
     }
 
 }

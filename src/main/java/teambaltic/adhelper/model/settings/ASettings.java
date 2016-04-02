@@ -16,7 +16,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,8 +52,22 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
 
     public void init(final Path fPropertyFile) throws FileNotFoundException, IOException
     {
-        setPropertyFile( fPropertyFile.toFile() );
-        m_Props.load( new FileInputStream( getPropertyFile() ) );
+        InputStream aInputStream;
+        final File aPropFile = fPropertyFile.toFile();
+        if( Files.exists( fPropertyFile ) ){
+            setPropertyFile( aPropFile );
+            aInputStream = new FileInputStream( aPropFile );
+        } else {
+            aInputStream = getResourceAsStream( String.format("res/%s", aPropFile.getName() ) );
+        }
+        if( aInputStream == null ){
+            throw new FileNotFoundException( fPropertyFile.toString() );
+        }
+        init( aInputStream );
+    }
+    public void init(final InputStream fPropertyStream) throws FileNotFoundException, IOException
+    {
+        m_Props.load( fPropertyStream );
 
         for( final KeyType aKey : getKeyValues() ){
             final EPropType aPropType = aKey.getPropType();
@@ -141,10 +157,23 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     @Override
     public void writeToFile() throws IOException
     {
+        final File aPropertyFile = getPropertyFile();
+        if( aPropertyFile == null ){
+            return;
+        }
         m_Props.putAll( m_IntegerValues );
         m_Props.putAll( m_HourValues );
-        final OutputStream out = new FileOutputStream( getPropertyFile() );
+        final OutputStream out = new FileOutputStream( aPropertyFile );
         m_Props.store(out, "This is an optional header comment string");
+    }
+
+    private static InputStream getResourceAsStream( final String aResourceName )
+    {
+        InputStream aIS = ASettings.class.getResourceAsStream(aResourceName);
+        if( aIS == null ){
+            aIS = ASettings.class.getResourceAsStream("/"+aResourceName);
+        }
+        return aIS;
     }
 }
 

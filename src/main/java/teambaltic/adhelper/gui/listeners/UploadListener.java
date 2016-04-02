@@ -26,9 +26,9 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.ITransferController;
+import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.ERole;
-import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
@@ -65,27 +65,25 @@ public class UploadListener implements ActionListener
                 final String aMsg = "Esikmos dürfen hier schon mal gar nichts! Bitte Rolle angeben!";
                 JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
                         JOptionPane.ERROR_MESSAGE);
-                m_UserSettingsListener.actionPerformed( fEvent );
+                m_UserSettingsListener.getDialog().setVisible( true );
                 aRole = m_UserSettingsListener.getUserSettings().getRole();
             }
             switch( aRole ){
                 case BAUAUSSCHUSS:
-                    aUploaded = uploadBillingData();
+                    aUploaded = m_TransferController.uploadBillingData();
                     break;
                 case MITGLIEDERWART:
                     aUploaded = uploadBaseData();
 
                 default:
             }
+            m_Panel.setUploaded(aUploaded);
 
-            if( aUploaded ){
-                m_Panel.setUploaded();
-            }
         }catch( final Exception fEx ){
             final String aMsg = "Probleme beim Hochladen der Daten: "+fEx.getMessage();
             JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
                     JOptionPane.ERROR_MESSAGE);
-            sm_Log.warn("Exception: "+aMsg, fEx );
+            sm_Log.warn("Exception: "+aMsg );
         }
     }
 
@@ -96,12 +94,12 @@ public class UploadListener implements ActionListener
         final int aResult = aFileChooser.showOpenDialog(m_Panel);
         if( aResult == JFileChooser.APPROVE_OPTION ) {
             final File aSelectedFile = aFileChooser.getSelectedFile();
+            IntegrityChecker.checkBaseDataFile( aSelectedFile );
             final Path aBaseDataFile = copyToDataFolder( aSelectedFile );
-            if( m_TransferController == null ){
+            if( m_TransferController == null || !m_TransferController.isConnected() ){
                 throw new IOException("Keine Verbindung zu Server!");
             }
             m_TransferController.upload( aBaseDataFile );
-//            writeUploaded();
             return true;
         }
         return false;
@@ -111,16 +109,10 @@ public class UploadListener implements ActionListener
     {
         final File aBaseDataFile = m_DataProvider.getBaseDataFile();
         final Path aBaseDataFileAsPath = aBaseDataFile.toPath();
-        FileUtils.moveToBackup( aBaseDataFileAsPath );
+        FileUtils.makeBackupCopy( aBaseDataFileAsPath );
         Files.copy( fSelectedFile.toPath(), aBaseDataFileAsPath, StandardCopyOption.REPLACE_EXISTING );
 
         return aBaseDataFileAsPath;
-    }
-
-    private boolean uploadBillingData()
-    {
-        final IPeriod aInvoicingPeriod = m_DataProvider.getInvoicingPeriod();
-        return false;
     }
 
 }
