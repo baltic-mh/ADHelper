@@ -18,6 +18,15 @@ public enum AllSettings implements IAllSettings
 {
     INSTANCE;
 
+    private AllSettings()
+    {
+        try{
+            m_AppSettings = new AppSettings();
+        }catch( final Exception fEx ){
+            throw new IllegalStateException( fEx );
+        }
+    }
+
     // ------------------------------------------------------------------------
     private IAppSettings m_AppSettings;
     @Override
@@ -44,8 +53,6 @@ public enum AllSettings implements IAllSettings
 
     public void init() throws Exception
     {
-        m_AppSettings = new AppSettings();
-
         final Path aClubFile = m_AppSettings.getFile_ClubData();
         m_ClubSettings = new ClubSettings( aClubFile );
 

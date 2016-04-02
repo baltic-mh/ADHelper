@@ -94,9 +94,9 @@ public class ADH_Application
             public void run()
             {
                 try{
-                    initSettings( aAppWindow );
-
                     IntegrityChecker.check( AllSettings.INSTANCE );
+
+                    initSettings( aAppWindow );
 
                     aAppWindow.initialize();
                     aAppWindow.setVisible( true );
@@ -105,17 +105,15 @@ public class ADH_Application
                     boolean aOffline = true;
                     if( !stayLocal() ){
                         aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
-                        if( aTC != null ){
-                            aTC.start();
-                            if( aTC.isConnected() ){
-                                aOffline = false;
-                                updateDataFromServer( aTC );
-                                IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
-                            } else {
-                                sm_Log.warn( "Keine Verbindung zum Server!" );
-                            }
-
+                        aTC.start();
+                        if( aTC.isConnected() ){
+                            aOffline = false;
+                            updateDataFromServer( aTC );
+                            IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
+                        } else {
+                            sm_Log.warn( "Keine Verbindung zum Server!" );
                         }
+
                     }
                     aAppWindow.setTitle( aOffline );
                     aAppWindow.addShutdownListener( aTC );
