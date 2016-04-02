@@ -13,8 +13,6 @@ package teambaltic.adhelper.controller;
 
 import java.nio.file.Path;
 
-import org.apache.log4j.Logger;
-
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IRemoteAccessSettings;
@@ -27,31 +25,24 @@ import teambaltic.adhelper.utils.ICryptUtils;
 // ############################################################################
 public class InitHelper
 {
-    private static final Logger sm_Log = Logger.getLogger(InitHelper.class);
+//    private static final Logger sm_Log = Logger.getLogger(InitHelper.class);
 
     public static ITransferController initTransferController(final AllSettings fAllSettings)
+            throws Exception
     {
         IRemoteAccess aRA = null;
         final IRemoteAccessSettings aRASettings = fAllSettings.getRemoteAccessSettings();
         if( aRASettings == null ){
-            return null;
+            throw new Exception( "Keine Server-Zugangsdaten gefunden! Das wird nix!");
         }
-        try{
-            aRA = new RemoteAccess( aRASettings );
-            aRA.init();
-        }catch( final Exception fEx ){
-            sm_Log.warn("Exception: ", fEx );
-        }
+
+        aRA = new RemoteAccess( aRASettings );
+        aRA.init();
 
         final IAppSettings aAppSettings = fAllSettings.getAppSettings();
         final Path aFile_Crypt_Priv = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PRIV );
         final Path aFile_Crypt_Publ = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PUBL );
-        ICryptUtils aCryptUtils = null;
-        try{
-            aCryptUtils = new CryptUtils( aFile_Crypt_Priv.toFile(), aFile_Crypt_Publ.toFile() );
-        }catch( final Exception fEx ){
-            sm_Log.warn("Exception: ", fEx );
-        }
+        final ICryptUtils aCryptUtils = new CryptUtils( aFile_Crypt_Priv.toFile(), aFile_Crypt_Publ.toFile() );
         final ISingletonWatcher aSW = initSingletonWatcher( fAllSettings, aRA);
         final ITransferController aTC = new TransferController(
                 fAllSettings, aCryptUtils, aRA, aSW);

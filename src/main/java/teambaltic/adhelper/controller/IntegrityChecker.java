@@ -52,6 +52,10 @@ public final class IntegrityChecker
         if( !Files.exists( aDataFolder )){
             Files.createDirectories( aDataFolder );
         }
+        final Path aSettingsFolder = aAppSettings.getFolder_Settings();
+        if( !Files.exists( aSettingsFolder )){
+            Files.createDirectories( aSettingsFolder );
+        }
     }
 
     public static void checkAfterUpdateFromServer(
