@@ -9,14 +9,13 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.inout;
+package teambaltic.adhelper.factories;
 
 import java.time.LocalDate;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import teambaltic.adhelper.controller.IItemFactory;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.IKnownColumns;
 

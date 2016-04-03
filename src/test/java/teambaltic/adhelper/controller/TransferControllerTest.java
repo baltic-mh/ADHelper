@@ -71,25 +71,31 @@ public class TransferControllerTest
     @Test
     public void test_Upload()
     {
-        final ITransferController aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
-        assertNotNull("TC.init", aTC);
-
-        final Path aLocalFile = Paths.get( "Daten", "BasisDaten.csv" );
+        ITransferController aTC;
         try{
+            aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+            assertNotNull("TC.init", aTC);
+            final Path aLocalFile = Paths.get( "Daten", "BasisDaten.csv" );
             aTC.upload( aLocalFile );
         }catch( final Exception fEx ){
             fail("Exception: "+fEx.getMessage() );
         }
+
     }
 
     @Test
     public void test_Download()
     {
-        final ITransferController aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
-        assertNotNull("TC.init", aTC);
+        ITransferController aTC;
+        try{
+            aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+            assertNotNull("TC.init", aTC);
 
-        final Path aLocalFile = Paths.get( "Daten", "BasisDaten.csv" );
-        aTC.download( aLocalFile );
+            final Path aLocalFile = Paths.get( "Daten", "BasisDaten.csv" );
+            aTC.download( aLocalFile );
+        }catch( final Exception fEx ){
+            fail("Exception: "+fEx.getMessage() );
+        }
     }
 
 }

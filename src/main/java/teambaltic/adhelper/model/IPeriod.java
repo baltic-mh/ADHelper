@@ -22,6 +22,7 @@ public interface IPeriod
     boolean isAfterMyStart  ( LocalDate fEvent );
     boolean isBeforeMyEnd   ( LocalDate fEvent );
     boolean isWithinMyPeriod( LocalDate fEvent );
+    boolean isWithinMyPeriod( IPeriod   fOtherPeriod );
 }
 
 // ############################################################################

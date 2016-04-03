@@ -20,14 +20,22 @@ public abstract class APeriod implements IPeriod
     @Override
     public boolean isAfterMyStart(  final LocalDate fDate )
     {
-        final int aComparedTo = getStart().compareTo( fDate );
+        final LocalDate aMyStart = getStart();
+        if( aMyStart == null ){
+            return true;
+        }
+        final int aComparedTo = aMyStart.compareTo( fDate );
         return aComparedTo <= 0;
     }
 
     @Override
     public boolean isBeforeMyEnd(  final LocalDate fDate )
     {
-        final int aComparedTo = getEnd().compareTo( fDate );
+        final LocalDate aMyEnd = getEnd();
+        if( aMyEnd == null ){
+            return true;
+        }
+        final int aComparedTo = aMyEnd.compareTo( fDate );
         return aComparedTo >= 0;
     }
 
@@ -35,6 +43,34 @@ public abstract class APeriod implements IPeriod
     public boolean isWithinMyPeriod( final LocalDate fDate )
     {
         return isAfterMyStart( fDate ) && isBeforeMyEnd( fDate );
+    }
+
+    @Override
+    public boolean isWithinMyPeriod( final IPeriod fOther )
+    {
+        final LocalDate aOtherStart = fOther.getStart();
+        final LocalDate aOtherEnd   = fOther.getEnd();
+        if( aOtherStart == null ){
+            if( aOtherEnd == null ){
+                return true;
+            }
+            return isAfterMyStart( aOtherEnd );
+        }
+        if( isWithinMyPeriod( aOtherStart ) ){
+            return true;
+        }
+
+        if( aOtherEnd == null ){
+            return isBeforeMyEnd( aOtherStart );
+        }
+        if( isWithinMyPeriod( aOtherEnd ) ){
+            return true;
+        }
+
+        if( isBeforeMyEnd( aOtherStart ) && isAfterMyStart( aOtherEnd ) ){
+            return true;
+        }
+        return false;
     }
 
 

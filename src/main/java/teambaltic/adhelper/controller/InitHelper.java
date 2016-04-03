@@ -13,6 +13,8 @@ package teambaltic.adhelper.controller;
 
 import java.nio.file.Path;
 
+import org.apache.log4j.Logger;
+
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IRemoteAccessSettings;
@@ -25,7 +27,7 @@ import teambaltic.adhelper.utils.ICryptUtils;
 // ############################################################################
 public class InitHelper
 {
-//    private static final Logger sm_Log = Logger.getLogger(InitHelper.class);
+    private static final Logger sm_Log = Logger.getLogger(InitHelper.class);
 
     public static ITransferController initTransferController(final AllSettings fAllSettings)
             throws Exception
@@ -36,6 +38,7 @@ public class InitHelper
             throw new Exception( "Keine Server-Zugangsdaten gefunden! Das wird nix!");
         }
 
+        sm_Log.info( "Server ist: "+aRASettings.getServerName());
         aRA = new RemoteAccess( aRASettings );
         aRA.init();
 

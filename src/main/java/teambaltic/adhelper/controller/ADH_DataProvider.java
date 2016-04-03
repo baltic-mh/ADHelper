@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,8 +24,11 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.inout.BalanceReader;
 import teambaltic.adhelper.inout.BaseDataReader;
 import teambaltic.adhelper.inout.Exporter;
+import teambaltic.adhelper.inout.WorkEventReader;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDuty.REASON;
+import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
@@ -32,6 +36,7 @@ import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
+import teambaltic.adhelper.model.settings.IClubSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.utils.FileUtils;
 
@@ -40,7 +45,10 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 {
     private static final Logger sm_Log = Logger.getLogger(ADH_DataProvider.class);
 
+    // ------------------------------------------------------------------------
     private final IAllSettings m_AllSettings;
+    private IClubSettings getClubSettings(){ return m_AllSettings.getClubSettings(); }
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private File m_BaseDataFile;
@@ -103,6 +111,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
         readBalances( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_Balances() ), !aIsOutputFinished );
 
+        populateFreeFromDutySets( aInvoicingPeriod );
         joinRelatives();
 
         calculateDutyCharges( aInvoicingPeriod );
@@ -147,30 +156,24 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     public void calculateDutyCharges(final IPeriod fInvoicingPeriod)
     {
-        final DutyCalculator aDC = m_ChargeCalculator.getDutyCalculator();
-
         for( final InfoForSingleMember aSingleInfo : getAll() ){
-            final IClubMember aMember = aSingleInfo.getMember();
-            FreeFromDuty aFreeFromDuty = aSingleInfo.getFreeFromDuty();
-            // TODO Wenn jemand schon eine AD-Befreiung eingetragen hat,
-            //      diese aber erst in ferner Zukunft wirksam wird UND
-            //      für den aktuellen Abrechnungszeitraum eine andere
-            //      Befreiung gelten würde (z.B. "zu jung"), würde das hier
-            //      momentan nicht berücksichtig werden!
-            if( aFreeFromDuty == null ){
-                aFreeFromDuty = aDC.isFreeFromDuty( aMember );
-                aSingleInfo.setFreeFromDuty( aFreeFromDuty );
-            }
-            final WorkEventsAttended aWorkEventsAttended = aSingleInfo.getWorkEventsAttended();
-            final DutyCharge aDutyCharge = aSingleInfo.getDutyCharge();
-            m_ChargeCalculator.calculate( aDutyCharge, aWorkEventsAttended, aFreeFromDuty );
+            m_ChargeCalculator.calculate( aSingleInfo );
         }
     }
 
     public ChargeCalculator createChargeCalculator( final IPeriod fInvoicingPeriod )
     {
-        final ChargeCalculator aChargeCalculator = new ChargeCalculator( fInvoicingPeriod, m_AllSettings.getClubSettings() );
+        final ChargeCalculator aChargeCalculator = new ChargeCalculator( fInvoicingPeriod, getClubSettings() );
         return aChargeCalculator;
+    }
+
+    private void populateFreeFromDutySets(final IPeriod fInvoicingPeriod)
+    {
+        for( final InfoForSingleMember aSingleInfo : getAll() ){
+            final IClubMember aMember = aSingleInfo.getMember();
+            final FreeFromDutySet aFFDSet = aSingleInfo.getFreeFromDutySet();
+            populateFFDSetFromMemberData( fInvoicingPeriod, aFFDSet, aMember );
+        }
     }
 
     public void joinRelatives()
@@ -303,6 +306,84 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         final File[] aFolders_NotUploaded = FileUtils.getFolders_NotUploaded( getDataFolder(), getFinishedFileName(), getUploadedFileName() );
         return aFolders_NotUploaded;
     }
+
+    public void populateFFDSetFromMemberData(
+            final IPeriod fInvoicingPeriod, final FreeFromDutySet fFreeFromDutySet, final IClubMember fMember )
+    {
+        FreeFromDuty aFFD = createFFD_TooYoung( fInvoicingPeriod, fMember );
+        fFreeFromDutySet.addItem( aFFD );
+        aFFD = createFFD_TooOld( fInvoicingPeriod, fMember );
+        fFreeFromDutySet.addItem( aFFD );
+        aFFD = createFFD_NoLongerMember( fInvoicingPeriod, fMember );
+        fFreeFromDutySet.addItem( aFFD );
+        aFFD = createFFD_DutyNotYetEffective( fInvoicingPeriod, fMember );
+        fFreeFromDutySet.addItem( aFFD );
+    }
+
+    private FreeFromDuty createFFD_TooYoung( final IPeriod fInvoicingPeriod, final IClubMember fMember )
+    {
+        final LocalDate aStart = fInvoicingPeriod.getStart();
+        final LocalDate aBirthday = fMember.getBirthday();
+        final int aMinAgeForDuty = getClubSettings().getMinAgeForDuty();
+        final int aAge = aStart.getYear() - aBirthday.getYear();
+        if( aAge - aMinAgeForDuty >= 3 ){
+            // Wir hoffen, dass wir nie mehr als drei Jahre mit der Aberechnung
+            // in Rückstand geraten!
+            return null;
+        }
+        final LocalDate aFreeByAgeUntil = aBirthday.plusYears( aMinAgeForDuty );
+        final FreeFromDuty aFFD = new FreeFromDuty( fMember.getID(), REASON.TOO_YOUNG );
+        aFFD.setUntil( aFreeByAgeUntil );
+
+        return aFFD;
+    }
+
+    private FreeFromDuty createFFD_TooOld( final IPeriod fInvoicingPeriod, final IClubMember fMember )
+    {
+        final LocalDate aStart = fInvoicingPeriod.getStart();
+        final LocalDate aBirthday = fMember.getBirthday();
+        final int aMaxAgeForDuty = getClubSettings().getMaxAgeForDuty();
+        final int aAge = aStart.getYear() - aBirthday.getYear();
+        if( aMaxAgeForDuty - aAge >= 3 ){
+            // Wir hoffen, dass wir nie mehr als drei Jahre mit der Abrechnung
+            // in Rückstand geraten!
+            return null;
+        }
+        final FreeFromDuty aFFD = new FreeFromDuty( fMember.getID(), REASON.TOO_OLD );
+        final LocalDate aFreeByAgeFrom = aBirthday.plusYears( aMaxAgeForDuty );
+        aFFD.setFrom( aFreeByAgeFrom );
+
+        return aFFD;
+    }
+
+    private static FreeFromDuty createFFD_NoLongerMember(
+            final IPeriod fInvoicingPeriod, final IClubMember fMember )
+    {
+        final LocalDate aMemberUntil = fMember.getMemberUntil();
+        if( aMemberUntil == null ){
+            return null;
+        }
+        final int aMemberID = fMember.getID();
+        final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NO_LONGER_MEMBER );
+        aFreeFromDuty.setFrom( aMemberUntil );
+        return aFreeFromDuty;
+    }
+
+    private FreeFromDuty createFFD_DutyNotYetEffective(
+            final IPeriod fInvoicingPeriod, final IClubMember fMember )
+    {
+        final LocalDate aMemberFrom = fMember.getMemberFrom();
+        if( aMemberFrom == null ){
+            return null;
+        }
+        final int aMemberID = fMember.getID();
+        final long aProtectedTime = getClubSettings().getProtectionTime();
+        final LocalDate aFreeUntil = aMemberFrom.plusMonths( aProtectedTime ).minusDays( 1 );
+        final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.DUTY_NOT_YET_EFFECTIVE );
+        aFreeFromDuty.setUntil( aFreeUntil );
+        return aFreeFromDuty;
+    }
+
 }
 
 // ############################################################################

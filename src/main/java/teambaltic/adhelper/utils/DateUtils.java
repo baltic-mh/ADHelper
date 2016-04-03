@@ -12,6 +12,12 @@
 package teambaltic.adhelper.utils;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 import teambaltic.adhelper.model.IPeriod;
 
@@ -22,6 +28,25 @@ public final class DateUtils
     public static final LocalDate MAX_DATE = LocalDate.of( 2966, 10, 3 );
 
     private DateUtils(){/**/}
+
+    public static String getName(final Month fMonth)
+    {
+        final String aDisplayName = fMonth.getDisplayName( TextStyle.SHORT, Locale.GERMAN );
+        return aDisplayName;
+    }
+
+    public static String getNames(final Collection<Month> fMonths)
+    {
+        final StringBuffer aSB = new StringBuffer();
+        final boolean aAppendSep = fMonths.size() > 1;
+        for( final Month aMonth : fMonths ){
+            aSB.append( getName( aMonth ) );
+            if( aAppendSep ){
+                aSB.append( ", " );
+            }
+        }
+        return aSB.toString();
+    }
 
     public static int getCoverageInMonths(
             final IPeriod fCoveringPeriod,
@@ -52,6 +77,44 @@ public final class DateUtils
 
         final int aCoverageInMonths = aYears*12 + aMonths;
         return aCoverageInMonths;
+    }
+
+    public static List<Month> getMonthsNotCovered(
+            final IPeriod fCoveringPeriod,
+            final IPeriod fPeriodToCover)
+    {
+        final LocalDate aToCover_Start = fPeriodToCover.getStart();
+        final LocalDate aToCover_End   = fPeriodToCover.getEnd();
+        final List<Month> aMonthsNotCovered = new ArrayList<>();
+        LocalDate aCursor = LocalDate.from( aToCover_Start );
+        do {
+            if( fCoveringPeriod == null || !fCoveringPeriod.isWithinMyPeriod( aCursor ) ){
+                final Month aThisMonth = aCursor.getMonth();
+                aMonthsNotCovered.add( aThisMonth );
+            }
+            aCursor = aCursor.plusMonths( 1 );
+        } while( aCursor.compareTo( aToCover_End ) < 0 );
+
+        return aMonthsNotCovered;
+    }
+
+    public static List<Month> getMonthsCovered(
+            final IPeriod fCoveringPeriod,
+            final IPeriod fPeriodToCover)
+    {
+        final LocalDate aToCover_Start = fPeriodToCover.getStart();
+        final LocalDate aToCover_End   = fPeriodToCover.getEnd();
+        final List<Month> aMonthsNotCovered = new ArrayList<>();
+        LocalDate aCursor = LocalDate.from( aToCover_Start );
+        do {
+            if( fCoveringPeriod != null && fCoveringPeriod.isWithinMyPeriod( aCursor ) ){
+                final Month aThisMonth = aCursor.getMonth();
+                aMonthsNotCovered.add( aThisMonth );
+            }
+            aCursor = aCursor.plusMonths( 1 );
+        } while( aCursor.compareTo( aToCover_End ) < 0 );
+
+        return aMonthsNotCovered;
     }
 }
 

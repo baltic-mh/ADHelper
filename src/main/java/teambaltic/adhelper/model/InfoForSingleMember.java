@@ -28,9 +28,9 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private FreeFromDuty m_FreeFromDuty;
-    public FreeFromDuty getFreeFromDuty(){ return m_FreeFromDuty; }
-    public void setFreeFromDuty( final FreeFromDuty fNewVal ){ m_FreeFromDuty = fNewVal; }
+    private FreeFromDutySet m_FreeFromDutySet;
+    public FreeFromDutySet getFreeFromDutySet(){ return m_FreeFromDutySet; }
+    public void setFreeFromDutySet( final FreeFromDutySet fNewVal ){ m_FreeFromDutySet = fNewVal; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------

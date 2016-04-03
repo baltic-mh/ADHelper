@@ -15,13 +15,17 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
+import java.time.Month;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.controller.DutyCalculator;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
@@ -56,7 +60,6 @@ public class DetailsReporter
             sm_Log.warn("Exception: ", fEx );
         }
 
-
     }
 
     private static void report(
@@ -74,12 +77,21 @@ public class DetailsReporter
         fWriter.write( String.format( "(%d) %-21s Abrechnungszeitraum: %s\r\n",
                 aMember.getID(), aMember.getName(), fInvoicingPeriod ));
         final DutyCharge aCharge = fSingleInfo.getDutyCharge();
-        final FreeFromDuty aFreeFromDuty = fSingleInfo.getFreeFromDuty();
-        final int aFreeFromDutyInMonths = DateUtils.getCoverageInMonths(aFreeFromDuty, fInvoicingPeriod );
-        if( aFreeFromDutyInMonths > 0 ){
+        final FreeFromDutySet aFFDSet = fSingleInfo.getFreeFromDutySet();
+        final Collection<FreeFromDuty> aEffectiveFFDs = DutyCalculator.getEffectiveFreeFromDutyItems( fInvoicingPeriod, aFFDSet.getFreeFromDutyItems() );
+        if( aEffectiveFFDs.size() > 0 ){
             fWriter.write( "--------------------------------------------------------------------------\r\n" );
-            fWriter.write( String.format( "AD-Befreit (%d Monate) wegen: %s\r\n",
-                    aFreeFromDutyInMonths, aFreeFromDuty ));
+            for( final FreeFromDuty aFFD : aEffectiveFFDs ){
+                final List<Month> aMonthsCovered = DateUtils.getMonthsCovered( aFFD, fInvoicingPeriod );
+                fWriter.write( String.format( "AD-Befreit wegen %s: %s\r\n",
+                        aFFD.getReason(), DateUtils.getNames( aMonthsCovered ) ));
+            }
+        }
+        final List<Month> aMonthsDue = DutyCalculator.getMonthsDue( fInvoicingPeriod, aEffectiveFFDs );
+        if( aMonthsDue.size() > 0 ){
+            fWriter.write( "--------------------------------------------------------------------------\r\n" );
+            fWriter.write( String.format( "Für AD angerechnete Monate: %s\r\n",
+                    DateUtils.getNames( aMonthsDue ) ));
         }
 
         int aTotalDue = 0;

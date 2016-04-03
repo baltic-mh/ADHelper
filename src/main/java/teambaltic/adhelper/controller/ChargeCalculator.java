@@ -11,11 +11,14 @@
 // ############################################################################
 package teambaltic.adhelper.controller;
 
+import java.util.Collection;
 import java.util.List;
 
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IPeriod;
+import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.IClubSettings;
 
@@ -44,16 +47,18 @@ public class ChargeCalculator
         return getDutyCalculator().getInvoicingPeriod();
     }
 
-    public DutyCharge calculate(
-            final DutyCharge aCharge,
-            final WorkEventsAttended fWorkEventsAttended,
-            final FreeFromDuty       fFreeFromDuty)
+    public DutyCharge calculate(final InfoForSingleMember fMemberInfo)
     {
+        final WorkEventsAttended aWEA = fMemberInfo.getWorkEventsAttended();
         final IPeriod aInvoicingPeriod = getDutyCalculator().getInvoicingPeriod();
-        final int aHoursWorked = fWorkEventsAttended == null ? 0 : fWorkEventsAttended.getTotalHoursWorked( aInvoicingPeriod );
+        final int aHoursWorked = aWEA == null ? 0 : aWEA.getTotalHoursWorked( aInvoicingPeriod );
+
+        final DutyCharge aCharge = fMemberInfo.getDutyCharge();
         aCharge.setHoursWorked( aHoursWorked );
 
-        final int aHoursDue = getDutyCalculator().calculateHoursToWork( fFreeFromDuty );
+        final FreeFromDutySet aFreeFromDutySet = fMemberInfo.getFreeFromDutySet();
+        final Collection<FreeFromDuty> aFreeFromDutyItems = aFreeFromDutySet.getFreeFromDutyItems();
+        final int aHoursDue = getDutyCalculator().calculateHoursToWork( aFreeFromDutyItems );
         aCharge.setHoursDue( aHoursDue );
 
         final int aBalanceValue = aCharge.getBalance_Original();

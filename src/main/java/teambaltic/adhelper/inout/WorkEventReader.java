@@ -9,7 +9,7 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.controller;
+package teambaltic.adhelper.inout;
 
 import java.io.File;
 import java.util.List;
@@ -17,6 +17,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.controller.ListProvider;
+import teambaltic.adhelper.factories.IItemFactory;
+import teambaltic.adhelper.factories.WorkEventFactory;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
@@ -59,8 +62,6 @@ public class WorkEventReader
             if( aInfo == null ){
                 sm_Log.error( String.format( "Mitglied mit der ID %d nicht gefunden!", aID ) );
                 continue;
-//                aInfo = new InfoForSingleMember( aID );
-//                fListProvider.add( aInfo );
             }
 
             final WorkEventsAttended aWorkEventsAttended = getCreateWorkEventsAttended( aInfo );

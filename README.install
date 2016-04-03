@@ -11,15 +11,10 @@ Voraussetzungen:
     In letzterem Falle muss Java installiert werden. Es steht hier bereit:
         http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-- Im Verzeichnis, in dem das Executable steht, muss folgenden Inhalt haben:
+- Das Verzeichnis, in dem das Executable steht, muss folgenden Inhalt haben:
     Unterverzeichnis "Einstellungen"
-        Datei "VereinsDaten.prop" (Soll später vom Server geladen werden)
-    Unterverzeichnis "Daten"
-        Datei "BasisDaten.csv"
-        Eins oder mehr Unterverzeichnisse mit Datumsnamen (wie "2014-01-01 - 2014-06-30")
-            Darin mindestens eine Datei "Arbeitsdienste.csv"
 
-- Für den Zugang zum Server werden folgende Dateien benötigt:
+    Für den Zugang zum Server werden folgende Dateien benötigt:
     ./Einstellungen/ServerZugangsDaten.prop
     ./Einstellungen/ssh/
         mit komplettem Inhalt!

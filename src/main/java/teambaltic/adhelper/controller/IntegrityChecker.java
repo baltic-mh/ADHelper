@@ -93,9 +93,23 @@ public final class IntegrityChecker
                 continue;
             }
             aSeen_IDs.add( aID );
-            final String aRefIDString = aAttributes.get( IKnownColumns.MEMBERID );
-            final Integer aRefID = Integer.parseInt( aRefIDString );
-            aSeen_RefIDs.add( aRefID );
+
+            final String aRefIDString = aAttributes.get( IKnownColumns.LINKID );
+            if( aRefIDString != null ){
+                final Integer aRefID = Integer.parseInt( aRefIDString );
+                aSeen_RefIDs.add( aRefID );
+            }
+
+            final String aBirthdayString = aAttributes.get( IKnownColumns.BIRTHDAY );
+            if( aBirthdayString == null ){
+                aProblems.add( String.format( "Kein Geburtsdatum bei ID %d!", aID.intValue() ));
+            }
+
+            final String aEintrittString = aAttributes.get( IKnownColumns.EINTRITT );
+            if( aEintrittString == null ){
+                aProblems.add( String.format( "Kein Eintrittsdatum bei ID %d!", aID.intValue() ));
+            }
+
         }
         for( final Integer aRefID : aSeen_RefIDs ){
             if( !aSeen_IDs.contains( aRefID ) ){

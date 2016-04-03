@@ -17,11 +17,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import teambaltic.adhelper.controller.IItemFactory;
 import teambaltic.adhelper.controller.ListProvider;
-import teambaltic.adhelper.controller.MemberFactory;
+import teambaltic.adhelper.factories.FreeFromDutySetFactory;
+import teambaltic.adhelper.factories.IItemFactory;
+import teambaltic.adhelper.factories.MemberFactory;
 import teambaltic.adhelper.model.DutyCharge;
-import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
@@ -38,14 +39,14 @@ public class BaseDataReader
     // ------------------------------------------------------------------------
 
     private final IItemFactory<IClubMember>     m_MemberFactory;
-    private final IItemFactory<FreeFromDuty>    m_FreeFromDutyFactory;
+    private final IItemFactory<FreeFromDutySet> m_FFDSetFactory;
 
     public BaseDataReader(final File fFile)
     {
         m_File = fFile;
 
-        m_MemberFactory         = new MemberFactory();
-        m_FreeFromDutyFactory   = new FreeFromDutyFactory();
+        m_MemberFactory = new MemberFactory();
+        m_FFDSetFactory = new FreeFromDutySetFactory();
     }
 
     public List<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
@@ -89,10 +90,8 @@ public class BaseDataReader
         final int aID = fInfo.getID();
         final IClubMember aClubMember = m_MemberFactory.createItem( aID, fAttributes);
         fInfo.setMember( aClubMember );
-        final FreeFromDuty aFFD = m_FreeFromDutyFactory.createItem( aID, fAttributes);
-        if( aFFD != null ){
-            fInfo.setFreeFromDuty( aFFD );
-        }
+        final FreeFromDutySet aFFDSet = m_FFDSetFactory.createItem( aID, fAttributes);
+        fInfo.setFreeFromDutySet( aFFDSet );
         fInfo.setDutyCharge( new DutyCharge(aID, 0 ) );
     }
 

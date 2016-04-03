@@ -17,8 +17,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import teambaltic.adhelper.controller.IItemFactory;
 import teambaltic.adhelper.controller.ListProvider;
+import teambaltic.adhelper.factories.BalanceFactory;
+import teambaltic.adhelper.factories.IItemFactory;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IKnownColumns;

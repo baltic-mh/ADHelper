@@ -1,5 +1,9 @@
 Nochtun:
 
+- Bug beim Berechnen der zu leistenden Arbeitsstunden (Welpenschutz - 16 Jahre!)
+
+(- Integritätsüberprüfung: Pflichtfelder: ID, Geburtsdatum, Eintritt)
+
 (- Runterladen der Abrechnungsdaten vom Server)
 
 (- MITGLIEDERWART: Beim Hochladen der Datei für die Basisdaten Datei auf
