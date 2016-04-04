@@ -17,6 +17,9 @@ import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -26,8 +29,10 @@ import org.junit.Test;
 
 import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
+import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.settings.ClubSettings;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -36,6 +41,7 @@ public class DutyCalculatorTest
 {
     private static final Logger sm_Log = Logger.getLogger(DutyCalculatorTest.class);
     private static ClubSettings CLUBSETTINGS;
+    private static FreeFromDutyCalculator sm_FFDCalculator;
 
     // ########################################################################
     // INITIALISIERUNG
@@ -46,6 +52,7 @@ public class DutyCalculatorTest
         Log4J.initLog4J();
         try{
             CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/VereinsDaten.prop") );
+            sm_FFDCalculator = new FreeFromDutyCalculator( CLUBSETTINGS );
         }catch( final Exception fEx ){
             fail("Exception: "+ fEx.getMessage() );
         }
@@ -70,15 +77,34 @@ public class DutyCalculatorTest
     {
         final Halfyear aInvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
         final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, CLUBSETTINGS );
+        final FreeFromDutyCalculator aFFDCalculator = new FreeFromDutyCalculator( CLUBSETTINGS );
 
-        final ClubMember aMember1 = new ClubMember(1);
+        final int aMemberID = 1;
+        final InfoForSingleMember aInfo = new InfoForSingleMember( aMemberID );
+        final ClubMember aMember1 = new ClubMember(aMemberID);
+        aInfo.setMember( aMember1 );
         aMember1.setBirthday( LocalDate.of( 1930, 1, 1 ) );
-        final ClubMember aMember2 = new ClubMember(2);
+
+        final FreeFromDutySet aFreeFromDutySet = new FreeFromDutySet( aMemberID );
+        aInfo.setFreeFromDutySet( aFreeFromDutySet );
+        aFFDCalculator.populateFFDSetFromMemberData( aFreeFromDutySet, aInvoicingPeriod, aMember1 );
+        final Collection<FreeFromDuty> aEffectiveItems = DutyCalculator.getEffectiveFreeFromDutyItems( aInvoicingPeriod, aInfo.getFreeFromDutyItems() );
+        assertEquals("TOO_OLD1", 1, aEffectiveItems.size());
+        int aIDX = 0;
+        for( final FreeFromDuty aFreeFromDuty : aEffectiveItems ){
+            if( aIDX++ == 1 ){
+                fail("Zu viele Gründe!");
+            }
+            sm_Log.info( aFreeFromDuty );
+            assertEquals( "1", FreeFromDuty.REASON.TOO_OLD, aFreeFromDuty.getReason() );
+        }
+        final List<Month> aMonthsDue = DutyCalculator.getMonthsDue( aInvoicingPeriod, aEffectiveItems );
+        assertEquals( "TOO_OLD1_Monate", aMonthsDue.size() );
+
+        aMemberID = 2;
+        final ClubMember aMember2 = new ClubMember( aMemberID );
         aMember2.setBirthday( LocalDate.of( 1940, 2, 1 ) );
 
-        final FreeFromDuty aFreeFromDuty1 = aDC.isFreeFromDuty( aMember1 );
-        sm_Log.info( aFreeFromDuty1 );
-        assertEquals( "1", FreeFromDuty.REASON.TOO_OLD, aFreeFromDuty1.getReason() );
         final FreeFromDuty aFreeFromDuty2 = aDC.isFreeFromDuty( aMember2 );
         sm_Log.info( aFreeFromDuty2 );
         assertEquals( "2", FreeFromDuty.REASON.TOO_OLD, aFreeFromDuty2.getReason() );

@@ -11,6 +11,8 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.util.Collection;
+
 // ############################################################################
 public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
 {
@@ -30,13 +32,13 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     // ------------------------------------------------------------------------
     private FreeFromDutySet m_FreeFromDutySet;
     public FreeFromDutySet getFreeFromDutySet(){ return m_FreeFromDutySet; }
+    public Collection<FreeFromDuty> getFreeFromDutyItems(){ return m_FreeFromDutySet.getFreeFromDutyItems(); }
     public void setFreeFromDutySet( final FreeFromDutySet fNewVal ){ m_FreeFromDutySet = fNewVal; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private Balance m_Balance;
-    public Balance getBalance(){ return m_Balance; }
-    public void setBalance( final Balance fBalance ){ m_Balance = fBalance; }
+    public int getBalance(){ return getDutyCharge().getBalance_ChargedAndAdjusted(); }
+    public void setBalance( final int fValue ){ setDutyCharge( new DutyCharge( getID(), fValue) ); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------

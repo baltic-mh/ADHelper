@@ -25,7 +25,6 @@ import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.DutyCalculator;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
@@ -77,8 +76,8 @@ public class DetailsReporter
         fWriter.write( String.format( "(%d) %-21s Abrechnungszeitraum: %s\r\n",
                 aMember.getID(), aMember.getName(), fInvoicingPeriod ));
         final DutyCharge aCharge = fSingleInfo.getDutyCharge();
-        final FreeFromDutySet aFFDSet = fSingleInfo.getFreeFromDutySet();
-        final Collection<FreeFromDuty> aEffectiveFFDs = DutyCalculator.getEffectiveFreeFromDutyItems( fInvoicingPeriod, aFFDSet.getFreeFromDutyItems() );
+        final Collection<FreeFromDuty> aFFDItems = fSingleInfo.getFreeFromDutyItems();
+        final Collection<FreeFromDuty> aEffectiveFFDs = DutyCalculator.getEffectiveFreeFromDutyItems( fInvoicingPeriod, aFFDItems );
         if( aEffectiveFFDs.size() > 0 ){
             fWriter.write( "--------------------------------------------------------------------------\r\n" );
             for( final FreeFromDuty aFFD : aEffectiveFFDs ){

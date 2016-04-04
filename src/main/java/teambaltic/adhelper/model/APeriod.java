@@ -73,7 +73,6 @@ public abstract class APeriod implements IPeriod
         return false;
     }
 
-
 }
 
 // ############################################################################

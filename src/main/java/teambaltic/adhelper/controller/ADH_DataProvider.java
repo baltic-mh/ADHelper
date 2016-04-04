@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,8 +25,6 @@ import teambaltic.adhelper.inout.BaseDataReader;
 import teambaltic.adhelper.inout.Exporter;
 import teambaltic.adhelper.inout.WorkEventReader;
 import teambaltic.adhelper.model.DutyCharge;
-import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.IClubMember;
@@ -169,10 +166,11 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     private void populateFreeFromDutySets(final IPeriod fInvoicingPeriod)
     {
+        final FreeFromDutyCalculator aFFDCalculator = new FreeFromDutyCalculator( getClubSettings() );
         for( final InfoForSingleMember aSingleInfo : getAll() ){
             final IClubMember aMember = aSingleInfo.getMember();
             final FreeFromDutySet aFFDSet = aSingleInfo.getFreeFromDutySet();
-            populateFFDSetFromMemberData( fInvoicingPeriod, aFFDSet, aMember );
+            aFFDCalculator.populateFFDSetFromMemberData( aFFDSet, fInvoicingPeriod, aMember );
         }
     }
 
@@ -305,83 +303,6 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     {
         final File[] aFolders_NotUploaded = FileUtils.getFolders_NotUploaded( getDataFolder(), getFinishedFileName(), getUploadedFileName() );
         return aFolders_NotUploaded;
-    }
-
-    public void populateFFDSetFromMemberData(
-            final IPeriod fInvoicingPeriod, final FreeFromDutySet fFreeFromDutySet, final IClubMember fMember )
-    {
-        FreeFromDuty aFFD = createFFD_TooYoung( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
-        aFFD = createFFD_TooOld( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
-        aFFD = createFFD_NoLongerMember( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
-        aFFD = createFFD_DutyNotYetEffective( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
-    }
-
-    private FreeFromDuty createFFD_TooYoung( final IPeriod fInvoicingPeriod, final IClubMember fMember )
-    {
-        final LocalDate aStart = fInvoicingPeriod.getStart();
-        final LocalDate aBirthday = fMember.getBirthday();
-        final int aMinAgeForDuty = getClubSettings().getMinAgeForDuty();
-        final int aAge = aStart.getYear() - aBirthday.getYear();
-        if( aAge - aMinAgeForDuty >= 3 ){
-            // Wir hoffen, dass wir nie mehr als drei Jahre mit der Aberechnung
-            // in Rückstand geraten!
-            return null;
-        }
-        final LocalDate aFreeByAgeUntil = aBirthday.plusYears( aMinAgeForDuty );
-        final FreeFromDuty aFFD = new FreeFromDuty( fMember.getID(), REASON.TOO_YOUNG );
-        aFFD.setUntil( aFreeByAgeUntil );
-
-        return aFFD;
-    }
-
-    private FreeFromDuty createFFD_TooOld( final IPeriod fInvoicingPeriod, final IClubMember fMember )
-    {
-        final LocalDate aStart = fInvoicingPeriod.getStart();
-        final LocalDate aBirthday = fMember.getBirthday();
-        final int aMaxAgeForDuty = getClubSettings().getMaxAgeForDuty();
-        final int aAge = aStart.getYear() - aBirthday.getYear();
-        if( aMaxAgeForDuty - aAge >= 3 ){
-            // Wir hoffen, dass wir nie mehr als drei Jahre mit der Abrechnung
-            // in Rückstand geraten!
-            return null;
-        }
-        final FreeFromDuty aFFD = new FreeFromDuty( fMember.getID(), REASON.TOO_OLD );
-        final LocalDate aFreeByAgeFrom = aBirthday.plusYears( aMaxAgeForDuty );
-        aFFD.setFrom( aFreeByAgeFrom );
-
-        return aFFD;
-    }
-
-    private static FreeFromDuty createFFD_NoLongerMember(
-            final IPeriod fInvoicingPeriod, final IClubMember fMember )
-    {
-        final LocalDate aMemberUntil = fMember.getMemberUntil();
-        if( aMemberUntil == null ){
-            return null;
-        }
-        final int aMemberID = fMember.getID();
-        final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NO_LONGER_MEMBER );
-        aFreeFromDuty.setFrom( aMemberUntil );
-        return aFreeFromDuty;
-    }
-
-    private FreeFromDuty createFFD_DutyNotYetEffective(
-            final IPeriod fInvoicingPeriod, final IClubMember fMember )
-    {
-        final LocalDate aMemberFrom = fMember.getMemberFrom();
-        if( aMemberFrom == null ){
-            return null;
-        }
-        final int aMemberID = fMember.getID();
-        final long aProtectedTime = getClubSettings().getProtectionTime();
-        final LocalDate aFreeUntil = aMemberFrom.plusMonths( aProtectedTime ).minusDays( 1 );
-        final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.DUTY_NOT_YET_EFFECTIVE );
-        aFreeFromDuty.setUntil( aFreeUntil );
-        return aFreeFromDuty;
     }
 
 }

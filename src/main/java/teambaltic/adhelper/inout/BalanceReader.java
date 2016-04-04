@@ -64,7 +64,6 @@ public class BalanceReader
             final Balance aItem = m_ItemFactory.createItem( aID, aAttributes);
             int aBalanceValue = 0;
             if( aItem != null ){
-                aInfo.setBalance( aItem );
                 aBalanceValue = aItem.getValue();
             }
             aInfo.setDutyCharge( new DutyCharge(aID, aBalanceValue ) );

@@ -12,6 +12,7 @@
 package teambaltic.adhelper.model;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 
 // ############################################################################
 public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDuty>
@@ -59,7 +60,7 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
     public LocalDate getFrom(){ return m_From; }
     @Override
     public LocalDate getStart(){ return getFrom(); }
-    public void setFrom( final LocalDate fFrom ){ m_From = fFrom; }
+    public void setFrom( final LocalDate fFrom ){ m_From = adjustToBeginningOfMonth( fFrom ); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -67,7 +68,7 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
     public LocalDate getUntil(){ return m_Until; }
     @Override
     public LocalDate getEnd(){ return getUntil(); }
-    public void setUntil( final LocalDate fUntil ){ m_Until = fUntil; }
+    public void setUntil( final LocalDate fUntil ){ m_Until = adjustToEndOfMonth( fUntil ); }
     // ------------------------------------------------------------------------
 
     public FreeFromDuty( final int fMemberID, final REASON fReason )
@@ -103,6 +104,23 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
             return 1;
         }
         return 0;
+    }
+
+    private static LocalDate adjustToBeginningOfMonth( final LocalDate fDate )
+    {
+        if( fDate == null ){
+            return fDate;
+        }
+        final LocalDate aAdjusted = fDate.with(TemporalAdjusters.firstDayOfMonth());
+        return aAdjusted;
+    }
+    private static LocalDate adjustToEndOfMonth( final LocalDate fDate )
+    {
+        if( fDate == null ){
+            return fDate;
+        }
+        final LocalDate aAdjusted = fDate.with(TemporalAdjusters.lastDayOfMonth());
+        return aAdjusted;
     }
 }
 

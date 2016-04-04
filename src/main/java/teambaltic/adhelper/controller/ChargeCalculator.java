@@ -16,7 +16,6 @@ import java.util.List;
 
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
-import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEventsAttended;
@@ -56,8 +55,7 @@ public class ChargeCalculator
         final DutyCharge aCharge = fMemberInfo.getDutyCharge();
         aCharge.setHoursWorked( aHoursWorked );
 
-        final FreeFromDutySet aFreeFromDutySet = fMemberInfo.getFreeFromDutySet();
-        final Collection<FreeFromDuty> aFreeFromDutyItems = aFreeFromDutySet.getFreeFromDutyItems();
+        final Collection<FreeFromDuty> aFreeFromDutyItems = fMemberInfo.getFreeFromDutyItems();
         final int aHoursDue = getDutyCalculator().calculateHoursToWork( aFreeFromDutyItems );
         aCharge.setHoursDue( aHoursDue );
 
