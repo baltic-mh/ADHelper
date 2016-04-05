@@ -12,13 +12,11 @@
 package teambaltic.adhelper.controller;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -29,6 +27,7 @@ import org.junit.Test;
 
 import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
@@ -41,7 +40,14 @@ public class DutyCalculatorTest
 {
     private static final Logger sm_Log = Logger.getLogger(DutyCalculatorTest.class);
     private static ClubSettings CLUBSETTINGS;
+
+    private static final int ID = 1;
     private static FreeFromDutyCalculator sm_FFDCalculator;
+    private static final Halfyear sm_InvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
+
+    private InfoForSingleMember sm_Info;
+    private ClubMember sm_Member;
+    private FreeFromDutySet sm_FreeFromDutySet;
 
     // ########################################################################
     // INITIALISIERUNG
@@ -61,6 +67,11 @@ public class DutyCalculatorTest
     @Before
     public void initBeforeEachTest()
     {
+        sm_Info   = new InfoForSingleMember( ID );
+        sm_Member = new ClubMember(ID);
+        sm_Info.setMember( sm_Member );
+        sm_FreeFromDutySet = new FreeFromDutySet( ID );
+        sm_Info.setFreeFromDutySet( sm_FreeFromDutySet );
     }
 
     @After
@@ -73,176 +84,136 @@ public class DutyCalculatorTest
     // ########################################################################
 
     @Test
-    public void test_TOO_OLD()
+    public void test_SimplyTooOld()
     {
-        final Halfyear aInvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
-        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, CLUBSETTINGS );
-        final FreeFromDutyCalculator aFFDCalculator = new FreeFromDutyCalculator( CLUBSETTINGS );
+        final String aTestName = "SimplyTooOld";
+        sm_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
+        check( aTestName, 0, REASON.TOO_OLD, REASON.NO_LONGER_MEMBER );
 
-        final int aMemberID = 1;
-        final InfoForSingleMember aInfo = new InfoForSingleMember( aMemberID );
-        final ClubMember aMember1 = new ClubMember(aMemberID);
-        aInfo.setMember( aMember1 );
-        aMember1.setBirthday( LocalDate.of( 1930, 1, 1 ) );
+    }
 
-        final FreeFromDutySet aFreeFromDutySet = new FreeFromDutySet( aMemberID );
-        aInfo.setFreeFromDutySet( aFreeFromDutySet );
-        aFFDCalculator.populateFFDSetFromMemberData( aFreeFromDutySet, aInvoicingPeriod, aMember1 );
-        final Collection<FreeFromDuty> aEffectiveItems = DutyCalculator.getEffectiveFreeFromDutyItems( aInvoicingPeriod, aInfo.getFreeFromDutyItems() );
-        assertEquals("TOO_OLD1", 1, aEffectiveItems.size());
-        int aIDX = 0;
-        for( final FreeFromDuty aFreeFromDuty : aEffectiveItems ){
-            if( aIDX++ == 1 ){
-                fail("Zu viele Gründe!");
-            }
-            sm_Log.info( aFreeFromDuty );
-            assertEquals( "1", FreeFromDuty.REASON.TOO_OLD, aFreeFromDuty.getReason() );
-        }
-        final List<Month> aMonthsDue = DutyCalculator.getMonthsDue( aInvoicingPeriod, aEffectiveItems );
-        assertEquals( "TOO_OLD1_Monate", aMonthsDue.size() );
-
-        aMemberID = 2;
-        final ClubMember aMember2 = new ClubMember( aMemberID );
-        aMember2.setBirthday( LocalDate.of( 1940, 2, 1 ) );
-
-        final FreeFromDuty aFreeFromDuty2 = aDC.isFreeFromDuty( aMember2 );
-        sm_Log.info( aFreeFromDuty2 );
-        assertEquals( "2", FreeFromDuty.REASON.TOO_OLD, aFreeFromDuty2.getReason() );
-
+    @Test
+    public void test_ZuAltUndAustrittImMaerz()
+    {
+        final String aTestName = "ZuAltUndAustrittImMaerz";
+        sm_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
         // Der ganz alte Opa tritt zum ersten März aus:
-        aMember1.setMemberUntil( LocalDate.of( 2000, 3, 1 ) );
-        final FreeFromDuty aFreeFromDuty1a = aDC.isFreeFromDuty( aMember1 );
-        sm_Log.info( aFreeFromDuty1a );
-        assertEquals( "1a", FreeFromDuty.REASON.TOO_OLD, aFreeFromDuty1a.getReason() );
+        sm_Member.setMemberUntil( LocalDate.of( 2000, 3, 1 ) );
 
-        // Der nicht ganz alte Opa tritt zum ersten Januar aus:
+        check( aTestName, 0, REASON.TOO_OLD, REASON.NO_LONGER_MEMBER );
+
+    }
+
+    @Test
+    public void test_ErstImMaerzZuAlt()
+    {
+        final String aTestName = "ErstImMaerzZuAlt";
+        sm_Member.setBirthday( LocalDate.of( 1940, 3, 31 ) );
+
+        check( aTestName, 2, REASON.TOO_OLD );
+
+    }
+
+    @Test
+    public void test_ErstImMaerzZuAltAberAustrittImFebruar()
+    {
+        final String aTestName = "ErstImMaerzZuAltAberAustrittImFebruar";
+        sm_Member.setBirthday( LocalDate.of( 1940, 3, 31 ) );
         // (bevor er in den Genuss kommt, alt genug zu sein, ist er ausgetreten :-/
-        aMember2.setMemberUntil( LocalDate.of( 2000, 1, 1 ) );
-        final FreeFromDuty aFreeFromDuty2a = aDC.isFreeFromDuty( aMember2 );
-        sm_Log.info( aFreeFromDuty2a );
-        assertEquals( "2a", FreeFromDuty.REASON.NO_LONGER_MEMBER, aFreeFromDuty2a.getReason() );
+        sm_Member.setMemberUntil( LocalDate.of( 2000, 3, 1 ) );
+
+        check( aTestName, 1, REASON.NO_LONGER_MEMBER, REASON.TOO_OLD );
+
     }
 
     @Test
     public void test_NORMAL_MEMBER()
     {
-        final Halfyear aInvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
-        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, CLUBSETTINGS  );
+        final String aTestName = "NORMAL_MEMBER";
+        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
 
-        final ClubMember aMember3 = new ClubMember(3);
-        aMember3.setBirthday( LocalDate.of( 1950, 3, 1 ) );
+        check( aTestName, 6 );
+    }
 
-        final FreeFromDuty aFreeFromDuty3 = aDC.isFreeFromDuty( aMember3 );
-        sm_Log.info( aFreeFromDuty3 );
-        assertNull( "3", aFreeFromDuty3 );
-
-        final int aDutyHours3 = aDC.calculateHoursToWork( aFreeFromDuty3 );
-        sm_Log.info( "Plichtstunden 3: "+aDutyHours3 );
-        assertEquals("Plichtstunden 3", 300, aDutyHours3);
-
+    @Test
+    public void test_AusTrittImApril()
+    {
+        final String aTestName = "AustrittImApril";
+        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
         // Der MittelMann tritt zum ersten April aus:
-        aMember3.setMemberUntil( LocalDate.of( 2000, 4, 1 ) );
-        final FreeFromDuty aFreeFromDuty3a = aDC.isFreeFromDuty( aMember3 );
-        sm_Log.info( aFreeFromDuty3a );
-        assertEquals( "3a", FreeFromDuty.REASON.NO_LONGER_MEMBER, aFreeFromDuty3a.getReason() );
+        sm_Member.setMemberUntil( LocalDate.of( 2000, 4, 1 ) );
+        check( aTestName, 3, REASON.NO_LONGER_MEMBER );
+    }
 
-        // Ein neues Mitglied tritt ein:
-        final ClubMember aMember33 = new ClubMember(33);
-        aMember33.setBirthday( LocalDate.of( 1958, 4, 9 ) );
-        aMember33.setMemberFrom( LocalDate.of( 1999, 1, 1 ) );
-        final FreeFromDuty aFreeFromDuty33 = aDC.isFreeFromDuty( aMember33 );
-        sm_Log.info( aFreeFromDuty33 );
-        assertNull( "33", aFreeFromDuty33 );
+    @Test
+    public void test_EintrittImOktoberImVorjahr()
+    {
+        final String aTestName = "EintrittImOktoberImVorjahr";
+        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
+        sm_Member.setMemberFrom( LocalDate.of( 1999, 10, 1 ) );
+        check( aTestName, 3, REASON.DUTY_NOT_YET_EFFECTIVE );
+    }
 
-        final int aDutyHours33 = aDC.calculateHoursToWork( aFreeFromDuty33 );
-        sm_Log.info( "Plichtstunden 33: "+aDutyHours33 );
-        assertEquals("Plichtstunden 33", 300, aDutyHours33 );
-
-        // Ein neues Mitglied tritt ein:
-        final ClubMember aMember34 = new ClubMember(34);
-        aMember34.setBirthday( LocalDate.of( 1958, 4, 9 ) );
-        aMember34.setMemberFrom( LocalDate.of( 1999, 9, 1 ) );
-        final FreeFromDuty aFreeFromDuty34 = aDC.isFreeFromDuty( aMember34 );
-        sm_Log.info( aFreeFromDuty34 );
-        assertEquals( "34", FreeFromDuty.REASON.DUTY_NOT_YET_EFFECTIVE, aFreeFromDuty34.getReason() );
-
-        final int aDutyHours34 = aDC.calculateHoursToWork( aFreeFromDuty34 );
-        sm_Log.info( "Plichtstunden 34: "+aDutyHours34 );
-        assertEquals("Plichtstunden 34", 200, aDutyHours34 );
-
-        // Ein neues Mitglied tritt ein:
-        final ClubMember aMember333 = new ClubMember(333);
-        aMember333.setBirthday( LocalDate.of( 1958, 4, 9 ) );
-        aMember333.setMemberFrom( LocalDate.of( 2000, 1, 1 ) );
-        final FreeFromDuty aFreeFromDuty333 = aDC.isFreeFromDuty( aMember333 );
-        sm_Log.info( aFreeFromDuty333 );
-        assertEquals( "333", FreeFromDuty.REASON.DUTY_NOT_YET_EFFECTIVE, aFreeFromDuty333.getReason() );
-
-        final int aDutyHours333 = aDC.calculateHoursToWork( aFreeFromDuty333 );
-        sm_Log.info( "Plichtstunden 333: "+aDutyHours333 );
-        assertEquals("Plichtstunden 333", 0, aDutyHours333 );
-
+    @Test
+    public void test_EintrittImJanuar()
+    {
+        final String aTestName = "EintrittImJanuar";
+        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
+        sm_Member.setMemberFrom( LocalDate.of( 2000, 1, 1 ) );
+        check( aTestName, 0, REASON.DUTY_NOT_YET_EFFECTIVE );
     }
 
     @Test
     public void test_TOO_YOUNG()
     {
-        final Halfyear aInvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
-        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, CLUBSETTINGS  );
+        final String aTestName = "viel zu Jung";
+        sm_Member.setBirthday( LocalDate.of( 1990, 4, 30 ) );
+        check( aTestName, 0, REASON.TOO_YOUNG );
+    }
 
-        final ClubMember aMember4 = new ClubMember(4);
-        aMember4.setBirthday( LocalDate.of( 1984, 3, 31 ) );
-        final ClubMember aMember5 = new ClubMember(5);
-        aMember5.setBirthday( LocalDate.of( 1990, 4, 30 ) );
+    @Test
+    public void test_ZuJungBisEndeMaerz()
+    {
+        final String aTestName = "ZuJungBisEndeMaerz";
+        sm_Member.setBirthday( LocalDate.of( 1984, 3, 31 ) );
+        check( aTestName, 3, REASON.TOO_YOUNG );
+    }
 
-        final FreeFromDuty aFreeFromDuty4 = aDC.isFreeFromDuty( aMember4 );
-        sm_Log.info( aFreeFromDuty4 );
-        assertEquals( "4", FreeFromDuty.REASON.TOO_YOUNG, aFreeFromDuty4.getReason() );
-
-        final int aDutyHours4 = aDC.calculateHoursToWork( aFreeFromDuty4 );
-        sm_Log.info( "Plichtstunden 4: "+aDutyHours4 );
-        assertEquals("Plichtstunden 4", 150, aDutyHours4 );
-
-        final FreeFromDuty aFreeFromDuty5 = aDC.isFreeFromDuty( aMember5 );
-        sm_Log.info( aFreeFromDuty5 );
-        assertEquals( "5", FreeFromDuty.REASON.TOO_YOUNG, aFreeFromDuty5.getReason() );
-
+    @Test
+    public void test_ZuJungBisEndeMaerzAusTrittImJuni()
+    {
+        final String aTestName = "ZuJungBisEndeMaerzAusTrittImJuni";
+        sm_Member.setBirthday( LocalDate.of( 1984, 3, 31 ) );
+        sm_Member.setMemberUntil( LocalDate.of( 2000, 6, 1 ) );
         // Das ältere Kücken tritt zum ersten Juni aus:
         // er wird am 1.4. arbeitsdienstpflichtig und steigt zum 1.6. aus.
         // Also ist er für die Monate 1-3 nicht dienstpflichtig,
         // für die Monate 4 und 5 dienstpflichtig
         // und für Monat 6 wieder nicht dienstpflichtig.
-        // Also 2 von 6 Monaten - sind 1/3 = eine Stunde!
-        aMember4.setMemberUntil( LocalDate.of( 2000, 6, 1 ) );
-        final FreeFromDuty aFreeFromDuty4a = aDC.isFreeFromDuty( aMember4 );
-        sm_Log.info( aFreeFromDuty4a );
-        assertEquals( "4a", FreeFromDuty.REASON.TOO_YOUNG, aFreeFromDuty4a.getReason() );
-
-        final int aDutyHours4a = aDC.calculateHoursToWork( aFreeFromDuty4a );
-        sm_Log.info( "Plichtstunden 4a: "+aDutyHours4a );
-        assertEquals("Plichtstunden 4a", 100, aDutyHours4a );
-
-        // Das junge Kücken tritt zum ersten April aus:
-        aMember5.setMemberUntil( LocalDate.of( 2000, 4, 1 ) );
-        final FreeFromDuty aFreeFromDuty5a = aDC.isFreeFromDuty( aMember5 );
-        sm_Log.info( aFreeFromDuty5a );
-        assertEquals( "5a", FreeFromDuty.REASON.TOO_YOUNG, aFreeFromDuty5a.getReason() );
-
-        final int aDutyHours5a = aDC.calculateHoursToWork( aFreeFromDuty5a );
-        sm_Log.info( "Plichtstunden 5a: "+aDutyHours5a );
-        assertEquals("Plichtstunden 5a", 0, aDutyHours5a );
-
+        // Also 2 von 6 Monaten (- sind 1/3 = eine Stunde!)
+        check( aTestName, 2, REASON.TOO_YOUNG, REASON.NO_LONGER_MEMBER );
     }
 
-//    @Test
-//    public void test_Austritt()
-//    {
-//        final Halfyear aInvoicingPeriod = new Halfyear( Year.of( 2000 ), EPart.FIRST );
-//        final DutyCalculator aDC = new DutyCalculator( aInvoicingPeriod, GPs  );
-//
-//        final ClubMember aMember = new ClubMember(4);
-//        aMember.setBirthday( LocalDate.of( 1984, 3, 31 ) );
-//    }
+    private void check( final String fTestName, final int fExp_MonthsDue, final REASON ... fExp_Reasons )
+    {
+        sm_FFDCalculator.populateFFDSetFromMemberData( sm_FreeFromDutySet, sm_InvoicingPeriod, sm_Member );
+
+        final List<FreeFromDuty> aEffectiveItems = DutyCalculator.getEffectiveFreeFromDutyItems( sm_InvoicingPeriod, sm_Info.getFreeFromDutyItems() );
+        assertEquals(fTestName+": EffectiveFFDs.size", fExp_Reasons.length, aEffectiveItems.size());
+        for( int aIDX = 0; aIDX < fExp_Reasons.length; aIDX++ ){
+            final FreeFromDuty aFreeFromDuty = aEffectiveItems.get( aIDX );
+            assertEquals( fTestName+": FFD "+aIDX, fExp_Reasons[aIDX], aFreeFromDuty.getReason() );
+        }
+
+        final List<Month> aMonthsDue = DutyCalculator.getMonthsDue( sm_InvoicingPeriod, aEffectiveItems );
+        final StringBuffer aSB = new StringBuffer();
+        for( final Month aMonth : aMonthsDue ){
+            aSB.append( aMonth ).append( ", " );
+        }
+        sm_Log.info( fTestName+": MonthsDue: " + aSB.toString());
+        assertEquals( fTestName+": MonthsDue ", fExp_MonthsDue, aMonthsDue.size() );
+    }
+
 }
 
 // ############################################################################

@@ -70,7 +70,7 @@ public class DutyCalculator
         return aHoursToWork;
     }
 
-    public static Collection<FreeFromDuty> getEffectiveFreeFromDutyItems(
+    public static List<FreeFromDuty> getEffectiveFreeFromDutyItems(
             final IPeriod fInvoicingPeriod,
             final Collection<FreeFromDuty> fFFDItems )
     {
