@@ -50,7 +50,9 @@ public class PeriodDataController implements IPeriodDataController
     private final Map<IPeriod, PeriodData> m_PeriodDataMap;
     @Override
     public List<PeriodData> getPeriodDataList(){
-        return new ArrayList<>( m_PeriodDataMap.values() );
+        final ArrayList<PeriodData> aList = new ArrayList<>( m_PeriodDataMap.values() );
+        Collections.sort( aList, PERIOD_COMPARATOR );
+        return aList;
     }
     public PeriodData getPeriodData( final IPeriod fPeriod ){ return m_PeriodDataMap.get( fPeriod );}
     // ------------------------------------------------------------------------

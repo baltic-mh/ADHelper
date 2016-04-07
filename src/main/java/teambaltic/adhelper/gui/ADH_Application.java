@@ -49,10 +49,11 @@ import teambaltic.adhelper.gui.listeners.UploadListener;
 import teambaltic.adhelper.gui.listeners.UserSettingsListener;
 import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
 import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
+import teambaltic.adhelper.gui.model.InvoicingPeriodBoxModel;
 import teambaltic.adhelper.gui.model.MemberComboBoxModel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IPeriod;
+import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
@@ -118,11 +119,11 @@ public class ADH_Application
                     }
                     aAppWindow.setTitle( aOffline );
                     aAppWindow.addShutdownListener( aTC );
-                    final IPeriodDataController aIPC = aInitHelper.initPeriodDataController();
-                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider(aIPC);
+                    final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
+                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider(aPDC);
 
                     aAppWindow.configure( aDataProvider );
-                    aAppWindow.populate( aDataProvider, aTC );
+                    aAppWindow.populate( aDataProvider, aPDC, aTC );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
@@ -163,6 +164,7 @@ public class ADH_Application
 
     private void populate(
             final ADH_DataProvider fDataProvider,
+            final IPeriodDataController fPDC,
             final ITransferController fTransferController )
     {
         final Collection<IClubMember> aAllMembers = fDataProvider.getMembers();
@@ -173,8 +175,17 @@ public class ADH_Application
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_panel, fDataProvider );
         aCB_Members.addActionListener( aMemberSelectedListener );
 
-        final JComboBox<IPeriod> aCB_InvoicingPeriod = m_panel.getCB_InvoicingPeriod();
-        aCB_InvoicingPeriod.addItem( fDataProvider.getInvoicingPeriod() );
+        final JComboBox<PeriodData> aCB_InvoicingPeriod = m_panel.getCB_InvoicingPeriod();
+        final List<PeriodData> aPDList = fPDC.getPeriodDataList();
+        final PeriodData[] aPeriods = new PeriodData[aPDList.size()];
+        int aIdx = 0;
+        PeriodData aLastPeriodData = null;
+        for( final PeriodData aPeriodData : aPDList ){
+            aPeriods[aIdx++] = aPeriodData;
+            aLastPeriodData = aPeriodData;
+        }
+        aCB_InvoicingPeriod.setModel( new InvoicingPeriodBoxModel( aPeriods ) );
+        aCB_InvoicingPeriod.setSelectedItem( aLastPeriodData );
 
         // WorkEventEditor
         final WorkEventEditor aWorkEventEditor = new WorkEventEditor();

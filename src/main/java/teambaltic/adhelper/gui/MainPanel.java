@@ -35,7 +35,7 @@ import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.WorkEventTableModel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
-import teambaltic.adhelper.model.IPeriod;
+import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.WorkEvent;
 
 // ############################################################################
@@ -53,8 +53,8 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final JComboBox<IPeriod> m_cmb_InvoicingPeriod;
-    public JComboBox<IPeriod> getCB_InvoicingPeriod(){ return m_cmb_InvoicingPeriod; }
+    private final JComboBox<PeriodData> m_cmb_InvoicingPeriod;
+    public JComboBox<PeriodData> getCB_InvoicingPeriod(){ return m_cmb_InvoicingPeriod; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
