@@ -121,63 +121,27 @@ public final class FileUtils
         return aMap;
     }
 
-    public static File determineNewestInvoicingPeriodFolder(
-            final Path fDataFolder, final String fFinishedFileName )
-    {
-        final File[] aChildFolders = getInvoicingPeriodFolders( fDataFolder );
-        if( aChildFolders.length == 0 ){
-            return null;
-        }
-        if( aChildFolders.length == 1 ){
-            return aChildFolders[0];
-        }
-        File aResult = null;
-        final int aMostRecentYear  = 0;
-        final int aMostRecentMonth = 0;
-        for( final File aChildFolder : aChildFolders ){
-            final Path aFinishedFile = aChildFolder.toPath().resolve( fFinishedFileName );
-            if( !Files.exists( aFinishedFile ) ){
-                return aChildFolder;
-            }
-            final String[] aParts = aChildFolder.getName().split( InvoicingPeriodFolderFilter.sm_SplitRegex );
-            final int aYear  = Integer.parseInt( aParts[0] );
-            final int aMonth = Integer.parseInt( aParts[1] );
-            if( aYear > aMostRecentYear ){
-                aResult = aChildFolder;
-            } else if ( aYear == aMostRecentYear && aMonth > aMostRecentMonth ){
-                aResult = aChildFolder;
-            }
-        }
-        return aResult;
-    }
-
-    public static File[] getInvoicingPeriodFolders( final Path fDataFolder )
-    {
-        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_All();
-        return getFolders( fDataFolder, aFilter );
-    }
-
     public static File[] getFolders_NotFinished( final Path fDataFolder, final String fFileName_Finished )
     {
         final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_NotFinished(fFileName_Finished);
-        return getFolders( fDataFolder, aFilter );
+        return getChildFolders( fDataFolder, aFilter );
     }
 
     public static File[] getFolders_NotUploaded( final Path fDataFolder, final String fFileName_Finished, final String fFileName_Uploaded )
     {
         final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_FinishedButNotUploaded(fFileName_Finished, fFileName_Uploaded);
-        return getFolders( fDataFolder, aFilter );
+        return getChildFolders( fDataFolder, aFilter );
     }
 
     public static File[] getFinishedAndUploadedFolders( final Path fDataFolder, final String fFN_Finished, final String fFN_Uploaded )
     {
         final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_FinishedAndUploaded(fFN_Finished, fFN_Uploaded);
-        return getFolders( fDataFolder, aFilter );
+        return getChildFolders( fDataFolder, aFilter );
     }
 
-    private static File[] getFolders( final Path fDataFolder, final InvoicingPeriodFolderFilter fFilter )
+    public static File[] getChildFolders( final Path fParentFolder, final InvoicingPeriodFolderFilter fFilter )
     {
-        final File[] aChildFolders = fDataFolder.toFile().listFiles( fFilter );
+        final File[] aChildFolders = fParentFolder.toFile().listFiles( fFilter );
         return aChildFolders;
     }
 

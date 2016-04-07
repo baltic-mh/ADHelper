@@ -122,6 +122,12 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
         final LocalDate aAdjusted = fDate.with(TemporalAdjusters.lastDayOfMonth());
         return aAdjusted;
     }
+
+    @Override
+    public IPeriod createSuccessor()
+    {
+        return null;
+    }
 }
 
 // ############################################################################

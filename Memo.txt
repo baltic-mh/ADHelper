@@ -1,6 +1,6 @@
 Nochtun:
 
-- Bug beim Berechnen der zu leistenden Arbeitsstunden (Welpenschutz - 16 Jahre!)
+(- Bug beim Berechnen der zu leistenden Arbeitsstunden (Welpenschutz - 16 Jahre!) )
 
 (- Integritätsüberprüfung: Pflichtfelder: ID, Geburtsdatum, Eintritt)
 
@@ -28,6 +28,8 @@ Nochtun:
 (- Dateien für die Verschlüsselung fest ins Programm einbauen)
 
 RELEASE
+
+(Einträge mit * sind bereits im Trackingsystem erfasst)
 
 - Warte-Cursor am Anfang, wenn versucht wird, Kontakt mit Server herzustellen
 

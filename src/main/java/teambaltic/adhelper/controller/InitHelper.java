@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IRemoteAccessSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
@@ -29,11 +30,24 @@ public class InitHelper
 {
     private static final Logger sm_Log = Logger.getLogger(InitHelper.class);
 
-    public static ITransferController initTransferController(final AllSettings fAllSettings)
+    // ------------------------------------------------------------------------
+    private final IAllSettings m_AllSettings;
+    private IAllSettings getAllSettings(){ return m_AllSettings; }
+    private IAppSettings getAppSettings(){ return getAllSettings().getAppSettings(); }
+    private IUserSettings getUserSettings(){ return getAllSettings().getUserSettings(); }
+    private IRemoteAccessSettings getRASettings(){ return getAllSettings().getRemoteAccessSettings(); }
+    // ------------------------------------------------------------------------
+
+    public InitHelper(final AllSettings fAllSettings)
+    {
+        m_AllSettings = fAllSettings;
+    }
+
+    public ITransferController initTransferController()
             throws Exception
     {
         IRemoteAccess aRA = null;
-        final IRemoteAccessSettings aRASettings = fAllSettings.getRemoteAccessSettings();
+        final IRemoteAccessSettings aRASettings = getRASettings();
         if( aRASettings == null ){
             throw new Exception( "Keine Server-Zugangsdaten gefunden! Das wird nix!");
         }
@@ -42,32 +56,37 @@ public class InitHelper
         aRA = new RemoteAccess( aRASettings );
         aRA.init();
 
-        final IAppSettings aAppSettings = fAllSettings.getAppSettings();
+        final IAppSettings aAppSettings = getAppSettings();
         final Path aFile_Crypt_Priv = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PRIV );
         final Path aFile_Crypt_Publ = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PUBL );
         final ICryptUtils aCryptUtils = new CryptUtils( aFile_Crypt_Priv.toFile(), aFile_Crypt_Publ.toFile() );
-        final ISingletonWatcher aSW = initSingletonWatcher( fAllSettings, aRA);
+        final ISingletonWatcher aSW = initSingletonWatcher( aRA);
         final ITransferController aTC = new TransferController(
-                fAllSettings, aCryptUtils, aRA, aSW);
+                getAllSettings(), aCryptUtils, aRA, aSW);
         return aTC;
     }
 
-    public static ISingletonWatcher initSingletonWatcher(
-            final AllSettings fAllSettings,
-            final IRemoteAccess fRemoteAccess)
+    private ISingletonWatcher initSingletonWatcher( final IRemoteAccess fRemoteAccess )
     {
-        final IUserSettings aUserSettings = fAllSettings.getUserSettings();
-        final String aInfo = aUserSettings.getDecoratedEMail();
-        final int aCycleTime = fAllSettings.getAppSettings().getCycleTime_SingletonWatcher();
+        final String aInfo = getUserSettings().getDecoratedEMail();
+        final int aCycleTime = getAppSettings().getCycleTime_SingletonWatcher();
         final SingletonWatcher aSW = new SingletonWatcher(aInfo, aCycleTime, fRemoteAccess);
         return aSW;
     }
 
-    public static ADH_DataProvider initDataProvider() throws Exception
+    public ADH_DataProvider initDataProvider(final IPeriodDataController fDFC) throws Exception
     {
-        final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE);
-        aDataProvider.init();
+        final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE, fDFC);
+        aDataProvider.init( fDFC.getNewestPeriodData() );
         return aDataProvider;
+    }
+
+    public IPeriodDataController initPeriodDataController()
+    {
+        final PeriodDataController aPDC = new PeriodDataController(getAppSettings().getFolder_Data(), getAppSettings().getFileName_Finished());
+        aPDC.init( true );
+        return aPDC;
+
     }
 
 }

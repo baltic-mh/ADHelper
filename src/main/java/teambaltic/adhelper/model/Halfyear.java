@@ -84,7 +84,7 @@ public class Halfyear extends APeriod
 
     public static Halfyear create(final String fString)
     {
-        final String[] aParts = fString.split( InvoicingPeriodFolderFilter.sm_SplitRegex );
+        final String[] aParts = fString.split( InvoicingPeriodFolderFilter.REGEX_SPLIT );
         final int aYearInt  = Integer.parseInt( aParts[0] );
         final int aMonthInt = Integer.parseInt( aParts[1] );
 
@@ -97,6 +97,12 @@ public class Halfyear extends APeriod
             return new Halfyear( fPrevious.getYear(), EPart.SECOND );
         }
         return new Halfyear( fPrevious.getYear()+1, EPart.FIRST );
+    }
+
+    @Override
+    public IPeriod createSuccessor()
+    {
+        return Halfyear.next( this );
     }
 }
 

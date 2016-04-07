@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.CheckSumInfo;
 import teambaltic.adhelper.model.ERole;
-import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.remoteaccess.IRemoteAccess;
@@ -42,8 +42,8 @@ public class TransferController implements ITransferController
     private static final Logger sm_Log = Logger.getLogger(TransferController.class);
 
     // ------------------------------------------------------------------------
-    private final AllSettings m_AllSettings;
-    private AllSettings getAllSettings(){ return m_AllSettings; }
+    private final IAllSettings m_AllSettings;
+    private IAllSettings getAllSettings(){ return m_AllSettings; }
     // ------------------------------------------------------------------------
     private IAppSettings getAppSettings(){ return getAllSettings().getAppSettings(); }
     // ------------------------------------------------------------------------
@@ -75,7 +75,7 @@ public class TransferController implements ITransferController
     // ------------------------------------------------------------------------
 
     public TransferController(
-            final AllSettings       fAllSettings,
+            final IAllSettings      fAllSettings,
             final ICryptUtils       fCryptUtils,
             final IRemoteAccess     fRemoteAccess,
             final ISingletonWatcher fSingletonWatcher )

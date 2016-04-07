@@ -35,6 +35,7 @@ import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.WorkEventTableModel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.WorkEvent;
 
 // ############################################################################
@@ -52,8 +53,8 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    final JTextField m_txb_InvoicingPeriod;
-    public JTextField getWidget_InvoicingPeriod(){ return m_txb_InvoicingPeriod; }
+    private final JComboBox<IPeriod> m_cmb_InvoicingPeriod;
+    public JComboBox<IPeriod> getCB_InvoicingPeriod(){ return m_cmb_InvoicingPeriod; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -121,9 +122,8 @@ public class MainPanel extends JPanel
         final JLabel lblAbrechnungszeitraum = new JLabel("Abrechnungszeitraum");
         add(lblAbrechnungszeitraum, "2, 4, right, default");
 
-        m_txb_InvoicingPeriod = new JTextField();
-        m_txb_InvoicingPeriod.setEditable(false);
-        add(m_txb_InvoicingPeriod, "4, 4, 9, 1, fill, default");
+        m_cmb_InvoicingPeriod = new JComboBox<>();
+        add(m_cmb_InvoicingPeriod, "4, 4, 9, 1, fill, default");
 
         final JPanel m_pnl_Accountings = new JPanel();
         m_pnl_Accountings.setBorder(new TitledBorder(null, "Abrechnungen", TitledBorder.LEADING, TitledBorder.TOP, null, null));

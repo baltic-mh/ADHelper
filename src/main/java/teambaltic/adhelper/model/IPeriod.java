@@ -23,6 +23,7 @@ public interface IPeriod
     boolean isBeforeMyEnd   ( LocalDate fEvent );
     boolean isWithinMyPeriod( LocalDate fEvent );
     boolean isWithinMyPeriod( IPeriod   fOtherPeriod );
+    IPeriod createSuccessor();
 }
 
 // ############################################################################

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import teambaltic.adhelper.model.IKnownColumns;
+import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.utils.FileUtils;
@@ -68,8 +69,11 @@ public final class IntegrityChecker
         if( !Files.exists( aFile_BaseData ) ){
             throw new Exception( "Benötigte Datei nicht gefunden: " + aFile_BaseData.toString() );
         }
-        final File[] aInvoicingPeriodFolders = FileUtils.getInvoicingPeriodFolders( aDataFolder );
-        if( aInvoicingPeriodFolders == null || aInvoicingPeriodFolders.length == 0 ){
+        final String aFinishedFileName = aAppSettings.getFileName_Finished();
+        final PeriodDataController aIPCtrlr = new PeriodDataController( aDataFolder, aFinishedFileName );
+        aIPCtrlr.init( false );
+        final List<PeriodData> aPeriods = aIPCtrlr.getPeriodDataList();
+        if(  aPeriods.size() == 0 ){
             throw new Exception(
                     "Keine Unterverzeichnisse mit Abrechnungsdaten gefunden in: " + aDataFolder.toString() );
         }

@@ -20,8 +20,8 @@ import java.nio.file.Path;
 public class InvoicingPeriodFolderFilter implements FilenameFilter
 {
 
-    public static final String sm_SplitRegex = "\\s*-\\s*";
-    public static final String sm_MatchRegex = "\\d{4}-\\d{2}-\\d{2} - \\d{4}-\\d{2}-\\d{2}";
+    public static final String REGEX_SPLIT = "\\s*-\\s*";
+    public static final String REGEX_MATCH = "\\d{4}-\\d{2}-\\d{2} - \\d{4}-\\d{2}-\\d{2}";
 
     // ------------------------------------------------------------------------
     private final String m_FileName_Finished;
@@ -93,7 +93,7 @@ public class InvoicingPeriodFolderFilter implements FilenameFilter
         if( !Files.isDirectory( aDir ) ){
             return false;
         }
-        final boolean aMatches = fName.matches( sm_MatchRegex );
+        final boolean aMatches = fName.matches( REGEX_MATCH );
         if( !aMatches ){
             return false;
         }

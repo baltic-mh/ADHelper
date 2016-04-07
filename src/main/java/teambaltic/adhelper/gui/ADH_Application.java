@@ -28,7 +28,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -38,6 +37,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.controller.IShutdownListener;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.InitHelper;
@@ -52,6 +52,7 @@ import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.MemberComboBoxModel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
@@ -95,7 +96,7 @@ public class ADH_Application
             {
                 try{
                     IntegrityChecker.check( AllSettings.INSTANCE );
-
+                    final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE);
                     initSettings( aAppWindow );
 
                     aAppWindow.initialize();
@@ -104,7 +105,7 @@ public class ADH_Application
                     ITransferController aTC = null;
                     boolean aOffline = true;
                     if( !stayLocal() ){
-                        aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+                        aTC = aInitHelper.initTransferController();
                         aTC.start();
                         if( aTC.isConnected() ){
                             aOffline = false;
@@ -117,7 +118,8 @@ public class ADH_Application
                     }
                     aAppWindow.setTitle( aOffline );
                     aAppWindow.addShutdownListener( aTC );
-                    final ADH_DataProvider aDataProvider = InitHelper.initDataProvider();
+                    final IPeriodDataController aIPC = aInitHelper.initPeriodDataController();
+                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider(aIPC);
 
                     aAppWindow.configure( aDataProvider );
                     aAppWindow.populate( aDataProvider, aTC );
@@ -171,8 +173,8 @@ public class ADH_Application
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_panel, fDataProvider );
         aCB_Members.addActionListener( aMemberSelectedListener );
 
-        final JTextField aWidget_InvoicingPeriod = m_panel.getWidget_InvoicingPeriod();
-        aWidget_InvoicingPeriod.setText( fDataProvider.getInvoicingPeriod().toString() );
+        final JComboBox<IPeriod> aCB_InvoicingPeriod = m_panel.getCB_InvoicingPeriod();
+        aCB_InvoicingPeriod.addItem( fDataProvider.getInvoicingPeriod() );
 
         // WorkEventEditor
         final WorkEventEditor aWorkEventEditor = new WorkEventEditor();

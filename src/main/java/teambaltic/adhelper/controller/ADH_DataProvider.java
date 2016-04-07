@@ -26,10 +26,10 @@ import teambaltic.adhelper.inout.Exporter;
 import teambaltic.adhelper.inout.WorkEventReader;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDutySet;
-import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
+import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
@@ -73,45 +73,44 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private final IPeriodDataController m_PDC;
+    private IPeriodDataController getPDC(){ return m_PDC; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private ChargeCalculator m_ChargeCalculator;
     public void setChargeCalculator( final ChargeCalculator fNewVal ){ m_ChargeCalculator = fNewVal; }
     public ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
     public IPeriod getInvoicingPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getInvoicingPeriod();}
     // ------------------------------------------------------------------------
 
-    public ADH_DataProvider(final IAllSettings fSettings) throws Exception
+    public ADH_DataProvider(final IAllSettings fSettings, final IPeriodDataController fPDC) throws Exception
     {
         m_AllSettings = fSettings;
+        m_PDC = fPDC;
         final IUserSettings aUserSettings = m_AllSettings.getUserSettings();
         m_UserInfo = aUserSettings.getDecoratedEMail();
     }
 
-    public void init() throws Exception
+    public void init(final PeriodData fPeriodData) throws Exception
     {
+        final IPeriod aPeriod = fPeriodData.getPeriod();
+        m_ChargeCalculator = createChargeCalculator( aPeriod );
+
         final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        // Bestimme das Verzeichnis mit den neuesten Abrechnungsdaten
-        final Path aDataFolder = getDataFolder();
-        final File aFolderOfNewestInvoicingPeriod =
-                FileUtils.determineNewestInvoicingPeriodFolder( aDataFolder, getFinishedFileName() );
-        // Bestimme daraus den folgenden Abrechnungszeitraum:
-        final Halfyear aLatestProcessed = Halfyear.create( aFolderOfNewestInvoicingPeriod.getName() );
-        final Path aOutputFolder = getOutputFolder( aLatestProcessed );
-        final boolean aIsOutputFinished = isOutputFinished( aOutputFolder );
-        final IPeriod aInvoicingPeriod = aIsOutputFinished
-                ? Halfyear.next( aLatestProcessed )
-                : aLatestProcessed;
-        m_ChargeCalculator = createChargeCalculator( aInvoicingPeriod );
-
         readBaseData( aAppSettings.getFile_BaseData() );
-        // Das WorkEventFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readWorkEvents( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_WorkEvents() ) );
-        // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readBalances( new File(aFolderOfNewestInvoicingPeriod, aAppSettings.getFileName_Balances() ), !aIsOutputFinished );
 
-        populateFreeFromDutySets( aInvoicingPeriod );
+        final Path aPeriodDataFolder = fPeriodData.getFolder();
+        // Das WorkEventFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
+        readWorkEvents( aPeriodDataFolder.resolve( aAppSettings.getFileName_WorkEvents() ).toFile() );
+        final boolean aIsFinished = getPDC().isFinished( fPeriodData );
+        // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
+        readBalances( aPeriodDataFolder.resolve( aAppSettings.getFileName_Balances() ), !aIsFinished );
+
+        populateFreeFromDutySets( aPeriod );
         joinRelatives();
 
-        calculateDutyCharges( aInvoicingPeriod );
+        calculateDutyCharges( aPeriod );
         balanceRelatives();
 
         // Erst mal die Daten sichern:
@@ -139,10 +138,10 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         }
     }
 
-    public void readBalances( final File fFileToReadFrom, final boolean fTakePreviousBalanceValues )
+    public void readBalances( final Path fFileToReadFrom, final boolean fTakePreviousBalanceValues )
     {
-        m_BalanceFile = fFileToReadFrom;
-        final BalanceReader aReader = new BalanceReader( fFileToReadFrom, fTakePreviousBalanceValues );
+        m_BalanceFile = fFileToReadFrom.toFile();
+        final BalanceReader aReader = new BalanceReader( m_BalanceFile, fTakePreviousBalanceValues );
         try{
             aReader.read( this );
         }catch( final Exception fEx ){

@@ -29,6 +29,8 @@ import teambaltic.adhelper.utils.Log4J;
 // ############################################################################
 public class TransferControllerTest
 {
+
+    private static InitHelper sm_InitHelper;
     // ########################################################################
     // INITIALISIERUNG
     // ########################################################################
@@ -40,6 +42,7 @@ public class TransferControllerTest
 
         try{
             AllSettings.INSTANCE.init();
+            sm_InitHelper = new InitHelper( AllSettings.INSTANCE );
         }catch( final Exception fEx ){
             fEx.printStackTrace();
             fail( fEx.getMessage() );
@@ -73,7 +76,7 @@ public class TransferControllerTest
     {
         ITransferController aTC;
         try{
-            aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+            aTC = sm_InitHelper.initTransferController();
             assertNotNull("TC.init", aTC);
             final Path aLocalFile = Paths.get( "Daten", "BasisDaten.csv" );
             aTC.upload( aLocalFile );
@@ -88,7 +91,7 @@ public class TransferControllerTest
     {
         ITransferController aTC;
         try{
-            aTC = InitHelper.initTransferController( AllSettings.INSTANCE );
+            aTC = sm_InitHelper.initTransferController();
             assertNotNull("TC.init", aTC);
 
             final Path aLocalFile = Paths.get( "Daten", "BasisDaten.csv" );
