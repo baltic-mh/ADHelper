@@ -14,28 +14,20 @@ package teambaltic.adhelper.gui.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import teambaltic.adhelper.controller.ADH_DataProvider;
-import teambaltic.adhelper.gui.MainPanel;
-
 // ############################################################################
 public class MemberSelectedListener implements ActionListener
 {
-    private final MainPanel m_Panel;
-    private final ADH_DataProvider m_DataProvider;
+    private final GUIUpdater m_GUIUpdater;
 
-    public MemberSelectedListener(
-            final MainPanel fPanel,
-            final ADH_DataProvider fDataProvider)
+    public MemberSelectedListener(final GUIUpdater fGUIUpdater)
     {
-        m_Panel = fPanel;
-        m_DataProvider = fDataProvider;
+        m_GUIUpdater = fGUIUpdater;
     }
 
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-        final int aMemberID = m_Panel.getSelectedMemberID();
-        GUIUpdater.updateGUI( aMemberID, m_Panel, m_DataProvider );
+        m_GUIUpdater.updateGUI( false );
     }
 
 

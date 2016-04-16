@@ -70,7 +70,8 @@ public final class IntegrityChecker
             throw new Exception( "Benötigte Datei nicht gefunden: " + aFile_BaseData.toString() );
         }
         final String aFinishedFileName = aAppSettings.getFileName_Finished();
-        final PeriodDataController aIPCtrlr = new PeriodDataController( aDataFolder, aFinishedFileName );
+        final String aUploadedFileName = aAppSettings.getFileName_Uploaded();
+        final PeriodDataController aIPCtrlr = new PeriodDataController( aDataFolder, aFinishedFileName, aUploadedFileName  );
         aIPCtrlr.init( false );
         final List<PeriodData> aPeriods = aIPCtrlr.getPeriodDataList();
         if(  aPeriods.size() == 0 ){

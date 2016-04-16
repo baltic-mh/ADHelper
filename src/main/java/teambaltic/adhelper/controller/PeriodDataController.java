@@ -47,6 +47,11 @@ public class PeriodDataController implements IPeriodDataController
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private final String m_UploadedFileName;
+    private String getUploadedFileName(){ return m_UploadedFileName; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private final Map<IPeriod, PeriodData> m_PeriodDataMap;
     @Override
     public List<PeriodData> getPeriodDataList(){
@@ -57,10 +62,14 @@ public class PeriodDataController implements IPeriodDataController
     public PeriodData getPeriodData( final IPeriod fPeriod ){ return m_PeriodDataMap.get( fPeriod );}
     // ------------------------------------------------------------------------
 
-    public PeriodDataController( final Path fRootFolder, final String fFinishedFileName)
+    public PeriodDataController(
+            final Path fRootFolder,
+            final String fFinishedFileName,
+            final String fUploadedFileName)
     {
         m_RootFolder = fRootFolder;
         m_FinishedFileName = fFinishedFileName;
+        m_UploadedFileName = fUploadedFileName;
         m_PeriodDataMap = new HashMap<>();
     }
 
@@ -92,23 +101,37 @@ public class PeriodDataController implements IPeriodDataController
     }
 
     @Override
-    public boolean isFinished( final PeriodData fPeriodData )
+    public boolean isFinished( final IPeriod fPeriod )
     {
-        return isFinished( fPeriodData.getFolder() );
+        final PeriodData aPD = getPeriodData( fPeriod );
+        return isFinished( aPD );
     }
 
     @Override
-    public boolean isFinished( final IPeriod fPeriod )
+    public boolean isFinished( final PeriodData fPeriodData )
     {
-        final Path aFolder = getFolder( fPeriod );
-        return isFinished( aFolder );
+        final String aFinishedFileName = getFinishedFileName();
+        return exists( fPeriodData.getFolder(), aFinishedFileName );
     }
 
-    private boolean isFinished( final Path fFolder )
+    @Override
+    public boolean isUploaded( final IPeriod fPeriod )
     {
-        final Path aFinishedFile = fFolder.resolve( getFinishedFileName() );
-        final boolean aFinishedFileExists = Files.exists( aFinishedFile );
-        return aFinishedFileExists;
+        final PeriodData aPD = getPeriodData( fPeriod );
+        return isUploaded( aPD );
+    }
+
+    @Override
+    public boolean isUploaded( final PeriodData fPeriodData )
+    {
+        return exists( fPeriodData.getFolder(), getUploadedFileName() );
+    }
+
+    private static boolean exists( final Path fFolder, final String aFileName )
+    {
+        final Path aFile = fFolder.resolve( aFileName );
+        final boolean aFileExists = Files.exists( aFile );
+        return aFileExists;
     }
 
     public Path getFolder( final IPeriod fPeriod )

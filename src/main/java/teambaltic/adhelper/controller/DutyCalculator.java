@@ -35,8 +35,8 @@ public class DutyCalculator
 //    private static final Logger sm_Log = Logger.getLogger(DutyCalculator.class);
 
     // ------------------------------------------------------------------------
-    private final IPeriod m_InvoicingPeriod;
-    public IPeriod getInvoicingPeriod(){ return m_InvoicingPeriod; }
+    private final IPeriod m_Period;
+    public IPeriod getPeriod(){ return m_Period; }
     // ------------------------------------------------------------------------
 
     private final IClubSettings m_ClubSettings;
@@ -46,16 +46,16 @@ public class DutyCalculator
             final IPeriod fInvoicingPeriod,
             final IClubSettings fClubSettings)
     {
-        m_InvoicingPeriod   = fInvoicingPeriod;
+        m_Period   = fInvoicingPeriod;
         m_ClubSettings      = fClubSettings;
     }
 
     public int calculateHoursToWork( final Collection<FreeFromDuty> fFFDItems )
     {
         if( fFFDItems == null ){
-            return getClubSettings().getDutyHoursPerInvoicePeriod();
+            return getClubSettings().getDutyHoursPerPeriod();
         }
-        final IPeriod aIP = getInvoicingPeriod();
+        final IPeriod aIP = getPeriod();
         final Collection<FreeFromDuty> aEffectiveFFDs = getEffectiveFreeFromDutyItems( aIP, fFFDItems );
         final List<Month> aMonthsDue = getMonthsDue( aIP, aEffectiveFFDs );
         final int aNumMonthsDue = aMonthsDue.size();
@@ -65,7 +65,7 @@ public class DutyCalculator
 
         final Period aPeriod = Period.between( aIP.getStart(), aIP.getEnd() );
         final int aMonthsInInvoicingPeriod = aPeriod.getMonths()+1;
-        final int aHoursToWork = getClubSettings().getDutyHoursPerInvoicePeriod() *
+        final int aHoursToWork = getClubSettings().getDutyHoursPerPeriod() *
                 aNumMonthsDue / aMonthsInInvoicingPeriod;
         return aHoursToWork;
     }

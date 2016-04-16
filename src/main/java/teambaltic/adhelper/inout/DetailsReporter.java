@@ -47,7 +47,7 @@ public class DetailsReporter
             final Path fOutputFolder,
             final boolean fOnlyPayers )
     {
-        final IPeriod aInvoicingPeriod = fDataProvider.getInvoicingPeriod();
+        final IPeriod aInvoicingPeriod = fDataProvider.getPeriod();
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Details.txt", "ISO-8859-1");
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){

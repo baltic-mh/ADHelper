@@ -36,21 +36,21 @@ public class ChargeCalculator
     public DutyCalculator getDutyCalculator(){ return m_DutyCalculator; }
     // ------------------------------------------------------------------------
 
-    public ChargeCalculator(final IPeriod fInvoicingPeriod, final IClubSettings fClubSettings)
+    public ChargeCalculator(final IPeriod fPeriod, final IClubSettings fClubSettings)
     {
-        m_DutyCalculator = new DutyCalculator( fInvoicingPeriod, fClubSettings );
+        m_DutyCalculator = new DutyCalculator( fPeriod, fClubSettings );
     }
 
-    public IPeriod getInvoicingPeriod()
+    public IPeriod getPeriod()
     {
-        return getDutyCalculator().getInvoicingPeriod();
+        return getDutyCalculator().getPeriod();
     }
 
     public DutyCharge calculate(final InfoForSingleMember fMemberInfo)
     {
         final WorkEventsAttended aWEA = fMemberInfo.getWorkEventsAttended();
-        final IPeriod aInvoicingPeriod = getDutyCalculator().getInvoicingPeriod();
-        final int aHoursWorked = aWEA == null ? 0 : aWEA.getTotalHoursWorked( aInvoicingPeriod );
+        final IPeriod aPeriod = getDutyCalculator().getPeriod();
+        final int aHoursWorked = aWEA == null ? 0 : aWEA.getTotalHoursWorked( aPeriod );
 
         final DutyCharge aCharge = fMemberInfo.getDutyCharge();
         aCharge.setHoursWorked( aHoursWorked );

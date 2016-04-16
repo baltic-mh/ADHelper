@@ -23,8 +23,8 @@ public interface IClubSettings extends ISettings<IClubSettings.EKey>
         // Anzahl der Monate, die man nach Vereinseintritt vom AD befreit ist:
         ,PROTECTION_TIME(EPropType.INTVALUE)
         // Anzahl der Monate eines Abrechnungszeitraumes
-        ,MONTHS_PER_INVOICEPERIOD(EPropType.INTVALUE)
-        ,DUTYHOURS_PER_INVOICEPERIOD(EPropType.HOURVALUE)
+        ,MONTHS_PER_PERIOD(EPropType.INTVALUE)
+        ,DUTYHOURS_PER_PERIOD(EPropType.HOURVALUE)
         ;
 
         // --------------------------------------------------------------------
@@ -43,8 +43,8 @@ public interface IClubSettings extends ISettings<IClubSettings.EKey>
     int getMinAgeForDuty();
     int getMaxAgeForDuty();
     int getProtectionTime();
-    int getMonthsPerInvoicePeriod();
-    int getDutyHoursPerInvoicePeriod();
+    int getMonthsPerPeriod();
+    int getDutyHoursPerPeriod();
 }
 
 // ############################################################################

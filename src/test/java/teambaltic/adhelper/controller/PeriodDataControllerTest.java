@@ -29,7 +29,7 @@ public class PeriodDataControllerTest
     public void test_getPeriods()
     {
         final Path aRootFolder = Paths.get( "misc/TestResources/PeriodDataControllerTest" );
-        final PeriodDataController aPDC = new PeriodDataController( aRootFolder, "Abgeschlossen.txt" );
+        final PeriodDataController aPDC = new PeriodDataController( aRootFolder, "Abgeschlossen.txt", "Hochgeladen.txt" );
         aPDC.init( true );
         final List<PeriodData> aPeriods = aPDC.getPeriodDataList();
         assertEquals("Periods.size()", 3, aPeriods.size());
@@ -39,7 +39,7 @@ public class PeriodDataControllerTest
     public void test_getNewestPeriod()
     {
         final Path aRootFolder = Paths.get( "misc/TestResources/PeriodDataControllerTest" );
-        final PeriodDataController aPDC = new PeriodDataController( aRootFolder, "Abgeschlossen.txt" );
+        final PeriodDataController aPDC = new PeriodDataController( aRootFolder, "Abgeschlossen.txt", "Hochgeladen.txt" );
         aPDC.init( true );
         final PeriodData aPeriod = aPDC.getNewestPeriodData();
         assertEquals("NewestPeriods.size()", "2015-01-01 - 2015-06-30", aPeriod.toString());

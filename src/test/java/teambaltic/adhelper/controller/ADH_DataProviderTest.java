@@ -166,7 +166,7 @@ public class ADH_DataProviderTest
         final Path aBaseInfoFile  = Paths.get("misc/TestResources/Tabellen/BasisDaten.csv");
         final File aWorkEventFile = new File("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
         try{
-            final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE, null);
+            final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE);
             aChef.readBaseData( aBaseInfoFile );
             aChef.readWorkEvents( aWorkEventFile );
             return aChef;
@@ -187,7 +187,7 @@ public class ADH_DataProviderTest
         final int aID = Integer.parseInt( aIDString );
 
         final InfoForSingleMember aMemberInfo = new InfoForSingleMember(aID);
-        final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE, null);
+        final ADH_DataProvider aChef = new ADH_DataProvider(AllSettings.INSTANCE);
         aChef.add( aMemberInfo );
 
         aReader.populateInfoForSingleMember( aMemberInfo, aAttributes );

@@ -87,7 +87,7 @@ public class Exporter
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder )
     {
-        final IPeriod aIP = fDataProvider.getInvoicingPeriod();
+        final IPeriod aIP = fDataProvider.getPeriod();
         final LocalDate aToday = LocalDate.now();
         try{
             final List<WorkEvent> aAllWorkEvents = getAllWorkEvents( fDataProvider );
@@ -174,7 +174,7 @@ public class Exporter
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder)
     {
-        final IPeriod aIP = fDataProvider.getInvoicingPeriod();
+        final IPeriod aIP = fDataProvider.getPeriod();
         final String aBalanceAt = getNewBalanceDateString( aIP.getEnd() );
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", "ISO-8859-1");

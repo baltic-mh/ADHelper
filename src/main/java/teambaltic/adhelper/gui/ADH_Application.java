@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.Box;
@@ -44,13 +43,14 @@ import teambaltic.adhelper.controller.InitHelper;
 import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.listeners.FinishListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
+import teambaltic.adhelper.gui.listeners.ManageWorkEventsListener;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
+import teambaltic.adhelper.gui.listeners.PeriodDataChangedListener;
 import teambaltic.adhelper.gui.listeners.UploadListener;
 import teambaltic.adhelper.gui.listeners.UserSettingsListener;
 import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
 import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
-import teambaltic.adhelper.gui.model.InvoicingPeriodBoxModel;
-import teambaltic.adhelper.gui.model.MemberComboBoxModel;
+import teambaltic.adhelper.gui.model.CBModel_PeriodData;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.PeriodData;
@@ -79,6 +79,8 @@ public class ADH_Application
     private UserSettingsListener getUserSettingsListener(){ return m_UserSettingsListener; }
     void setUserSettingsListener( final UserSettingsListener fNewVal ){ m_UserSettingsListener = fNewVal; }
     // ------------------------------------------------------------------------
+
+    private GUIUpdater m_GUIUpdater;
 
     /**
      * Launch the application.
@@ -120,10 +122,10 @@ public class ADH_Application
                     aAppWindow.setTitle( aOffline );
                     aAppWindow.addShutdownListener( aTC );
                     final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
-                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider(aPDC);
+                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider();
 
                     aAppWindow.configure( aDataProvider );
-                    aAppWindow.populate( aDataProvider, aPDC, aTC );
+                    aAppWindow.initObjects( aDataProvider, aPDC, aTC );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
@@ -162,43 +164,36 @@ public class ADH_Application
         m_frame.setVisible( fB );
     }
 
-    private void populate(
-            final ADH_DataProvider fDataProvider,
+    private void initObjects(final ADH_DataProvider fDataProvider,
             final IPeriodDataController fPDC,
-            final ITransferController fTransferController )
+            final ITransferController fTransferController)
     {
-        final Collection<IClubMember> aAllMembers = fDataProvider.getMembers();
-        final IClubMember[] aMemberArr = new IClubMember[aAllMembers.size()] ;
-        final JComboBox<IClubMember> aCB_Members = m_panel.getCB_Members();
-        final MemberComboBoxModel aMemberModel = new MemberComboBoxModel( aAllMembers.toArray( aMemberArr ) );
-        aCB_Members.setModel( aMemberModel );
-        final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_panel, fDataProvider );
-        aCB_Members.addActionListener( aMemberSelectedListener );
+        m_GUIUpdater    = new GUIUpdater( m_panel, fDataProvider );
+        final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
 
-        final JComboBox<PeriodData> aCB_InvoicingPeriod = m_panel.getCB_InvoicingPeriod();
+        final JComboBox<PeriodData> aCB_Period = m_panel.getCB_Period();
+        final PeriodDataChangedListener aPDCL = new PeriodDataChangedListener( m_GUIUpdater, fDataProvider, fPDC );
+        aCB_Period.addItemListener( aPDCL );
+
         final List<PeriodData> aPDList = fPDC.getPeriodDataList();
+        final PeriodData aLastPeriodData = fPDC.getNewestPeriodData();
         final PeriodData[] aPeriods = new PeriodData[aPDList.size()];
-        int aIdx = 0;
-        PeriodData aLastPeriodData = null;
-        for( final PeriodData aPeriodData : aPDList ){
-            aPeriods[aIdx++] = aPeriodData;
-            aLastPeriodData = aPeriodData;
-        }
-        aCB_InvoicingPeriod.setModel( new InvoicingPeriodBoxModel( aPeriods ) );
-        aCB_InvoicingPeriod.setSelectedItem( aLastPeriodData );
+        aCB_Period.setModel( new CBModel_PeriodData( aPDList.toArray( aPeriods ) ) );
+        aCB_Period.setSelectedItem( aLastPeriodData );
+
+        final JComboBox<IClubMember> aCB_Members = m_panel.getCB_Members();
+        aCB_Members.addActionListener( aMemberSelectedListener );
 
         // WorkEventEditor
         final WorkEventEditor aWorkEventEditor = new WorkEventEditor();
-        final WorkEventEditorActionListener aWEEListener = new WorkEventEditorActionListener(aWorkEventEditor, m_panel, fDataProvider);
-
-        final JComboBox<IClubMember> aCb_Members_WEE = aWorkEventEditor.getCB_Members();
+        final WorkEventEditorActionListener aWEEListener = new WorkEventEditorActionListener(m_GUIUpdater, aWorkEventEditor, fDataProvider);
         aWorkEventEditor.setWorkEventEditorListeners(aWEEListener);
-        aCb_Members_WEE.setModel( aMemberModel );
-        aCb_Members_WEE.addActionListener( aMemberSelectedListener );
 
+        final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC);
+        m_panel.getBtn_ManageWorkEvents().addActionListener( aManageWorkEventsListener );
         // Der WorkEventEditor wird noch mal gebraucht:
         final WorkEventTableListener aWorkEventTableListener = new WorkEventTableListener(aWorkEventEditor, m_panel, fDataProvider);
-        m_panel.setWorkEventTableListener(aWorkEventTableListener);
+//        m_panel.setWorkEventTableListener(aWorkEventTableListener);
 
         final JButton aBtnFinish = m_panel.getBtnFinish();
         aBtnFinish.addActionListener( new FinishListener( m_panel, fDataProvider ) );
@@ -207,8 +202,6 @@ public class ADH_Application
         aBtnUpload.addActionListener(
                 new UploadListener( m_panel, fDataProvider, fTransferController,
                         getUserSettingsListener() ) );
-
-        GUIUpdater.updateGUI( m_panel.getSelectedMemberID(), m_panel, fDataProvider );
     }
 
     /**

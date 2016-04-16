@@ -22,8 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -31,8 +29,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 
-import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
-import teambaltic.adhelper.gui.model.WorkEventTableModel;
+import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
+import teambaltic.adhelper.gui.model.TBLModel_DutyCharge;
+import teambaltic.adhelper.gui.model.TBLModel_DutyFree;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.PeriodData;
@@ -46,6 +45,7 @@ public class MainPanel extends JPanel
     private final JTextField    m_tf_HoursToPay;
     private final JTable        m_tbl_WorkEvents;
     private final JTable        m_tbl_DutyCharges;
+    private final JTable        m_tbl_DutyFree;
 
     // ------------------------------------------------------------------------
     private final JComboBox<IClubMember> m_cmb_Members;
@@ -53,16 +53,10 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final JComboBox<PeriodData> m_cmb_InvoicingPeriod;
-    public JComboBox<PeriodData> getCB_InvoicingPeriod(){ return m_cmb_InvoicingPeriod; }
+    private final JComboBox<PeriodData> m_cmb_Period;
+    public JComboBox<PeriodData> getCB_Period(){ return m_cmb_Period; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private final JButton m_btnNew;
-    private JButton getBtnNew(){ return m_btnNew; }
-    // ------------------------------------------------------------------------
-    private final JButton m_btnDelete;
-    private JButton getBtnDelete(){ return m_btnDelete; }
     // ------------------------------------------------------------------------
     private final JButton m_btnFinish;
     public JButton getBtnFinish(){ return m_btnFinish; }
@@ -70,20 +64,45 @@ public class MainPanel extends JPanel
     private final JButton m_btnUpload;
     public JButton getBtnUpload(){ return m_btnUpload; }
     // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private final DutyChargeTableModel m_DutyChargeDataModel;
-    public DutyChargeTableModel getDutyChargeDataModel(){ return m_DutyChargeDataModel; }
+    private final JButton m_btn_ManageWorkEvents;
+    public JButton getBtn_ManageWorkEvents(){ return m_btn_ManageWorkEvents; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final WorkEventTableModel m_WorkEventDataModel;
-    public WorkEventTableModel getWorkEventDataModel(){ return m_WorkEventDataModel; }
+    private final TBLModel_DutyCharge m_DataModel_DutyCharge;
+    public TBLModel_DutyCharge getDataModel_DutyCharge(){ return m_DataModel_DutyCharge; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final TBLModel_DutyFree m_DataModel_DutyFree;
+    public TBLModel_DutyFree getDataModel_DutyFree(){ return m_DataModel_DutyFree; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final TBLModel_AttendedWorkEvent m_WorkEventDataModel;
+    public TBLModel_AttendedWorkEvent getWorkEventDataModel(){ return m_WorkEventDataModel; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final JTextField m_tf_BirthDay;
+    public JTextField getTf_BirthDay(){ return m_tf_BirthDay; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final JTextField m_tf_Eintritt;
+    public JTextField getTf_Eintritt(){ return m_tf_Eintritt; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final JTextField m_tf_Austritt;
+    public JTextField getTf_Austritt(){ return m_tf_Austritt; }
     // ------------------------------------------------------------------------
 
     public MainPanel()
     {
         setLayout(new FormLayout(new ColumnSpec[] {
+                FormSpecs.RELATED_GAP_COLSPEC,
+                ColumnSpec.decode("default:grow"),
                 FormSpecs.RELATED_GAP_COLSPEC,
                 FormSpecs.DEFAULT_COLSPEC,
                 FormSpecs.RELATED_GAP_COLSPEC,
@@ -91,7 +110,13 @@ public class MainPanel extends JPanel
                 FormSpecs.RELATED_GAP_COLSPEC,
                 FormSpecs.DEFAULT_COLSPEC,
                 FormSpecs.RELATED_GAP_COLSPEC,
+                ColumnSpec.decode("default:grow"),
+                FormSpecs.RELATED_GAP_COLSPEC,
                 FormSpecs.DEFAULT_COLSPEC,
+                FormSpecs.RELATED_GAP_COLSPEC,
+                ColumnSpec.decode("default:grow"),
+                FormSpecs.RELATED_GAP_COLSPEC,
+                ColumnSpec.decode("default:grow"),
                 FormSpecs.RELATED_GAP_COLSPEC,
                 FormSpecs.DEFAULT_COLSPEC,
                 FormSpecs.RELATED_GAP_COLSPEC,
@@ -103,31 +128,77 @@ public class MainPanel extends JPanel
                 FormSpecs.RELATED_GAP_ROWSPEC,
                 FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,
-                RowSpec.decode("max(58dlu;default)"),
+                FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,
-                RowSpec.decode("max(55dlu;default)"),
+                RowSpec.decode("default:grow"),
+                FormSpecs.RELATED_GAP_ROWSPEC,
+                RowSpec.decode("default:grow"),
+                FormSpecs.RELATED_GAP_ROWSPEC,
+                RowSpec.decode("default:grow"),
                 FormSpecs.RELATED_GAP_ROWSPEC,
                 FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,}));
 
+        final JLabel lblPeriod = new JLabel("Zeitraum");
+        add(lblPeriod, "2, 2, right, default");
+
+        m_cmb_Period = new JComboBox<>();
+        add(m_cmb_Period, "4, 2, 17, 1, fill, default");
+
         final JLabel lblMitglied = new JLabel("Mitglied");
-        add(lblMitglied, "2, 2, right, default");
+        add(lblMitglied, "2, 4, right, default");
 
         m_cmb_Members = new JComboBox<>();
-        add(getCB_Members(), "4, 2, 9, 1, fill, default");
+        add(getCB_Members(), "4, 4, 17, 1, fill, default");
 
         final JComboBox<IClubMember> aCb_Members = getCB_Members();
         UIUtils.setItemStartsWithSelector( aCb_Members );
 
-        final JLabel lblAbrechnungszeitraum = new JLabel("Abrechnungszeitraum");
-        add(lblAbrechnungszeitraum, "2, 4, right, default");
+        final JLabel aLBL_Birthday = new JLabel("Geb.Datum");
+        add(aLBL_Birthday, "4, 6, right, default");
 
-        m_cmb_InvoicingPeriod = new JComboBox<>();
-        add(m_cmb_InvoicingPeriod, "4, 4, 9, 1, fill, default");
+        m_tf_BirthDay = new JTextField();
+        add(m_tf_BirthDay, "6, 6, fill, default");
+        m_tf_BirthDay.setColumns(10);
+
+        final JLabel aLBL_Eintritt = new JLabel("Eintritt");
+        add(aLBL_Eintritt, "8, 6, right, default");
+
+        m_tf_Eintritt = new JTextField();
+        add(m_tf_Eintritt, "10, 6, fill, default");
+        m_tf_Eintritt.setColumns(10);
+
+        final JLabel aLBL_Austritt = new JLabel("Austritt");
+        add(aLBL_Austritt, "12, 6, right, default");
+
+        m_tf_Austritt = new JTextField();
+        add(m_tf_Austritt, "14, 6, fill, default");
+        m_tf_Austritt.setColumns(10);
+
+        final JPanel aPnl_DutyFree = new JPanel();
+        aPnl_DutyFree.setBorder(new TitledBorder(null, "AD-Befreiungen", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        add(aPnl_DutyFree, "2, 8, 19, 1, fill, fill");
+        aPnl_DutyFree.setLayout(new FormLayout(new ColumnSpec[] {
+                ColumnSpec.decode("426px:grow"),
+                ColumnSpec.decode("2px"),},
+                new RowSpec[] {
+                        FormSpecs.RELATED_GAP_ROWSPEC,
+                        RowSpec.decode("default:grow"),
+                        FormSpecs.RELATED_GAP_ROWSPEC,
+                        FormSpecs.DEFAULT_ROWSPEC,}));
+
+        final JScrollPane aScrP_DutyFree = new JScrollPane();
+        aPnl_DutyFree.add(aScrP_DutyFree, "1, 2, fill, fill");
+
+        m_tbl_DutyFree = new JTable();
+        aScrP_DutyFree.setViewportView(m_tbl_DutyFree);
+
+        m_DataModel_DutyFree = new TBLModel_DutyFree();
+        m_tbl_DutyFree.setModel(m_DataModel_DutyFree);
 
         final JPanel m_pnl_Accountings = new JPanel();
         m_pnl_Accountings.setBorder(new TitledBorder(null, "Abrechnungen", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        add(m_pnl_Accountings, "2, 6, 11, 1, fill, fill");
+        add(m_pnl_Accountings, "2, 12, 19, 1, fill, fill");
         m_pnl_Accountings.setLayout(new FormLayout(new ColumnSpec[] {
                 FormSpecs.RELATED_GAP_COLSPEC,
                 ColumnSpec.decode("default:grow"),
@@ -148,8 +219,8 @@ public class MainPanel extends JPanel
 
         m_tbl_DutyCharges = new JTable();
         ((JLabel)m_tbl_DutyCharges.getDefaultRenderer(String.class)).setHorizontalAlignment (JLabel.RIGHT);
-        m_DutyChargeDataModel = new DutyChargeTableModel();
-        m_tbl_DutyCharges.setModel(m_DutyChargeDataModel);
+        m_DataModel_DutyCharge = new TBLModel_DutyCharge();
+        m_tbl_DutyCharges.setModel(m_DataModel_DutyCharge);
         m_tbl_DutyCharges.setFillsViewportHeight(true);
         scrollPane_1.setViewportView(m_tbl_DutyCharges);
 
@@ -162,7 +233,7 @@ public class MainPanel extends JPanel
 
         final JPanel m_pnl_WorkEvents = new JPanel();
         m_pnl_WorkEvents.setBorder(new TitledBorder(null, "Arbeitsdienste", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        add(m_pnl_WorkEvents, "2, 8, 11, 1, fill, fill");
+        add(m_pnl_WorkEvents, "2, 10, 19, 1, fill, fill");
         m_pnl_WorkEvents.setLayout(new FormLayout(new ColumnSpec[] {
                 FormSpecs.RELATED_GAP_COLSPEC,
                 ColumnSpec.decode("default:grow"),
@@ -186,34 +257,22 @@ public class MainPanel extends JPanel
 
         m_tbl_WorkEvents = new JTable();
         ((JLabel)m_tbl_WorkEvents.getDefaultRenderer(String.class)).setHorizontalAlignment (JLabel.RIGHT);
-        m_WorkEventDataModel = new WorkEventTableModel();
+        m_WorkEventDataModel = new TBLModel_AttendedWorkEvent();
         m_tbl_WorkEvents.setModel(m_WorkEventDataModel);
 
         m_tbl_WorkEvents.setFillsViewportHeight(true);
         scrollPane.setViewportView(m_tbl_WorkEvents);
-        m_tbl_WorkEvents.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent event) {
-                final int aSelectedRow = m_tbl_WorkEvents.getSelectedRow();
-                final boolean aEnable = aSelectedRow >= 0 && m_tbl_WorkEvents.getValueAt(aSelectedRow, 4) == null;
-                m_btnDelete.setEnabled( aEnable );
-            }
-        });
-        m_btnDelete = new JButton("Entfernen");
-        m_btnDelete.setActionCommand( "Delete" );
-        m_btnDelete.setEnabled( false );
-        m_pnl_WorkEvents.add(m_btnDelete, "8, 4");
 
-        m_btnNew = new JButton("Neu");
-        m_btnNew.setActionCommand( "New" );
-        m_pnl_WorkEvents.add(m_btnNew, "10, 4");
+        m_btn_ManageWorkEvents = new JButton("Arbeitsdienste...");
+        m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
+        add(m_btn_ManageWorkEvents, "14, 14");
 
-        m_btnUpload = new JButton("Hochladen...");
-        add(m_btnUpload, "10, 10");
+        m_btnFinish = new JButton("Zeitraum abschlieﬂen");
+        m_btnFinish.setActionCommand( "Zeitraum abschlieﬂen" );
+        add(m_btnFinish, "16, 14");
 
-        m_btnFinish = new JButton("Abrechnung abschlieﬂen");
-        m_btnFinish.setActionCommand( "Abrechnung abschlieﬂen" );
-        add(m_btnFinish, "12, 10");
+        m_btnUpload = new JButton("Daten hochladen...");
+        add(m_btnUpload, "20, 14");
 
     }
 
@@ -222,11 +281,9 @@ public class MainPanel extends JPanel
         m_tf_HoursToPay.setText( String.valueOf( fF ) );
     }
 
-    public void setWorkEventTableListener( final WorkEventTableListener fWorkEventTableListener )
-    {
-        getBtnNew().addActionListener(fWorkEventTableListener);
-        getBtnDelete().addActionListener(fWorkEventTableListener);
-    }
+//    public void setWorkEventTableListener( final WorkEventTableListener fWorkEventTableListener )
+//    {
+//    }
 
     public boolean removeSelectedWorkEventRow()
     {
@@ -280,7 +337,6 @@ public class MainPanel extends JPanel
     public void setFinished()
     {
         m_btnFinish.setEnabled( false );
-        m_btnNew.setEnabled( false );
     }
 
     public void setUploaded( final boolean fEverythingUploaded )
@@ -297,7 +353,6 @@ public class MainPanel extends JPanel
 
             case MITGLIEDERWART:
                 m_btnUpload.setEnabled( true );
-                m_btnNew.setEnabled( false );
                 m_btnFinish.setEnabled( false );
                 break;
 

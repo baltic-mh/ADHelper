@@ -73,27 +73,22 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final IPeriodDataController m_PDC;
-    private IPeriodDataController getPDC(){ return m_PDC; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
     private ChargeCalculator m_ChargeCalculator;
     public void setChargeCalculator( final ChargeCalculator fNewVal ){ m_ChargeCalculator = fNewVal; }
     public ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
-    public IPeriod getInvoicingPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getInvoicingPeriod();}
+    public IPeriod getPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getPeriod();}
     // ------------------------------------------------------------------------
 
-    public ADH_DataProvider(final IAllSettings fSettings, final IPeriodDataController fPDC) throws Exception
+    public ADH_DataProvider(final IAllSettings fSettings ) throws Exception
     {
         m_AllSettings = fSettings;
-        m_PDC = fPDC;
         final IUserSettings aUserSettings = m_AllSettings.getUserSettings();
         m_UserInfo = aUserSettings.getDecoratedEMail();
     }
 
-    public void init(final PeriodData fPeriodData) throws Exception
+    public void init(final PeriodData fPeriodData, final boolean fIsFinished) throws Exception
     {
+        sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
         final IPeriod aPeriod = fPeriodData.getPeriod();
         m_ChargeCalculator = createChargeCalculator( aPeriod );
 
@@ -103,9 +98,8 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         final Path aPeriodDataFolder = fPeriodData.getFolder();
         // Das WorkEventFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
         readWorkEvents( aPeriodDataFolder.resolve( aAppSettings.getFileName_WorkEvents() ).toFile() );
-        final boolean aIsFinished = getPDC().isFinished( fPeriodData );
         // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readBalances( aPeriodDataFolder.resolve( aAppSettings.getFileName_Balances() ), !aIsFinished );
+        readBalances( aPeriodDataFolder.resolve( aAppSettings.getFileName_Balances() ), !fIsFinished );
 
         populateFreeFromDutySets( aPeriod );
         joinRelatives();
@@ -253,7 +247,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     public Path getOutputFolder()
     {
-        return getOutputFolder( getInvoicingPeriod() );
+        return getOutputFolder( getPeriod() );
     }
 
     private Path getOutputFolder( final IPeriod fInvoicingPeriod )

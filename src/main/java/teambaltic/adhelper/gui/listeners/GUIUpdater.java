@@ -11,38 +11,89 @@
 // ############################################################################
 package teambaltic.adhelper.gui.listeners;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+
 import teambaltic.adhelper.controller.ADH_DataProvider;
-import teambaltic.adhelper.gui.DutyChargeTableModel;
 import teambaltic.adhelper.gui.MainPanel;
-import teambaltic.adhelper.gui.model.WorkEventTableModel;
+import teambaltic.adhelper.gui.model.CBModel_Member;
+import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
+import teambaltic.adhelper.gui.model.TBLModel_DutyCharge;
+import teambaltic.adhelper.gui.model.TBLModel_DutyFree;
 import teambaltic.adhelper.model.DutyCharge;
+import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDutySet;
+import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
 
 // ############################################################################
-public final class GUIUpdater
+public class GUIUpdater
 {
-    private GUIUpdater(){/**/}
+//    private static final Logger sm_Log = Logger.getLogger(GUIUpdater.class);
 
-    public static void updateGUI( final int fMemberID,
-            final MainPanel fPanel, final ADH_DataProvider fDataProvider )
+    private final MainPanel m_Panel;
+    private final ADH_DataProvider m_DataProvider;
+
+    public GUIUpdater(
+            final MainPanel fPanel,
+            final ADH_DataProvider fDataProvider )
     {
-        fillDutyChargePanel( fMemberID, fPanel, fDataProvider );
-        fillWorkEventPanel( fMemberID, fPanel, fDataProvider );
+        m_Panel = fPanel;
+        m_DataProvider = fDataProvider;
     }
 
-    private static void fillWorkEventPanel(final int fMemberID,
+    public void updateGUI( final boolean fPeriodChanged )
+    {
+        if( fPeriodChanged ){
+            // Erhalten des ehemals selektierten Mitglieds:
+            final IClubMember aSelectedMember = m_Panel.getSelectedMember();
+            final JComboBox<IClubMember> aCB_Members = m_Panel.getCB_Members();
+            final List<IClubMember> aAllMembers = m_DataProvider.getMembers();
+            final IClubMember[] aMemberArray = new IClubMember[ aAllMembers.size() ];
+            final CBModel_Member aMemberCBModel = new CBModel_Member( aAllMembers.toArray( aMemberArray ) );
+            aCB_Members.setModel( aMemberCBModel );
+            if( aSelectedMember != null ){
+                // Ehemals selektiertes Mitglied wird wieder selektiert:
+                aMemberCBModel.setSelectedItem( m_DataProvider.getMember( aSelectedMember.getID() ) );
+            }
+        }
+        final int aMemberID = m_Panel.getSelectedMemberID();
+        final InfoForSingleMember aInfoForSingleMember = m_DataProvider.get( aMemberID );
+        fill_Birthday_Eintritt_Austritt(aInfoForSingleMember, m_Panel);
+        final TBLModel_DutyFree aDM_DutyFree = m_Panel.getDataModel_DutyFree();
+        fillPanel_DutyFree  ( aDM_DutyFree, aInfoForSingleMember, m_Panel, m_DataProvider );
+        final TBLModel_DutyCharge aDM_DutyChargs = m_Panel.getDataModel_DutyCharge();
+        fillPanel_DutyCharge( aDM_DutyChargs, aInfoForSingleMember, m_Panel, m_DataProvider );
+        final TBLModel_AttendedWorkEvent aDM_WorkEvents = m_Panel.getWorkEventDataModel();
+        fillPanel_WorkEvent ( aDM_WorkEvents, aInfoForSingleMember, m_Panel, m_DataProvider );
+    }
+
+    private void fill_Birthday_Eintritt_Austritt( final InfoForSingleMember fInfoForSingleMember, final MainPanel fPanel )
+    {
+        final IClubMember aMember = fInfoForSingleMember.getMember();
+        final JTextField aTF_Birthday = m_Panel.getTf_BirthDay();
+        aTF_Birthday.setText( aMember.getBirthday().toString() );
+        final JTextField aTF_Eintritt = m_Panel.getTf_Eintritt();
+        aTF_Eintritt.setText( aMember.getMemberFrom().toString() );
+        final JTextField aTF_Austritt = m_Panel.getTf_Austritt();
+        aTF_Austritt.setText( aMember.getMemberUntil().toString() );
+    }
+
+    private static void fillPanel_WorkEvent(
+            final TBLModel_AttendedWorkEvent fDataModel,
+            final InfoForSingleMember fInfoForSingleMember,
             final MainPanel fPanel, final ADH_DataProvider fDataProvider )
     {
-        final WorkEventTableModel aDataModel = fPanel.getWorkEventDataModel();
-        aDataModel.setRowCount( 0 );
-
-        final InfoForSingleMember aInfoForSingleMember = fDataProvider.get( fMemberID );
-        final WorkEventsAttended aWorkEventsAttended = aInfoForSingleMember.getWorkEventsAttended();
+        fDataModel.setRowCount( 0 );
+        final WorkEventsAttended aWorkEventsAttended = fInfoForSingleMember.getWorkEventsAttended();
         if( aWorkEventsAttended == null ){
             return;
         }
@@ -51,12 +102,12 @@ public final class GUIUpdater
         for( final WorkEventsAttended aThisWorkEventsAttended : aAllWorkEventsAttended ){
             final int aMemberID = aThisWorkEventsAttended.getMemberID();
             final String aMemberName = fDataProvider.getMemberName( aMemberID );
-            addWorkEventsForSingleMember( aDataModel, aMemberName, aMemberID, aThisWorkEventsAttended );
+            addWorkEventsForSingleMember( fDataModel, aMemberName, aMemberID, aThisWorkEventsAttended );
         }
     }
 
     private static void addWorkEventsForSingleMember(
-            final WorkEventTableModel fDataModel,
+            final TBLModel_AttendedWorkEvent fDataModel,
             final String fMemberName,
             final int    fMemberID,
             final WorkEventsAttended fWorkEventsAttended )
@@ -67,7 +118,7 @@ public final class GUIUpdater
     }
 
     private static void addWorkEventRow(
-            final WorkEventTableModel fDataModel,
+            final TBLModel_AttendedWorkEvent fDataModel,
             final String fMemberName,
             final int    fMemberID,
             final WorkEvent fWorkEvent )
@@ -81,23 +132,51 @@ public final class GUIUpdater
         fDataModel.addRow( rowData );
     }
 
-    private static void fillDutyChargePanel(final int fMemberID,
+    private static void fillPanel_DutyFree(final TBLModel_DutyFree fDataModel,
+            final InfoForSingleMember fInfoForSingleMember,
             final MainPanel fPanel, final ADH_DataProvider fDataProvider )
     {
-        final DutyChargeTableModel aDataModel = fPanel.getDutyChargeDataModel();
-        aDataModel.setRowCount( 0 );
-        final InfoForSingleMember aInfoForSingleMember = fDataProvider.get( fMemberID );
-        final DutyCharge aDutyChargeOfPayer = aInfoForSingleMember.getDutyCharge();
+        fDataModel.setRowCount( 0 );
+        final FreeFromDutySet aFreeFromDutySet = fInfoForSingleMember.getFreeFromDutySet();
+        final Collection<FreeFromDuty> aFreeFromDutyItems = aFreeFromDutySet.getFreeFromDutyItems();
+        final IPeriod aPeriod = fDataProvider.getPeriod();
+        for( final FreeFromDuty aFreeFromDuty : aFreeFromDutyItems ){
+            addRow_DutyFree( fDataModel, aFreeFromDuty, aPeriod );
+        }
+    }
+
+    private static void addRow_DutyFree(
+            final TBLModel_DutyFree fDataModel,
+            final FreeFromDuty fFreeFromDuty,
+            final IPeriod fPeriod )
+    {
+        if( !fPeriod.isWithinMyPeriod( fFreeFromDuty ) ){
+            return;
+        }
+        final Vector<Object> rowData = new Vector<>();
+        final LocalDate aFrom = fFreeFromDuty.getFrom();
+        rowData.addElement( fFreeFromDuty.getReason() );
+        rowData.addElement( aFrom );
+        rowData.addElement( fFreeFromDuty.getUntil() );
+        fDataModel.addRow( rowData );
+    }
+
+    private static void fillPanel_DutyCharge(final TBLModel_DutyCharge fDataModel,
+            final InfoForSingleMember fInfoForSingleMember,
+            final MainPanel fPanel, final ADH_DataProvider fDataProvider )
+    {
+        fDataModel.setRowCount( 0 );
+        final DutyCharge aDutyChargeOfPayer = fInfoForSingleMember.getDutyCharge();
         final List<DutyCharge> aAllDutyCharges = aDutyChargeOfPayer.getAllDutyCharges();
         for( final DutyCharge aDutyCharge : aAllDutyCharges ){
             final String aMemberName = fDataProvider.getMemberName( aDutyCharge.getMemberID() );
-            addDutyChargeRow( aDataModel, aMemberName, aDutyCharge );
+            addRow_DutyCharge( fDataModel, aMemberName, aDutyCharge );
         }
         fPanel.setTotalHoursToPay( aDutyChargeOfPayer.getHoursToPayTotal() / 100.0f );
     }
 
-    private static void addDutyChargeRow(
-            final DutyChargeTableModel fDataModel,
+    private static void addRow_DutyCharge(
+            final TBLModel_DutyCharge fDataModel,
             final String fMemberName,
             final DutyCharge fDutyCharge )
     {

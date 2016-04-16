@@ -1,5 +1,5 @@
 /**
- * WorkEventTableModel.java
+ * TBLModel_AttendedWorkEvent.java
  *
  * Created on 11.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -14,11 +14,11 @@ package teambaltic.adhelper.gui.model;
 import javax.swing.table.DefaultTableModel;
 
 // ############################################################################
-public class WorkEventTableModel extends DefaultTableModel
+public class TBLModel_AttendedWorkEvent extends DefaultTableModel
 {
     private static final long serialVersionUID = -3057350695228513850L;
 
-    public WorkEventTableModel()
+    public TBLModel_AttendedWorkEvent()
     {
         super( null,
                 new String[] {

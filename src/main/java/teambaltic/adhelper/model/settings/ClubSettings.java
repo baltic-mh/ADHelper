@@ -45,15 +45,15 @@ public class ClubSettings extends ASettings<IClubSettings.EKey>
     }
 
     @Override
-    public int getMonthsPerInvoicePeriod()
+    public int getMonthsPerPeriod()
     {
-        return getIntValue( EKey.MONTHS_PER_INVOICEPERIOD );
+        return getIntValue( EKey.MONTHS_PER_PERIOD );
     }
 
     @Override
-    public int getDutyHoursPerInvoicePeriod()
+    public int getDutyHoursPerPeriod()
     {
-        return getHourValue( EKey.DUTYHOURS_PER_INVOICEPERIOD );
+        return getHourValue( EKey.DUTYHOURS_PER_PERIOD );
     }
 
 }

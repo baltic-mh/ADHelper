@@ -74,16 +74,18 @@ public class InitHelper
         return aSW;
     }
 
-    public ADH_DataProvider initDataProvider(final IPeriodDataController fDFC) throws Exception
+    public ADH_DataProvider initDataProvider() throws Exception
     {
-        final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE, fDFC);
-        aDataProvider.init( fDFC.getNewestPeriodData() );
+        final ADH_DataProvider aDataProvider = new ADH_DataProvider(AllSettings.INSTANCE);
         return aDataProvider;
     }
 
     public IPeriodDataController initPeriodDataController()
     {
-        final PeriodDataController aPDC = new PeriodDataController(getAppSettings().getFolder_Data(), getAppSettings().getFileName_Finished());
+        final PeriodDataController aPDC = new PeriodDataController(
+                getAppSettings().getFolder_Data(),
+                getAppSettings().getFileName_Finished(),
+                getAppSettings().getFileName_Uploaded());
         aPDC.init( true );
         return aPDC;
 

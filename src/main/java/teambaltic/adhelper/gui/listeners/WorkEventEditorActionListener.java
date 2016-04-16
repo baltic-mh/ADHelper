@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
-import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.gui.WorkEventEditor;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
@@ -25,16 +24,17 @@ import teambaltic.adhelper.model.WorkEventsAttended;
 public final class WorkEventEditorActionListener implements ActionListener
 {
     private final WorkEventEditor m_WorkEventEditor;
-    private final MainPanel m_Panel;
     private final ADH_DataProvider m_DataProvider;
 
+    private final GUIUpdater m_GUIUpdater;
+
     public WorkEventEditorActionListener(
+            final GUIUpdater fGUIUpdater,
             final WorkEventEditor fWorkEventEditor,
-            final MainPanel fPanel,
             final ADH_DataProvider fDataProvider)
     {
+        m_GUIUpdater = fGUIUpdater;
         m_WorkEventEditor = fWorkEventEditor;
-        m_Panel = fPanel;
         m_DataProvider = fDataProvider;
     }
 
@@ -86,7 +86,7 @@ public final class WorkEventEditorActionListener implements ActionListener
         aWorkEventsAttended.addWorkEvent( aWorkEvent );
         m_DataProvider.exportWorkEvents();
         m_WorkEventEditor.reset();
-        GUIUpdater.updateGUI( aMemberID, m_Panel, m_DataProvider );
+        m_GUIUpdater.updateGUI( false );
     }
 }
 // ############################################################################

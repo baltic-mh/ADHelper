@@ -26,6 +26,9 @@ public interface IPeriodDataController
 
     boolean isFinished( IPeriod fPeriod );
     boolean isFinished( PeriodData fPeriodData );
+
+    boolean isUploaded( IPeriod fPeriod );
+    boolean isUploaded( PeriodData fPeriodData );
 }
 
 // ############################################################################
