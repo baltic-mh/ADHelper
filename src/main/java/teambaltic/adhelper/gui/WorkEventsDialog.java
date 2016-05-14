@@ -61,6 +61,7 @@ public class WorkEventsDialog extends JDialog
      */
     public WorkEventsDialog()
     {
+        setTitle("Arbeitsdienste");
         m_contentPanel = new WorkEventsPanel();
         setDefaultCloseOperation( JDialog.HIDE_ON_CLOSE );
         setBounds( 100, 100, 550, 910 );
