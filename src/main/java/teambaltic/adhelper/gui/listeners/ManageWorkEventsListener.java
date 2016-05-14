@@ -131,6 +131,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
         final String aActionCommand = fEvent.getActionCommand();
         final JComboBox<LocalDate> aCmb_Date = getCmb_Date();
         final JComboBox<PeriodData> aCmb_Period = getCmb_Period();
+        final PeriodData aSelectedPeriod = (PeriodData) aCmb_Period.getSelectedItem();
         switch( aActionCommand ){
             case "CANCEL":
                 if( isDirty() ){
@@ -171,14 +172,13 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
             case "DATESELECTED":
                 final LocalDate aSelectedDate = (LocalDate) aCmb_Date.getSelectedItem();
                 final Object[][] aWorkEventData = getWorkEventData( aSelectedDate, getDataProvider() );
-                final boolean aFinished = aSelectedDate == null ? true: getPDC().isFinished( aSelectedDate );
-                final TBLModel_WorkEvents aModel = new TBLModel_WorkEvents( aWorkEventData, aFinished );
+                final boolean aReadOnly = isReadOnly( aSelectedPeriod, aSelectedDate );
+                final TBLModel_WorkEvents aModel = new TBLModel_WorkEvents( aWorkEventData, aReadOnly );
                 aModel.addTableModelListener( this );
                 getWorkEventsPanel().populate( aModel );
                 break;
 
             case "PERIODSELECTED":
-                final PeriodData aSelectedPeriod = (PeriodData) aCmb_Period.getSelectedItem();
                 populateCmbDates( aCmb_Date, aSelectedPeriod.getPeriod() );
                 break;
 
@@ -191,6 +191,15 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
                 break;
         }
 
+    }
+
+    private boolean isReadOnly( final PeriodData fSelectedPeriod, final LocalDate fSelectedDate )
+    {
+        if( ALLPERIODS == fSelectedPeriod ){
+            return getPDC().isActivePeriodFinished();
+        }
+        final boolean aReadOnly = fSelectedDate == null ? true: getPDC().isFinished( fSelectedDate );
+        return aReadOnly;
     }
 
     private static void populateCmbPeriods(
