@@ -13,7 +13,6 @@ package teambaltic.adhelper.gui.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
@@ -21,6 +20,7 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.gui.MainPanel;
 
 // ############################################################################
@@ -31,18 +31,22 @@ public class FinishListener implements ActionListener
     private final MainPanel         m_Panel;
     private final ADH_DataProvider  m_DataProvider;
 
+    private final IPeriodDataController m_PDC;
+
     public FinishListener(
             final MainPanel fPanel,
+            final IPeriodDataController fPDC,
             final ADH_DataProvider fDataProvider)
     {
         m_Panel = fPanel;
+        m_PDC   = fPDC;
         m_DataProvider = fDataProvider;
     }
 
     @Override
     public void actionPerformed( final ActionEvent fEvent )
     {
-        if( m_DataProvider.isOutputFinished() ){
+        if( m_PDC.isFinished( m_DataProvider.getPeriodData() ) ){
             final Object[] options = {"Ich weiß, was ich tue!", "Nein, das war ein Versehen!"};
             final int n = JOptionPane.showOptionDialog(null,
                 "Dieser Abrechnungszeitraum ist bereits abgeschlossen! Sollen die Daten überschrieben werden??",
@@ -61,10 +65,10 @@ public class FinishListener implements ActionListener
         }
 
         try{
-            m_DataProvider.export( true );
-            m_Panel.setFinished();
-            final File[] aNotUploadedFolders = m_DataProvider.getNotUploadedFolders();
-            m_Panel.setUploaded( aNotUploadedFolders.length == 0 );
+            m_DataProvider.writeToFiles();
+            m_PDC.setActivePeriodToFinished();
+            m_Panel.enableBtn_Finish( false );
+            m_Panel.enableBtn_Upload( true );
         }catch( final IOException fEx ){
             final String aMsg = "Probleme beim Export der Daten: "+fEx.getMessage();
             JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",

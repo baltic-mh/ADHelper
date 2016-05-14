@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import teambaltic.adhelper.controller.IPeriodDataController.EPeriodDataSelector;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
@@ -27,6 +28,8 @@ import teambaltic.adhelper.utils.FileUtils;
 // ############################################################################
 public final class IntegrityChecker
 {
+    private static final EPeriodDataSelector ALL = EPeriodDataSelector.ALL;
+
     private static final List<String> REQUIREDCOLUMNNAMES = new ArrayList<>();
     static{
         REQUIREDCOLUMNNAMES.add( IKnownColumns.AD_FREE_FROM );
@@ -65,15 +68,13 @@ public final class IntegrityChecker
     {
         final IAppSettings aAppSettings = fAllSettings.getAppSettings();
         final Path aDataFolder = aAppSettings.getFolder_Data();
-        final Path aFile_BaseData = aAppSettings.getFile_BaseData();
+        final Path aFile_BaseData = aAppSettings.getFile_RootBaseData();
         if( !Files.exists( aFile_BaseData ) ){
             throw new Exception( "Benötigte Datei nicht gefunden: " + aFile_BaseData.toString() );
         }
-        final String aFinishedFileName = aAppSettings.getFileName_Finished();
-        final String aUploadedFileName = aAppSettings.getFileName_Uploaded();
-        final PeriodDataController aIPCtrlr = new PeriodDataController( aDataFolder, aFinishedFileName, aUploadedFileName  );
-        aIPCtrlr.init( false );
-        final List<PeriodData> aPeriods = aIPCtrlr.getPeriodDataList();
+        final PeriodDataController aIPCtrlr = new PeriodDataController( aAppSettings, null );
+        aIPCtrlr.init();
+        final List<PeriodData> aPeriods = aIPCtrlr.getPeriodDataList( ALL );
         if(  aPeriods.size() == 0 ){
             throw new Exception(
                     "Keine Unterverzeichnisse mit Abrechnungsdaten gefunden in: " + aDataFolder.toString() );

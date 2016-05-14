@@ -51,6 +51,13 @@ public class WorkEvent implements IIdentifiedItem<WorkEvent>
     {
         return getDate().compareTo( fOther.getDate() );
     }
+
+    @Override
+    public String toString()
+    {
+        final String aString = String.format("%d: %s - %5.2f", getID(), getDate().toString(), getHours()/100.0f);
+        return aString;
+    }
 }
 
 // ############################################################################

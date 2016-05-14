@@ -121,24 +121,6 @@ public final class FileUtils
         return aMap;
     }
 
-    public static File[] getFolders_NotFinished( final Path fDataFolder, final String fFileName_Finished )
-    {
-        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_NotFinished(fFileName_Finished);
-        return getChildFolders( fDataFolder, aFilter );
-    }
-
-    public static File[] getFolders_NotUploaded( final Path fDataFolder, final String fFileName_Finished, final String fFileName_Uploaded )
-    {
-        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_FinishedButNotUploaded(fFileName_Finished, fFileName_Uploaded);
-        return getChildFolders( fDataFolder, aFilter );
-    }
-
-    public static File[] getFinishedAndUploadedFolders( final Path fDataFolder, final String fFN_Finished, final String fFN_Uploaded )
-    {
-        final InvoicingPeriodFolderFilter aFilter = InvoicingPeriodFolderFilter.createFilter_FinishedAndUploaded(fFN_Finished, fFN_Uploaded);
-        return getChildFolders( fDataFolder, aFilter );
-    }
-
     public static File[] getChildFolders( final Path fParentFolder, final InvoicingPeriodFolderFilter fFilter )
     {
         final File[] aChildFolders = fParentFolder.toFile().listFiles( fFilter );
@@ -227,10 +209,30 @@ public final class FileUtils
                 }
         }
     }
+
     private static void writeHeader( final Writer fw ) throws IOException
     {
         fw.write( "#TimeStamp;TimeStamp(HR);Aktion;Info");
         fw.append( System.getProperty( "line.separator" ) );
+    }
+
+    public static void copyFileToFolder( final Path fFile, final Path fOutputFolder ) throws IOException
+    {
+        copyFileToFolder( fFile.toFile(), fOutputFolder );
+    }
+
+    public static void copyFileToFolder( final File fFile, final Path fOutputFolder ) throws IOException
+    {
+        copyFileToFolder( fFile, fOutputFolder, fFile.getName());
+    }
+
+    public static void copyFileToFolder(
+            final File fFile, final Path fTargetFolder, final String fTargetName ) throws IOException
+    {
+        final Path aTargetPath = Paths.get( fTargetFolder.toString(), fTargetName );
+        Files.copy( fFile.toPath(), aTargetPath,
+                    StandardCopyOption.REPLACE_EXISTING,
+                    StandardCopyOption.COPY_ATTRIBUTES );
     }
 
 }

@@ -17,7 +17,6 @@ import java.awt.event.ItemListener;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
-import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.model.PeriodData;
 
 // ############################################################################
@@ -30,45 +29,35 @@ public class PeriodDataChangedListener implements ItemListener
     private GUIUpdater getGUIUpdater(){ return m_GUIUpdater; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
     private final ADH_DataProvider m_DataProvider;
     private ADH_DataProvider getDataProvider(){ return m_DataProvider; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private final IPeriodDataController m_PDC;
-    private IPeriodDataController getPDC(){ return m_PDC; }
-    // ------------------------------------------------------------------------
-
     public PeriodDataChangedListener(
             final GUIUpdater fGUIUpdater,
-            final ADH_DataProvider fDataProvider,
-            final IPeriodDataController fPDC)
+            final ADH_DataProvider fDataProvider)
     {
-        m_GUIUpdater = fGUIUpdater;
-        m_DataProvider = fDataProvider;
-        m_PDC = fPDC;
+        m_GUIUpdater            = fGUIUpdater;
+        m_DataProvider          = fDataProvider;
     }
 
     @Override
     public void itemStateChanged( final ItemEvent fEvent )
     {
-//        JComboBox cb = (JComboBox) evt.getSource();
-
-
         if( ItemEvent.SELECTED == fEvent.getStateChange() ) {
             // Item was just selected
             final PeriodData aPeriodData = (PeriodData) fEvent.getItem();
-            final boolean aIsFinished = getPDC().isFinished( aPeriodData );
+            if( aPeriodData.getPeriod() == null ){
+                return;
+            }
             try{
-                getDataProvider().init( aPeriodData, aIsFinished );
-                getGUIUpdater().updateGUI( true );
+                getDataProvider().init( aPeriodData );
+                getGUIUpdater().updateGUI( aPeriodData );
             }catch( final Exception fEx ){
                 // TODO Auto-generated catch block
                 sm_Log.warn("Exception: ", fEx );
             }
-
-//        } else if ( fEvent.getStateChange() == ItemEvent.DESELECTED) {
-//          // Item is no longer selected
         }
     }
 

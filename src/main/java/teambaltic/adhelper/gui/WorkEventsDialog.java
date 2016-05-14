@@ -15,6 +15,8 @@ import java.awt.BorderLayout;
 
 import javax.swing.JDialog;
 
+import teambaltic.adhelper.gui.model.TBLModel_WorkEvents;
+
 // ############################################################################
 public class WorkEventsDialog extends JDialog
 {
@@ -50,7 +52,8 @@ public class WorkEventsDialog extends JDialog
 
     private void populate()
     {
-        m_contentPanel.populate( DATA, false );
+        final TBLModel_WorkEvents aModel = new TBLModel_WorkEvents( DATA, false );
+        m_contentPanel.populate( aModel );
     }
 
     /**

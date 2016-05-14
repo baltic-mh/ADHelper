@@ -71,7 +71,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     Path getFolder_SandBox();
 
     String getFileName_BaseData();
-    Path getFile_BaseData();
+    Path getFile_RootBaseData();
     String getFileName_WorkEvents();
     String getFileName_Balances();
     String getFileName_UserSettings();

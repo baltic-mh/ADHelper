@@ -27,7 +27,7 @@ public class MemberSelectedListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-        m_GUIUpdater.updateGUI( false );
+        m_GUIUpdater.updateGUI();
     }
 
 

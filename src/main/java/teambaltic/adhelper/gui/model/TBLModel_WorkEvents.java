@@ -13,8 +13,6 @@ package teambaltic.adhelper.gui.model;
 
 import javax.swing.table.DefaultTableModel;
 
-import teambaltic.adhelper.gui.listeners.WorkEventsTableModelListener;
-
 // ############################################################################
 public class TBLModel_WorkEvents extends DefaultTableModel
 {
@@ -22,13 +20,14 @@ public class TBLModel_WorkEvents extends DefaultTableModel
 
     private static final String[] COLUMNHEADERS = new String[] { "Teilnahme", "ID", "Name", "Stunden" };
 
+    // ------------------------------------------------------------------------
     private final boolean m_ReadOnly;
-    private boolean isReadOnly(){ return m_ReadOnly; }
+    public boolean isReadOnly(){ return m_ReadOnly; }
+    // ------------------------------------------------------------------------
 
     public TBLModel_WorkEvents(final Object[][] fData, final boolean fReadOnly)
     {
         super( fData, COLUMNHEADERS);
-        addTableModelListener( new WorkEventsTableModelListener() );
         m_ReadOnly = fReadOnly;
     }
 

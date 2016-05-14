@@ -334,14 +334,14 @@ public class MainPanel extends JPanel
         return getSelectedMember().getID();
     }
 
-    public void setFinished()
+    public void enableBtn_Finish(final boolean fEnable)
     {
-        m_btnFinish.setEnabled( false );
+        m_btnFinish.setEnabled( fEnable );
     }
 
-    public void setUploaded( final boolean fEverythingUploaded )
+    public void enableBtn_Upload( final boolean fEnable )
     {
-        m_btnUpload.setEnabled( !fEverythingUploaded );
+        m_btnUpload.setEnabled( fEnable );
     }
 
     public void configure( final ERole fRole )

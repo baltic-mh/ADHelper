@@ -126,22 +126,27 @@ public class WorkEventsFilterController
 
     private void toggleNurTeilnehmerFilter()
     {
-        final RowFilter_NurTeilnehmer aNurTeilnehmer = getRowFilter_NurTeilnehmer();
-        if( aNurTeilnehmer.isEnabled() ){
-            // Bisher ist "Nur Dabei" ausgewählt, also soll nun "Alle"
-            // ausgewählt sein:
-            aNurTeilnehmer.setEnabled( false );
-            getBtn_ToggleDabeiFilter().setText( "Nur Teilnehmer" );
+        final RowFilter_NurTeilnehmer aFilter_NurTeilnehmer = getRowFilter_NurTeilnehmer();
+        setFilter_NurTeilnehmer( !aFilter_NurTeilnehmer.isEnabled() );
+    }
+
+    public void setFilter_NurTeilnehmer( final boolean fSet )
+    {
+        final RowFilter_NurTeilnehmer aFilter_NurTeilnehmer = getRowFilter_NurTeilnehmer();
+        if( fSet ){
+            // Bisher sind "Alle" ausgewählt, also soll nun "Nur Dabei" ausgewählt
+            // sein:
+            getBtn_ToggleDabeiFilter().setText( "Alle" );
+            aFilter_NurTeilnehmer.setEnabled( true );
             getSorter().sort();
             return;
         }
-        // Bisher sind "Alle" ausgewählt, also soll nun "Nur Dabei" ausgewählt
-        // sein:
-        getBtn_ToggleDabeiFilter().setText( "Alle" );
-        aNurTeilnehmer.setEnabled( true );
+        // Bisher ist "Nur Dabei" ausgewählt, also soll nun "Alle"
+        // ausgewählt sein:
+        aFilter_NurTeilnehmer.setEnabled( false );
+        getBtn_ToggleDabeiFilter().setText( "Nur Teilnehmer" );
         getSorter().sort();
     }
-
 }
 
 // ############################################################################

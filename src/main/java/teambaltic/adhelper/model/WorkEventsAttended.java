@@ -80,6 +80,26 @@ public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
         return aMatchingEvents;
     }
 
+    public List<WorkEvent> getAllWorkEvents( final IPeriod fInvoicingPeriod )
+    {
+        final List<WorkEventsAttended> aAllWorkEventsAttended = getAllWorkEventsAttended();
+        final List<WorkEvent> aAllWorkEvents = new ArrayList<>();
+        for( final WorkEventsAttended aWorkEventsAttended : aAllWorkEventsAttended ){
+            aAllWorkEvents.addAll( aWorkEventsAttended.getWorkEvents() );
+
+        }
+        if( fInvoicingPeriod == null ){
+            return aAllWorkEvents;
+        }
+        final List<WorkEvent> aMatchingEvents = new ArrayList<>();
+        for( final WorkEvent aEvent : aAllWorkEvents ){
+            if( fInvoicingPeriod.isWithinMyPeriod( aEvent.getDate() )){
+                aMatchingEvents.add( aEvent );
+            }
+        }
+        return aMatchingEvents;
+    }
+
     public int getTotalHoursWorked(  final IPeriod fInvoicingPeriod )
     {
         int aTotalHoursWorked = 0;
@@ -108,7 +128,7 @@ public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
     @Override
     public String toString()
     {
-        final StringBuffer aSB = new StringBuffer();
+        final StringBuffer aSB = new StringBuffer(String.format("%d:", getMemberID()));
         for( final WorkEvent aWorkEvent : m_WorkEvents ){
             aSB.append( String.format( "\n\t%s: %5.2f", aWorkEvent.getDate(), aWorkEvent.getHours()/100.0f ) );
         }

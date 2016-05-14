@@ -13,7 +13,6 @@ package teambaltic.adhelper.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -22,8 +21,8 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.inout.BalanceReader;
 import teambaltic.adhelper.inout.BaseDataReader;
-import teambaltic.adhelper.inout.Exporter;
 import teambaltic.adhelper.inout.WorkEventReader;
+import teambaltic.adhelper.inout.Writer;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
@@ -32,10 +31,7 @@ import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.IAllSettings;
-import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IClubSettings;
-import teambaltic.adhelper.model.settings.IUserSettings;
-import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
@@ -48,18 +44,19 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private PeriodData m_PeriodData;
+    public  PeriodData getPeriodData(){ return m_PeriodData; }
+    public IPeriod getPeriod(){ return m_PeriodData == null ? null : m_PeriodData.getPeriod();}
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final IPeriodDataController m_PDC;
+    public IPeriodDataController getPDC(){ return m_PDC; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private File m_BaseDataFile;
     public File getBaseDataFile(){ return m_BaseDataFile; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private File m_WorkEventFile;
-    public File getWorkEventFile(){ return m_WorkEventFile; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private File m_BalanceFile;
-    public File getBalanceFile(){ return m_BalanceFile; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -68,38 +65,34 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final String m_UserInfo;
-    private final String getUserInfo(){ return m_UserInfo; }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
     private ChargeCalculator m_ChargeCalculator;
     public void setChargeCalculator( final ChargeCalculator fNewVal ){ m_ChargeCalculator = fNewVal; }
     public ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
-    public IPeriod getPeriod(){ return m_ChargeCalculator == null ? null : m_ChargeCalculator.getPeriod();}
     // ------------------------------------------------------------------------
 
-    public ADH_DataProvider(final IAllSettings fSettings ) throws Exception
+    public ADH_DataProvider( final IPeriodDataController fPDC, final IAllSettings fSettings ) throws Exception
     {
+        m_PDC = fPDC;
         m_AllSettings = fSettings;
-        final IUserSettings aUserSettings = m_AllSettings.getUserSettings();
-        m_UserInfo = aUserSettings.getDecoratedEMail();
     }
 
-    public void init(final PeriodData fPeriodData, final boolean fIsFinished) throws Exception
+    public void init( final PeriodData fPeriodData ) throws Exception
     {
-        sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
+        if( fPeriodData.equals( m_PeriodData ) ){
+            return;
+        }
+        m_PeriodData = fPeriodData;
         final IPeriod aPeriod = fPeriodData.getPeriod();
+        if( aPeriod == null ){
+            return;
+        }
+        sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
         m_ChargeCalculator = createChargeCalculator( aPeriod );
 
-        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        readBaseData( aAppSettings.getFile_BaseData() );
-
-        final Path aPeriodDataFolder = fPeriodData.getFolder();
-        // Das WorkEventFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readWorkEvents( aPeriodDataFolder.resolve( aAppSettings.getFileName_WorkEvents() ).toFile() );
-        // Das BalanceFile liegt immer im Verzeichnis mit den neuesten Abrechnungsdaten
-        readBalances( aPeriodDataFolder.resolve( aAppSettings.getFileName_Balances() ), !fIsFinished );
+        // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen
+        readBaseData( getPDC().getFile_BaseData( fPeriodData ) );
+        readWorkEvents( getPDC().getFile_WorkEvents( fPeriodData ) );
+        readBalances( getPDC().getFile_Balances( fPeriodData ), !getPDC().isFinished( fPeriodData ) );
 
         populateFreeFromDutySets( aPeriod );
         joinRelatives();
@@ -107,8 +100,6 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         calculateDutyCharges( aPeriod );
         balanceRelatives();
 
-        // Erst mal die Daten sichern:
-        export( false );
     }
 
     public void readBaseData( final Path fFileToReadFrom ) throws Exception
@@ -120,10 +111,9 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         Collections.sort( m_Members );
     }
 
-    public void readWorkEvents( final File fFileToReadFrom )
+    public void readWorkEvents( final Path fFileToReadFrom )
     {
-        m_WorkEventFile = fFileToReadFrom;
-        final WorkEventReader aReader = new WorkEventReader( fFileToReadFrom );
+        final WorkEventReader aReader = new WorkEventReader( fFileToReadFrom.toFile() );
         try{
             aReader.read( this );
         }catch( final Exception fEx ){
@@ -134,8 +124,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     public void readBalances( final Path fFileToReadFrom, final boolean fTakePreviousBalanceValues )
     {
-        m_BalanceFile = fFileToReadFrom.toFile();
-        final BalanceReader aReader = new BalanceReader( m_BalanceFile, fTakePreviousBalanceValues );
+        final BalanceReader aReader = new BalanceReader( fFileToReadFrom.toFile(), fTakePreviousBalanceValues );
         try{
             aReader.read( this );
         }catch( final Exception fEx ){
@@ -238,64 +227,16 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         return aMember.getName();
     }
 
-    public void export( final boolean fSetFinished ) throws IOException
+    public void writeToFiles() throws IOException
     {
-        final Path fOutputFolder = getOutputFolder();
-        final Exporter aExporter = new Exporter( this, getFinishedFileName() );
-        aExporter.export( fOutputFolder, getUserInfo(), fSetFinished );
+        final Path fOutputFolder = getPeriodData().getFolder();
+        final Writer aWriter = new Writer( this );
+        aWriter.writeFiles( fOutputFolder );
     }
 
-    public Path getOutputFolder()
+    public void writeToFile_WorkEvents()
     {
-        return getOutputFolder( getPeriod() );
-    }
-
-    private Path getOutputFolder( final IPeriod fInvoicingPeriod )
-    {
-        final Path aOutputFolder = getDataFolder().resolve( fInvoicingPeriod.toString() );
-        return aOutputFolder;
-    }
-
-    private Path getDataFolder()
-    {
-        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        final Path aDataFolder = aAppSettings.getFolder_Data();
-        return aDataFolder;
-    }
-    private String getFinishedFileName()
-    {
-        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        return aAppSettings.getFileName_Finished();
-    }
-    private String getUploadedFileName()
-    {
-        final IAppSettings aAppSettings = m_AllSettings.getAppSettings();
-        return aAppSettings.getFileName_Uploaded();
-    }
-    // ------------------------------------------------------------------------
-
-
-    public boolean isOutputFinished()
-    {
-        return isOutputFinished( getOutputFolder() );
-
-    }
-    private boolean isOutputFinished(final Path fOutputFolder)
-    {
-        final String aFinishedFileName = getFinishedFileName();
-        final Path aFinishedFile = fOutputFolder.resolve( aFinishedFileName );
-        return Files.exists( aFinishedFile );
-    }
-
-    public void exportWorkEvents()
-    {
-        Exporter.exportWorkEvents( this, getOutputFolder() );
-    }
-
-    public File[] getNotUploadedFolders()
-    {
-        final File[] aFolders_NotUploaded = FileUtils.getFolders_NotUploaded( getDataFolder(), getFinishedFileName(), getUploadedFileName() );
-        return aFolders_NotUploaded;
+        Writer.writeToFile_WorkEvents( this, getPeriodData().getFolder() );
     }
 
 }

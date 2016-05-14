@@ -20,11 +20,22 @@ public interface ITransferController extends IShutdownListener
 {
     void start() throws Exception;
     boolean isConnected();
-    void upload  ( Path fFileToUpload ) throws Exception;
-    boolean download( Path fFileToDownload );
-    boolean uploadBillingData() throws Exception;
+    /**
+     * @param fFileToUpload
+     * @return Pfad zur intern erzeugten Check-Summen-Datei
+     * @throws Exception
+     */
+    Path upload ( Path fFileToUpload ) throws Exception;
+    /**
+     * @param fFileToDownload
+     * @return Pfad zur heruntergeladenen Check-Summen-Datei - null nichts heruntergeladen wurde
+     */
+    Path download( Path fFileToDownload );
+    boolean uploadPeriodData() throws Exception;
     void updateBaseDataFromServer( Path fFile_BaseData, ERole fRole ) throws Exception;
-    void updateBillingDataFromServer() throws Exception;
+    void updatePeriodDataFromServer() throws Exception;
+
+    void setPeriodDataController( IPeriodDataController fPDC );
 }
 
 // ############################################################################

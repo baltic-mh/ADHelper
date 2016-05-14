@@ -61,6 +61,8 @@ public class SingletonWatcher implements ISingletonWatcher
     private void setConnected( final boolean fConnected ){ m_Connected = fConnected; }
     // ------------------------------------------------------------------------
 
+    private final Object m_BusyBlocker;
+
     private Thread m_Thread;
 
     public SingletonWatcher(
@@ -71,6 +73,7 @@ public class SingletonWatcher implements ISingletonWatcher
         m_Info          = fInfo;
         m_CycleTime     = fCycleTime;
         m_RemoteAccess  = fRemoteAccess;
+        m_BusyBlocker   = new Object();
     }
 
     @Override
@@ -132,8 +135,13 @@ public class SingletonWatcher implements ISingletonWatcher
             public void run(){
                 while( true ){
                     try{
-                        Thread.sleep( getCycleTime() );
-                        uploadBusyFlag();
+                        synchronized( m_BusyBlocker ){
+                            if( isInterrupted() ){
+                                break;
+                            }
+                            m_BusyBlocker.wait( getCycleTime() );
+                            uploadBusyFlag();
+                        }
                     }catch( final InterruptedException fEx ){
                         break;
                     }
@@ -150,9 +158,11 @@ public class SingletonWatcher implements ISingletonWatcher
         if( m_Thread == null ){
             return;
         }
-        m_Thread.interrupt();
-        m_Thread = null;
-        removeBusyFlag();
+        synchronized( m_BusyBlocker ){
+            m_Thread.interrupt();
+            m_Thread = null;
+            removeBusyFlag();
+        }
     }
 
     private void uploadBusyFlag()

@@ -1,5 +1,5 @@
 /**
- * Exporter.java
+ * Writer.java
  *
  * Created on 15.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -11,15 +11,11 @@
 // ############################################################################
 package teambaltic.adhelper.inout;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,55 +31,32 @@ import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
-import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
-public class Exporter
+public class Writer
 {
-    private static final Logger sm_Log = Logger.getLogger(Exporter.class);
+    private static final Logger sm_Log = Logger.getLogger(Writer.class);
 
     // ------------------------------------------------------------------------
     private final ADH_DataProvider m_DataProvider;
     private ADH_DataProvider getDataProvider(){ return m_DataProvider; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private final String m_FinishedFileName;
-    private String getFinishedFileName(){ return m_FinishedFileName; }
-    // ------------------------------------------------------------------------
-
-    public Exporter(
-            final ADH_DataProvider fDataProvider,
-            final String fFinishedFileName)
+    public Writer( final ADH_DataProvider fDataProvider )
     {
         m_DataProvider = fDataProvider;
-        m_FinishedFileName = fFinishedFileName;
     }
 
-    public void export( final Path fOutputFolder, final String fInfo, final boolean fSetFinished )
+    public void writeFiles( final Path fOutputFolder )
             throws IOException
     {
-        if( !Files.exists( fOutputFolder )){
-            Files.createDirectories( fOutputFolder );
-        }
-
-        final File aBIF = getDataProvider().getBaseDataFile();
-        copyFileToFolder( aBIF, fOutputFolder );
-        final File aWEF = getDataProvider().getWorkEventFile();
-        final String aNewName = FileUtils.getFileNameWithPostfixAppended( aWEF, "_old" );
-        copyFileUnderNewNameToFolder( aWEF, fOutputFolder, aNewName );
-
-        exportWorkEvents( getDataProvider(), fOutputFolder );
-        exportObligations( getDataProvider(), fOutputFolder );
-        exportBalances( getDataProvider(), fOutputFolder );
+        writeToFile_WorkEvents( getDataProvider(), fOutputFolder );
+        writeToFile_Obligations( getDataProvider(), fOutputFolder );
+        writeToFile_Balances( getDataProvider(), fOutputFolder );
         DetailsReporter.report( getDataProvider(), fOutputFolder );
-
-        if( fSetFinished ){
-            FileUtils.writeFinishedFile( fOutputFolder.resolve( getFinishedFileName() ), fInfo );
-        }
     }
 
-    public static void exportWorkEvents(
+    public static void writeToFile_WorkEvents(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder )
     {
@@ -139,7 +112,7 @@ public class Exporter
         return aAllWorkEvents;
     }
 
-    private static void exportObligations(
+    private static void writeToFile_Obligations(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder )
     {
@@ -170,7 +143,7 @@ public class Exporter
         }
     }
 
-    private static void exportBalances(
+    private static void writeToFile_Balances(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder)
     {
@@ -199,24 +172,6 @@ public class Exporter
         }catch( final FileNotFoundException fEx ){
             sm_Log.warn("Exception: ", fEx );
         }catch( final UnsupportedEncodingException fEx ){
-            sm_Log.warn("Exception: ", fEx );
-        }
-    }
-
-    private static void copyFileToFolder( final File fFile, final Path fOutputFolder )
-    {
-        copyFileUnderNewNameToFolder( fFile, fOutputFolder, fFile.getName());
-    }
-
-    private static void copyFileUnderNewNameToFolder(
-            final File fFile, final Path fTargetFolder, final String fNewFileName )
-    {
-        final Path aTargetPath = Paths.get( fTargetFolder.toString(), fNewFileName );
-        try{
-            Files.copy( fFile.toPath(), aTargetPath,
-                    StandardCopyOption.REPLACE_EXISTING,
-                    StandardCopyOption.COPY_ATTRIBUTES );
-        }catch( final IOException fEx ){
             sm_Log.warn("Exception: ", fEx );
         }
     }

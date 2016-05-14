@@ -66,7 +66,11 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
         return aThisMember.compareTo( aOtherMember );
     }
 
-
+    @Override
+    public String toString()
+    {
+        return getMember().toString();
+    }
 }
 
 // ############################################################################

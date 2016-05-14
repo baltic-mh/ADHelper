@@ -53,6 +53,11 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getFolder( getFolderName_Data() );
     }
     @Override
+    public Path getFile_RootBaseData()
+    {
+        return getFile( getFolderName_Data(), getFileName_BaseData() );
+    }
+    @Override
     public String getFolderName_Settings()
     {
         return getStringValue( EKey.FOLDERNAME_SETTINGS );
@@ -90,11 +95,6 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     public String getFileName_BaseData()
     {
         return getStringValue( EKey.FILENAME_BASEINFO );
-    }
-    @Override
-    public Path getFile_BaseData()
-    {
-        return getFile( getFolderName_Data(), getFileName_BaseData() );
     }
     @Override
     public String getFileName_WorkEvents()

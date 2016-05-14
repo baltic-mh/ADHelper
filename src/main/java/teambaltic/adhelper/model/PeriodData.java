@@ -26,16 +26,23 @@ public class PeriodData
     public IPeriod getPeriod(){ return m_Period; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private boolean m_Active;
+    public boolean isActive(){ return m_Active; }
+    public void setActive( final boolean fActive ){ m_Active = fActive; }
+    // ------------------------------------------------------------------------
+
     public PeriodData( final Path fFolder )
     {
         m_Folder = fFolder;
-        m_Period = Halfyear.create( fFolder.getFileName().toString() );
+        m_Period = fFolder == null ? null : Halfyear.create( fFolder.getFileName().toString() );
     }
 
     @Override
     public String toString()
     {
-        return getPeriod().toString();
+        final String aPeriodString = getPeriod().toString();
+        return aPeriodString + (isActive() ? "*" : "");
     }
 }
 

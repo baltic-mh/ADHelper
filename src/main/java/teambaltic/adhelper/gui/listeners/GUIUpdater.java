@@ -20,6 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.gui.model.CBModel_Member;
 import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
@@ -31,8 +32,11 @@ import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
+import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IUserSettings;
 
 // ############################################################################
 public class GUIUpdater
@@ -42,17 +46,39 @@ public class GUIUpdater
     private final MainPanel m_Panel;
     private final ADH_DataProvider m_DataProvider;
 
+    // ------------------------------------------------------------------------
+    private final IPeriodDataController m_PDC;
+    private IPeriodDataController getPDC(){ return m_PDC; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private PeriodData m_PeriodData;
+    public  PeriodData getPeriodData(){ return m_PeriodData; }
+    // ------------------------------------------------------------------------
+
     public GUIUpdater(
             final MainPanel fPanel,
-            final ADH_DataProvider fDataProvider )
+            final ADH_DataProvider fDataProvider,
+            final IPeriodDataController fPDC )
     {
         m_Panel = fPanel;
         m_DataProvider = fDataProvider;
+        m_PDC = fPDC;
     }
 
-    public void updateGUI( final boolean fPeriodChanged )
+    public void updateGUI()
     {
-        if( fPeriodChanged ){
+        updateGUI( m_DataProvider.getPeriodData() );
+    }
+
+    public void updateGUI( final PeriodData fPeriodData)
+    {
+        final boolean aPeriodChanged = isPeriodChanged( fPeriodData );
+        if( aPeriodChanged ){
+            if( fPeriodData != null ){
+                m_PeriodData = fPeriodData;
+                m_Panel.getCB_Period().setSelectedItem( fPeriodData );
+            }
             // Erhalten des ehemals selektierten Mitglieds:
             final IClubMember aSelectedMember = m_Panel.getSelectedMember();
             final JComboBox<IClubMember> aCB_Members = m_Panel.getCB_Members();
@@ -73,7 +99,20 @@ public class GUIUpdater
         final TBLModel_DutyCharge aDM_DutyChargs = m_Panel.getDataModel_DutyCharge();
         fillPanel_DutyCharge( aDM_DutyChargs, aInfoForSingleMember, m_Panel, m_DataProvider );
         final TBLModel_AttendedWorkEvent aDM_WorkEvents = m_Panel.getWorkEventDataModel();
-        fillPanel_WorkEvent ( aDM_WorkEvents, aInfoForSingleMember, m_Panel, m_DataProvider );
+        fillPanel_WorkEvent ( aDM_WorkEvents, fPeriodData, aInfoForSingleMember, m_Panel, m_DataProvider );
+
+        if( fPeriodData != null ){
+            configureButtons( m_Panel, getPDC(), fPeriodData );
+        }
+    }
+
+    private boolean isPeriodChanged( final PeriodData fPeriodData )
+    {
+        if( fPeriodData == null ){
+            return m_PeriodData != null;
+        }
+        final boolean aPeriodChanged = m_PeriodData == null ? true : !m_PeriodData.equals( fPeriodData );
+        return aPeriodChanged;
     }
 
     private void fill_Birthday_Eintritt_Austritt( final InfoForSingleMember fInfoForSingleMember, final MainPanel fPanel )
@@ -89,6 +128,7 @@ public class GUIUpdater
 
     private static void fillPanel_WorkEvent(
             final TBLModel_AttendedWorkEvent fDataModel,
+            final PeriodData fPeriodData,
             final InfoForSingleMember fInfoForSingleMember,
             final MainPanel fPanel, final ADH_DataProvider fDataProvider )
     {
@@ -98,22 +138,12 @@ public class GUIUpdater
             return;
         }
 
-        final List<WorkEventsAttended> aAllWorkEventsAttended = aWorkEventsAttended.getAllWorkEventsAttended();
-        for( final WorkEventsAttended aThisWorkEventsAttended : aAllWorkEventsAttended ){
-            final int aMemberID = aThisWorkEventsAttended.getMemberID();
-            final String aMemberName = fDataProvider.getMemberName( aMemberID );
-            addWorkEventsForSingleMember( fDataModel, aMemberName, aMemberID, aThisWorkEventsAttended );
-        }
-    }
+        final List<WorkEvent> aAllWorkEvents = aWorkEventsAttended.getAllWorkEvents(fPeriodData.getPeriod());
 
-    private static void addWorkEventsForSingleMember(
-            final TBLModel_AttendedWorkEvent fDataModel,
-            final String fMemberName,
-            final int    fMemberID,
-            final WorkEventsAttended fWorkEventsAttended )
-    {
-        for( final WorkEvent aWorkEvent : fWorkEventsAttended.getWorkEvents() ){
-            addWorkEventRow( fDataModel, fMemberName, fMemberID, aWorkEvent );
+        for( final WorkEvent aWorkEvent : aAllWorkEvents ){
+            final int aMemberID = aWorkEvent.getID();
+            final String aMemberName = fDataProvider.getMemberName( aMemberID );
+            addWorkEventRow( fDataModel, aMemberName, aMemberID, aWorkEvent);
         }
     }
 
@@ -191,6 +221,18 @@ public class GUIUpdater
         fDataModel.addRow( rowData );
     }
 
+    private static void configureButtons(
+            final MainPanel fPanel,
+            final IPeriodDataController fPDC,
+            final PeriodData fPeriodData)
+    {
+        final boolean aFinished = fPDC.isFinished( fPeriodData );
+        fPanel.enableBtn_Finish( !aFinished );
+        fPanel.enableBtn_Upload( aFinished && !fPDC.isUploaded( fPeriodData ) );
+
+        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+        fPanel.configure( aUserSettings.getRole() );
+    }
 
 }
 

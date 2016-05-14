@@ -70,14 +70,14 @@ public class UploadListener implements ActionListener
             }
             switch( aRole ){
                 case BAUAUSSCHUSS:
-                    aUploaded = m_TransferController.uploadBillingData();
+                    aUploaded = m_TransferController.uploadPeriodData();
                     break;
                 case MITGLIEDERWART:
                     aUploaded = uploadBaseData();
 
                 default:
             }
-            m_Panel.setUploaded(aUploaded);
+            m_Panel.enableBtn_Upload( !aUploaded );
 
         }catch( final Exception fEx ){
             final String aMsg = "Probleme beim Hochladen der Daten: "+fEx.getMessage();

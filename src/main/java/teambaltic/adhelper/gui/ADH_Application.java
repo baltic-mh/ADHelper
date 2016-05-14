@@ -14,7 +14,7 @@ package teambaltic.adhelper.gui;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.awt.event.ItemEvent;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,7 @@ import com.jgoodies.forms.layout.RowSpec;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.IPeriodDataController;
+import teambaltic.adhelper.controller.IPeriodDataController.EPeriodDataSelector;
 import teambaltic.adhelper.controller.IShutdownListener;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.InitHelper;
@@ -48,8 +49,6 @@ import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
 import teambaltic.adhelper.gui.listeners.PeriodDataChangedListener;
 import teambaltic.adhelper.gui.listeners.UploadListener;
 import teambaltic.adhelper.gui.listeners.UserSettingsListener;
-import teambaltic.adhelper.gui.listeners.WorkEventEditorActionListener;
-import teambaltic.adhelper.gui.listeners.WorkEventTableListener;
 import teambaltic.adhelper.gui.model.CBModel_PeriodData;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
@@ -65,12 +64,14 @@ public class ADH_Application
     private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
     private static final String TITLE = "KVK Arbeitsdienst-Helferlein (C) 2016 TeamBaltic";
 
+    private static final EPeriodDataSelector ALL = EPeriodDataSelector.ALL;
+
     // ------------------------------------------------------------------------
     private JFrame m_frame;
     public  JFrame getFrame(){ return m_frame; }
     // ------------------------------------------------------------------------
 
-    private MainPanel m_panel;
+    private MainPanel m_MainPanel;
 
     private final List<IShutdownListener> m_ShutdownListeners;
 
@@ -119,20 +120,25 @@ public class ADH_Application
                         }
 
                     }
+                    final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
+                    if( !aOffline ){
+                        aTC.setPeriodDataController( aPDC );
+                        // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
+                        aPDC.createNewPeriod();
+                    }
                     aAppWindow.setTitle( aOffline );
                     aAppWindow.addShutdownListener( aTC );
-                    final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
-                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider();
+                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
 
-                    aAppWindow.configure( aDataProvider );
                     aAppWindow.initObjects( aDataProvider, aPDC, aTC );
+//                    aAppWindow.configure( aPDC, aDataProvider.getPeriodData() );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
                     final String aMsg = ExceptionUtils.getStackTrace(fEx);
                     JOptionPane.showMessageDialog( aAppWindow.m_frame, aMsg, "Fataler Fehler!",
                                 JOptionPane.ERROR_MESSAGE );
-                    aAppWindow.shutdown(1);
+                    aAppWindow.shutdown("Beenden wegen fataler Exception", 1);
                 }
             }
 
@@ -168,39 +174,38 @@ public class ADH_Application
             final IPeriodDataController fPDC,
             final ITransferController fTransferController)
     {
-        m_GUIUpdater    = new GUIUpdater( m_panel, fDataProvider );
+        m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC );
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
 
-        final JComboBox<PeriodData> aCB_Period = m_panel.getCB_Period();
-        final PeriodDataChangedListener aPDCL = new PeriodDataChangedListener( m_GUIUpdater, fDataProvider, fPDC );
+        final JComboBox<PeriodData> aCB_Period = m_MainPanel.getCB_Period();
+        final PeriodDataChangedListener aPDCL = new PeriodDataChangedListener( m_GUIUpdater, fDataProvider );
         aCB_Period.addItemListener( aPDCL );
 
-        final List<PeriodData> aPDList = fPDC.getPeriodDataList();
-        final PeriodData aLastPeriodData = fPDC.getNewestPeriodData();
+        final List<PeriodData> aPDList = fPDC.getPeriodDataList( ALL );
         final PeriodData[] aPeriods = new PeriodData[aPDList.size()];
         aCB_Period.setModel( new CBModel_PeriodData( aPDList.toArray( aPeriods ) ) );
-        aCB_Period.setSelectedItem( aLastPeriodData );
+        aCB_Period.setSelectedItem( fPDC.getActivePeriod() );
+        if( aCB_Period.getItemCount() == 1 ){
+            // Wenn da nur ein Element in der Box ist, hat das vorherige
+            /// setSelectedItem keinen Event ausgelöst!
+            final ItemEvent aItemEvent = new ItemEvent(aCB_Period, 0, fPDC.getActivePeriod(), ItemEvent.SELECTED);
+            aPDCL.itemStateChanged( aItemEvent );
+        }
 
-        final JComboBox<IClubMember> aCB_Members = m_panel.getCB_Members();
+        final JComboBox<IClubMember> aCB_Members = m_MainPanel.getCB_Members();
         aCB_Members.addActionListener( aMemberSelectedListener );
 
-        // WorkEventEditor
-        final WorkEventEditor aWorkEventEditor = new WorkEventEditor();
-        final WorkEventEditorActionListener aWEEListener = new WorkEventEditorActionListener(m_GUIUpdater, aWorkEventEditor, fDataProvider);
-        aWorkEventEditor.setWorkEventEditorListeners(aWEEListener);
-
         final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC);
-        m_panel.getBtn_ManageWorkEvents().addActionListener( aManageWorkEventsListener );
-        // Der WorkEventEditor wird noch mal gebraucht:
-        final WorkEventTableListener aWorkEventTableListener = new WorkEventTableListener(aWorkEventEditor, m_panel, fDataProvider);
-//        m_panel.setWorkEventTableListener(aWorkEventTableListener);
+        m_MainPanel.getBtn_ManageWorkEvents().addActionListener( aManageWorkEventsListener );
+        final JComboBox<PeriodData> aCB_Period2 = aManageWorkEventsListener.getCmb_Period();
+        aCB_Period2.addItemListener( aPDCL );
 
-        final JButton aBtnFinish = m_panel.getBtnFinish();
-        aBtnFinish.addActionListener( new FinishListener( m_panel, fDataProvider ) );
+        final JButton aBtnFinish = m_MainPanel.getBtnFinish();
+        aBtnFinish.addActionListener( new FinishListener( m_MainPanel, fPDC, fDataProvider ) );
 
-        final JButton aBtnUpload = m_panel.getBtnUpload();
+        final JButton aBtnUpload = m_MainPanel.getBtnUpload();
         aBtnUpload.addActionListener(
-                new UploadListener( m_panel, fDataProvider, fTransferController,
+                new UploadListener( m_MainPanel, fDataProvider, fTransferController,
                         getUserSettingsListener() ) );
     }
 
@@ -215,7 +220,7 @@ public class ADH_Application
         m_frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(final java.awt.event.WindowEvent e) {
-                shutdown(0);
+                shutdown("Beenden durch Benutzer", 0);
             }
         });
 
@@ -224,8 +229,8 @@ public class ADH_Application
             new RowSpec[] {
                 RowSpec.decode("435px:grow"),}));
 
-        m_panel = new MainPanel();
-        m_frame.getContentPane().add(m_panel, "1, 1, fill, fill");
+        m_MainPanel = new MainPanel();
+        m_frame.getContentPane().add(m_MainPanel, "1, 1, fill, fill");
 
         final JMenuBar menuBar = new JMenuBar();
         m_frame.setJMenuBar(menuBar);
@@ -276,17 +281,18 @@ public class ADH_Application
         return l;
     }
 
-    public void shutdown(final int fExitCode)
+    public void shutdown(final String fInfo, final int fExitCode)
     {
         synchronized( m_ShutdownListeners ){
-            m_ShutdownListeners.forEach( aListener -> {
+            for( final IShutdownListener aShutdownListener : m_ShutdownListeners ){
                 try{
-                    aListener.shutdown();
-                }catch( final Exception fEx ){
+                    aShutdownListener.shutdown();
+                }catch( final Throwable fEx ){
                     sm_Log.warn( "Exception: ", fEx );
                 }
-            } );
+            }
         }
+        sm_Log.info(fInfo);
         System.exit( fExitCode );
     }
 
@@ -301,23 +307,14 @@ public class ADH_Application
         m_frame.setTitle(String.format("%s (%s)", TITLE, fOffline ? "Offline" : "Online" ));
     }
 
-    private void configure(final ADH_DataProvider fDataProvider)
-    {
-        final File[] aFolders_NotUploaded = fDataProvider.getNotUploadedFolders();
-        m_panel.setUploaded( aFolders_NotUploaded.length == 0 );
-
-        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
-        m_panel.configure( aUserSettings.getRole() );
-    }
-
     private static void updateDataFromServer( final ITransferController fTC ) throws Exception
     {
         final IAppSettings aAppSettings = AllSettings.INSTANCE.getAppSettings();
-        final Path aFile_BaseData = aAppSettings.getFile_BaseData();
+        final Path aFile_BaseData = aAppSettings.getFile_RootBaseData();
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         final ERole aRole = aUserSettings.getRole();
         fTC.updateBaseDataFromServer( aFile_BaseData, aRole );
-        fTC.updateBillingDataFromServer();
+        fTC.updatePeriodDataFromServer();
     }
 
 }
