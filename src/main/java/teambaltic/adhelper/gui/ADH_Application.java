@@ -116,7 +116,7 @@ public class ADH_Application
                             updateDataFromServer( aTC );
                             IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
                         } else {
-                            sm_Log.warn( "Keine Verbindung zum Server!" );
+                            throw new Exception( "Keine Verbindung zum Server (für Details siehe log-Datei)!" );
                         }
 
                     }

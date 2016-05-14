@@ -74,3 +74,47 @@ Start-Verzeichnis
     Über eine Systemproperty kann man dem Programm ein anderes Verzeichnis als
     Wurzelverzeichnis mitteilen. Der Schlüssel für die Systemproperty ist
         "FOLDERNAME_ROOT"
+        
+        
+================================================================================
+Einrichten eines neuen Benutzers:
+
+    Server:
+        Benutzer anlegen
+        Verzeichnis .ssh im home-Verzeichnis des Benutzers anlegen
+			mkdir .ssh
+			touch .ssh/authorized_keys
+			chmod 700 .ssh
+			chmod 644 .ssh/authorized_keys
+
+		Die Zugriffsrechte des Verzeichnisses und der Datei authorized_keys müssen
+		sorgsam gesetzt sein!
+
+		Die Datei /etc/passwd muss angepasst werden. Der letzte Eintrag in der Zeile
+		muss von /sbin/nologin auf /bin/ash umgeschrieben werden, damit ein Login möglich wird.
+		
+		Auf dem (Synology)-Server muss ein FTP-Rootverzeichnis für diesen User eingerichtet werden:
+		in SystemSteuerung unter Dateidienste/FTP/Allgemein/Erweiterte Einstellungen
+			=> Sicherheitseinstellungen => Benutzer Rootverzeichnisse ändern 
+			=> Benutzer auswählen
+			hier den neuen Benutzer hinzufügen und bei "Root-Verzeichnis ändern zu"
+			"Benutzerbasis" auswählen!
+		
+		Das Verzeichnis, das in den ServerZugangsDaten als Wurzelverzeichnis genannten
+		ist, muss auf dem Server angelegt werden:
+			mkdir Arbeitsdienstabrechnungen
+			mkdir Arbeitsdienstabrechnungen/Daten
+			chmod -R go-rwx Arbeitsdienstabrechnungen/
+			
+		Die Daten-Grundausstattung muss in das Datenverzeichnis kopiert werden.
+			
+	Client: (In einer Shell, die ssh kann!)
+        ssh-Schlüssel erstellen mittels "ssh-keygen"
+			Nicht vergessen, die Datei anzugeben, in der der Schlüssel gespeichert
+			werden soll! Sonst wird die Standard-Datei überschrieben!
+		
+        Inhalt von id_rsa.pub auf den Server in die Datei "authorized_keys"
+         im Verzeichnis .ssh des Benutzers pusten
+
+        ssh -p 5022 -i .\id_rsa Test@syniphos
+            => Das muss ein reibungsfreies Login ergeben!

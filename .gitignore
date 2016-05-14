@@ -5,18 +5,28 @@ build/
 # Grade's privates Verzeichnis:
 .gradle/
 
+
+#####################################
+
+# Vertrauliche Daten:
+Anmerkungen.txt
+
 Einstellungen/
-
 misc/SandBox
-
 Daten.save/
 Daten.save2/
+Versionen/
+misc/SSH-Schluessel/
 
-*.class
+BasisDaten*
 
 # Dateien, die zum Laufzeitsystem des Programmes gehören:
 Daten/
 Ausgabe.txt
+
+#####################################
+
+*.class
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
