@@ -38,10 +38,10 @@ public class BalanceReader
 
     private final IItemFactory<Balance> m_ItemFactory;
 
-    public BalanceReader( final File fFile, final boolean fTakePreviousBalanceValues )
+    public BalanceReader( final File fFile )
     {
         m_File = fFile;
-        m_ItemFactory = new BalanceFactory( fTakePreviousBalanceValues );
+        m_ItemFactory = new BalanceFactory();
     }
 
     public void read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception

@@ -11,6 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.inout;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -31,11 +33,13 @@ import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public class Writer
 {
     private static final Logger sm_Log = Logger.getLogger(Writer.class);
+    private static final String LF = "\r\n";
 
     // ------------------------------------------------------------------------
     private final ADH_DataProvider m_DataProvider;
@@ -67,7 +71,7 @@ public class Writer
             // Die Arbeitsdiensteinträge erhalten "Abgerechnet am"
             // wenn ihr Datum vor dem Enddatum des Abrechnungszeitraumes liegt.
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste.csv", "ISO-8859-1");
-            aFileWriter.write( String.format("%s;%s;%s;%s;%s\r\n",
+            aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.DATE, IKnownColumns.HOURSWORKED,
                     IKnownColumns.CLEARED) );
@@ -78,7 +82,7 @@ public class Writer
                 }
                 final int aMemberID = aWorkEvent.getMemberID();
                 final String aMemberName = fDataProvider.getMemberName( aMemberID );
-                final String aLine = String.format( "%s;%s;%s;%.2f;%s\r\n",
+                final String aLine = String.format( "%s;%s;%s;%.2f;%s"+LF,
                         aMemberID, aMemberName,
                         toStringWithDots(aWorkEventDate),
                         aWorkEvent.getHours()/100.0f,
@@ -118,7 +122,7 @@ public class Writer
     {
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/ZuZahlendeStunden.csv", "ISO-8859-1");
-            aFileWriter.write( String.format("%s;%s;%s\r\n", IKnownColumns.MEMBERID, IKnownColumns.NAME, IKnownColumns.HOURSTOPAY ) );
+            aFileWriter.write( String.format("%s;%s;%s"+LF, IKnownColumns.MEMBERID, IKnownColumns.NAME, IKnownColumns.HOURSTOPAY ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
                 final DutyCharge aCharge = aSingleInfo.getDutyCharge();
                 final IClubMember aMember = aSingleInfo.getMember();
@@ -130,7 +134,7 @@ public class Writer
                 if( aHoursToPay == 0 ){
                     continue;
                 }
-                final String aLine = String.format( "%s;%s;%.2f\r\n", aMemberID,
+                final String aLine = String.format( "%s;%s;%.2f"+LF, aMemberID,
                         fDataProvider.getMemberName( aMemberID ), aHoursToPay/100.0f );
 //                sm_Log.info( aLine );
                 aFileWriter.write( aLine );
@@ -151,7 +155,7 @@ public class Writer
         final String aBalanceAt = getNewBalanceDateString( aIP.getEnd() );
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", "ISO-8859-1");
-            aFileWriter.write( String.format("%s;%s;%s;%s;%s\r\n",
+            aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT_ALT, IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
@@ -162,7 +166,7 @@ public class Writer
                 if( aBalance_Old == 0 && aBalance_New == 0 ){
                     continue;
                 }
-                final String aLine = String.format( "%s;%s;%.2f;%.2f;%s\r\n",
+                final String aLine = String.format( "%s;%s;%.2f;%.2f;%s"+LF,
                         aMemberID, fDataProvider.getMemberName( aMemberID ),
                         aBalance_Old/100.0f, aBalance_New/100.0f, aBalanceAt );
 //                sm_Log.info( aLine );
@@ -187,6 +191,28 @@ public class Writer
             return "";
         }
         return String.format( "%02d.%02d.%04d", fDate.getDayOfMonth(), fDate.getMonthValue(), fDate.getYear() );
+    }
+
+    public static void shiftBalanceValues(final File fFile) throws IOException
+    {
+        final List<String>aColumnNames = FileUtils.readColumnNames( fFile );
+
+        final List<String> aShiftedLines = new ArrayList<>();
+        aShiftedLines.add( String.join( ";", aColumnNames ) );
+        final List<String> aAllLines = FileUtils.readAllLines( fFile, 1 );
+        for( final String aSingleLine : aAllLines ){
+            final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
+            final String aGuthaben_Wert     = aAttributes.get( IKnownColumns.GUTHABEN_WERT );
+//            final String aGuthaben_Wert_Alt = aAttributes.get( IKnownColumns.GUTHABEN_WERT_ALT );
+            aAttributes.put( IKnownColumns.GUTHABEN_WERT_ALT, aGuthaben_Wert );
+            aShiftedLines.add( String.join( ";", aAttributes.values() ) );
+        }
+
+        final PrintWriter aFileWriter = new PrintWriter(fFile, "ISO-8859-1");
+        for( final String aShiftedLine : aShiftedLines ){
+            aFileWriter.write( aShiftedLine+LF);
+        }
+        aFileWriter.close();
     }
 
 }

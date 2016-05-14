@@ -173,7 +173,13 @@ public class WorkEventsPanel extends JPanel
 
     public void populate(final TBLModel_WorkEvents fModel)
     {
+        // Das kurzzeitige Entkoppeln der Table vom Sorter war notwendig,
+        // um eine Exception zu verhindern, deren Ursache ich nicht komplett
+        // verstanden habe:
+        m_table.setRowSorter( null );
         m_sorter.setModel( fModel );
+        m_table.setRowSorter( m_sorter  );
+
         m_table.setModel( fModel );
         m_table.getColumnModel().getColumn(0).setMaxWidth(75);
         m_table.getColumnModel().getColumn(1).setMaxWidth(75);

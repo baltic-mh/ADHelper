@@ -98,6 +98,7 @@ public class ADH_Application
             @Override
             public void run()
             {
+                sm_Log.info("==========================================================");
                 try{
                     IntegrityChecker.check( AllSettings.INSTANCE );
                     final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE);
@@ -293,6 +294,7 @@ public class ADH_Application
             }
         }
         sm_Log.info(fInfo);
+        sm_Log.info("==========================================================");
         System.exit( fExitCode );
     }
 

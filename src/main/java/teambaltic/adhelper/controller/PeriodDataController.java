@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.inout.Writer;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.IAppSettings;
@@ -198,11 +199,14 @@ public class PeriodDataController implements IPeriodDataController
 
         final File aWEF = fPredecessorFolder.resolve( fFileName_WorkEvents ).toFile();
         FileUtils.copyFileToFolder( aWEF, fPeriodDataFolder );
-        final String aNewName = FileUtils.getFileNameWithPostfixAppended( aWEF, "_old" );
-        FileUtils.copyFileToFolder( aWEF, fPeriodDataFolder, aNewName );
+        final String aNewName_WEF = FileUtils.getFileNameWithPostfixAppended( aWEF, "_old" );
+        FileUtils.copyFileToFolder( aWEF, fPeriodDataFolder, aNewName_WEF );
 
         final File aBalancesFile = fPredecessorFolder.resolve( fFileName_Balances ).toFile();
-        FileUtils.copyFileToFolder( aBalancesFile, fPeriodDataFolder );
+        final Path aShiftedBalanceFile = FileUtils.copyFileToFolder( aBalancesFile, fPeriodDataFolder );
+        final String aNewName_BF = FileUtils.getFileNameWithPostfixAppended( aBalancesFile, "_old" );
+        FileUtils.copyFileToFolder( aBalancesFile, fPeriodDataFolder, aNewName_BF );
+        Writer.shiftBalanceValues( aShiftedBalanceFile.toFile() );
     }
 
     private PeriodData getNewestPeriodData()

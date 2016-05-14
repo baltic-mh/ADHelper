@@ -198,6 +198,9 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
         if( ALLPERIODS == fSelectedPeriod ){
             return getPDC().isActivePeriodFinished();
         }
+        if( fSelectedPeriod.isActive() ){
+            return false;
+        }
         final boolean aReadOnly = fSelectedDate == null ? true: getPDC().isFinished( fSelectedDate );
         return aReadOnly;
     }

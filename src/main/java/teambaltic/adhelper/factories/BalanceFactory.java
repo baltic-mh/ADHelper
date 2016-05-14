@@ -24,13 +24,8 @@ public class BalanceFactory implements IItemFactory<Balance>
 {
     private static final Logger sm_Log = Logger.getLogger(BalanceFactory.class);
 
-    // ------------------------------------------------------------------------
-    private final String m_Columnname_BalanceValue;
-    // ------------------------------------------------------------------------
-
-    public BalanceFactory(final boolean fTakePreviousBalanceValues)
+    public BalanceFactory()
     {
-        m_Columnname_BalanceValue = fTakePreviousBalanceValues ? IKnownColumns.GUTHABEN_WERT_ALT : IKnownColumns.GUTHABEN_WERT;
     }
 
     @Override
@@ -39,7 +34,7 @@ public class BalanceFactory implements IItemFactory<Balance>
         String aBalanceValueString   = null;
         String aBalanceValidOnString = null;
         for( final String aColumnName : fAttributes.keySet() ){
-            if( m_Columnname_BalanceValue.equals( aColumnName )){
+            if( IKnownColumns.GUTHABEN_WERT_ALT.equals( aColumnName )){
                 aBalanceValueString = fAttributes.get( aColumnName );
             } else if( IKnownColumns.GUTHABEN_AM.equals( aColumnName ) ){
                 aBalanceValidOnString = fAttributes.get( aColumnName );

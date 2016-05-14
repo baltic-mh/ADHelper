@@ -92,7 +92,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen
         readBaseData( getPDC().getFile_BaseData( fPeriodData ) );
         readWorkEvents( getPDC().getFile_WorkEvents( fPeriodData ) );
-        readBalances( getPDC().getFile_Balances( fPeriodData ), !getPDC().isFinished( fPeriodData ) );
+        readBalances( getPDC().getFile_Balances( fPeriodData ) );
 
         populateFreeFromDutySets( aPeriod );
         joinRelatives();
@@ -122,9 +122,9 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         }
     }
 
-    public void readBalances( final Path fFileToReadFrom, final boolean fTakePreviousBalanceValues )
+    public void readBalances( final Path fFileToReadFrom )
     {
-        final BalanceReader aReader = new BalanceReader( fFileToReadFrom.toFile(), fTakePreviousBalanceValues );
+        final BalanceReader aReader = new BalanceReader( fFileToReadFrom.toFile() );
         try{
             aReader.read( this );
         }catch( final Exception fEx ){

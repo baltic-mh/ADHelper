@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
+import org.apache.log4j.Logger;
+
 import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.gui.DateChooserFrame;
 import teambaltic.adhelper.model.IPeriod;
@@ -26,6 +28,8 @@ import teambaltic.adhelper.model.PeriodData;
 // ############################################################################
 public class NewWorkEventDateListener implements ActionListener
 {
+    private static final Logger sm_Log = Logger.getLogger(NewWorkEventDateListener.class);
+
     private final DateChooserFrame m_DateChooserFrame;
 
     // ------------------------------------------------------------------------
@@ -66,7 +70,7 @@ public class NewWorkEventDateListener implements ActionListener
                 if( aSelectedDate == null || aSelectedDate.compareTo( aLimit ) <= 0 ){
                     showWarnDialog( aSelectedDate, aLimit );
                 } else {
-                    System.err.println( "Neuen Arbeitdiensttermin anlegen: "+aSelectedDate );
+                    sm_Log.info( "Neuer Arbeitdiensttermin: "+aSelectedDate );
                     final JComboBox<LocalDate> aCmb_Date = getManageWorkEventsListener().getCmb_Date();
                     aCmb_Date.addItem( aSelectedDate );
                     aCmb_Date.setSelectedIndex( aCmb_Date.getItemCount()-1 );

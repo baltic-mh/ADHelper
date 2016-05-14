@@ -221,16 +221,16 @@ public final class FileUtils
         copyFileToFolder( fFile.toFile(), fOutputFolder );
     }
 
-    public static void copyFileToFolder( final File fFile, final Path fOutputFolder ) throws IOException
+    public static Path copyFileToFolder( final File fFile, final Path fOutputFolder ) throws IOException
     {
-        copyFileToFolder( fFile, fOutputFolder, fFile.getName());
+        return copyFileToFolder( fFile, fOutputFolder, fFile.getName());
     }
 
-    public static void copyFileToFolder(
+    public static Path copyFileToFolder(
             final File fFile, final Path fTargetFolder, final String fTargetName ) throws IOException
     {
         final Path aTargetPath = Paths.get( fTargetFolder.toString(), fTargetName );
-        Files.copy( fFile.toPath(), aTargetPath,
+        return Files.copy( fFile.toPath(), aTargetPath,
                     StandardCopyOption.REPLACE_EXISTING,
                     StandardCopyOption.COPY_ATTRIBUTES );
     }
