@@ -188,7 +188,7 @@ public class TransferController implements ITransferController
             sm_Log.warn( "Kein Verschlüsselungsobjekt! Hochladen nicht möglich!" );
             return null;
         }
-        final Path aLocalFile_RelativeToRoot = getRootFolder().resolve( fFileToUpload ).normalize();
+        final Path aLocalFile_RelativeToRoot = fFileToUpload.normalize();
         if(Files.isDirectory( aLocalFile_RelativeToRoot )){
             throw new UnsupportedOperationException("Noch nicht implementiert!");
         }
@@ -255,6 +255,9 @@ public class TransferController implements ITransferController
             return false;
         }
         final String aFileName_Uploaded = getAppSettings().getFileName_Uploaded();
+        // Damit die Datei mit der Upload-Info auch auf den Server kommt,
+        // muss sie bereits VOR dem Zippen da hineingeschrieben werden.
+        // Wenn dann das Upload schief geht, stimmt die Angabe natürlich nicht!
         final Path aUploadInfoFile = aFolderToUpload.resolve( aFileName_Uploaded );
         FileUtils.writeUploadInfo( aUploadInfoFile, getUserInfo() );
         final Path aZipped = ZipUtils.zip( aFolderToUpload );

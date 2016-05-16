@@ -101,7 +101,7 @@ public final class IntegrityChecker
             aSeen_IDs.add( aID );
 
             final String aRefIDString = aAttributes.get( IKnownColumns.LINKID );
-            if( aRefIDString != null ){
+            if( aRefIDString != null && !"".equals( aRefIDString ) ){
                 final Integer aRefID = Integer.parseInt( aRefIDString );
                 aSeen_RefIDs.add( aRefID );
             }

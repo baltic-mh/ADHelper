@@ -150,6 +150,10 @@ public class PeriodDataController implements IPeriodDataController
             m_PeriodDataList.add( aPeriodData );
         }
         Collections.sort( m_PeriodDataList, PERIOD_COMPARATOR );
+        final PeriodData aNewestPeriodData = getNewestPeriodData();
+        if( !isFinished( aNewestPeriodData ) ){
+            setActivePeriod( aNewestPeriodData );
+        }
     }
 
     @Override

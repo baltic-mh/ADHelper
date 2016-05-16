@@ -61,5 +61,12 @@ public class UserSettings extends ASettings<IUserSettings.EKey>
             return null;
         }
     }
+
+    @Override
+    public boolean isBauausschuss()
+    {
+        final ERole aRole = getRole();
+        return ERole.BAUAUSSCHUSS.equals( aRole );
+    }
 }
 // ############################################################################

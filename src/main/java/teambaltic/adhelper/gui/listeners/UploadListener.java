@@ -59,7 +59,6 @@ public class UploadListener implements ActionListener
     public void actionPerformed( final ActionEvent fEvent )
     {
         try{
-            boolean aUploaded = false;
             ERole aRole = m_UserSettingsListener.getUserSettings().getRole();
             while( aRole == null ) {
                 final String aMsg = "Esikmos dürfen hier schon mal gar nichts! Bitte Rolle angeben!";
@@ -70,20 +69,19 @@ public class UploadListener implements ActionListener
             }
             switch( aRole ){
                 case BAUAUSSCHUSS:
-                    aUploaded = m_TransferController.uploadPeriodData();
+                    m_TransferController.uploadPeriodData();
                     break;
                 case MITGLIEDERWART:
-                    aUploaded = uploadBaseData();
+                    uploadBaseData();
 
                 default:
             }
-//            m_Panel.enableBtn_Upload( !aUploaded );
 
         }catch( final Exception fEx ){
             final String aMsg = "Probleme beim Hochladen der Daten: "+fEx.getMessage();
             JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
                     JOptionPane.ERROR_MESSAGE);
-            sm_Log.warn("Exception: "+aMsg );
+            sm_Log.warn("Exception: ", fEx );
         }
     }
 

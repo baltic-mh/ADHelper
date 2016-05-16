@@ -64,6 +64,11 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private final boolean m_IsBauausschuss;
+    public boolean isBauausschuss(){ return m_IsBauausschuss; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private boolean m_Dirty;
     private boolean isDirty(){ return m_Dirty; }
     private void setDirty( final boolean fDirty ){ m_Dirty = fDirty; }
@@ -73,10 +78,15 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
 
     private final NewWorkEventDateListener m_NewWorkEventDateListener;
 
-    public ManageWorkEventsListener(final ADH_DataProvider fDataProvider, final IPeriodDataController fPDC )
+    public ManageWorkEventsListener(
+            final ADH_DataProvider fDataProvider,
+            final IPeriodDataController fPDC,
+            final boolean fIsBauausschuss )
     {
-        m_DataProvider = fDataProvider;
-        m_PDC = fPDC;
+        m_DataProvider   = fDataProvider;
+        m_PDC            = fPDC;
+        m_IsBauausschuss = fIsBauausschuss;
+
         m_WorkEventsDialog = new WorkEventsDialog();
         final DateChooserFrame aDateChooserFrame = new DateChooserFrame();
         m_NewWorkEventDateListener = new NewWorkEventDateListener(this, aDateChooserFrame, fPDC );
@@ -172,7 +182,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
             case "DATESELECTED":
                 final LocalDate aSelectedDate = (LocalDate) aCmb_Date.getSelectedItem();
                 final Object[][] aWorkEventData = getWorkEventData( aSelectedDate, getDataProvider() );
-                final boolean aReadOnly = isReadOnly( aSelectedPeriod, aSelectedDate );
+                final boolean aReadOnly = !isBauausschuss() || isReadOnly( aSelectedPeriod, aSelectedDate );
                 final TBLModel_WorkEvents aModel = new TBLModel_WorkEvents( aWorkEventData, aReadOnly );
                 aModel.addTableModelListener( this );
                 getWorkEventsPanel().populate( aModel );

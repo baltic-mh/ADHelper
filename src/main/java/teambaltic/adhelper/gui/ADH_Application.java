@@ -108,6 +108,7 @@ public class ADH_Application
                 sm_Log.info("==========================================================");
                 try{
                     initSettings( aAppWindow );
+                    final boolean aIsBauausschuss = AllSettings.INSTANCE.getUserSettings().isBauausschuss();
                     IntegrityChecker.check( AllSettings.INSTANCE );
                     final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE);
 
@@ -131,14 +132,16 @@ public class ADH_Application
                     final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
                     if( !aOffline ){
                         aTC.setPeriodDataController( aPDC );
-                        // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
-                        aPDC.createNewPeriod();
+                        if( aIsBauausschuss ){
+                            // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
+                            aPDC.createNewPeriod();
+                        }
                     }
                     aAppWindow.setTitle( aOffline );
                     aAppWindow.addShutdownListener( aTC );
                     final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
 
-                    aAppWindow.initObjects( aDataProvider, aPDC, aTC );
+                    aAppWindow.initObjects( aDataProvider, aPDC, aTC, aIsBauausschuss );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
@@ -179,7 +182,8 @@ public class ADH_Application
 
     private void initObjects(final ADH_DataProvider fDataProvider,
             final IPeriodDataController fPDC,
-            final ITransferController fTransferController)
+            final ITransferController fTransferController,
+            final boolean fIsBauausschuss)
     {
         m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC );
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
@@ -202,7 +206,7 @@ public class ADH_Application
         final JComboBox<IClubMember> aCB_Members = m_MainPanel.getCB_Members();
         aCB_Members.addActionListener( aMemberSelectedListener );
 
-        final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC);
+        final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC, fIsBauausschuss);
         m_MainPanel.getBtn_ManageWorkEvents().addActionListener( aManageWorkEventsListener );
         final JComboBox<PeriodData> aCB_Period2 = aManageWorkEventsListener.getCmb_Period();
         aCB_Period2.addItemListener( aPDCL );

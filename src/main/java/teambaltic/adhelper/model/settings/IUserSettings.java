@@ -45,6 +45,7 @@ public interface IUserSettings extends ISettings<IUserSettings.EKey>
     String getEMail();
     String getDecoratedEMail();
     ERole getRole();
+    boolean isBauausschuss();
 
 }
 
