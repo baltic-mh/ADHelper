@@ -1,8 +1,32 @@
+Start-Verzeichnis
+    Das Programm sieht das Verzeichnis, in dem sein Executable steht, als sein
+    Start-Verzeichnis für alle seine Aktivitäten an. 
+	
+	Hier wird eine Datei "ADHelper.prop" erwartet, in der Systemproperties
+	gesetzt werden können.
+	
+	Momentan gibt es nur eine mit folgendem Schlüssel und Bedeutung:
+	
+	===========================================================================
+	Schlüssel		Bedeutung
+	===========================================================================
+	FOLDERNAME_ROOT	Wurzelverzeichnis relativ zum Start-Verzeichnis. Alle
+					genannten Pfade beziehen sich immer auf dieses
+					Wurzelverzeichnis.
+					Es muss sichergestellt sein, dass das Programm in seinem
+					Wurzelverzeichnis Schreibrechte hat. 
+					Bei der Übertragung der Daten zum Server werden sie dort
+					unterhalb eines gleichnamigen Verzeichnis abgelegt.
+					Der Wert dieses Verzeichnisses ist also nicht ohne weiteres
+					veränderbar, da vorausgesetzt wird, dass auf dem Server
+					ein solches Verzeichnis existiert.
+	===========================================================================
+
 SingletonWatcher
 
     Die Applikation überprüft, ob bereits eine andere Instanz läuft.
     
-    Dazu überprüft sie, ob sich auf dem Server eine Datei "BusyFile.txt"
+    Dazu stellt sie fest, ob sich auf dem Server eine Datei "BusyFile.txt"
     befindet und diese noch aktuell ist. Ist beides gegeben, beendet sich die 
     Applikation.
     
@@ -62,19 +86,6 @@ Einstellungen
     
     Alle im Verzeichnis "Einstellungen" liegenden Dateien sind nicht Bestandteil
     der Applikation und werden separat verteilt!
-    
-Start-Verzeichnis
-    Das Programm sieht das Verzeichnis, in dem sein Executable steht, als sein
-    Wurzelverzeichnis für alle seine Aktivitäten an. Das bedeutet, dass sich
-    alle genannten Pfade immer auf dieses Wurzelverzeichnis beziehen.
-    
-    Es muss sichergestellt sein, dass das Programm in seinem Wurzelverzeichnis
-    Schreibrechte hat. 
-    
-    Über eine Systemproperty kann man dem Programm ein anderes Verzeichnis als
-    Wurzelverzeichnis mitteilen. Der Schlüssel für die Systemproperty ist
-        "FOLDERNAME_ROOT"
-        
         
 ================================================================================
 Einrichten eines neuen Benutzers:
