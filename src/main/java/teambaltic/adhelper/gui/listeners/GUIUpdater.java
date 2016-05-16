@@ -228,7 +228,8 @@ public class GUIUpdater
     {
         final boolean aFinished = fPDC.isFinished( fPeriodData );
         fPanel.enableBtn_Finish( !aFinished );
-        fPanel.enableBtn_Upload( aFinished && !fPDC.isUploaded( fPeriodData ) );
+//        fPanel.enableBtn_Upload( aFinished && !fPDC.isUploaded( fPeriodData ) );
+        fPanel.enableBtn_Upload( true );
 
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         fPanel.configure( aUserSettings.getRole() );

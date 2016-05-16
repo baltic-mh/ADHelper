@@ -374,7 +374,12 @@ public class TransferController implements ITransferController
         if( !Files.exists( aLocalCheckSumFile )){
             return true;
         }
+        final long aLastModified_Folder = fFolderToUpload.toFile().lastModified();
+        final long aLastModified_LocalCheckSumFile = aLocalCheckSumFile.toFile().lastModified();
         final CheckSumInfo aCSILocal = CheckSumInfo.readFromFile( aLocalCheckSumFile );
+        if( aLastModified_Folder > aLastModified_LocalCheckSumFile ){
+            return true;
+        }
         final long aTimeStampOfUpload = aCSILocal.getTimeStamp();
         for( final File aEntry : aEntries ){
             final long aLastModified = aEntry.lastModified();

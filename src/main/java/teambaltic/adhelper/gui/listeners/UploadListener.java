@@ -77,7 +77,7 @@ public class UploadListener implements ActionListener
 
                 default:
             }
-            m_Panel.enableBtn_Upload( !aUploaded );
+//            m_Panel.enableBtn_Upload( !aUploaded );
 
         }catch( final Exception fEx ){
             final String aMsg = "Probleme beim Hochladen der Daten: "+fEx.getMessage();

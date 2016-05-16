@@ -11,7 +11,7 @@
 
 	<property name="build.type" value="Release"/>
 	<property name="build.version.major" value="1.0"/>
-    <property name="build.version.minor" value="0.1"/>
+    <property name="build.version.minor" value="0.2"/>
 
 	<!-- 
 	###########################################################################

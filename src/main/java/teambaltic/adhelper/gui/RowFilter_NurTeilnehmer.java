@@ -35,12 +35,21 @@ public class RowFilter_NurTeilnehmer extends RowFilter<TBLModel_WorkEvents, Inte
         if( !isEnabled() ){
             return true;
         }
-        final Object aValue = fEntry.getValue( 0 );
+        Object aValue = fEntry.getValue( 0 );
         if( aValue instanceof Boolean ){
-            final boolean aDabei = ((Boolean)aValue).booleanValue();
-            return aDabei;
+            final boolean aWarDabei = ((Boolean)aValue).booleanValue();
+            if( aWarDabei ){
+                return true;
+            }
         }
-        return true;
+        aValue = fEntry.getValue( 3 );
+        if( aValue instanceof Double ){
+            final boolean aHatGearbeitet = ((Double)aValue).doubleValue() > 0.0;
+            if( aHatGearbeitet ){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
