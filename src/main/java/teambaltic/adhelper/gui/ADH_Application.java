@@ -15,9 +15,14 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -88,8 +93,10 @@ public class ADH_Application
      */
     public static void main( final String[] args )
     {
-        System.setProperty( "appname", "ADHelper" );
+        final String aAppname = "ADHelper";
+        System.setProperty( "appname", aAppname );
         Log4J.initLog4J();
+        readAndSetSystemProperties(aAppname);
 
         final ADH_Application aAppWindow = new ADH_Application();
 
@@ -100,9 +107,9 @@ public class ADH_Application
             {
                 sm_Log.info("==========================================================");
                 try{
+                    initSettings( aAppWindow );
                     IntegrityChecker.check( AllSettings.INSTANCE );
                     final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE);
-                    initSettings( aAppWindow );
 
                     aAppWindow.initialize();
                     aAppWindow.setVisible( true );
@@ -132,7 +139,6 @@ public class ADH_Application
                     final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
 
                     aAppWindow.initObjects( aDataProvider, aPDC, aTC );
-//                    aAppWindow.configure( aPDC, aDataProvider.getPeriodData() );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
@@ -317,6 +323,30 @@ public class ADH_Application
         final ERole aRole = aUserSettings.getRole();
         fTC.updateBaseDataFromServer( aFile_BaseData, aRole );
         fTC.updatePeriodDataFromServer();
+    }
+
+    private static void readAndSetSystemProperties(final String fAppName)
+    {
+        final Path aSysPropFile = Paths.get( fAppName+".prop" );
+        if( !Files.exists( aSysPropFile ) ){
+            return;
+        }
+        FileInputStream aInputStream;
+        try{
+            aInputStream = new FileInputStream( aSysPropFile.toFile() );
+            final Properties aSysProps = new Properties();
+            aSysProps.load( aInputStream );
+            final Enumeration<Object> aKeys = aSysProps.keys();
+            while( aKeys.hasMoreElements() ){
+                final String aKey = (String) aKeys.nextElement();
+                final String aValue = aSysProps.getProperty( aKey );
+                sm_Log.info(String.format( "SystemProperty: %s => %s", aKey, aValue));
+                System.setProperty( aKey, aValue );
+            }
+        }catch( final Exception fEx ){
+            sm_Log.warn("Exception while loading system properties from: "+aSysPropFile, fEx );
+        }
+
     }
 
 }

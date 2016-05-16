@@ -52,8 +52,10 @@ public class InitHelper
             throw new Exception( "Keine Server-Zugangsdaten gefunden! Das wird nix!");
         }
 
-        sm_Log.info( "Server ist: "+aRASettings.getServerName());
-        aRA = new RemoteAccess( aRASettings );
+        sm_Log.info( "Server ist: "+aRASettings.getServerName() );
+        final String aFolderName_Root = getAppSettings().getFolderName_Root();
+        sm_Log.info( "Wurzelverzeichnis: "+aFolderName_Root );
+        aRA = new RemoteAccess( aFolderName_Root, aRASettings );
         aRA.init();
 
         final IAppSettings aAppSettings = getAppSettings();

@@ -13,6 +13,8 @@ package teambaltic.adhelper.model.settings;
 
 import java.nio.file.Path;
 
+import teambaltic.adhelper.model.settings.IRemoteAccessSettings.EKey;
+
 // ############################################################################
 public enum AllSettings implements IAllSettings
 {
@@ -64,6 +66,7 @@ public enum AllSettings implements IAllSettings
         RemoteAccessSettings aRASettings = null;
         try{
             aRASettings = new RemoteAccessSettings( aRemoteAccessFile );
+            aRASettings.setStringValue( EKey.REMOTEROOTDIR, m_AppSettings.getFolderName_Root());
         }catch( final Exception fEx ){
         }
         m_RemoteAccessSettings = aRASettings;

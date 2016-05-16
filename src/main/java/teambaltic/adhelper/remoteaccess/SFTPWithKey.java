@@ -36,12 +36,6 @@ import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 //############################################################################
 public class SFTPWithKey implements IRemoteAccess
 {
-//    private static final Logger sm_Log = Logger.getLogger(SFTPWithKey.class);
-
-    // ------------------------------------------------------------------------
-    private final String m_RemoteRootDir;
-    private String getRemoteRootDir(){ return m_RemoteRootDir; }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final String m_Server;
@@ -74,19 +68,17 @@ public class SFTPWithKey implements IRemoteAccess
     // ------------------------------------------------------------------------
 
     public SFTPWithKey(
-            final String fRemoteRootDir,
             final String fServer,
             final int    fPort,
             final String fUser,
             final File fKeyFile )
     {
-        m_RemoteRootDir = fRemoteRootDir;
         m_Server    = fServer;
         m_Port      = fPort;
         m_User      = fUser;
         m_KeyFile   = fKeyFile;
 
-        m_PathPrefix = createPathPrefix(getUser(), getServer(), getPort(), getRemoteRootDir());
+        m_PathPrefix = createPathPrefix(getUser(), getServer(), getPort() );
     }
 
     @Override
@@ -294,10 +286,10 @@ public class SFTPWithKey implements IRemoteAccess
         return String.format( "%s/%s", fPathPrefix, fRemotePath );
     }
     private static String createPathPrefix(
-            final String fUser, final String fServer, final int fPort, final String fRemoteRootDir)
+            final String fUser, final String fServer, final int fPort )
     {
-        final String aPrefix = String.format( "sftp://%s@%s:%d/%s/",
-                fUser, fServer, fPort, fRemoteRootDir );
+        final String aPrefix = String.format( "sftp://%s@%s:%d/",
+                fUser, fServer, fPort );
         return aPrefix;
     }
 

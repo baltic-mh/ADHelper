@@ -49,7 +49,7 @@ public class SFTPWithKeyTest
     public static void initOnceBeforeStart()
     {
         Log4J.initLog4J();
-        sm_SFTPWithKey = new SFTPWithKey( "Test-Daten", "syniphos", 5022, "Test", new File("./Einstellungen/ssh/id_rsa"));
+        sm_SFTPWithKey = new SFTPWithKey( "syniphos", 5022, "Test", new File("./Einstellungen/ssh/id_rsa"));
 
     }
     @AfterClass

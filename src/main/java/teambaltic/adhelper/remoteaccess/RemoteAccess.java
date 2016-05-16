@@ -13,6 +13,7 @@ package teambaltic.adhelper.remoteaccess;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class RemoteAccess implements IRemoteAccess
 
     private final IRemoteAccess m_RemoteEngine;
 
-    public RemoteAccess(final IRemoteAccessSettings fRASettings) throws Exception
+    public RemoteAccess(final String fFolderRootName, final IRemoteAccessSettings fRASettings) throws Exception
     {
-        m_RemoteEngine = createRemoteEngine(fRASettings);
+        m_RemoteEngine = createRemoteEngine(fFolderRootName, fRASettings);
     }
 
     @Override
@@ -109,14 +110,15 @@ public class RemoteAccess implements IRemoteAccess
         return m_RemoteEngine.download( fPathPairs );
     }
 
-    private static IRemoteAccess createRemoteEngine(final IRemoteAccessSettings fRASettings)
+    private static IRemoteAccess createRemoteEngine(
+            final String fFolderRootName, final IRemoteAccessSettings fRASettings)
             throws Exception
     {
         final String aProtocol = fRASettings.getProtocol();
         IRemoteAccess aRemoteEngine = null;
         switch( aProtocol ){
             case "sftp":
-                aRemoteEngine = createRemoteEngine_SFTP( fRASettings );
+                aRemoteEngine = createRemoteEngine_SFTP( fFolderRootName, fRASettings );
                 break;
 
             default:
@@ -126,15 +128,17 @@ public class RemoteAccess implements IRemoteAccess
         return aRemoteEngine;
     }
 
-    private static IRemoteAccess createRemoteEngine_SFTP( final IRemoteAccessSettings fSettings ) throws FileSystemException
+    private static IRemoteAccess createRemoteEngine_SFTP(
+            final String fFolderRootName,
+            final IRemoteAccessSettings fSettings )
+                    throws FileSystemException
     {
         final String aServer        = fSettings.getServerName();
         final int aPort             = fSettings.getPort();
         final String aUser          = fSettings.getUserName();
-        final String aRemoteRootDir = fSettings.getRemoteRootDir();
         final String aKeyFileName   = fSettings.getKeyFile();
-        final File aKeyFile = new File(aKeyFileName);
-        final SFTPWithKey aRemoteEngine = new SFTPWithKey(aRemoteRootDir, aServer, aPort, aUser, aKeyFile);
+        final File aKeyFile = Paths.get( fFolderRootName, aKeyFileName ).toFile();
+        final SFTPWithKey aRemoteEngine = new SFTPWithKey( aServer, aPort, aUser, aKeyFile);
         return aRemoteEngine;
     }
 
