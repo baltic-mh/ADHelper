@@ -13,7 +13,6 @@ package teambaltic.adhelper.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -48,8 +47,8 @@ public final class Log4J
         try {
             aProperties.load(is);
             PropertyConfigurator.configure(aProperties);
-        } catch (final IOException fEx) {
-            LOG.warn("Could not load log4j properties! ", fEx);
+        } catch (final Throwable fEx) {
+            System.err.println("Could not load log4j properties! "+ fEx.getMessage());
         }
     }
 

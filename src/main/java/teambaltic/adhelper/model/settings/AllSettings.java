@@ -67,8 +67,7 @@ public enum AllSettings implements IAllSettings
         try{
             aRASettings = new RemoteAccessSettings( aRemoteAccessFile );
             aRASettings.setStringValue( EKey.REMOTEROOTDIR, m_AppSettings.getFolderName_Root());
-        }catch( final Exception fEx ){
-        }
+        }catch( final Exception fEx ){ /**/ }
         m_RemoteAccessSettings = aRASettings;
 
     }

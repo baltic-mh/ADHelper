@@ -1,3 +1,163 @@
+###############################################################################
+# README.FIRST
+###############################################################################
+Installation
+	Das Programm besteht aus einem Executable und einer zugehörigen 
+	"Client-Grundausstattung" als Zip-Datei. Die Client-Grundausstattung
+	beinhaltet die Server-ZugangsDaten und wird daher nicht zusammen mit dem
+	Executable verteilt. Diese Daten sind unter keinen Umständen an
+	Dritte weiterzugeben.
+	
+	Das Executable wird am besten in ein eigenes leeres Verzeichnis kopiert.
+	Die Zip-Datei ist in dasselbe Verzeichnis zu kopieren und dort zu entpacken.
+	Danach kann die Zip-Datei gelöscht werden.
+	
+Erster Start
+	Wenn das Programm das erste Mal gestartet wird, erscheint ein Dialog
+	zur Eingabe der Benutzerdaten. Hier ist ein Name und eine zugehörige
+	eMail-Adresse anzugeben. Diese Daten werden benutzt, um beim Hochladen
+	von Dateien den Absender zu bestimmen.
+	
+	Wichtig ist die Auswahl der Rolle, in der man das Programm benutzen möchte.
+	Es gibt die beiden Rollen MITGLIEDERWART und BAUAUSSCHUSS.
+	
+	In der Rolle MITGLIEDERWART hat man quasi nur lesenden Zugriff auf die
+	Daten. Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine 
+	aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
+	Server zu laden.
+
+	Nach Eingabe der Benutzerdaten kann das Programm bestimmungsgemäß eingesetzt
+	werden. Es werden alle wesentlichen Informationen über den Ablauf im
+	Programm in eine Log-Datei geschrieben. Diese sollte hin und wieder auf
+	Unregelmäßigkeiten hin durchgesehen werden.
+
+###############################################################################
+# DATEIEN
+###############################################################################
+Alle vom Programm benutzten und erzeugten Dateien liegen unterhalb des
+Verzeichnisses, in dem das Executable wohnt. Dieses Unterverzeichnis heißt
+"Arbeitsdienstabrechnungen" (ist streng genommen konfigurierbar - aber nur für
+Insider ;-) ). Alle anderen Pfadangaben beziehen sich immer auf dieses 
+Verzeichnis als Ausgangspunkt.
+
+Bei Programmstart werden alle auf dem Server vorhandenen und lokal nicht
+aktuellen Dateien herunter geladen. Bei Beenden des Programmes werden alle Daten
+der aktuellen Periode auf den Server hochgeladen. Da beim Programmstart
+überprüft wird, ob bereits eine andere Programminstanz läuft und sich die
+Applikation in dem Falle selbst beendet, ist sichergestellt, dass immer mit den
+aktuellen Daten gearbeitet wird.
+
+Unterverzeichnis "Einstellungen"
+    In diesem Unterverzeichis sind einige Dateien enthalten, die 
+    Programmparameter setzen. Sie sind für den normalen Benutzer ohne Belang.
+
+Unterverzeichnis "Daten"
+    In diesem Unterverzeichis liegen die erzeugten und zu verwaltenden Daten.
+    Sie sind nach Abrechnungszeiträumen gruppiert. Ein Abrechnungszeitraum ist 
+    jeweils ein Halbjahr vom 1.1. bis zum 30.6 bzw. vom 1.7 bis zum 31.12. eines
+    Jahres.
+    
+    Neben den Unterverzeichnissen für die Abrechnungszeiträume liegt hier die
+    durch den Mitgliederwart zu aktualisierende Datei mit den Basisdaten der
+    Mitglieder, die aus dem Vereinsverwaltungsprogramm exportiert wird.
+    
+    Die restlichen Dateien, die sich hier mit der Zeit ansammeln, sind zum einen
+    Checksummen-Dateien und zum anderen Sicherungskopien der Basisdatei, die
+    zu bestimmten Anlässen erzeugt werden.
+
+    In jedem Unterverzeichnis eines Abrechnungszeitraumes befinden sich drei 
+    Quelldateien:
+        Basisdaten.csv
+            Diese Datei ist eine Kopie aus dem Elternverzeichnis, die bei dann
+            angelegt wird, wenn damit begonnen wird, den Abrechnungszeitraum zu
+            bearbeiten.
+        Guthaben.csv (bzw. Guthaben_old.csv)
+            Beide Dateien sind eine Kopie der Datei "Guthaben.csv" aus dem
+            Ordner der vorangegangenen Abrechnungsperiode. 
+            Bei der Erzeugung der Kopie ohne das Suffix "_old" wird dafür Sorge
+            getragen, dass das in der vorherigen Periode errechnete Endguthaben
+            für die neue Periode als Anfangsguthaben markiert wird.
+        Arbeitsdienste.csv (bzw. Arbeitsdienste_old.csv)
+            Auch diese beiden Dateien entstehen durch eine Kopie der Datei
+            "Arbeitsdienste.csv" der vorangegangenen Abrechnungsperiode. Sie
+            sind anfags identisch und enthalten eine fortlaufende Liste aller 
+            Arbeitsdiensttermine mit allen Teilnehmern und den dabei jeweils
+            geleisteten Stunden. In die Datei ohne das Suffix "_old" werden
+            alle während der Bearbeitung des aktiven Abrechnungszeitraumes neu
+            definierten Arbeitsdiensttermine geschrieben.
+
+     Vom Programm werden während des Ablaufes zwei MetaDateien erzeugt und hier
+     abgelegt:
+        Hochgeladen.txt
+            Jedes Mal, wenn der entsprechende Bedienknopf gedrückt oder das
+            Programm beendet wird, wird das komplette Verzeichnis der aktiven
+            Periode auf den Server hochgeladen. Dabei wird voher diese Datei in
+            den Ordner geschrieben, aus der man sehen kann, wer wann das letzte
+            Hochladen vorgenommen hat.
+        Abgeschlossen.txt
+            Wenn eine Abrechnungsperiode abgeschlossen wird, wird in dieser
+            Datei festgehalten, wer das wann getan hat.
+            Auf eine einmal abgeschlossene Periode kann von da ab nur noch
+            lesend zugegriffen werden.
+
+    Bei Abschluss eines Abrechnungszeitraumes werden folgende Ausgabe-Dateien
+    erzeugt:
+        Guthaben.csv
+            Hier werden die nach Hinzufügen der im Abrechnungszeitraum
+            geleisteten Arbeitsdienststunden und Abzug der Pflichtstunden die
+            verbleibenden bzw- erwirtschafteten Guthabenstunden hinterlegt.
+        ZuZahlendeStunden.csv
+            Dies ist eine Liste mit allen Mitgliedern, die im betreffenden
+            Abrechnungszeitraum ihrer Arbeitsverplichtung nicht im vollem Umfang
+            nachgekommen sind, so dass sie Ersatzzahlungen leisten müssen.
+        Details.txt
+            Dies ist eine Datei, in der für jedes Mitglied eine detaillierte 
+            Aufstellung enthalten ist, wie seine Arbeitsdienstkleistung,
+            -verpflichtung bzw. -befreiung im vorliegenden Abrechnungszeitraum
+            aussieht. Sie kann bei Nachfragen zur Klärung herangezogen werden.  
+        
+###############################################################################
+# BENUTZUNG
+###############################################################################
+Mitgliederwart
+	In der Rolle MITGLIEDERWART dient das Programm (neben der Möglichkeit, 
+	alle bisherigen Eingaben und Berechnungen lesen zu können) nur dazu, eine
+	aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
+	Server zu laden. Dazu drückt man den "Daten-Hochladen"-Knopf im
+	Hauptfenster. Im daraufhin erscheinenden Dateiauswahl-Dialog wird die
+	hochzuladende Datei im Datei-System lokalisiert und ausgewählt.
+
+	Die ausgewählte Datei wird auf ihre Stimmigkeit hin überprüft. Genügt sie
+	den an sie gestellten Anforderungen nicht, wird sie nicht hochgeladen.
+	Es erfolgt ein entsprechender Eintrag in der Log-Datei. Diese ist zusammen 
+	mit der hochzuladenden Datei an den Entwickler des Programmes zu schicken ;-)
+
+Bauausschuss
+    Der Bauausschuss ist Herr der Arbeitsdienste. Hier werden die Stundenzettel
+    gesammelt, die darauf angegebenen Daten eingegeben und die zu leistenden
+    Ersatzzahlungen bzw. etwaige Guthaben berechnet.
+    
+    Ein typischer Anwendungsfall ist so, dass für einen neuen
+    Arbeitsdiensttermin die dabei ausgefülllten Stundenzettel eingegeben werden
+    sollen. Dazu wird nach Programmstart in die Arbeitsdienst-Ansicht gewechselt
+    und dort ein neuer Termin erstellt. In der Tabelle werden nun alle
+    Mitglieder aufgelistet. Der Einfacheit halber kann man zuerst in jeder Zeile
+    eines Mitglieds, das einen Stundenzettel ausgefüllt hat, die Checkbox
+    aktivieren. Hat man alle Arbeitdienstteilnehmer so identifiziert, kann man
+    die Ansich über den Filter auf diese Zeilen einschränken. Nun kann man in 
+    einem zweiten Schritt die jeweils geleisteten Arbeitsdienststunden eintragen.
+    Dabei ist (insbesondere beim letzen Eintrag) darauf zu achten, dass am
+    Ende die Enter-Taste betätigt wird, da die Eingabe sonst nicht übernommen
+    wird.
+    
+    Sind alle Arbeitsdiensttermine für eine Abrechnungsperiode erfasst, kann in
+    der Hauptansicht der Knopf "Zeitraum abschließen" betätigt werden. Beim
+    nächsten Start der Anwendung wird ein neuer "aktiver" Abrechnungszeitraum
+    erstellt.
+
+###############################################################################
+# INTERNA
+###############################################################################
 Start-Verzeichnis
     Das Programm sieht das Verzeichnis, in dem sein Executable steht, als sein
     Start-Verzeichnis für alle seine Aktivitäten an. 
@@ -22,6 +182,32 @@ Start-Verzeichnis
 					ein solches Verzeichnis existiert.
 	===========================================================================
 
+	Unterhalb des Start-Verzeichnisses muss ein Verzeichnis mit dem in der Datei
+	"ADHelper.prop" unter FOLDERNAME_ROOT angegebenen Namen existieren.
+	Darin finden sich dann alle vom Programm benutzen und durch es erzeugten
+	Dateien.
+	
+Einstellungen
+    Das Programm benötigt mindestens mehrere externe Dateien für seinen
+    geregelten Ablauf, aus denen die Einstellungen eingelesen werden. Sie
+    stehen im Verzeichnis "Einstellungen" und sind im Einzelnen:
+        BenutzerDaten.prop
+        ServerZugangsDaten.prop
+        ssh/id_rsa
+
+    Die erste Datei muss bei Programmstart noch nicht existieren. Wenn dies
+    festgestellt wird, erscheint bei Programmstart ein Dialog, der einige
+    Daten bezüglich des Benutzers abfragt. Der nächste Start erfolgt, ohne dass
+    dieser Dialog angezeigt wird.
+    
+    Die Datei ServerZugangsDaten.prop wird benötigt, um den Server zu
+    identifizieren und die dazugehörigen Angaben abzuspeichern. Um sich 
+    gegenüber dem Server auszuweisen, wird die Datei id_rsa als SSH-Schlüssel
+    benötigt.
+    
+    Alle im Verzeichnis "Einstellungen" liegenden Dateien sind nicht Bestandteil
+    der Applikation und werden separat verteilt!
+        
 SingletonWatcher
 
     Die Applikation überprüft, ob bereits eine andere Instanz läuft.
@@ -66,28 +252,20 @@ Checksummen-Berechnung (MD5)
     Die ersten beiden Zeilen sind Zusatzinformationen, aus denen man ersehen
     kann, wann die Datei hochgeladen wurde und von wem.
 
-Einstellungen
-    Das Programm benötigt mindestens mehrere externe Dateien für seinen
-    geregelten Ablauf, aus denen die Einstellungen eingelesen werden. Sie
-    stehen im Verzeichnis "Einstellungen" und sind im Einzelnen:
-        BenutzerDaten.prop
-        ServerZugangsDaten.prop
-        ssh/id_rsa
-
-    Die erste Datei muss bei Programmstart noch nicht existieren. Wenn dies
-    festgestellt wird, erscheint bei Programmstart ein Dialog, der einige
-    Daten bezüglich des Benutzers abfragt. Der nächste Start erfolgt, ohne dass
-    dieser Dialog angezeigt wird.
-    
-    Die Datei ServerZugangsDaten.prop wird benötigt, um den Server zu
-    identifizieren und die dazugehörigen Angaben abzuspeichern. Um sich 
-    gegenüber dem Server auszuweisen, wird die Datei id_rsa als SSH-Schlüssel
-    benötigt.
-    
-    Alle im Verzeichnis "Einstellungen" liegenden Dateien sind nicht Bestandteil
-    der Applikation und werden separat verteilt!
-        
 ================================================================================
+Server
+    Als Server dient ein privater Rechner von mir  in meiner Wohnung. Es ist ein
+    Synology-NAS, im 24/7-Betrieb, der aus dem Internet erreichbar ist.
+    
+    Die Datenverzeichnisse sind nicht öffentlich zugänglich sondern nur über
+    einen gültigen Account mit SSH-Schlüssel zu erreichen.
+    
+    Alle auf den Server hochgeladenen Daten werden vor der Übertragung
+    verschlüsselt. Auf dem Server selbst liegen keine Daten in Klartext vor.
+    
+    Die Daten liegen auf dem Server in einem RAID-System. Sie werden einmal
+    wöchentlich auf einen externen Server gesichert (STRATO-HiDrive).
+
 Einrichten eines neuen Benutzers:
 
     Server:

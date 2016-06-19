@@ -15,7 +15,7 @@ repositories {
     // Use 'jcenter' for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
-    //mavenCentral()
+//    mavenCentral()
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -29,6 +29,8 @@ dependencies {
     compile 'org.apache.commons:commons-vfs2:2.0'
     compile 'com.jgoodies:jgoodies-forms:1.9.0'
     compile 'org.jdatepicker:jdatepicker:1.3.4'
+    // JReleaseInfo gibts leider nicht im Repository :-/
+//    compile 'ch.oscg.jreleaseinfo:jreleaseinfo:1.3.0'
 
 //    compile fileTree(dir: 'libs', include: ['*.jar'])
 //    compile 'org.apache.poi:poi:3.13'

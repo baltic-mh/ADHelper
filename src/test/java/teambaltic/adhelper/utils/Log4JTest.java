@@ -23,17 +23,18 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 // ############################################################################
 public class Log4JTest
 {
     private static final Logger sm_Log = Logger.getLogger(Log4JTest.class);
 
-    private static final String PROPKEY_APPNAME = "appname";
-    private static final String APPNAME = "Log4J-UnitTest";
+    private static final String PROPKEY_Log4jFileName = "log4jfilename";
+    private static final String Log4jFileName = "Log4J-UnitTest.log";
 
     private final Path m_UninitializedLogFile = Paths.get( ".log" );
-    private final Path m_InitializedLogFile = Paths.get( APPNAME+".log" );
+    private final Path m_InitializedLogFile = Paths.get( Log4jFileName );
 
     // ########################################################################
     // INITIALISIERUNG
@@ -68,7 +69,7 @@ public class Log4JTest
     public void test_UninitializedAppName()
     {
         final String aMethodName = TestUtils.getMethodName();
-        System.clearProperty(PROPKEY_APPNAME);
+        System.clearProperty(PROPKEY_Log4jFileName);
         // Diese Ausgabe erscheint nirgendwo!
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
         Log4J.initLog4J();
@@ -77,14 +78,13 @@ public class Log4JTest
         TestUtils.logMethodEnd( aStartTime, aMethodName );
     }
 
-    //TODO Test aktivieren
-//    @Test
+    @Test
     public void test_InitializedAppName()
     {
         final String aMethodName = TestUtils.getMethodName();
         // Diese Ausgabe erscheint nirgendwo!
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
-        System.setProperty(PROPKEY_APPNAME, APPNAME);
+        System.setProperty(PROPKEY_Log4jFileName, Log4jFileName);
         Log4J.initLog4J();
         sm_Log.info( aMethodName+": Logging initialisiert!" );
         assertTrue( aMethodName+": LogDatei ohne Namen", Files.exists( m_InitializedLogFile ) );

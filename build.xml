@@ -1,17 +1,158 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project ADHelper">
+<project default="create_run_jar" name="KVK Arbeitsdienst-Helferlein">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
 
-	<!--define folder properties-->
+    <description>
+        Build-Datei für das Projekt ${ant.project.name}. 
+       </description>
+
+    <!-- ========================================================================
+          Property definition
+    ========================================================================= -->
+    <!-- ........................................................................
+          Allgemeines
+    ......................................................................... -->
+    <property name="organization"  value="TeamBaltic"/>
+    <property name="url-home"      value="http://www.teambaltic.de"/>
+
+    <!-- ........................................................................
+          Verzeichnisse
+    ......................................................................... -->
     <property name="dir.buildfile" value="."/>
     <property name="dir.workspace" value="${dir.buildfile}/.."/>
     <property name="dir.build.app" value="${dir.buildfile}/build/app"/>
-	<property name="dir.gradle.caches" location="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1"/>
+    <!-- source code directory, this is where the .java files live -->
+    <property name="src.dir" location="src/main/java" />
+    <!-- lib directory, this is where the .jar files live -->
+    <property name="lib.dir" value="lib"/>
 
-	<property name="build.type" value="Release"/>
-	<property name="build.version.major" value="1.0"/>
-    <property name="build.version.minor" value="0.2"/>
+	<property name="dir.gradle.caches" location="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1"/>
+    <!-- directory for build resources -->
+    <property name="build-res.dir" value="misc/build-res"/>
+
+    <!-- ........................................................................
+          Dateien
+    ......................................................................... -->
+    <property name="buildinfo.filename" value="buildinfo.properties"/>
+    <property name="file.path.buildinfo" value="${build-res.dir}/${buildinfo.filename}"/>
+
+    <!-- ........................................................................
+          Properties für JReleaseInfo
+    ......................................................................... -->
+    <property name="jrelease.classname"     value="AppReleaseInfo"/>
+    <property name="jrelease.packagename"   value="teambaltic.adhelper.model"/>
+
+    <!-- ========================================================================
+          Target: create_buildinfo
+          Hier wird die Build-Nummer aus der buildinfo-Datei gelesen und um 1 erhöht
+          Außerdem wird der Zeitstempel in der buildinfo-Datei gesetzt.
+    ========================================================================= -->
+    <target name="create_buildinfo" 
+        description="Erstelle Version-Informationen">
+
+        <propertyfile file="${file.path.buildinfo}">
+            <!-- Increment build number -->
+            <entry  key="build.number"        type="int"  default="0" operation="+" />
+            <entry  key="year"                type="date" value="now" pattern="yyyy"/>
+            <entry  key="build.timestamp"     type="date" value="now" pattern="yyyy-MM-dd HH:mm"/>
+            <entry  key="version.full"        type="string" value="${version.major}.${version.subversion}.${version.minor}.${build.number}"/>
+        </propertyfile>
+
+        <property file="${file.path.buildinfo}"/>
+
+        <echo message="${ant.project.name}: Build properties: "/>
+        <echo message="   - Version: ${version.full}"/>
+        <echo message="   - Release: ${release.number}"/>
+        <echo message="   - TimeStamp: ${build.timestamp}"/>
+
+    </target>
+    <!-- ================================================================ -->
+
+    <!-- ========================================================================
+          Target: incr-version-minor
+          Hier wird die version.minor Property aus der buildinfo-Datei gelesen.
+    ========================================================================= -->
+    <target name="incr-version-minor" 
+        description="Increment the minor version property">
+
+        <propertyfile file="${file.path.buildinfo}">
+            <!-- Increment minor version number -->
+            <entry  key="version.minor" type="int" default="0" operation="+" pattern="0"/>
+            <entry  key="build.number" type="int" value="0"  pattern="0"/>
+        </propertyfile>
+
+        <property file="${file.path.buildinfo}"/>
+
+        <echo message="${ant.project.name}: Incremented minor version number: "/>
+        <echo message="   - New version is: ${version.full}"/>
+
+    </target>
+
+    <!-- ========================================================================
+          Target: incr-version-major
+          Hier wird die version.major Property aus der buildinfo-Datei gelesen.
+    ========================================================================= -->
+    <target name="incr-version-major" 
+        description="Increment the major version property">
+
+        <propertyfile file="${file.path.buildinfo}">
+            <!-- Increment major version number -->
+            <entry  key="version.major" type="int" default="1" operation="+" pattern="0"/>
+            <entry  key="version.minor" type="int" value="0" pattern="0"/>
+            <entry  key="build.number" type="int" value="0" pattern="0"/>
+        </propertyfile>
+
+        <property file="${file.path.buildinfo}"/>
+
+        <echo message="${ant.project.name}: Incremented major version number: "/>
+        <echo message="   - New version is: ${version.full}"/>
+
+    </target>
+
+    <!-- ================================================================ -->
+    <!-- JReleaseInfo                                                     -->
+    <!-- ================================================================ -->
+    <target name="create_jreleaseinfo"
+        depends="create_buildinfo"
+        description="Erzeugt die Klasse ${jrelease.classname} mit den ReleaseInformationen" >
+        
+        <echo  message="Creating class '${jrelease.packagename}.${jrelease.classname}'" />
+
+        <path id="jrelease.pathto.class">
+            <pathelement path="${src.dir}/${jrelease.packagename}.${jrelease.classname}.java"/>
+        </path>
+
+        <pathconvert property="jrelease.pathto.class">
+            <path path="${src.dir}/${jrelease.packagename}.${jrelease.classname}.java" />
+            <unpackagemapper from="*.java" to="*.java"/>
+        </pathconvert>
+
+        <taskdef name="jreleaseinfo" 
+            classname="ch.oscg.jreleaseinfo.anttask.JReleaseInfoAntTask"
+            classpath="${lib.dir}/jreleaseinfo-1.3.0.jar" />
+
+        <jreleaseinfo 
+            className="${jrelease.classname}" 
+            packageName="${jrelease.packagename}"
+            targetDir="${src.dir}" 
+            project="${ant.project.name}"
+            version="${version.full}"
+            withViewer="false" 
+            >
+            <parameter name="BuildTime"     value="${build.timestamp}" />
+            <parameter name="BuildType"     value="${build.type}" />
+            <parameter name="Release"       value="${release.number}" />
+            <parameter name="Organization"  value="${organization}"/>
+            <parameter name="Home"          value="${url-home}" />
+            <parameter name="Copyright"     value="(C) ${year} ${organization}" />
+<!--            <parameter name="JupidatorURL"  value="${jupidator.url}" /> -->
+        </jreleaseinfo>
+
+        <echo message="The current build is ${version.full}" />
+    </target>
+
+
 
 	<!-- 
 	###########################################################################
@@ -26,9 +167,9 @@
 	<!-- ================================= 
           target: MakeExecutable              
          ================================= -->
-    <target name="MakeExecutable" depends="create_run_jar" description="Erzeugt das Executable mittels Launch4J">
+    <target name="MakeExecutable" depends="create_run_jar, create_buildinfo" description="Erzeugt das Executable mittels Launch4J">
         <launch4j configFile="./launch4j.xml" 
-        	outfile="${dir.build.app}/ADHelper-${build.type}-${build.version.major}.${build.version.minor}.exe"
+        	outfile="${dir.build.app}/ADHelper-${version.full}.exe"
         />
      </target>
     <!-- 
