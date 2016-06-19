@@ -55,6 +55,7 @@ import teambaltic.adhelper.gui.listeners.PeriodDataChangedListener;
 import teambaltic.adhelper.gui.listeners.UploadListener;
 import teambaltic.adhelper.gui.listeners.UserSettingsListener;
 import teambaltic.adhelper.gui.model.CBModel_PeriodData;
+import teambaltic.adhelper.model.AppReleaseInfo;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.PeriodData;
@@ -67,7 +68,7 @@ import teambaltic.adhelper.utils.Log4J;
 public class ADH_Application
 {
     private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
-    private static final String TITLE = "KVK Arbeitsdienst-Helferlein (C) 2016 TeamBaltic";
+    private static final String PROPKEY_Log4jFileName = "log4jfilename";
 
     private static final EPeriodDataSelector ALL = EPeriodDataSelector.ALL;
 
@@ -93,10 +94,12 @@ public class ADH_Application
      */
     public static void main( final String[] args )
     {
-        final String aAppname = "ADHelper";
-        System.setProperty( "appname", aAppname );
+        final String aAppName = "ADHelper";
+        final String aLog4jFileName = aAppName+".log";
+        System.setProperty(PROPKEY_Log4jFileName, aLog4jFileName);
         Log4J.initLog4J();
-        readAndSetSystemProperties(aAppname);
+        sm_Log.info("==========================================================");
+        readAndSetSystemProperties(aAppName);
 
         final ADH_Application aAppWindow = new ADH_Application();
 
@@ -105,12 +108,12 @@ public class ADH_Application
             @Override
             public void run()
             {
-                sm_Log.info("==========================================================");
                 try{
                     initSettings( aAppWindow );
+                    sm_Log.info(composeTitle());
                     final boolean aIsBauausschuss = AllSettings.INSTANCE.getUserSettings().isBauausschuss();
                     IntegrityChecker.check( AllSettings.INSTANCE );
-                    final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE);
+                    final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE );
 
                     aAppWindow.initialize();
                     aAppWindow.setVisible( true );
@@ -226,7 +229,7 @@ public class ADH_Application
     private void initialize()
     {
         m_frame = new JFrame();
-        m_frame.setTitle(TITLE);
+        m_frame.setTitle(composeTitle());
         m_frame.setBounds( 100, 100, 924, 580 );
         m_frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -316,7 +319,7 @@ public class ADH_Application
 
     protected void setTitle( final boolean fOffline )
     {
-        m_frame.setTitle(String.format("%s (%s)", TITLE, fOffline ? "Offline" : "Online" ));
+        m_frame.setTitle( composeTitle() );
     }
 
     private static void updateDataFromServer( final ITransferController fTC ) throws Exception
@@ -351,6 +354,20 @@ public class ADH_Application
             sm_Log.warn("Exception while loading system properties from: "+aSysPropFile, fEx );
         }
 
+    }
+
+    private static String composeTitle()
+    {
+        final String aUserName = AllSettings.INSTANCE.getRemoteAccessSettings().getUserName();
+        final String aFolderName_Root = AllSettings.INSTANCE.getAppSettings().getFolderName_Root();
+        final StringBuffer aSB = new StringBuffer();
+        aSB.append( AppReleaseInfo.getProject() );
+        aSB.append( " - " );
+        aSB.append( AppReleaseInfo.getCopyright() );
+        aSB.append( " - " );
+        aSB.append( AppReleaseInfo.getVersion() );
+        aSB.append( String.format(" (%s@%s)", aUserName, aFolderName_Root ) );
+        return aSB.toString();
     }
 
 }
