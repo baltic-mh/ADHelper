@@ -1,5 +1,5 @@
 /* Created by JReleaseInfo AntTask from Open Source Competence Group */
-/* Creation date Thu May 19 19:03:54 CEST 2016 */
+/* Creation date Sun Jun 19 12:06:22 CEST 2016 */
 package teambaltic.adhelper.model;
 
 import java.util.Date;
@@ -12,11 +12,11 @@ import java.util.Date;
 public class AppReleaseInfo {
 
 
-   /** buildDate (set during build process to 1463677434014L). */
-   private static Date buildDate = new Date(1463677434014L);
+   /** buildDate (set during build process to 1466330782012L). */
+   private static Date buildDate = new Date(1466330782012L);
 
    /**
-    * Get buildDate (set during build process to Thu May 19 19:03:54 CEST 2016).
+    * Get buildDate (set during build process to Sun Jun 19 12:06:22 CEST 2016).
     * @return Date buildDate
     */
    public static final Date getBuildDate() { return buildDate; }
@@ -52,31 +52,31 @@ public class AppReleaseInfo {
    public static final String getOrganization() { return organization; }
 
 
-   /** version (set during build process to "1.0.2.22"). */
-   private static String version = "1.0.2.22";
+   /** version (set during build process to "1.0.3.3"). */
+   private static String version = "1.0.3.3";
 
    /**
-    * Get version (set during build process to "1.0.2.22").
+    * Get version (set during build process to "1.0.3.3").
     * @return String version
     */
    public static final String getVersion() { return version; }
 
 
-   /** buildType (set during build process to "Release"). */
-   private static String buildType = "Release";
+   /** buildType (set during build process to "${build.type}"). */
+   private static String buildType = "${build.type}";
 
    /**
-    * Get buildType (set during build process to "Release").
+    * Get buildType (set during build process to "${build.type}").
     * @return String buildType
     */
    public static final String getBuildType() { return buildType; }
 
 
-   /** buildTime (set during build process to "2016-05-19 19:03"). */
-   private static String buildTime = "2016-05-19 19:03";
+   /** buildTime (set during build process to "2016-06-19 12:06"). */
+   private static String buildTime = "2016-06-19 12:06";
 
    /**
-    * Get buildTime (set during build process to "2016-05-19 19:03").
+    * Get buildTime (set during build process to "2016-06-19 12:06").
     * @return String buildTime
     */
    public static final String getBuildTime() { return buildTime; }

@@ -26,6 +26,7 @@ import teambaltic.adhelper.gui.model.CBModel_Member;
 import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
 import teambaltic.adhelper.gui.model.TBLModel_DutyCharge;
 import teambaltic.adhelper.gui.model.TBLModel_DutyFree;
+import teambaltic.adhelper.gui.renderer.RNDR_CB_Member;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
@@ -56,6 +57,8 @@ public class GUIUpdater
     public  PeriodData getPeriodData(){ return m_PeriodData; }
     // ------------------------------------------------------------------------
 
+    private final RNDR_CB_Member m_Renderer_Member;
+
     public GUIUpdater(
             final MainPanel fPanel,
             final ADH_DataProvider fDataProvider,
@@ -64,6 +67,7 @@ public class GUIUpdater
         m_Panel = fPanel;
         m_DataProvider = fDataProvider;
         m_PDC = fPDC;
+        m_Renderer_Member = new RNDR_CB_Member( m_DataProvider );
     }
 
     public void updateGUI()
@@ -85,6 +89,7 @@ public class GUIUpdater
             final List<IClubMember> aAllMembers = m_DataProvider.getMembers();
             final IClubMember[] aMemberArray = new IClubMember[ aAllMembers.size() ];
             final CBModel_Member aMemberCBModel = new CBModel_Member( aAllMembers.toArray( aMemberArray ) );
+            aCB_Members.setRenderer( m_Renderer_Member );
             aCB_Members.setModel( aMemberCBModel );
             if( aSelectedMember != null ){
                 // Ehemals selektiertes Mitglied wird wieder selektiert:
