@@ -1,7 +1,7 @@
 Nochtun:
 
-- Der Abrechnungszeitraum soll nur noch über den PeriodDatController verwaltet
-    werden.
+( - Der Abrechnungszeitraum soll nur noch über den PeriodDatController verwaltet
+    werden. )
 
 (- Bug beim Berechnen der zu leistenden Arbeitsstunden (Welpenschutz - 16 Jahre!) )
 

@@ -136,7 +136,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void calculateDutyCharges(final IPeriod fInvoicingPeriod)
     {
         for( final InfoForSingleMember aSingleInfo : getAll() ){
-            m_ChargeCalculator.calculate( aSingleInfo );
+            getChargeCalculator().calculate( aSingleInfo );
         }
     }
 

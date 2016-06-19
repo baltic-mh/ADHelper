@@ -96,10 +96,10 @@ public class GUIUpdater
         fill_Birthday_Eintritt_Austritt(aInfoForSingleMember, m_Panel);
         final TBLModel_DutyFree aDM_DutyFree = m_Panel.getDataModel_DutyFree();
         fillPanel_DutyFree  ( aDM_DutyFree, aInfoForSingleMember, m_Panel, m_DataProvider );
+        final TBLModel_AttendedWorkEvent aDM_WorkEventsAttended = m_Panel.getWorkEventsAttended();
+        fillPanel_WorkEventsAttended ( aDM_WorkEventsAttended, fPeriodData, aInfoForSingleMember, m_Panel, m_DataProvider );
         final TBLModel_DutyCharge aDM_DutyChargs = m_Panel.getDataModel_DutyCharge();
         fillPanel_DutyCharge( aDM_DutyChargs, aInfoForSingleMember, m_Panel, m_DataProvider );
-        final TBLModel_AttendedWorkEvent aDM_WorkEvents = m_Panel.getWorkEventDataModel();
-        fillPanel_WorkEvent ( aDM_WorkEvents, fPeriodData, aInfoForSingleMember, m_Panel, m_DataProvider );
 
         if( fPeriodData != null ){
             configureButtons( m_Panel, getPDC(), fPeriodData );
@@ -126,7 +126,7 @@ public class GUIUpdater
         aTF_Austritt.setText( aMember.getMemberUntil().toString() );
     }
 
-    private static void fillPanel_WorkEvent(
+    private static void fillPanel_WorkEventsAttended(
             final TBLModel_AttendedWorkEvent fDataModel,
             final PeriodData fPeriodData,
             final InfoForSingleMember fInfoForSingleMember,
@@ -196,13 +196,13 @@ public class GUIUpdater
             final MainPanel fPanel, final ADH_DataProvider fDataProvider )
     {
         fDataModel.setRowCount( 0 );
-        final DutyCharge aDutyChargeOfPayer = fInfoForSingleMember.getDutyCharge();
-        final List<DutyCharge> aAllDutyCharges = aDutyChargeOfPayer.getAllDutyCharges();
+        final DutyCharge aDutyChargeOfThisMember = fInfoForSingleMember.getDutyCharge();
+        final List<DutyCharge> aAllDutyCharges = aDutyChargeOfThisMember.getAllDutyCharges();
         for( final DutyCharge aDutyCharge : aAllDutyCharges ){
             final String aMemberName = fDataProvider.getMemberName( aDutyCharge.getMemberID() );
             addRow_DutyCharge( fDataModel, aMemberName, aDutyCharge );
         }
-        fPanel.setTotalHoursToPay( aDutyChargeOfPayer.getHoursToPayTotal() / 100.0f );
+        fPanel.setTotalHoursToPay( aDutyChargeOfThisMember.getHoursToPayTotal() / 100.0f );
     }
 
     private static void addRow_DutyCharge(

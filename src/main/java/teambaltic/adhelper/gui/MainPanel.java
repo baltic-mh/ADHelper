@@ -43,7 +43,7 @@ public class MainPanel extends JPanel
     private static final long serialVersionUID = 7281848889524771889L;
 
     private final JTextField    m_tf_HoursToPay;
-    private final JTable        m_tbl_WorkEvents;
+    private final JTable        m_tbl_WorkEventsAttended;
     private final JTable        m_tbl_DutyCharges;
     private final JTable        m_tbl_DutyFree;
 
@@ -79,8 +79,8 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final TBLModel_AttendedWorkEvent m_WorkEventDataModel;
-    public TBLModel_AttendedWorkEvent getWorkEventDataModel(){ return m_WorkEventDataModel; }
+    private final TBLModel_AttendedWorkEvent m_WorkEventsAttended;
+    public TBLModel_AttendedWorkEvent getWorkEventsAttended(){ return m_WorkEventsAttended; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -255,13 +255,13 @@ public class MainPanel extends JPanel
         final JScrollPane scrollPane = new JScrollPane();
         m_pnl_WorkEvents.add(scrollPane, "2, 2, 9, 1, fill, fill");
 
-        m_tbl_WorkEvents = new JTable();
-        ((JLabel)m_tbl_WorkEvents.getDefaultRenderer(String.class)).setHorizontalAlignment (JLabel.RIGHT);
-        m_WorkEventDataModel = new TBLModel_AttendedWorkEvent();
-        m_tbl_WorkEvents.setModel(m_WorkEventDataModel);
+        m_tbl_WorkEventsAttended = new JTable();
+        ((JLabel)m_tbl_WorkEventsAttended.getDefaultRenderer(String.class)).setHorizontalAlignment (JLabel.RIGHT);
+        m_WorkEventsAttended = new TBLModel_AttendedWorkEvent();
+        m_tbl_WorkEventsAttended.setModel(m_WorkEventsAttended);
 
-        m_tbl_WorkEvents.setFillsViewportHeight(true);
-        scrollPane.setViewportView(m_tbl_WorkEvents);
+        m_tbl_WorkEventsAttended.setFillsViewportHeight(true);
+        scrollPane.setViewportView(m_tbl_WorkEventsAttended);
 
         m_btn_ManageWorkEvents = new JButton("Arbeitsdienste...");
         m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
@@ -287,7 +287,7 @@ public class MainPanel extends JPanel
 
     public boolean removeSelectedWorkEventRow()
     {
-        final int aSelectedRow = m_tbl_WorkEvents.getSelectedRow();
+        final int aSelectedRow = m_tbl_WorkEventsAttended.getSelectedRow();
         if( aSelectedRow == -1 ){
             return false;
         }
@@ -302,7 +302,7 @@ public class MainPanel extends JPanel
             options[1]);
         switch( n ){
             case 0:
-                ((DefaultTableModel)m_tbl_WorkEvents.getModel()).removeRow( aSelectedRow );
+                ((DefaultTableModel)m_tbl_WorkEventsAttended.getModel()).removeRow( aSelectedRow );
                 return true;
 
             default:
@@ -312,12 +312,12 @@ public class MainPanel extends JPanel
 
     public WorkEvent getSelectedWorkEvent()
     {
-        final int aSelectedRow = m_tbl_WorkEvents.getSelectedRow();
+        final int aSelectedRow = m_tbl_WorkEventsAttended.getSelectedRow();
         if( aSelectedRow == -1 ){
             return null;
         }
-        final Integer aWorkerID = (Integer)   m_tbl_WorkEvents.getValueAt( aSelectedRow, 0 );
-        final LocalDate aDate   = (LocalDate) m_tbl_WorkEvents.getValueAt( aSelectedRow, 2 );
+        final Integer aWorkerID = (Integer)   m_tbl_WorkEventsAttended.getValueAt( aSelectedRow, 0 );
+        final LocalDate aDate   = (LocalDate) m_tbl_WorkEventsAttended.getValueAt( aSelectedRow, 2 );
         final WorkEvent aWorkEvent = new WorkEvent( aWorkerID );
         aWorkEvent.setDate( aDate );
         return aWorkEvent;

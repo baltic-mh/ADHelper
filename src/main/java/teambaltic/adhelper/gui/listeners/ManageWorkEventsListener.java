@@ -64,6 +64,11 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private final GUIUpdater m_GUIUpdater;
+    private GUIUpdater getGUIUpdater(){ return m_GUIUpdater; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     private final boolean m_IsBauausschuss;
     public boolean isBauausschuss(){ return m_IsBauausschuss; }
     // ------------------------------------------------------------------------
@@ -81,10 +86,12 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
     public ManageWorkEventsListener(
             final ADH_DataProvider fDataProvider,
             final IPeriodDataController fPDC,
+            final GUIUpdater fGUIUpdater,
             final boolean fIsBauausschuss )
     {
         m_DataProvider   = fDataProvider;
         m_PDC            = fPDC;
+        m_GUIUpdater     = fGUIUpdater;
         m_IsBauausschuss = fIsBauausschuss;
 
         m_WorkEventsDialog = new WorkEventsDialog();
@@ -168,7 +175,9 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
                 final boolean aDataChanged = writeWorkEventsToMembers();
                 if( aDataChanged ){
                     m_DataProvider.writeToFile_WorkEvents();
-//                    m_GUIUpdater.updateGUI();
+                    m_DataProvider.calculateDutyCharges(aSelectedPeriod.getPeriod());
+                    m_DataProvider.balanceRelatives();
+                    getGUIUpdater().updateGUI();
                 }
                 m_WorkEventsDialog.setVisible(false);
                 break;

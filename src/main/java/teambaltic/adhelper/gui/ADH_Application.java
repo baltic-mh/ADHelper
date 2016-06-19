@@ -209,7 +209,7 @@ public class ADH_Application
         final JComboBox<IClubMember> aCB_Members = m_MainPanel.getCB_Members();
         aCB_Members.addActionListener( aMemberSelectedListener );
 
-        final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC, fIsBauausschuss);
+        final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC, m_GUIUpdater, fIsBauausschuss);
         m_MainPanel.getBtn_ManageWorkEvents().addActionListener( aManageWorkEventsListener );
         final JComboBox<PeriodData> aCB_Period2 = aManageWorkEventsListener.getCmb_Period();
         aCB_Period2.addItemListener( aPDCL );
