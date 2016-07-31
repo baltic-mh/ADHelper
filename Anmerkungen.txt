@@ -13,11 +13,18 @@ verlässlich in unserer Verwaltung abgebildet worden.)
 
 Ist Thorsten Böhnke nicht ausgetreten?
 
-Familie Andree ist meines Wissens ausgetreten. <= MW: Habe nichts derartiges in den Protokollen gefunden!
+Familie Andree ist meines Wissens ausgetreten. <= MW: Habe nichts derartiges in den Protokollen gefunden! Wohnen aber seit (locker) 2 Jahren in Berlin (>50 km)
 
 Hat Gesa Buttgereit tatsächlich ein eigenes Konto (keine Verknüpfung mit Johann Friedrich Buttgereit)?
 
-Noch nicht berücksichtigt: Chistina Thaden ist von Juli 2015 bis Februar 2016 vom AD befreit (Remoteness!)
+Noch nicht berücksichtigt: Christina Thaden ist von Juli 2015 bis Februar 2016 vom AD befreit (Remoteness!)
+
+Die 50km-Grenze ist noch nicht in den Daten enthalten!
+
+Bei Judith Gebert steht noch kein Austrittsdatum. 
+
+Tim Feine hat keine LinkID
+Felia Feine hat keine LinkID
 
 ===============================================================================================
 Aufzunehmende Spalten:

@@ -131,6 +131,7 @@ Mitgliederwart
 	den an sie gestellten Anforderungen nicht, wird sie nicht hochgeladen.
 	Es erfolgt ein entsprechender Eintrag in der Log-Datei. Diese ist zusammen 
 	mit der hochzuladenden Datei an den Entwickler des Programmes zu schicken ;-)
+	(siehe auch "Anforderungen an BasisDatei")
 
 Bauausschuss
     Der Bauausschuss ist Herr der Arbeitsdienste. Hier werden die Stundenzettel
@@ -234,7 +235,34 @@ SingletonWatcher
     auf dem Server stehen bleiben, wird sie als nicht mehr gültig angesehen,
     wenn der darin enthaltene Zeitstempel älter als die dreifache Zykluszeit ist.
     
+Anforderungen an BasisDatei
+    Die Datei, die aus dem Mitgliederverwaltungsprogramm exportiert wird, muss
+    bestimmte Anforderungen erfüllen, damit die Arbeitsdienstabrechnung 
+    einwandfrei funktionieren kann. Bevor sie auf den Server hochgeladen wird,
+    wird sie daher auf Stimmigkeit überprüft.
     
+    Sie muss mindestens die folgenden Spalten enthalten:
+        "AD-Frei.von"
+        "AD-Frei.Grund"
+        "AD-Frei.bis"
+        "Austritt"
+        "Beitragsart_1"
+        "Geburtsdatum"
+        "Eintritt"
+        "Vorname"
+        "Verknüpfung"
+        "Mitglieds_Nr"
+        "Nachname"
+    
+    Die Werte in der Spalte "Mitglieds_Nr" müssen eindeutig sein.
+    
+    Für folgende Spalten muss in JEDER Zeile ein Eintrag vorhanden sein:
+        "Geburtsdatum"
+        "Eintritt"
+        
+    Für jeden Wert in der Spalte "Verknüpfung" muss es eine Zeile geben, in der
+    derselbe Wert in der Spalte "Mitglieds_Nr" eingetragen ist.
+  
 Checksummen-Berechnung (MD5)
     Wenn eine Datei auf den Server hochgeladen wird, wird vorher ein MD5-Hash
     für diese Datei ermittelt. Dieser Hash wird in eine Datei geschrieben, die

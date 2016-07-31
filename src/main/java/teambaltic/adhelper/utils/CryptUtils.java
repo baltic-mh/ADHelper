@@ -35,11 +35,9 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 // ############################################################################
 /**
@@ -54,14 +52,11 @@ public class CryptUtils implements ICryptUtils
     private static final String sm_Resource_KeyPriv ="res/crypt/private.key";
     private static final String sm_Resource_KeyPubl ="res/crypt/public.key";
 
-
-    private final BASE64Encoder m_Base64Encoder;
-    private final BASE64Decoder m_Base64Decoder;
+    private final Base64 m_Base64;
 
     public CryptUtils(final File fPrivateKeyFile, final File fPublicKeyFile) throws Exception
     {
-        m_Base64Encoder  = new BASE64Encoder();
-        m_Base64Decoder  = new BASE64Decoder();
+        m_Base64  = new Base64();
     }
 
     /**
@@ -82,7 +77,7 @@ public class CryptUtils implements ICryptUtils
     }
 
     /** Verschluesseln (Streams werden mit close() geschlossen) */
-    private void encrypt(
+    private static void encrypt(
             final InputStream inpStream,
             final OutputStream encryptedOutStream )
             throws Exception
@@ -174,7 +169,7 @@ public class CryptUtils implements ICryptUtils
             aCipher.init( Cipher.ENCRYPT_MODE, aKey );
             final byte[] aEncrypted = aCipher.doFinal( fText.getBytes() );
             // bytes zu Base64-String konvertieren
-            final String aEncryptedBase64 = m_Base64Encoder.encode( aEncrypted );
+            final String aEncryptedBase64 = m_Base64.encodeToString( aEncrypted );
             return aEncryptedBase64;
         } catch (final Exception fEx) {
             sm_Log.warn("Problem:", fEx);
@@ -195,7 +190,7 @@ public class CryptUtils implements ICryptUtils
 
         try {
             // BASE64 String zu Byte-Array
-            final byte[] aTextEncrypted = m_Base64Decoder.decodeBuffer( fTextEncryptedBase64 );
+            final byte[] aTextEncrypted = m_Base64.decode( fTextEncryptedBase64 );
             final PrivateKey aKey = getPrivateKey();
             final Cipher aCipher = Cipher.getInstance( ALGORITHM_ASYM );
             aCipher.init( Cipher.DECRYPT_MODE, aKey );
