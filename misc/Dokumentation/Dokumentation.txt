@@ -242,27 +242,48 @@ Anforderungen an BasisDatei
     wird sie daher auf Stimmigkeit überprüft.
     
     Sie muss mindestens die folgenden Spalten enthalten:
-        "AD-Frei.von"
-        "AD-Frei.Grund"
-        "AD-Frei.bis"
-        "Austritt"
-        "Beitragsart_1"
-        "Geburtsdatum"
-        "Eintritt"
+        "Mitglieds_Nr"          Muss eindeutig sein. Darf nicht 0 sein!
+        "Verknüpfung"           Es muss eine Mitglieds_Nr mit diesem Wert geben
         "Vorname"
-        "Verknüpfung"
-        "Mitglieds_Nr"
         "Nachname"
+        "Geburtsdatum"          (NEU) Datum, in jeder Spalte ausgefüllt!
+        "Eintritt"              Datum, in jeder Spalte ausgefüllt!
+        "Austritt"              Datum
+        "Beitragsart_1"         (wird zur Bestimmung von AD-Befreiung genutzt)
+        "AD-Frei.Grund"         (NEU)
+        "AD-Frei.von"           (NEU)Datum
+        "AD-Frei.bis"           (NEU)Datum
     
-    Die Werte in der Spalte "Mitglieds_Nr" müssen eindeutig sein.
+    Das Format für alle Datumsspalten ist "DD.MM.YYYY"!
+
+    Die drei Spalten "AD-Frei.*" dienen zur Angabe von nicht aus anderen Daten
+    berechenbaren Gründen für eine Arbeitsdienstbefreiung.
     
-    Für folgende Spalten muss in JEDER Zeile ein Eintrag vorhanden sein:
-        "Geburtsdatum"
-        "Eintritt"
-        
-    Für jeden Wert in der Spalte "Verknüpfung" muss es eine Zeile geben, in der
-    derselbe Wert in der Spalte "Mitglieds_Nr" eingetragen ist.
-  
+    Es gibt aus den Mitgliedsdaten berechnete Gründe:
+        TOO_YOUNG               (aus Geburtsdatum)
+        TOO_OLD                 (aus Geburtsdatum)
+        DUTY_NOT_YET_EFFECTIVE  (aus Eintrittsdatum)
+        NO_LONGER_MEMBER        (aus Austrittsdatum)
+    Die folgenden drei Gründe sind nicht automatisch zu bestimmen und daher 
+    explizit in der Spalte "AD-Frei.Grund" anzugeben:
+        MANAGEMENT              (Vorstandsmitglied)
+        REMOTENESS              (Wohnort weiter als 50km entfernt)
+        INDIVIDUALREASON        (sonstiger Grund z.B. individueller Antrag)
+    Es müssen genau diese Texte angegeben werden - in genau dieser Schreibweise
+    (ALLES GROSSBUCHSTABEN).
+    Ebenfalls zur Bestimmung von AD-Befreiung wird die Spalte "Beitragsart_1"
+    genutzt. Dies ist der Fall, wenn der Wert in dieser Spalte einer der
+    Einträge
+        "Fördermitglied"
+        "Ehrenmitglied"
+    ist. Da dieser Eintrag auch für die Bestimmung der Beitragshöhe benötigt
+    wird, ist es leichter, die Spalte "Beitragsart_1" in die exportierte Datei
+    aufzunehmen, statt einen entsprechenden Eintrag auch noch in der Spalte
+    "AD-Frei.Grund" anzugeben.
+
+    Mitglieder, die bereits ausgetreten sind, müssen solange in der Liste 
+    auftauchen, bis ihre Arbeitsdienstpflicht vollständig abgerechnet ist!
+    
 Checksummen-Berechnung (MD5)
     Wenn eine Datei auf den Server hochgeladen wird, wird vorher ein MD5-Hash
     für diese Datei ermittelt. Dieser Hash wird in eine Datei geschrieben, die
