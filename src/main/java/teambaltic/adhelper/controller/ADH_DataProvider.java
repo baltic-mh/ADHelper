@@ -57,6 +57,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
     private File m_BaseDataFile;
     public File getBaseDataFile(){ return m_BaseDataFile; }
+    private void setBaseDataFile( final File fBaseDataFile ){ m_BaseDataFile = fBaseDataFile; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -105,8 +106,8 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void readBaseData( final Path fFileToReadFrom ) throws Exception
     {
         clear();
-        m_BaseDataFile = fFileToReadFrom.toFile();
-        final BaseDataReader aReader = new BaseDataReader( m_BaseDataFile );
+        setBaseDataFile( fFileToReadFrom.toFile() );
+        final BaseDataReader aReader = new BaseDataReader( getBaseDataFile() );
         m_Members = aReader.read( this );
         Collections.sort( m_Members );
     }
