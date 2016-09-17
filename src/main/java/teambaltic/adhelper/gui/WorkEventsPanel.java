@@ -208,6 +208,11 @@ public class WorkEventsPanel extends JPanel
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         return centerRenderer;
     }
+
+    public TBLModel_WorkEvents getTableModel()
+    {
+        return (TBLModel_WorkEvents) getTable().getModel();
+    }
 }
 
 // ############################################################################

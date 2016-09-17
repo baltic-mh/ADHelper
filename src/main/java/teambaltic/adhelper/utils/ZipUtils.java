@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -99,7 +100,10 @@ public class ZipUtils
                 }
                 is.close();
                 fos.close();
-
+                final FileTime aLastModifiedTime = zipEntry.getLastModifiedTime();
+                if( aLastModifiedTime != null ){
+                    file.setLastModified( aLastModifiedTime.toMillis() );
+                }
             }
         }finally{
             zipFile.close();

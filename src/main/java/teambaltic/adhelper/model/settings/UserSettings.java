@@ -68,5 +68,11 @@ public class UserSettings extends ASettings<IUserSettings.EKey>
         final ERole aRole = getRole();
         return ERole.BAUAUSSCHUSS.equals( aRole );
     }
+
+    @Override
+    public String toString()
+    {
+        return String.format( "%s als %s", getName(), getRole() );
+    }
 }
 // ############################################################################

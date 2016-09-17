@@ -1,0 +1,29 @@
+===============================================================================
+Release-1.0.4.6	2016-09-17
+- [NEU] 	Beim Beenden muss das Hochladen von Daten bestätigt werden.
+- [NEU] 	Datenverzeichnisse, die auf dem Server nicht mehr existieren, werden
+			entfernt.
+- [BUGFIX] 	Bei der Eingabe von Arbeitsdiensten wird der Stundenwert auch dann
+			übernommen, wenn die Eingabetaste beim letzen Wert nicht gedrückt
+			worden ist.
+- [BUGFIX]  Beim Mitgliederwart werden die Basis nun ins korrekte Verzeichnis
+            hochgeladen
+- [ÄNDERUNG]Wenn neue Basisdaten vom Server heruntergeladen wurden, werden diese
+            sofort ins Verzeichnis der aktuellen Periode kopiert.
+- [ÄNDERUNG]Die Dateien im Verzeichnis der Abrechnungsperioden behalten nun
+            ihren Zeitstempel, den sie in der Zip-Datei haben.
+- [ÄNDERUNG]Eine Änderung der Daten bei den Arbeitsdiensten wird nur noch dann
+			als solche anerkannt, wenn der Stundenwert geändert wurde und er
+			sich vom vorherigen Wert unterscheidet.
+			
+BEKANNTE PROBLEME:
+- Die Release-Nummer, die in der Titelzeile angezeigt wird, hinkt um eins der
+    wirklichen Nummer hinterher :-/
+===============================================================================
+Release-1.0.3.3
+- Anzeige der Mitglieder in ComboBox enthält nun das "Elternmitglied"
+- Bug bei der Eingabe neuer Arbeitsdiensttermine behoben
+- Versionsinformationen werden automatisch erzeugt und benutzt
+- Titelzeile enthält nun Benutzer und Versionsinformationen
+- Dokumentation an FOLDER_ROOT angepasst
+===============================================================================

@@ -35,7 +35,10 @@ public interface IPeriodDataController
 
     List<PeriodData> getPeriodDataList( EPeriodDataSelector fSelector );
     PeriodData getActivePeriod();
+    PeriodData getNewestPeriodData();
     PeriodData getPeriodData( LocalDate fDate );
+    Path getActivePeriodFolder();
+    void removeActivePeriodFolder() throws Exception;
 
     boolean isFinished( PeriodData fPeriodData );
     boolean isFinished( IPeriod fPeriod );
@@ -56,6 +59,7 @@ public interface IPeriodDataController
     Path getFile_BaseData( PeriodData fPeriodData );
     Path getFile_WorkEvents( PeriodData fPeriodData );
     Path getFile_Balances( PeriodData fPeriodData );
+    void removeDataFolderOrphans( List<Path> fPeriodFoldersKnownOnServer );
 
 }
 

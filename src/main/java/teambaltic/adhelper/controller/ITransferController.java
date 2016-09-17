@@ -12,6 +12,7 @@
 package teambaltic.adhelper.controller;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import teambaltic.adhelper.model.ERole;
 
@@ -33,9 +34,10 @@ public interface ITransferController extends IShutdownListener
     Path download( Path fFileToDownload );
     boolean uploadPeriodData() throws Exception;
     void updateBaseDataFromServer( Path fFile_BaseData, ERole fRole ) throws Exception;
-    void updatePeriodDataFromServer() throws Exception;
+    List<Path> updatePeriodDataFromServer() throws Exception;
 
     void setPeriodDataController( IPeriodDataController fPDC );
+    boolean isActivePeriodModifiedLocally();
 }
 
 // ############################################################################

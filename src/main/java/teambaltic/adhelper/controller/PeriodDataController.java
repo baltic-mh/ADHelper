@@ -144,6 +144,7 @@ public class PeriodDataController implements IPeriodDataController
     @Override
     public void init()
     {
+        m_PeriodDataList.clear();
         final File[] aDataFolders = findDataFolders( getRootFolder() );
         for( final File aDataFolder : aDataFolders ){
             final PeriodData aPeriodData = new PeriodData( aDataFolder.toPath() );
@@ -161,6 +162,7 @@ public class PeriodDataController implements IPeriodDataController
     {
         final PeriodData aNewestPeriodData = getNewestPeriodData();
         if( !isFinished( aNewestPeriodData ) ){
+            assertNewestBaseDataFile( aNewestPeriodData );
             setActivePeriod( aNewestPeriodData );
             return;
         }
@@ -171,6 +173,21 @@ public class PeriodDataController implements IPeriodDataController
         m_PeriodDataList.add( aNewlyCreatedPeriodData );
         setActivePeriod( aNewlyCreatedPeriodData );
         populateNewPeriodFolder( getAppSettings(), aNewlyCreatedPeriodData);
+    }
+
+    private void assertNewestBaseDataFile( final PeriodData fPeriodData ) throws IOException
+    {
+        final Path aFolder_Data = getAppSettings().getFolder_Data();
+        final String aFileName_BaseData = getAppSettings().getFileName_BaseData();
+        final File aBaseDataFile_Root = aFolder_Data.resolve( aFileName_BaseData ).toFile();
+        final long aLastModified_Root = aBaseDataFile_Root.lastModified();
+        final Path aPeriodDataFolder = fPeriodData.getFolder();
+        final File aBaseDataFile_Period = aPeriodDataFolder.resolve( aFileName_BaseData ).toFile();
+        final long aLastModified_Period = aBaseDataFile_Period.exists() ? aBaseDataFile_Period.lastModified() : 0L;
+        if( aLastModified_Root > aLastModified_Period ){
+            FileUtils.copyFileToFolder( aBaseDataFile_Root, aPeriodDataFolder );
+            sm_Log.info("Neue Basisdaten-Datei kopiert nach: "+aPeriodDataFolder);
+        }
     }
 
     private void populateNewPeriodFolder(
@@ -213,7 +230,8 @@ public class PeriodDataController implements IPeriodDataController
         Writer.shiftBalanceValues( aShiftedBalanceFile.toFile() );
     }
 
-    private PeriodData getNewestPeriodData()
+    @Override
+    public PeriodData getNewestPeriodData()
     {
         final List<PeriodData> aList = getPeriodDataList( EPeriodDataSelector.ALL );
         final PeriodData aNewest = aList.get( aList.size()-1 );
@@ -379,6 +397,75 @@ public class PeriodDataController implements IPeriodDataController
         sm_Log.info( "Periode wird abgeschlossen: "+fPeriodData );
         FileUtils.writeFinishedFile( fPeriodData.getFolder().resolve( getFileName_Finished() ), getUserInfo() );
     }
+
+    @Override
+    public Path getActivePeriodFolder()
+    {
+        final PeriodData aActivePeriod = getActivePeriod();
+        if( aActivePeriod == null ){
+            return null;
+        }
+        final Path aActivePeriodFolder = aActivePeriod.getFolder();
+        return aActivePeriodFolder;
+    }
+
+    @Override
+    public void removeActivePeriodFolder() throws Exception
+    {
+        final Path aPeriodFolderToRemove = getActivePeriodFolder();
+        removePeriodFolder( aPeriodFolderToRemove );
+    }
+    private void removePeriodFolder( final Path fPeriodFolderToRemove ) throws IOException
+    {
+        final Path aFolder_Data     = getAppSettings().getFolder_Data();
+        final Path aFolder_Obsolete = aFolder_Data.resolve( "Obsolete" );
+        if( !Files.exists( aFolder_Obsolete )){
+            Files.createDirectories( aFolder_Obsolete );
+        }
+        Path aTargetFolder = aFolder_Obsolete.resolve( fPeriodFolderToRemove.getFileName().toString() );
+        aTargetFolder = assertNewName(aTargetFolder);
+        Files.move( fPeriodFolderToRemove, aTargetFolder );
+        sm_Log.info( "Datenverzeichnis verschoben nach "+aTargetFolder );
+    }
+
+    private static Path assertNewName( final Path fPath )
+    {
+        Path aPath = fPath;
+        final String aName = aPath.getFileName().toString();
+        final Path aParent = aPath.getParent();
+        int aIdx = 1;
+        while( Files.exists( aPath )){
+            aPath = aParent.resolve( String.format( "%s_%d", aName, aIdx++ ) );
+        }
+        return aPath;
+    }
+
+    @Override
+    public void removeDataFolderOrphans( final List<Path> fPeriodFoldersKnownOnServer )
+    {
+        if( fPeriodFoldersKnownOnServer == null ){
+            return;
+        }
+        boolean aChanged = false;
+        final List<PeriodData> aPeriodDataList = getPeriodDataList( EPeriodDataSelector.ALL );
+        for( final PeriodData aPeriodData : aPeriodDataList ){
+            final Path aLocalPeriodDataFolder = aPeriodData.getFolder();
+            if( fPeriodFoldersKnownOnServer.contains( aLocalPeriodDataFolder ) ){
+                continue;
+            }
+            sm_Log.info( "Verzeichnis existiert auf dem Server nicht mehr: "+aLocalPeriodDataFolder );
+            try{
+                removePeriodFolder( aLocalPeriodDataFolder );
+                aChanged = true;
+            }catch( final IOException fEx ){
+                sm_Log.warn("Exception: ", fEx );
+            }
+        }
+        if(aChanged){
+            init();
+        }
+    }
+
 }
 
 // ############################################################################

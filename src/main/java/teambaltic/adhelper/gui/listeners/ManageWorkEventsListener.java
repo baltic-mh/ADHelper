@@ -73,12 +73,6 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
     public boolean isBauausschuss(){ return m_IsBauausschuss; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private boolean m_Dirty;
-    private boolean isDirty(){ return m_Dirty; }
-    private void setDirty( final boolean fDirty ){ m_Dirty = fDirty; }
-    // ------------------------------------------------------------------------
-
     private final WorkEventsDialog m_WorkEventsDialog;
 
     private final NewWorkEventDateListener m_NewWorkEventDateListener;
@@ -151,6 +145,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
         final PeriodData aSelectedPeriod = (PeriodData) aCmb_Period.getSelectedItem();
         switch( aActionCommand ){
             case "CANCEL":
+                m_WorkEventsDialog.getContentPanel().getTable().editingStopped( null );
                 if( isDirty() ){
                     final Object[] options = {"Ich weiﬂ, was ich tue!", "Nein, das war ein Versehen!"};
                     final int n = JOptionPane.showOptionDialog(null,
@@ -172,6 +167,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
                 break;
 
             case "OK":
+                m_WorkEventsDialog.getContentPanel().getTable().editingStopped( null );
                 final boolean aDataChanged = writeWorkEventsToMembers();
                 if( aDataChanged ){
                     m_DataProvider.writeToFile_WorkEvents();
@@ -387,7 +383,10 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
     @Override
     public void tableChanged( final TableModelEvent fEvent )
     {
-        setDirty( true );
+//        final int aCol = fEvent.getColumn();
+//        if( aCol == 3 ){
+//            setDirty( true );
+//        }
 //        final int row = fEvent.getFirstRow();
 //        final int col = fEvent.getColumn();
 //        final TBLModel_WorkEvents model = (TBLModel_WorkEvents)fEvent.getSource();
@@ -398,6 +397,15 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
 //        System.out.println(String.format("Data changed: col %s row %d - val %s",
 //                columnName, row, data));
     }
+
+    // ------------------------------------------------------------------------
+    private boolean isDirty(){
+        final WorkEventsPanel aWorkEventsPanel = getWorkEventsPanel();
+        final TBLModel_WorkEvents aModel = aWorkEventsPanel.getTableModel();
+        return aModel.isDirty();
+    }
+    // ------------------------------------------------------------------------
+
 }
 
 // ############################################################################

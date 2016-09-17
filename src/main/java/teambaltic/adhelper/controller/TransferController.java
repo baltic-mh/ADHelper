@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.CheckSumInfo;
 import teambaltic.adhelper.model.ERole;
-import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
@@ -50,8 +49,6 @@ public class TransferController implements ITransferController
     // ------------------------------------------------------------------------
     private IUserSettings getUserSettings(){ return getAllSettings().getUserSettings(); }
     private String getUserInfo(){ return getUserSettings().getDecoratedEMail(); }
-    // ------------------------------------------------------------------------
-    private Path getRootFolder(){ return getAppSettings().getFolder_Root(); }
     // ------------------------------------------------------------------------
     private Path getSandBox(){ return getAppSettings().getFolder_SandBox(); }
     // ------------------------------------------------------------------------
@@ -106,7 +103,6 @@ public class TransferController implements ITransferController
     @Override
     public void shutdown() throws Exception
     {
-        uploadPeriodData();
         getSingletonWatcher().stop();
         getRemoteAccess().close();
         final File aSandbox = getSandBox().toFile();
@@ -235,6 +231,7 @@ public class TransferController implements ITransferController
     private Path copyFileToSandBox( final Path fFile ) throws IOException
     {
         final Path aFileInSandBox = Files.copy( fFile, getSandBoxPath( fFile ), StandardCopyOption.REPLACE_EXISTING );
+        aFileInSandBox.toFile().setLastModified( fFile.toFile().lastModified() );
         return aFileInSandBox;
     }
 
@@ -245,15 +242,23 @@ public class TransferController implements ITransferController
     }
 
     @Override
-    public boolean uploadPeriodData() throws Exception
+    public boolean isActivePeriodModifiedLocally()
     {
-        final PeriodData aActivePeriod = getPDC().getActivePeriod();
-        final Path aFolderToUpload = aActivePeriod.getFolder();
-        final CheckSumCreator aCSC = getCheckSumCreator();
-        if( !isFolderDirty( aCSC, aFolderToUpload ) ){
-            sm_Log.info( "Aktive Periode ist lokal unverändert: "+aFolderToUpload );
+        final Path aActivePeriodFolder = getPDC().getActivePeriodFolder();
+        if( aActivePeriodFolder == null ){
             return false;
         }
+        final CheckSumCreator aCSC = getCheckSumCreator();
+        final boolean aFolderDirty = isFolderDirty( aCSC, aActivePeriodFolder );
+        sm_Log.info( String.format("Aktive Periode ist lokal %sverändert: %s",
+                aFolderDirty ? "" : "un", aActivePeriodFolder ));
+        return aFolderDirty;
+    }
+
+    @Override
+    public boolean uploadPeriodData() throws Exception
+    {
+        final Path aFolderToUpload = getPDC().getActivePeriodFolder();
         final String aFileName_Uploaded = getAppSettings().getFileName_Uploaded();
         // Damit die Datei mit der Upload-Info auch auf den Server kommt,
         // muss sie bereits VOR dem Zippen da hineingeschrieben werden.
@@ -308,36 +313,42 @@ public class TransferController implements ITransferController
     }
 
     @Override
-    public void updatePeriodDataFromServer() throws Exception
+    public List<Path> updatePeriodDataFromServer() throws Exception
     {
         final Path aDataFolder = getAppSettings().getFolder_Data();
-        final List<String> aRemoteZipFiles = m_RemoteAccess.list( aDataFolder, "zip.cry" );
+        final List<String> aRemoteZipFiles_Crypted = m_RemoteAccess.list( aDataFolder, "zip.cry" );
         final List<String> aZipsToDownLoad = new ArrayList<>();
         final CheckSumCreator aCSC  = getCheckSumCreator();
 
-        for( final String aRemoteZipFile : aRemoteZipFiles ){
-            if( !isLocallyUptodate( aCSC, aRemoteZipFile ) ){
-                aZipsToDownLoad.add( aRemoteZipFile );
+        final List<Path> aFoldersKnownOnServer = new ArrayList<>();
+        for( final String aRemoteZipFile_Crypted : aRemoteZipFiles_Crypted ){
+            final Path aRemoteZipFile = getRemoteZipFile( aRemoteZipFile_Crypted );
+            final Path aLocalFolderPath = getLocalFolderPath( aRemoteZipFile );
+            aFoldersKnownOnServer.add( aLocalFolderPath );
+            if( !isLocallyUptodate( aCSC, aRemoteZipFile, aLocalFolderPath ) ){
+                aZipsToDownLoad.add( aRemoteZipFile_Crypted );
             }
         }
         if( aZipsToDownLoad.size() == 0 ){
             sm_Log.info( "Alle lokalen Daten sind aktuell!");
-            return;
+        } else {
+            for( final String aZipToDownload : aZipsToDownLoad ){
+                downloadDecryptAndUnzip(aZipToDownload);
+            }
         }
-        for( final String aZipToDownload : aZipsToDownLoad ){
-            downloadDecryptAndUnzip(aZipToDownload);
-        }
+        return aFoldersKnownOnServer;
     }
 
-    private boolean isLocallyUptodate( final CheckSumCreator fCSC, final String fRemoteZipFile ) throws Exception
+    private boolean isLocallyUptodate(
+            final CheckSumCreator fCSC,
+            final Path aRemoteZipFile,
+            final Path aLocalFolderPath ) throws Exception
     {
-        final Path aLocalFolderPath = Paths.get( fRemoteZipFile.replaceFirst( "\\.zip\\.cry$", "" ) );
         if( !Files.exists( aLocalFolderPath ) ){
             return false;
         }
-        final Path aZipFileToDownload = Paths.get( fRemoteZipFile.replaceFirst( "\\.cry$", "" ) );
-        final Path aCheckSumFileFromServer = getCheckSumFromServer( fCSC, aZipFileToDownload );
-        final Path aCheckSumFileLocal      = fCSC.getCheckSumFile( aZipFileToDownload );
+        final Path aCheckSumFileFromServer = getCheckSumFromServer( fCSC, aRemoteZipFile );
+        final Path aCheckSumFileLocal      = fCSC.getCheckSumFile( aRemoteZipFile );
         if( !Files.exists( aCheckSumFileLocal )){
             return false;
         }
@@ -348,6 +359,17 @@ public class TransferController implements ITransferController
             return true;
         }
         return false;
+    }
+
+    private static Path getRemoteZipFile( final String fRemoteZipFile_Crypted )
+    {
+        final Path aZipFileToDownload = Paths.get( fRemoteZipFile_Crypted.replaceFirst( "\\.cry$", "" ) );
+        return aZipFileToDownload;
+    }
+    private static Path getLocalFolderPath( final Path fRemoteZipFile )
+    {
+        final Path aLocalFolderPath = Paths.get( fRemoteZipFile.toString().replaceFirst( "\\.zip$", "" ) );
+        return aLocalFolderPath;
     }
 
     private void downloadDecryptAndUnzip( final String fZipToDownload ) throws Exception
@@ -392,6 +414,7 @@ public class TransferController implements ITransferController
         }
         return false;
     }
+
 }
 
 // ############################################################################

@@ -13,6 +13,7 @@ package teambaltic.adhelper.gui;
 
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.FileInputStream;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -79,6 +81,18 @@ public class ADH_Application
 
     private MainPanel m_MainPanel;
 
+    // ------------------------------------------------------------------------
+    private IPeriodDataController m_PDC;
+    private IPeriodDataController getPDC(){ return m_PDC; }
+    private void setPDC( final IPeriodDataController fPDC ){ m_PDC = fPDC; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private ITransferController m_TransferController;
+    private ITransferController getTransferController(){ return m_TransferController; }
+    private void setTransferController( final ITransferController fTransferController ){ m_TransferController = fTransferController; }
+    // ------------------------------------------------------------------------
+
     private final List<IShutdownListener> m_ShutdownListeners;
 
     // ------------------------------------------------------------------------
@@ -101,7 +115,7 @@ public class ADH_Application
         sm_Log.info("==========================================================");
         readAndSetSystemProperties(aAppName);
 
-        final ADH_Application aAppWindow = new ADH_Application();
+        final ADH_Application aApplication = new ADH_Application();
 
         EventQueue.invokeLater( new Runnable() {
 
@@ -109,23 +123,27 @@ public class ADH_Application
             public void run()
             {
                 try{
-                    initSettings( aAppWindow );
+                    initSettings( aApplication );
                     sm_Log.info(composeTitle());
-                    final boolean aIsBauausschuss = AllSettings.INSTANCE.getUserSettings().isBauausschuss();
+                    sm_Log.info( "Heute ist ein schöner Tag: "+ new Date() );
+                    final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+                    sm_Log.info( "Im Einsatz: "+aUserSettings);
+                    final boolean aIsBauausschuss = aUserSettings.isBauausschuss();
                     IntegrityChecker.check( AllSettings.INSTANCE );
                     final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE );
 
-                    aAppWindow.initialize();
-                    aAppWindow.setVisible( true );
+                    aApplication.initialize();
+                    aApplication.setVisible( true );
 
                     ITransferController aTC = null;
+                    List<Path >aPeriodFoldersKnownOnServer = null;
                     boolean aOffline = true;
                     if( !stayLocal() ){
                         aTC = aInitHelper.initTransferController();
                         aTC.start();
                         if( aTC.isConnected() ){
                             aOffline = false;
-                            updateDataFromServer( aTC );
+                            aPeriodFoldersKnownOnServer = updateDataFromServer( aTC );
                             IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
                         } else {
                             throw new Exception( "Keine Verbindung zum Server (für Details siehe log-Datei)!" );
@@ -135,23 +153,24 @@ public class ADH_Application
                     final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
                     if( !aOffline ){
                         aTC.setPeriodDataController( aPDC );
+                        aPDC.removeDataFolderOrphans( aPeriodFoldersKnownOnServer );
                         if( aIsBauausschuss ){
                             // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
                             aPDC.createNewPeriod();
                         }
                     }
-                    aAppWindow.setTitle( aOffline );
-                    aAppWindow.addShutdownListener( aTC );
+                    aApplication.setTitle( aOffline );
+                    aApplication.addShutdownListener( aTC );
                     final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
 
-                    aAppWindow.initObjects( aDataProvider, aPDC, aTC, aIsBauausschuss );
+                    aApplication.initObjects( aDataProvider, aPDC, aTC, aIsBauausschuss );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
                     final String aMsg = ExceptionUtils.getStackTrace(fEx);
-                    JOptionPane.showMessageDialog( aAppWindow.m_frame, aMsg, "Fataler Fehler!",
+                    JOptionPane.showMessageDialog( aApplication.m_frame, aMsg, "Fataler Fehler!",
                                 JOptionPane.ERROR_MESSAGE );
-                    aAppWindow.shutdown("Beenden wegen fataler Exception", 1);
+                    aApplication.shutdown("Beenden wegen fataler Exception", 1);
                 }
             }
 
@@ -188,23 +207,12 @@ public class ADH_Application
             final ITransferController fTransferController,
             final boolean fIsBauausschuss)
     {
+        setPDC( fPDC );
+        setTransferController( fTransferController );
         m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC );
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
 
-        final JComboBox<PeriodData> aCB_Period = m_MainPanel.getCB_Period();
-        final PeriodDataChangedListener aPDCL = new PeriodDataChangedListener( m_GUIUpdater, fDataProvider );
-        aCB_Period.addItemListener( aPDCL );
-
-        final List<PeriodData> aPDList = fPDC.getPeriodDataList( ALL );
-        final PeriodData[] aPeriods = new PeriodData[aPDList.size()];
-        aCB_Period.setModel( new CBModel_PeriodData( aPDList.toArray( aPeriods ) ) );
-        aCB_Period.setSelectedItem( fPDC.getActivePeriod() );
-        if( aCB_Period.getItemCount() == 1 ){
-            // Wenn da nur ein Element in der Box ist, hat das vorherige
-            /// setSelectedItem keinen Event ausgelöst!
-            final ItemEvent aItemEvent = new ItemEvent(aCB_Period, 0, fPDC.getActivePeriod(), ItemEvent.SELECTED);
-            aPDCL.itemStateChanged( aItemEvent );
-        }
+        final PeriodDataChangedListener aPDCL = initComboBox_PeriodData( fDataProvider, fPDC );
 
         final JComboBox<IClubMember> aCB_Members = m_MainPanel.getCB_Members();
         aCB_Members.addActionListener( aMemberSelectedListener );
@@ -219,8 +227,34 @@ public class ADH_Application
 
         final JButton aBtnUpload = m_MainPanel.getBtnUpload();
         aBtnUpload.addActionListener(
-                new UploadListener( m_MainPanel, fDataProvider, fTransferController,
+                new UploadListener( m_MainPanel, fTransferController,
                         getUserSettingsListener() ) );
+    }
+
+    private PeriodDataChangedListener initComboBox_PeriodData(
+            final ADH_DataProvider fDataProvider,
+            final IPeriodDataController fPDC )
+    {
+        final JComboBox<PeriodData> aCB_Period = m_MainPanel.getCB_Period();
+        final PeriodDataChangedListener aPDCL = new PeriodDataChangedListener( m_GUIUpdater, fDataProvider );
+        aCB_Period.addItemListener( aPDCL );
+
+        final List<PeriodData> aPDList = fPDC.getPeriodDataList( ALL );
+        final PeriodData[] aPeriods = new PeriodData[aPDList.size()];
+        aCB_Period.setModel( new CBModel_PeriodData( aPDList.toArray( aPeriods ) ) );
+        PeriodData aPeriodToSelect = fPDC.getActivePeriod();
+        if( aPeriodToSelect != null ){
+        } else {
+            aPeriodToSelect = fPDC.getNewestPeriodData();
+        }
+        aCB_Period.setSelectedItem( aPeriodToSelect );
+        if( aCB_Period.getItemCount() == 1 ){
+            // Wenn da nur ein Element in der Box ist, hat das vorherige
+            /// setSelectedItem keinen Event ausgelöst!
+            final ItemEvent aItemEvent = new ItemEvent(aCB_Period, 0, aPeriodToSelect, ItemEvent.SELECTED);
+            aPDCL.itemStateChanged( aItemEvent );
+        }
+        return aPDCL;
     }
 
     /**
@@ -234,7 +268,7 @@ public class ADH_Application
         m_frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(final java.awt.event.WindowEvent e) {
-                shutdown("Beenden durch Benutzer", 0);
+                shutdown("Beenden durch Benutzer (Schließen-Knopf)", 0);
             }
         });
 
@@ -253,6 +287,14 @@ public class ADH_Application
         menuBar.add(mnDatei);
 
         final JMenuItem mntmBeenden = new JMenuItem("Beenden");
+        mntmBeenden.addActionListener( new ActionListener(){
+            @Override
+            public void actionPerformed( final ActionEvent fE )
+            {
+                shutdown("Beenden durch Benutzer (Menue)", 0);
+            }
+
+        });
         mnDatei.add(mntmBeenden);
 
         final JMenu mnAktionen = new JMenu("Aktionen");
@@ -298,6 +340,10 @@ public class ADH_Application
     public void shutdown(final String fInfo, final int fExitCode)
     {
         synchronized( m_ShutdownListeners ){
+            final ERole aRole = getRole();
+            if( ERole.BAUAUSSCHUSS.equals( aRole )){
+                doConfirmedUpload();
+            }
             for( final IShutdownListener aShutdownListener : m_ShutdownListeners ){
                 try{
                     aShutdownListener.shutdown();
@@ -311,6 +357,52 @@ public class ADH_Application
         System.exit( fExitCode );
     }
 
+    private void doConfirmedUpload()
+    {
+        final ITransferController aTC = getTransferController();
+        if( aTC == null ){
+            return;
+        }
+        final boolean aActivePeriodModifiedLocally = aTC.isActivePeriodModifiedLocally();
+        if( aActivePeriodModifiedLocally ){
+            final boolean aUploadConfirmed = confirmUpload( /*ActivePeriod*/ );
+            if( aUploadConfirmed ){
+                try{
+                    aTC.uploadPeriodData();
+                }catch( final Exception fEx ){
+                    sm_Log.warn("Exception: ", fEx );
+                }
+            } else {
+                sm_Log.info("Benutzer hat Upload abgelehnt.");
+                try{
+                    getPDC().removeActivePeriodFolder();
+                }catch( final Exception fEx ){
+                    // TODO Auto-generated catch block
+                    sm_Log.warn("Exception: ", fEx );
+                }
+            }
+        }
+    }
+
+    private static boolean confirmUpload()
+    {
+        final Object[] options = {"Daten hochladen!", "Daten verwerfen!"};
+        final int n = JOptionPane.showOptionDialog(null,
+            "Die Daten der aktiven Periode sind geändert worden! Sollen diese Daten auf den Server hochgeladen werden??",
+            "Daten geändert!",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            options,
+            options[0]);
+        switch( n ){
+            case 0:
+                return true;
+
+            default:
+                return false;
+        }
+    }
     private static boolean stayLocal()
     {
         final boolean aSysPropStayLocal = Boolean.getBoolean( "staylocal" );
@@ -322,14 +414,13 @@ public class ADH_Application
         m_frame.setTitle( composeTitle() );
     }
 
-    private static void updateDataFromServer( final ITransferController fTC ) throws Exception
+    private static List<Path> updateDataFromServer( final ITransferController fTC ) throws Exception
     {
         final IAppSettings aAppSettings = AllSettings.INSTANCE.getAppSettings();
         final Path aFile_BaseData = aAppSettings.getFile_RootBaseData();
-        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
-        final ERole aRole = aUserSettings.getRole();
+        final ERole aRole = getRole();
         fTC.updateBaseDataFromServer( aFile_BaseData, aRole );
-        fTC.updatePeriodDataFromServer();
+        return fTC.updatePeriodDataFromServer();
     }
 
     private static void readAndSetSystemProperties(final String fAppName)
@@ -370,6 +461,12 @@ public class ADH_Application
         return aSB.toString();
     }
 
+    private static ERole getRole()
+    {
+        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+        final ERole aRole = aUserSettings.getRole();
+        return aRole;
+    }
 }
 
 // ############################################################################

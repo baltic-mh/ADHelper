@@ -25,6 +25,12 @@ public class TBLModel_WorkEvents extends DefaultTableModel
     public boolean isReadOnly(){ return m_ReadOnly; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private boolean m_Dirty;
+    public boolean isDirty(){ return m_Dirty; }
+    private void setDirty( final boolean fDirty ){ m_Dirty = fDirty; }
+    // ------------------------------------------------------------------------
+
     public TBLModel_WorkEvents(final Object[][] fData, final boolean fReadOnly)
     {
         super( fData, COLUMNHEADERS);
@@ -64,6 +70,28 @@ public class TBLModel_WorkEvents extends DefaultTableModel
         return false;
     }
 
+    @Override
+    public void setValueAt(final Object fNewValue, final int fRow, final int fCol)
+    {
+        if( fCol == 3 ){
+            final Object aOldValue = getValueAt(fRow, fCol);
+            if( !areValuesEqual( aOldValue, fNewValue ) ){
+                setDirty( true );
+            }
+        }
+        super.setValueAt( fNewValue, fRow, fCol );
+    }
+
+    private static boolean areValuesEqual( final Object fOldValue, final Object fNewValue )
+    {
+        // NewValue ist nie null!
+        if( fOldValue == null ){
+            if( ((Double)fNewValue).doubleValue() == 0.0 ){
+                return true;
+            }
+        }
+        return fNewValue.equals( fOldValue );
+    }
 }
 
 // ############################################################################

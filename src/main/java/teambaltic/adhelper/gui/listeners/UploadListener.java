@@ -24,11 +24,11 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
-import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.ERole;
+import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
@@ -37,7 +37,6 @@ public class UploadListener implements ActionListener
     private static final Logger sm_Log = Logger.getLogger(FinishListener.class);
 
     private final MainPanel         m_Panel;
-    private final ADH_DataProvider  m_DataProvider;
 
     private final ITransferController m_TransferController;
 
@@ -45,12 +44,10 @@ public class UploadListener implements ActionListener
 
     public UploadListener(
             final MainPanel fPanel,
-            final ADH_DataProvider fDataProvider,
             final ITransferController fTransferController,
             final UserSettingsListener fUserSettingsListener)
     {
         m_Panel                 = fPanel;
-        m_DataProvider          = fDataProvider;
         m_TransferController    = fTransferController;
         m_UserSettingsListener  = fUserSettingsListener;
     }
@@ -88,7 +85,8 @@ public class UploadListener implements ActionListener
     private boolean uploadBaseData() throws Exception
     {
         final JFileChooser aFileChooser = new JFileChooser();
-        aFileChooser.setCurrentDirectory( m_DataProvider.getBaseDataFile() );
+        final Path aFolder_Data = getDataFolder();
+        aFileChooser.setCurrentDirectory( aFolder_Data.toFile() );
         final int aResult = aFileChooser.showOpenDialog(m_Panel);
         if( aResult == JFileChooser.APPROVE_OPTION ) {
             final File aSelectedFile = aFileChooser.getSelectedFile();
@@ -103,14 +101,23 @@ public class UploadListener implements ActionListener
         return false;
     }
 
-    private Path copyToDataFolder( final File fSelectedFile ) throws IOException
+    private static Path copyToDataFolder( final File fSelectedFile ) throws IOException
     {
-        final File aBaseDataFile = m_DataProvider.getBaseDataFile();
-        final Path aBaseDataFileAsPath = aBaseDataFile.toPath();
-        FileUtils.makeBackupCopy( aBaseDataFileAsPath );
-        Files.copy( fSelectedFile.toPath(), aBaseDataFileAsPath, StandardCopyOption.REPLACE_EXISTING );
+        final Path aBaseDataFile = getRootBaseDataFile();
+        FileUtils.makeBackupCopy( aBaseDataFile );
+        Files.copy( fSelectedFile.toPath(), aBaseDataFile, StandardCopyOption.REPLACE_EXISTING );
 
-        return aBaseDataFileAsPath;
+        return aBaseDataFile;
+    }
+
+    private static Path getDataFolder()
+    {
+        return AllSettings.INSTANCE.getAppSettings().getFolder_Data();
+    }
+
+    private static Path getRootBaseDataFile()
+    {
+        return AllSettings.INSTANCE.getAppSettings().getFile_RootBaseData();
     }
 
 }

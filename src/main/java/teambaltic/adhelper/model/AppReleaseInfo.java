@@ -1,5 +1,5 @@
 /* Created by JReleaseInfo AntTask from Open Source Competence Group */
-/* Creation date Sun Jun 19 12:06:22 CEST 2016 */
+/* Creation date Sat Sep 17 14:24:09 CEST 2016 */
 package teambaltic.adhelper.model;
 
 import java.util.Date;
@@ -12,11 +12,11 @@ import java.util.Date;
 public class AppReleaseInfo {
 
 
-   /** buildDate (set during build process to 1466330782012L). */
-   private static Date buildDate = new Date(1466330782012L);
+   /** buildDate (set during build process to 1474115049130L). */
+   private static Date buildDate = new Date(1474115049130L);
 
    /**
-    * Get buildDate (set during build process to Sun Jun 19 12:06:22 CEST 2016).
+    * Get buildDate (set during build process to Sat Sep 17 14:24:09 CEST 2016).
     * @return Date buildDate
     */
    public static final Date getBuildDate() { return buildDate; }
@@ -52,11 +52,11 @@ public class AppReleaseInfo {
    public static final String getOrganization() { return organization; }
 
 
-   /** version (set during build process to "1.0.3.3"). */
-   private static String version = "1.0.3.3";
+   /** version (set during build process to "1.0.4.6"). */
+   private static String version = "1.0.4.6";
 
    /**
-    * Get version (set during build process to "1.0.3.3").
+    * Get version (set during build process to "1.0.4.6").
     * @return String version
     */
    public static final String getVersion() { return version; }
@@ -72,11 +72,11 @@ public class AppReleaseInfo {
    public static final String getBuildType() { return buildType; }
 
 
-   /** buildTime (set during build process to "2016-06-19 12:06"). */
-   private static String buildTime = "2016-06-19 12:06";
+   /** buildTime (set during build process to "2016-09-17 14:24"). */
+   private static String buildTime = "2016-09-17 14:24";
 
    /**
-    * Get buildTime (set during build process to "2016-06-19 12:06").
+    * Get buildTime (set during build process to "2016-09-17 14:24").
     * @return String buildTime
     */
    public static final String getBuildTime() { return buildTime; }
