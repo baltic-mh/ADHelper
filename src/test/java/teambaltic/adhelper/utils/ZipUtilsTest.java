@@ -13,7 +13,6 @@ package teambaltic.adhelper.utils;
 
 import static org.junit.Assert.fail;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.log4j.Logger;
@@ -60,7 +59,7 @@ public class ZipUtilsTest
     public void test()
     {
         try{
-            final Path aZipped = ZipUtils.zip( Paths.get( "Daten/2014-07-01 - 2014-12-31" ) );
+            /*final Path aZipped = */ZipUtils.zip( Paths.get( "Daten/2014-07-01 - 2014-12-31" ) );
 //            final Path aZipped = ZipUtils.zip( Paths.get( "Daten" ) );
             ZipUtils.unzip( Paths.get( "Daten/2014-07-01 - 2014-12-31.zip" ) );
         }catch( final Exception fEx ){

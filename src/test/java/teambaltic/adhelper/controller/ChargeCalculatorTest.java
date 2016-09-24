@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
@@ -55,8 +54,8 @@ public class ChargeCalculatorTest
     private static FreeFromDuty MHW_FreeFromDuty;
 
     private static final int MHW_BalanceValue = 8100;
-    private static final int BJW_BalanceValue =  400;
-    private static Balance MMW_Balance;
+//    private static final int BJW_BalanceValue =  400;
+//    private static Balance MMW_Balance;
 
     private static WorkEventsAttended MHW_WorkEventsAttended;
     private static WorkEventsAttended BJW_WorkEventsAttended;

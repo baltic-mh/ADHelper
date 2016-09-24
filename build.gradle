@@ -12,7 +12,7 @@ plugins {
     id 'java'
 
     // Shadow is a Gradle plugin for combining dependency classes and resources
-    // with a project’s into a single output Jar. The combined Jar is often
+    // with a projectï¿½s into a single output Jar. The combined Jar is often
     // referred to a fat-jar or uber-jar. Shadow utilizes JarInputStream and
     // JarOutputStream to efficiently process dependent libraries into the
     // output jar without incurring the I/O overhead of expanding the jars to
@@ -40,7 +40,7 @@ plugins {
     // defined in the buildscript and available in the project. It can contain
     // simple infos like application name or version but also input from other
     // plugins like subversion commit number or git commit hash.
-    // Die zugehörige Task lautet "generateBuildConfig"
+    // Die zugehÃ¶rige Task lautet "generateBuildConfig"
     // https://github.com/mfuerstenau/gradle-buildconfig-plugin
     id 'de.fuerstenau.buildconfig' version '1.1.7'
     
@@ -58,7 +58,7 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    // Abhängigkeiten zur Compile-Zeit:
+    // Abhï¿½ngigkeiten zur Compile-Zeit:
     compile 'log4j:log4j:1.2.17'
     compile 'commons-lang:commons-lang:2.2'
     compile 'commons-io:commons-io:2.4'
@@ -154,7 +154,7 @@ release {
     buildTasks = ['launch4j']
     tagTemplate = '$name-$version'
     preTagCommitMessage = 'Neues Release: '
-    newVersionCommitMessage = 'Vorbereitung für nächste Version: '
+    newVersionCommitMessage = 'Vorbereitung fÃ¼r nÃ¤chste Version: '
 }
 afterReleaseBuild.dependsOn uploadArchives
 // ############################################################################
