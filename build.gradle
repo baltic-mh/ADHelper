@@ -123,12 +123,14 @@ launch4j {
 // ############################################################################
 def docu        = file('misc/Dokumentation/Dokumentation.txt')
 def exe         = file("build/launch4j/${launch4j.outfile}")
-releaseNotes    = file('RELEASENOTES.txt')
+def releaseNotes= file('RELEASENOTES.txt')
+def changeLog	= file('build/resources/main/CHANGELOG.md')
 
 artifacts {
     archives docu
     archives exe
     archives releaseNotes
+    archives changeLog
 }
 
 uploadArchives {
