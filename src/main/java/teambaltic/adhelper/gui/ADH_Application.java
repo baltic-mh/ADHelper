@@ -69,8 +69,13 @@ import teambaltic.adhelper.utils.Log4J;
 // ############################################################################
 public class ADH_Application
 {
-    private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
     private static final String PROPKEY_Log4jFileName = "log4jfilename";
+    static {
+        final String aLog4jFileName = BuildConfig.NAME+".log";
+        System.setProperty(PROPKEY_Log4jFileName, aLog4jFileName);
+        Log4J.initLog4J();
+    }
+    private static final Logger sm_Log = Logger.getLogger(ADH_Application.class);
 
     private static final EPeriodDataSelector ALL = EPeriodDataSelector.ALL;
 
@@ -108,12 +113,8 @@ public class ADH_Application
      */
     public static void main( final String[] args )
     {
-        final String aAppName = "ADHelper";
-        final String aLog4jFileName = aAppName+".log";
-        System.setProperty(PROPKEY_Log4jFileName, aLog4jFileName);
-        Log4J.initLog4J();
         sm_Log.info("==========================================================");
-        readAndSetSystemProperties(aAppName);
+        readAndSetSystemProperties(BuildConfig.NAME);
 
         final ADH_Application aApplication = new ADH_Application();
 
@@ -425,7 +426,7 @@ public class ADH_Application
 
     private static void readAndSetSystemProperties(final String fAppName)
     {
-        final Path aSysPropFile = Paths.get( fAppName+".prop" );
+        final Path aSysPropFile = Paths.get( fAppName+".properties" );
         if( !Files.exists( aSysPropFile ) ){
             return;
         }

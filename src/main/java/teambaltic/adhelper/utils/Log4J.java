@@ -24,7 +24,6 @@ import org.apache.log4j.PropertyConfigurator;
 //############################################################################
 public final class Log4J
 {
-    private static final Logger LOG = Logger.getLogger(Log4J.class);
 
     private Log4J() {/**/}
 
@@ -37,11 +36,14 @@ public final class Log4J
         } catch (final FileNotFoundException fEx) { /**/
         }
         if (is == null) {
-            is = Log4J.class.getResourceAsStream("/res/log4j.properties");
+            is = Log4J.class.getResourceAsStream("log4j.properties");
             if (is == null) {
-                BasicConfigurator.configure();
-                LOG.error("Datei Log4J.properties nicht gefunden!");
-                return;
+                is = Log4J.class.getResourceAsStream("/log4j.properties");
+                if (is == null) {
+                    BasicConfigurator.configure();
+                    Logger.getRootLogger().error("Datei log4j.properties nicht gefunden!");
+                    return;
+                }
             }
         }
         try {

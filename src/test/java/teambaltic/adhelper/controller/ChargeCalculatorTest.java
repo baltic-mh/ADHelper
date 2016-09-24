@@ -74,7 +74,7 @@ public class ChargeCalculatorTest
     {
         Log4J.initLog4J();
         try{
-            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/VereinsDaten.prop") );
+            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/VereinsDaten.properties") );
         }catch( final Exception fEx ){
             fail("Exception: "+fEx.getMessage() );
         }

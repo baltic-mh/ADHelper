@@ -58,7 +58,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
             setPropertyFile( aPropFile );
             aInputStream = new FileInputStream( aPropFile );
         } else {
-            aInputStream = getResourceAsStream( String.format("res/%s", aPropFile.getName() ) );
+            aInputStream = getResourceAsStream( String.format("%s", aPropFile.getName() ) );
         }
         if( aInputStream == null ){
             throw new FileNotFoundException( fPropertyFile.toString() );

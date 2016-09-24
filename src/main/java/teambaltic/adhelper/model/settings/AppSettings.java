@@ -25,7 +25,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     public AppSettings(final String fFolderName_Root) throws Exception
     {
         super();
-        init( Paths.get( fFolderName_Root, "Einstellungen", "AppSettings.prop" ));
+        init( Paths.get( fFolderName_Root, "Einstellungen", "AppSettings.properties" ));
         // Sicher ist sicher!
         setStringValue( EKey.FOLDERNAME_ROOT, fFolderName_Root );
     }
