@@ -110,13 +110,6 @@ jar {
     }
 }
 
-shadowJar {
-//   include '*.jar'
-//   include '*.prop'
-//   include '*.properties'
-    append 'ADHelper.prop'
-    append 'AppSettings.prop'
-}
 launch4j {
     println "Name= $project.name"
     println "Version = $project.version"
@@ -128,12 +121,14 @@ launch4j {
     copyright = copyRight
 }
 // ############################################################################
-def docu = file('misc/Dokumentation/Dokumentation.txt')
-def exe  = file("build/launch4j/${launch4j.outfile}")
+def docu        = file('misc/Dokumentation/Dokumentation.txt')
+def exe         = file("build/launch4j/${launch4j.outfile}")
+releaseNotes    = file('RELEASENOTES.txt')
 
 artifacts {
     archives docu
     archives exe
+    archives releaseNotes
 }
 
 uploadArchives {
@@ -145,8 +140,10 @@ uploadArchives {
     }
 }
 // ############################################################################
-////'net.researchgate.release'
-//apply from: "gradle.properties"
+//'net.researchgate.release'
+// Git MUSS im Pfad verfügbar sein!
+// Am besten aus Kommando-Shell aufrufen mit 
+//      gradlew :release -Prelease.useAutomaticVersion=true
 
 release {
     failOnUnversionedFiles = false
