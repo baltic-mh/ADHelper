@@ -1,4 +1,12 @@
 ===============================================================================
+Release-1.0.5 2016-09-25
+- [BUGFIX]  Die Release-Nummer, die in der Titelzeile angezeigt wird, wird nun
+            korrekt angezeigt.
+-------------------------------------------------------------------------------
+INTERN
+- [ÄNDERUNG]Build komplett auf Gradle umgestellt
+
+===============================================================================
 Release-1.0.4.6	2016-09-17
 - [NEU] 	Beim Beenden muss das Hochladen von Daten bestätigt werden.
 - [NEU] 	Datenverzeichnisse, die auf dem Server nicht mehr existieren, werden
@@ -15,7 +23,7 @@ Release-1.0.4.6	2016-09-17
 - [ÄNDERUNG]Eine Änderung der Daten bei den Arbeitsdiensten wird nur noch dann
 			als solche anerkannt, wenn der Stundenwert geändert wurde und er
 			sich vom vorherigen Wert unterscheidet.
-			
+
 BEKANNTE PROBLEME:
 - Die Release-Nummer, die in der Titelzeile angezeigt wird, hinkt um eins der
     wirklichen Nummer hinterher :-/

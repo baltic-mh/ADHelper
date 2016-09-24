@@ -42,6 +42,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
+import teambaltic.BuildConfig;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.controller.IPeriodDataController.EPeriodDataSelector;
@@ -57,7 +58,6 @@ import teambaltic.adhelper.gui.listeners.PeriodDataChangedListener;
 import teambaltic.adhelper.gui.listeners.UploadListener;
 import teambaltic.adhelper.gui.listeners.UserSettingsListener;
 import teambaltic.adhelper.gui.model.CBModel_PeriodData;
-import teambaltic.adhelper.model.AppReleaseInfo;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.PeriodData;
@@ -452,11 +452,11 @@ public class ADH_Application
         final String aUserName = AllSettings.INSTANCE.getRemoteAccessSettings().getUserName();
         final String aFolderName_Root = AllSettings.INSTANCE.getAppSettings().getFolderName_Root();
         final StringBuffer aSB = new StringBuffer();
-        aSB.append( AppReleaseInfo.getProject() );
+        aSB.append( BuildConfig.NAME );
         aSB.append( " - " );
-        aSB.append( AppReleaseInfo.getCopyright() );
+        aSB.append( BuildConfig.COPYRIGHT );
         aSB.append( " - " );
-        aSB.append( AppReleaseInfo.getVersion() );
+        aSB.append( BuildConfig.VERSION );
         aSB.append( String.format(" (%s@%s)", aUserName, aFolderName_Root ) );
         return aSB.toString();
     }

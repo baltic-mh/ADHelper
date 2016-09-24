@@ -9,7 +9,9 @@ build/
 #####################################
 
 # Vertrauliche Daten:
-Anmerkungen.txt
+Anmerkungen*.txt
+/Test.zip
+/KlaerenMitPeter.txt
 
 Einstellungen/
 misc/SandBox
@@ -89,5 +91,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-/Test.zip
-/KlaerenMitPeter.txt
