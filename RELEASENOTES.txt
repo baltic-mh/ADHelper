@@ -1,5 +1,13 @@
 ===============================================================================
 Release-1.0.5 2016-09-25
+- [ÄNDERUNG]Alle Property-Dateien haben nun die Endung ".properties"
+            Bei vorhandenen Installationen muss die Datei "ADHelper.prop"
+            umbenannt werden zu "ADHelper.properties". Ebenso müssen
+            im Verzeichnis "Arbeitsdienstabrechnungen/Einstellungen" die
+            Dateien
+                BenutzerDaten.prop
+                ServerZugangsDaten.prop
+            die Endung ".properties" bekommen.
 - [BUGFIX]  Die Release-Nummer, die in der Titelzeile angezeigt wird, wird nun
             korrekt angezeigt.
 -------------------------------------------------------------------------------
