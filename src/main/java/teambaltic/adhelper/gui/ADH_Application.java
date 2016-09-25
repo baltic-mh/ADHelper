@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -64,6 +65,7 @@ import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
+import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
 
 // ############################################################################
@@ -114,6 +116,7 @@ public class ADH_Application
     public static void main( final String[] args )
     {
         sm_Log.info("==========================================================");
+        migratePropertyFiles(BuildConfig.NAME);
         readAndSetSystemProperties(BuildConfig.NAME);
 
         final ADH_Application aApplication = new ADH_Application();
@@ -468,6 +471,50 @@ public class ADH_Application
         final ERole aRole = aUserSettings.getRole();
         return aRole;
     }
+
+    private static void migratePropertyFiles( final String fAppName )
+    {
+        final Path aAppPropFile = renameOldPropFile( ".", fAppName );
+        final String aRootFolderName = getRootFolderName( aAppPropFile );
+        renameOldPropFile( aRootFolderName+"/Einstellungen", "BenutzerDaten" );
+        renameOldPropFile( aRootFolderName+"/Einstellungen", "ServerZugangsDaten" );
+    }
+    private static String getRootFolderName(final Path fAppPropFile)
+    {
+        final Properties aProps = new Properties();
+        try{
+            aProps.load( new FileInputStream( fAppPropFile.toFile() ) );
+            final String aRootFolderName = aProps.getProperty( "FOLDERNAME_ROOT", "Arbeitsdienstabrechnungen" );
+            return aRootFolderName;
+        }catch( final Exception fEx ){
+            sm_Log.error("Exception: ", fEx );
+            return null;
+        }
+    }
+    private static Path renameOldPropFile( final String fFolderName, final String fPropFileName )
+    {
+        final Path aPropFile_New = Paths.get( fFolderName, fPropFileName+".properties" );
+        if( Files.exists( aPropFile_New )){
+            return aPropFile_New;
+        }
+
+        final Path aPropFile_Old = Paths.get( fFolderName, fPropFileName+".prop" );
+        if( !Files.exists( aPropFile_Old ) ){
+            sm_Log.error("Tut mir leid! Keine Arme - keine Kekse: Property-Datei fehlt:"+fPropFileName);
+            return null;
+        }
+
+        try{
+            sm_Log.info( String.format( "Umbenennung von '%s' nach '%s'!", aPropFile_Old, aPropFile_New ) );
+            FileUtils.rename( aPropFile_Old, aPropFile_New );
+            return aPropFile_New;
+        }catch( final IOException fEx ){
+            sm_Log.error("Exception: ", fEx );
+            return null;
+        }
+
+    }
+
 }
 
 // ############################################################################

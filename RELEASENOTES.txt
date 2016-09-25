@@ -1,4 +1,9 @@
 ===============================================================================
+Release-1.1.0 2016-09-25
+- [NEU]     Alte Property-Dateien mit der Endung ".prop" werden automatisch
+            umbenannt, so dass sie die Endung ".properties" haben.
+
+===============================================================================
 Release-1.0.5 2016-09-25
 - [ÄNDERUNG]Alle Property-Dateien haben nun die Endung ".properties"
             Bei vorhandenen Installationen muss die Datei "ADHelper.prop"

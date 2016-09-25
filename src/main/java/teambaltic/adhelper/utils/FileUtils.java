@@ -235,6 +235,10 @@ public final class FileUtils
                     StandardCopyOption.COPY_ATTRIBUTES );
     }
 
+    public static void rename( final Path fFrom, final Path fTo) throws IOException
+    {
+        Files.move( fFrom, fTo );
+    }
 }
 
 // ############################################################################
