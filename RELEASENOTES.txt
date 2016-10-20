@@ -1,4 +1,8 @@
 ===============================================================================
+Release-1.1.1 2016-10-20
+- [BUGFIX]  Pfad zu den Resourcen hatte sich geändert und ist nun korrigiert
+
+===============================================================================
 Release-1.1.0 2016-09-25
 - [NEU]     Alte Property-Dateien mit der Endung ".prop" werden automatisch
             umbenannt, so dass sie die Endung ".properties" haben.
@@ -27,8 +31,8 @@ Release-1.0.4.6	2016-09-17
 - [BUGFIX] 	Bei der Eingabe von Arbeitsdiensten wird der Stundenwert auch dann
 			übernommen, wenn die Eingabetaste beim letzen Wert nicht gedrückt
 			worden ist.
-- [BUGFIX]  Beim Mitgliederwart werden die Basis nun ins korrekte Verzeichnis
-            hochgeladen
+- [BUGFIX]  Beim Mitgliederwart werden die BasisDaten nun ins korrekte
+            Verzeichnis hochgeladen
 - [ÄNDERUNG]Wenn neue Basisdaten vom Server heruntergeladen wurden, werden diese
             sofort ins Verzeichnis der aktuellen Periode kopiert.
 - [ÄNDERUNG]Die Dateien im Verzeichnis der Abrechnungsperioden behalten nun
