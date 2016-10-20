@@ -104,9 +104,11 @@ buildConfig {
 }
 
 // ############################################################################
+def mainClass = 'teambaltic.adhelper.gui.ADH_Application'
+
 jar {
     manifest {
-        attributes 'Main-Class': 'teambaltic.adhelper.gui.ADH_Application'
+        attributes 'Main-Class': mainClass
     }
 }
 
@@ -114,7 +116,7 @@ launch4j {
     println "Name= $project.name"
     println "Version = $project.version"
     outfile = "${project.name}-${project.version}.exe"
-    mainClassName = 'teambaltic.adhelper.gui.ADH_Application'
+    mainClassName = mainClass
     headerType = "gui"
     copyConfigurable = project.tasks.shadowJar.outputs.files
     jar = "lib/${project.tasks.shadowJar.archiveName}"
