@@ -49,8 +49,8 @@ public class CryptUtils implements ICryptUtils
     private static final String ALGORITHM_ASYM = "RSA";
     private static final String ALGORITHM_SYM  = "AES";
 
-    private static final String sm_Resource_KeyPriv ="res/crypt/private.key";
-    private static final String sm_Resource_KeyPubl ="res/crypt/public.key";
+    private static final String sm_Resource_KeyPriv ="crypt/private.key";
+    private static final String sm_Resource_KeyPubl ="crypt/public.key";
 
     private final Base64 m_Base64;
 
