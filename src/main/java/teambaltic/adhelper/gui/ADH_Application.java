@@ -476,7 +476,7 @@ public class ADH_Application
     {
         final Path aAppPropFile = renameOldPropFile( ".", fAppName );
         final String aRootFolderName = getRootFolderName( aAppPropFile );
-        renameOldPropFile( aRootFolderName+"/Einstellungen", "BenutzerDaten" );
+        renameOldPropFile( aRootFolderName+"/Einstellungen", "BenutzerDaten", false );
         renameOldPropFile( aRootFolderName+"/Einstellungen", "ServerZugangsDaten" );
     }
     private static String getRootFolderName(final Path fAppPropFile)
@@ -493,6 +493,10 @@ public class ADH_Application
     }
     private static Path renameOldPropFile( final String fFolderName, final String fPropFileName )
     {
+        return renameOldPropFile( fFolderName, fPropFileName, true );
+    }
+    private static Path renameOldPropFile( final String fFolderName, final String fPropFileName, final boolean fMustExist )
+    {
         final Path aPropFile_New = Paths.get( fFolderName, fPropFileName+".properties" );
         if( Files.exists( aPropFile_New )){
             return aPropFile_New;
@@ -500,7 +504,9 @@ public class ADH_Application
 
         final Path aPropFile_Old = Paths.get( fFolderName, fPropFileName+".prop" );
         if( !Files.exists( aPropFile_Old ) ){
-            sm_Log.error("Tut mir leid! Keine Arme - keine Kekse: Property-Datei fehlt:"+fPropFileName);
+            if( fMustExist ){
+                sm_Log.error("Tut mir leid! Keine Arme - keine Kekse: Property-Datei fehlt:"+fPropFileName);
+            }
             return null;
         }
 
