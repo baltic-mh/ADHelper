@@ -11,13 +11,28 @@ Voraussetzungen:
     In letzterem Falle muss Java installiert werden. Es steht hier bereit:
         http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
+Im Allgemeinen wird das Executable zusammen mit dem Zip-Archiv
+    "ClientGrundAusstattung-kvk.zip"
+ausgeliefert. Das Executable ist in ein Verzeichnis eigener Wahl zu kopieren 
+und das Zip-Archiv hier zu entpacken. Dadurch entsteht automatisch die benötigte
+Konfiguration:
+
 - Das Verzeichnis, in dem das Executable steht, muss folgenden Inhalt haben:
-    Unterverzeichnis "Einstellungen"
+    - Datei 
+        ADHelper.properties (bei Version < 1.1.0: ADHelper.prop)
+      in dieser Datei muss mindestens eine Zeile stehen die mit
+        FOLDERNAME_ROOT=
+      anfängt. Der String nach dem Gleichheitszeichen gibt das Wurzelverzeichnis
+      an.
+      
+    - Verzeichnis mit dem in der Datei "ADHelper.properties" angegebenen Namen.
+      In diesem Verzeichnis muss es ein Unterverzeichnis geben mit dem Namen
+        "Einstellungen"
 
-    Für den Zugang zum Server werden folgende Dateien benötigt:
-    ./Einstellungen/ServerZugangsDaten.prop
-    ./Einstellungen/ssh/
-        mit komplettem Inhalt!
+        Darin wiederum sind folgende Dateien für den Zugang zum Server:
+            Einstellungen/ServerZugangsDaten.properties
+            Einstellungen/ssh/
+                mit komplettem Inhalt!
 
-    Diese Daten bekommen nur besonders vertrauenswürdige Personen persönlich
-    ausgehändigt ;-)
+        Diese Zugangsdaten bekommen nur besonders vertrauenswürdige Personen
+        persönlich ausgehändigt ;-)

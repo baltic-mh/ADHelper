@@ -318,6 +318,10 @@ Server
 Einrichten eines neuen Benutzers:
 
     Server:
+        Einloggen als Benutzer mit Adminstrator-Rechten
+            ssh -p 5022 -i C:\Users\Mathias\.ssh\id_rsa Mathias@syniphos
+        ACHTUNG: "Mathias" hat ein GROSSES M!
+
         Benutzer anlegen
         Verzeichnis .ssh im home-Verzeichnis des Benutzers anlegen
 			mkdir .ssh

@@ -431,6 +431,7 @@ public class ADH_Application
     {
         final Path aSysPropFile = Paths.get( fAppName+".properties" );
         if( !Files.exists( aSysPropFile ) ){
+            sm_Log.error( "Datei existiert nicht: "+aSysPropFile );
             return;
         }
         FileInputStream aInputStream;
@@ -476,6 +477,9 @@ public class ADH_Application
     {
         final Path aAppPropFile = renameOldPropFile( ".", fAppName );
         final String aRootFolderName = getRootFolderName( aAppPropFile );
+        if( !Files.exists( Paths.get( aRootFolderName ) ) ){
+            exitWithDialog( String.format( "Verzeichnis existiert nicht: '%s' - so wird das nix!", aRootFolderName ) );
+        }
         renameOldPropFile( aRootFolderName+"/Einstellungen", "BenutzerDaten", false );
         renameOldPropFile( aRootFolderName+"/Einstellungen", "ServerZugangsDaten" );
     }
@@ -484,7 +488,12 @@ public class ADH_Application
         final Properties aProps = new Properties();
         try{
             aProps.load( new FileInputStream( fAppPropFile.toFile() ) );
-            final String aRootFolderName = aProps.getProperty( "FOLDERNAME_ROOT", "Arbeitsdienstabrechnungen" );
+            final String aPropKey_RootFolder = "FOLDERNAME_ROOT";
+            if( !aProps.keySet().contains( aPropKey_RootFolder ) ){
+                exitWithDialog( String.format( "Property-Datei '%s' enthält keine Zeile mit dem Schlüssel '%s'",
+                       fAppPropFile, aPropKey_RootFolder ));
+            }
+            final String aRootFolderName = aProps.getProperty( aPropKey_RootFolder );
             return aRootFolderName;
         }catch( final Exception fEx ){
             sm_Log.error("Exception: ", fEx );
@@ -505,7 +514,8 @@ public class ADH_Application
         final Path aPropFile_Old = Paths.get( fFolderName, fPropFileName+".prop" );
         if( !Files.exists( aPropFile_Old ) ){
             if( fMustExist ){
-                sm_Log.error("Tut mir leid! Keine Arme - keine Kekse: Property-Datei fehlt:"+fPropFileName);
+                final String aMsg = String.format( "Datei nicht gefunden: %s - ohne die wird das nix!", aPropFile_New );
+                exitWithDialog( aMsg );
             }
             return null;
         }
@@ -519,6 +529,15 @@ public class ADH_Application
             return null;
         }
 
+    }
+
+    private static void exitWithDialog( final String fMsg )
+    {
+        sm_Log.error( fMsg );
+        JOptionPane.showMessageDialog( null, fMsg, "Fataler Fehler!", JOptionPane.ERROR_MESSAGE );
+        sm_Log.info("Beenden wegen fataler Exception");
+        sm_Log.info("==========================================================");
+        System.exit( 1 );
     }
 
 }
