@@ -159,6 +159,8 @@ uploadArchives {
 // Git MUSS im Pfad verfügbar sein!
 // Am besten aus Kommando-Shell aufrufen mit 
 //      gradlew :release -Prelease.useAutomaticVersion=true
+// oder noch besser: über die Eclipse-Launch-Configuration: 
+//                                  "Release - AutomaticVersion"
 // Die Version wird in die Datei "gradle.properties" geschrieben.
 
 release {
