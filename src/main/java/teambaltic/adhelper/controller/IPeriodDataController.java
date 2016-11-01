@@ -31,7 +31,7 @@ public interface IPeriodDataController
     }
 
     void init();
-    void createNewPeriod() throws IOException;
+    PeriodData createNewPeriod() throws IOException;
 
     List<PeriodData> getPeriodDataList( EPeriodDataSelector fSelector );
     PeriodData getActivePeriod();

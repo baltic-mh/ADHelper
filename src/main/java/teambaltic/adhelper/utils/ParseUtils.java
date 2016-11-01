@@ -23,10 +23,11 @@ public final class ParseUtils
     private static final Logger sm_Log = Logger.getLogger(ParseUtils.class);
 
     private static final DateTimeFormatter FORM = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final String NULLDATE = "00.00.0000";
 
     public static Integer getInteger( final String fValue )
     {
-        if( fValue == null || "".equals( fValue ) ){
+        if( isNullDate( fValue ) ){
             return null;
         }
         try{
@@ -40,7 +41,7 @@ public final class ParseUtils
 
     public static Long getLong( final String fValue )
     {
-        if( fValue == null || "".equals( fValue ) ){
+        if( isNullDate( fValue ) ){
             return null;
         }
         try{
@@ -54,7 +55,7 @@ public final class ParseUtils
 
     public static LocalDate getDate( final String fDateText )
     {
-        if( fDateText == null || "".equals( fDateText ) ){
+        if( isNullDate( fDateText ) ){
             return null;
         }
         try{
@@ -64,6 +65,11 @@ public final class ParseUtils
             sm_Log.warn( "Not a valid date: " + fDateText );
             return null;
         }
+    }
+
+    private static boolean isNullDate( final String fDateText )
+    {
+        return fDateText == null || "".equals( fDateText ) || NULLDATE.equals( fDateText );
     }
 
 }

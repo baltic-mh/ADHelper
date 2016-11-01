@@ -24,10 +24,13 @@ import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.ERole;
+import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.utils.FileUtils;
 
@@ -39,17 +42,38 @@ public class UploadListener implements ActionListener
     private final MainPanel         m_Panel;
 
     private final ITransferController m_TransferController;
-
     private final UserSettingsListener  m_UserSettingsListener;
+
+    // ------------------------------------------------------------------------
+    private final IPeriodDataController m_PDC;
+    private IPeriodDataController getPDC(){ return m_PDC; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final ADH_DataProvider m_DataProvider;
+    private ADH_DataProvider getDataProvider(){ return m_DataProvider; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final GUIUpdater m_GUIUpdater;
+    private GUIUpdater getGUIUpdater(){ return m_GUIUpdater; }
+    // ------------------------------------------------------------------------
+
 
     public UploadListener(
             final MainPanel fPanel,
-            final ITransferController fTransferController,
-            final UserSettingsListener fUserSettingsListener)
+            final ADH_DataProvider      fDataProvider,
+            final ITransferController   fTransferController,
+            final UserSettingsListener  fUserSettingsListener,
+            final IPeriodDataController fPDC,
+            final GUIUpdater fGUIUpdater )
     {
         m_Panel                 = fPanel;
         m_TransferController    = fTransferController;
         m_UserSettingsListener  = fUserSettingsListener;
+        m_PDC                   = fPDC;
+        m_DataProvider          = fDataProvider;
+        m_GUIUpdater            = fGUIUpdater;
     }
 
     @Override
@@ -96,6 +120,10 @@ public class UploadListener implements ActionListener
                 throw new IOException("Keine Verbindung zu Server!");
             }
             m_TransferController.upload( aBaseDataFile );
+            final PeriodData aPeriodData = getPDC().createNewPeriod();
+            getDataProvider().init( aPeriodData );
+            getGUIUpdater().updateGUI( aPeriodData );
+
             return true;
         }
         return false;

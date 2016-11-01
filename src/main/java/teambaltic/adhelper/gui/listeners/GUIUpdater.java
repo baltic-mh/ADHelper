@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
@@ -81,7 +82,7 @@ public class GUIUpdater
         if( aPeriodChanged ){
             if( fPeriodData != null ){
                 m_PeriodData = fPeriodData;
-                m_Panel.getCB_Period().setSelectedItem( fPeriodData );
+                assertExistsInComboBoxAndIsSelected( fPeriodData );
             }
             // Erhalten des ehemals selektierten Mitglieds:
             final IClubMember aSelectedMember = m_Panel.getSelectedMember();
@@ -109,6 +110,24 @@ public class GUIUpdater
         if( fPeriodData != null ){
             configureButtons( m_Panel, getPDC(), fPeriodData );
         }
+    }
+
+    private void assertExistsInComboBoxAndIsSelected( final PeriodData fPeriodData )
+    {
+        final JComboBox<PeriodData> aCB_Period = m_Panel.getCB_Period();
+        final DefaultComboBoxModel<PeriodData> aModel = (DefaultComboBoxModel<PeriodData>) aCB_Period.getModel();
+        boolean aFound = false;
+        for( int aIdx = 0; aIdx < aModel.getSize(); aIdx++ ){
+            final PeriodData aThisElement = aModel.getElementAt( aIdx );
+            if( fPeriodData.equals( aThisElement ) ){
+                aFound = true;
+                break;
+            }
+        }
+        if( !aFound ){
+            aModel.addElement( fPeriodData );
+        }
+        aCB_Period.setSelectedItem( fPeriodData );
     }
 
     private boolean isPeriodChanged( final PeriodData fPeriodData )

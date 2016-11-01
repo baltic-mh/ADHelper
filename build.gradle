@@ -58,7 +58,7 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    // Abh�ngigkeiten zur Compile-Zeit:
+    // Abhängigkeiten zur Compile-Zeit:
     compile 'log4j:log4j:1.2.17'
     compile 'commons-lang:commons-lang:2.2'
     compile 'commons-io:commons-io:2.4'
@@ -68,14 +68,10 @@ dependencies {
     compile 'com.jgoodies:jgoodies-forms:1.9.0'
     compile 'org.jdatepicker:jdatepicker:1.3.4'
 
-//    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile 'org.apache.poi:poi:3.13'
-//    compile 'org.apache.poi:poi-ooxml:3.13'
-
+    // Die Library jupidator.jar ist leider nicht in einem Repository verfügbar:
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 
     runtime 'com.jcraft:jsch:0.1.53'
-    
-
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
@@ -84,24 +80,41 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 // ############################################################################
-def copyRight = '(C) 2016 TeamBaltic'
+String  copyRight   = '(C) 2016 TeamBaltic'
+def (pv) = project.version.split('-')
+def (v1, v2, v3) =  pv.split('\\.')
+String  releaseNum  = v3.toInteger() + 1000*v2.toInteger() + 1000000*v1.toInteger()
+println "releaseNum = $releaseNum"
+// ############################################################################
+// Jupidator
+def jupidator = [
+    filename: 'jupidator.xml',
+    urlroot : "http://syniphos.i234.me/Download/${project.name}",
+]
+// ############################################################################
 
 // ############################################################################
 // 
 // id 'de.fuerstenau.buildconfig' version '1.1.7'
+// Die erzeugte Datei steht unter build/gen/buildconfig/src/main
 
 buildConfig {
     appName = project.name       // sets value of NAME field
     version = project.version    // sets value of VERSION field,
-                                 // 'unspecified' if project.version is not set
-
     clsName = 'BuildConfig'      // sets the name of the BuildConfig class
     packageName = "teambaltic"   // sets the package of the BuildConfig class,
-                                 // 'de.fuerstenau.buildconfig' if project.group is not set
     charset = 'UTF-8'            // sets charset of the generated class,
-                                 // 'UTF-8' if not set otherwise
-    buildConfigField 'String', 'COPYRIGHT', copyRight
+
+    buildConfigField 'String',  'COPYRIGHT',    copyRight
+    buildConfigField 'int',     'RELEASE',      releaseNum
+    buildConfigField 'String',  'JUPIDATORURL', "${jupidator.urlroot}/${jupidator.filename}"
+
+    println "Name    = $project.name"
+    println "Version = $project.version"
+    println "Release = $releaseNum"
 }
+
+// ############################################################################
 
 // ############################################################################
 def mainClass = 'teambaltic.adhelper.gui.ADH_Application'
@@ -113,8 +126,6 @@ jar {
 }
 
 launch4j {
-    println "Name= $project.name"
-    println "Version = $project.version"
     outfile = "${project.name}-${project.version}.exe"
     mainClassName = mainClass
     headerType = "gui"
@@ -148,6 +159,7 @@ uploadArchives {
 // Git MUSS im Pfad verfügbar sein!
 // Am besten aus Kommando-Shell aufrufen mit 
 //      gradlew :release -Prelease.useAutomaticVersion=true
+// Die Version wird in die Datei "gradle.properties" geschrieben.
 
 release {
     failOnUnversionedFiles = false

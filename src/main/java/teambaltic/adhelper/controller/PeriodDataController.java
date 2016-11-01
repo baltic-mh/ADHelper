@@ -64,7 +64,9 @@ public class PeriodDataController implements IPeriodDataController
             m_ActivePeriod.setActive( false );
         }
         m_ActivePeriod = fActivePeriod;
-        m_ActivePeriod.setActive( true );
+        if( m_ActivePeriod != null ){
+            m_ActivePeriod.setActive( true );
+        }
     }
     // ------------------------------------------------------------------------
 
@@ -145,6 +147,7 @@ public class PeriodDataController implements IPeriodDataController
     public void init()
     {
         m_PeriodDataList.clear();
+        setActivePeriod( null );
         final File[] aDataFolders = findDataFolders( getRootFolder() );
         for( final File aDataFolder : aDataFolders ){
             final PeriodData aPeriodData = new PeriodData( aDataFolder.toPath() );
@@ -158,13 +161,13 @@ public class PeriodDataController implements IPeriodDataController
     }
 
     @Override
-    public void createNewPeriod() throws IOException
+    public PeriodData createNewPeriod() throws IOException
     {
         final PeriodData aNewestPeriodData = getNewestPeriodData();
         if( !isFinished( aNewestPeriodData ) ){
             assertNewestBaseDataFile( aNewestPeriodData );
             setActivePeriod( aNewestPeriodData );
-            return;
+            return aNewestPeriodData;
         }
         final IPeriod aNextPeriod = aNewestPeriodData.getPeriod().createSuccessor();
         final Path aNextPeriodFolder = getRootFolder().resolve( aNextPeriod.toString() );
@@ -173,6 +176,7 @@ public class PeriodDataController implements IPeriodDataController
         m_PeriodDataList.add( aNewlyCreatedPeriodData );
         setActivePeriod( aNewlyCreatedPeriodData );
         populateNewPeriodFolder( getAppSettings(), aNewlyCreatedPeriodData);
+        return aNewlyCreatedPeriodData;
     }
 
     private void assertNewestBaseDataFile( final PeriodData fPeriodData ) throws IOException

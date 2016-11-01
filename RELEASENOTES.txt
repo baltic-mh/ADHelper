@@ -1,4 +1,13 @@
 ===============================================================================
+Release-1.1.3 2016-11-01
+- [NEU]     Vorbereitungen für automatisches Programm-Update
+
+- [BUGFIX]  Aktualisierung der aktiven Periode beim MITGLIEDERWART
+
+- [BUGFIX]  Basisdaten-Datei: Ein Datum mit Wert "00.00.0000" wird wie ein
+            nicht existierender Eintrag behandelt.
+
+===============================================================================
 Release-1.1.2 2016-10-21
 - [NEU]     Verbesserte Überprüfung der Konfiguration. 
             Anpassung der Datei "README.install"

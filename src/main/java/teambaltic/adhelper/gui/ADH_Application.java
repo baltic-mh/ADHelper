@@ -158,10 +158,8 @@ public class ADH_Application
                     if( !aOffline ){
                         aTC.setPeriodDataController( aPDC );
                         aPDC.removeDataFolderOrphans( aPeriodFoldersKnownOnServer );
-                        if( aIsBauausschuss ){
-                            // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
-                            aPDC.createNewPeriod();
-                        }
+                        // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
+                        aPDC.createNewPeriod();
                     }
                     aApplication.setTitle( aOffline );
                     aApplication.addShutdownListener( aTC );
@@ -231,8 +229,8 @@ public class ADH_Application
 
         final JButton aBtnUpload = m_MainPanel.getBtnUpload();
         aBtnUpload.addActionListener(
-                new UploadListener( m_MainPanel, fTransferController,
-                        getUserSettingsListener() ) );
+                new UploadListener( m_MainPanel, fDataProvider, fTransferController,
+                        getUserSettingsListener(), fPDC, m_GUIUpdater ) );
     }
 
     private PeriodDataChangedListener initComboBox_PeriodData(
@@ -254,7 +252,7 @@ public class ADH_Application
         aCB_Period.setSelectedItem( aPeriodToSelect );
         if( aCB_Period.getItemCount() == 1 ){
             // Wenn da nur ein Element in der Box ist, hat das vorherige
-            /// setSelectedItem keinen Event ausgelöst!
+            // setSelectedItem keinen Event ausgelöst!
             final ItemEvent aItemEvent = new ItemEvent(aCB_Period, 0, aPeriodToSelect, ItemEvent.SELECTED);
             aPDCL.itemStateChanged( aItemEvent );
         }
