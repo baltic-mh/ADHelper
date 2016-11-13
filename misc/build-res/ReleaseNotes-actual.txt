@@ -10,6 +10,7 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1001004
+//RELEASE: 1001005
 ###############################################################################
-[NEU]   Automatisches mittels Jupidator
+[NEU]   Beim automatischen Update sind nun auch die Dokumentation und die
+        ReleaseNotes dabei

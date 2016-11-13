@@ -40,13 +40,7 @@ plugins {
     // Dieses Plugin setzt voraus, dass Git im Pfad eingetragen ist!
     id 'net.researchgate.release' version '2.4.0'
 
-    // Gradle release & version management plugin.
-    // http://axion-release-plugin.readthedocs.io/en/latest/
-    //id "pl.allegro.tech.build.axion-release" version "1.4.0"
-    
     // Gradle plugin for generating a changelog based on a Git commit history.
-    // https://plugins.gradle.org/plugin/com.selesse.git.changelog
-    id 'com.selesse.git.changelog' version '0.2.1'
     // https://github.com/tomasbjerre/git-changelog-gradle-plugin
     id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.40"
     
@@ -66,7 +60,7 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    // Abh�ngigkeiten zur Compile-Zeit:
+    // Abhängigkeiten zur Compile-Zeit:
     compile 'log4j:log4j:1.2.17'
     compile 'commons-lang:commons-lang:2.2'
     compile 'commons-io:commons-io:2.4'
@@ -102,6 +96,7 @@ File releaseNotes           = project.file('RELEASENOTES.txt')
 File releaseNotesActual     = project.file('misc/build-res/ReleaseNotes-actual.txt')
 File distributionFolderRoot = project.file("Releases")
 File distributionFolder     = project.file(distributionFolderRoot.toString() + "/$releaseNum")
+File documentation          = project.file("misc/Dokumentation/Dokumentation.txt")
 def jupidatorProps = [
     basename                : 'releases',
     filename                : 'releases.xml',
@@ -119,6 +114,34 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
     filePath = changeLog.toString();
     templateContent = project.file('misc/build-res/changelog.html.template').getText('UTF-8');
 }
+
+task exec_gitChangelogTask(type:Exec){
+    workingDir projectDir
+    commandLine 'cmd', '/c', 'gradlew.bat', 'gitChangelogTask'
+}
+configure(exec_gitChangelogTask) {
+    description = 'Ausführen der gitChangelogTask über eine DOS-Shell'
+}
+
+// gitChangelogTask kann nicht direkt aus Eclipse heraus ausgeführt werden,
+// weil versucht wird im "working directory" ein GIT-Repository zu finden.
+// Das "working directory" ist dann aber "C:\Program Files\eclipse\..."
+// Also wird hier je nachdem, wie gradle aufgerufen wurde, die Task entweder
+// direkt ausgeführt, oder in einer Command-Shell, deren "working directory"
+// auf das aktuelle Projekt-Verzeichnis gesetzt wird.
+task do_gitChangelogTask{
+}
+do_gitChangelogTask.dependsOn{
+    if( System.getProperty("user.dir") == projectDir ){
+        gitChangelogTask
+    } else {
+        exec_gitChangelogTask
+    }
+}
+configure(do_gitChangelogTask) {
+    description = 'Ausführen der gitChangelogTask direkt oder über eine DOS-Shell'
+}
+
 // ############################################################################
 
 // ############################################################################
@@ -182,10 +205,13 @@ configure(updateReleaseNotes) {
 def exe         = file("build/launch4j/${launch4j.outfile}")
 
 task copyArtifacts(type: Copy) {
-    from files( exe, changeLog, releaseNotes )
+    from files( exe, changeLog, releaseNotes, documentation )
     into distributionFolder
 }
-copyArtifacts.dependsOn updateReleaseNotes
+copyArtifacts.dependsOn {
+    updateReleaseNotes
+    do_gitChangelogTask
+}
 configure(copyArtifacts) {
     group = TASKGROUP_JUPIDATOR
     description = 'Kopiert alle Artifakte ins Distributions-Verzeichnis'
@@ -241,21 +267,6 @@ configure(ssh_upload) {
     dependsOn updateJupidator
 }
 
-task ssh_download << {
-    ssh.run {
-        session( remotes.web01 ) {
-            // get content as a string
-            text = get from: 'kannweg.txt'
-        }
-    }
-    
-    println "Downloaded :\n"+text
-}
-
-configure(ssh_download) {
-    group = TASKGROUP_JUPIDATOR
-    description = 'Dateien per SSH vom Server runterladen'
-}
 task ssh_release << {
     ssh.run {
         session( remotes.web01 ) {
@@ -272,12 +283,13 @@ configure(ssh_release) {
     description = 'Projekt auf dem Server zum Download freigeben'
 }
 // ############################################################################
+
 // ############################################################################
 //'net.researchgate.release'
-// Git MUSS im Pfad verf�gbar sein!
+// Git MUSS im Pfad verfügbar sein!
 // Am besten aus Kommando-Shell aufrufen mit 
 //      gradlew :release -Prelease.useAutomaticVersion=true
-// oder noch besser: �ber die Eclipse-Launch-Configuration: 
+// oder noch besser: �ber die Eclipse-Launch-Configuration: 
 //                                  "Release - AutomaticVersion"
 // Die Version wird in die Datei "gradle.properties" geschrieben.
 
@@ -287,7 +299,7 @@ release {
     buildTasks = ['launch4j']
     tagTemplate = '$name-$version'
     preTagCommitMessage = 'Neues Release: '
-    newVersionCommitMessage = 'Vorbereitung f�r n�chste Version: '
+    newVersionCommitMessage = 'Vorbereitung für nächste Version: '
 }
 afterReleaseBuild.dependsOn ssh_upload
 // ############################################################################
