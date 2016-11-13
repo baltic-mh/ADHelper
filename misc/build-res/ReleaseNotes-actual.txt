@@ -10,7 +10,6 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1001005
+//RELEASE: 1001006
 ###############################################################################
-[NEU]   Beim automatischen Update sind nun auch die Dokumentation und die
-        ReleaseNotes dabei
+[BUG]   Beim automatischen Update wird die ReleaseNotes nun vorher aktualisiert.

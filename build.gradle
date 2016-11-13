@@ -204,13 +204,9 @@ configure(updateReleaseNotes) {
 // Kopieren der Artifakte in lokales Verzeichnis
 def exe         = file("build/launch4j/${launch4j.outfile}")
 
-task copyArtifacts(type: Copy) {
+task copyArtifacts(type: Copy, dependsOn: [ 'updateReleaseNotes', 'do_gitChangelogTask' ]) {
     from files( exe, changeLog, releaseNotes, documentation )
     into distributionFolder
-}
-copyArtifacts.dependsOn {
-    updateReleaseNotes
-    do_gitChangelogTask
 }
 configure(copyArtifacts) {
     group = TASKGROUP_JUPIDATOR
