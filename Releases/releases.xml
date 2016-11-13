@@ -2,6 +2,19 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
-  <version release="1" version="0.0.0">
+  <version release="1001004" version="1.1.4">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Automatisches mittels Jupidator&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="3534532" sourcedir="1001004"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="3654" sourcedir="1001004"/>
+    </arch>
   </version>
+  <version release="1" version="0.0.0"/>
 </updatelist>

@@ -1,3 +1,6 @@
+================================================================================
+Release: 1001004	Version: 1.1.4	Datum: 2016-11-13
+[NEU]   Automatisches mittels Jupidator
 ===============================================================================
 Release-1.1.3 2016-11-01
 - [NEU]     Vorbereitungen für automatisches Programm-Update
