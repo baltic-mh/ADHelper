@@ -121,6 +121,13 @@ public class ADH_Application
         readAndSetSystemProperties(BuildConfig.NAME);
 
         final ADH_Application aApplication = new ADH_Application();
+        Runtime.getRuntime().addShutdownHook( new Thread() {
+            @Override
+            public void run()
+            {
+                aApplication.shutdown( "Aus unbekanntem Grund aus dem Leben gerissen (Update?)", 1 );
+            }
+        } );
 
         EventQueue.invokeLater( new Runnable() {
 

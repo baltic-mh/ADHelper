@@ -10,6 +10,6 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002000
+//RELEASE: 1002001
 ###############################################################################
-[NEU]   Automatisches Update eingeführt.
+[NEU]   Shutdown-Hook implementiert.
