@@ -1,6 +1,6 @@
 ===============================================================================
 Release-1.1.3 2016-11-01
-- [NEU]     Vorbereitungen für automatisches Programm-Update
+- [NEU]     Vorbereitungen fÃ¼r automatisches Programm-Update
 
 - [BUGFIX]  Aktualisierung der aktiven Periode beim MITGLIEDERWART
 
@@ -9,12 +9,12 @@ Release-1.1.3 2016-11-01
 
 ===============================================================================
 Release-1.1.2 2016-10-21
-- [NEU]     Verbesserte Überprüfung der Konfiguration. 
+- [NEU]     Verbesserte ÃœberprÃ¼fung der Konfiguration. 
             Anpassung der Datei "README.install"
 
 ===============================================================================
 Release-1.1.1 2016-10-20
-- [BUGFIX]  Pfad zu den Resourcen hatte sich geändert und ist nun korrigiert
+- [BUGFIX]  Pfad zu den Resourcen hatte sich geÃ¤ndert und ist nun korrigiert
 
 ===============================================================================
 Release-1.1.0 2016-09-25
@@ -23,9 +23,9 @@ Release-1.1.0 2016-09-25
 
 ===============================================================================
 Release-1.0.5 2016-09-25
-- [ÄNDERUNG]Alle Property-Dateien haben nun die Endung ".properties"
+- [Ã„NDERUNG]Alle Property-Dateien haben nun die Endung ".properties"
             Bei vorhandenen Installationen muss die Datei "ADHelper.prop"
-            umbenannt werden zu "ADHelper.properties". Ebenso müssen
+            umbenannt werden zu "ADHelper.properties". Ebenso mÃ¼ssen
             im Verzeichnis "Arbeitsdienstabrechnungen/Einstellungen" die
             Dateien
                 BenutzerDaten.prop
@@ -35,24 +35,24 @@ Release-1.0.5 2016-09-25
             korrekt angezeigt.
 -------------------------------------------------------------------------------
 INTERN
-- [ÄNDERUNG]Build komplett auf Gradle umgestellt
+- [Ã„NDERUNG]Build komplett auf Gradle umgestellt
 
 ===============================================================================
 Release-1.0.4.6	2016-09-17
-- [NEU] 	Beim Beenden muss das Hochladen von Daten bestätigt werden.
+- [NEU] 	Beim Beenden muss das Hochladen von Daten bestÃ¤tigt werden.
 - [NEU] 	Datenverzeichnisse, die auf dem Server nicht mehr existieren, werden
 			entfernt.
 - [BUGFIX] 	Bei der Eingabe von Arbeitsdiensten wird der Stundenwert auch dann
-			übernommen, wenn die Eingabetaste beim letzen Wert nicht gedrückt
+			Ã¼ernommen, wenn die Eingabetaste beim letzen Wert nicht gedrÃ¼ckt
 			worden ist.
 - [BUGFIX]  Beim Mitgliederwart werden die BasisDaten nun ins korrekte
             Verzeichnis hochgeladen
-- [ÄNDERUNG]Wenn neue Basisdaten vom Server heruntergeladen wurden, werden diese
+- [Ã„NDERUNG]Wenn neue Basisdaten vom Server heruntergeladen wurden, werden diese
             sofort ins Verzeichnis der aktuellen Periode kopiert.
-- [ÄNDERUNG]Die Dateien im Verzeichnis der Abrechnungsperioden behalten nun
+- [Ã„NDERUNG]Die Dateien im Verzeichnis der Abrechnungsperioden behalten nun
             ihren Zeitstempel, den sie in der Zip-Datei haben.
-- [ÄNDERUNG]Eine Änderung der Daten bei den Arbeitsdiensten wird nur noch dann
-			als solche anerkannt, wenn der Stundenwert geändert wurde und er
+- [Ã„NDERUNG]Eine Ã„nderung der Daten bei den Arbeitsdiensten wird nur noch dann
+			als solche anerkannt, wenn der Stundenwert geÃ¤ndert wurde und er
 			sich vom vorherigen Wert unterscheidet.
 
 BEKANNTE PROBLEME:
@@ -60,9 +60,9 @@ BEKANNTE PROBLEME:
     wirklichen Nummer hinterher :-/
 ===============================================================================
 Release-1.0.3.3
-- Anzeige der Mitglieder in ComboBox enthält nun das "Elternmitglied"
+- Anzeige der Mitglieder in ComboBox enthÃ¤lt nun das "Elternmitglied"
 - Bug bei der Eingabe neuer Arbeitsdiensttermine behoben
 - Versionsinformationen werden automatisch erzeugt und benutzt
-- Titelzeile enthält nun Benutzer und Versionsinformationen
+- Titelzeile enthÃ¤lt nun Benutzer und Versionsinformationen
 - Dokumentation an FOLDER_ROOT angepasst
 ===============================================================================

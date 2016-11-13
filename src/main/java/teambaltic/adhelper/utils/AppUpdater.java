@@ -109,12 +109,6 @@ public class AppUpdater implements UpdatedApplication
         return aJupidatorURL;
     }
 
-    public static void main( final String[] fArgs)
-    {
-//        System.setProperty( "log4jfilename", "AppUpdater.log" );
-//        LOG = Logger.getLogger(AppUpdater.class);
-        new AppUpdater();
-    }
 }
 
 // ############################################################################

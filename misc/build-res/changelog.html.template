@@ -1,0 +1,22 @@
+<h1> Git ADHelper changelog </h1>
+
+{{#tags}}
+<hr/>
+<h2> {{name}} </h2>
+ {{#issues}}
+
+{{#commits}}
+<a href="https://github.com/baltic-mh/ADHelper/commit/{{hash}}">{{hash}}</a> {{authorName}} <i>{{commitTime}}</i>
+<p>
+<h3>{{{messageTitle}}}</h3>
+
+{{#messageBodyItems}}
+ <li> {{.}}</li> 
+{{/messageBodyItems}}
+</p>
+
+
+  {{/commits}}
+
+ {{/issues}}
+{{/tags}}

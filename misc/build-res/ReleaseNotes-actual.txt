@@ -1,0 +1,15 @@
+﻿###############################################################################
+# ReleaseNotes der aktuellen Version
+# Die einzelnen Änderungen/Neuerungen müssen mit einer Kategorie beginnen.
+# Die Kategorie muss in eckigen Klammern stehen.
+# Danach muss in derselben Zeile noch Text stehen
+# Üliche Kategorien sind:
+#[NEU]      Für ein neues Feature
+#[BUGFIX]   Für einen behobenen Fehler
+#[ÄNDERUNG] Für ein geäertes Verhalten
+#
+# Zeilen, die mit # oder // anfangen, werden ignoriert.
+###############################################################################
+//RELEASE: 1001004
+###############################################################################
+[NEU]   Automatisches mittels Jupidator

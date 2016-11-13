@@ -15,15 +15,13 @@ Anmerkungen*.txt
 
 Einstellungen/
 misc/SandBox
-Daten.save/
-Daten.save2/
-Versionen/
+Daten.save*/
 misc/SSH-Schluessel/
 
 BasisDaten*
 
 # Dateien, die zum Laufzeitsystem des Programmes gehören:
-Daten/
+Arbeitsdienstabrechnungen*/
 Ausgabe.txt
 
 #####################################
@@ -92,3 +90,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 /gradle-app.setting
+/RELEASENOTES-previous.txt

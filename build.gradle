@@ -11,6 +11,17 @@ plugins {
     // Apply the java plugin to add support for Java
     id 'java'
 
+    // Eclipse-Support
+    id 'eclipse'
+
+    // Provides a class (or multiple) containing constants (public static final)
+    // defined in the buildscript and available in the project. It can contain
+    // simple infos like application name or version but also input from other
+    // plugins like subversion commit number or git commit hash.
+    // Die zugeh√∂rige Task lautet "generateBuildConfig"
+    // https://github.com/mfuerstenau/gradle-buildconfig-plugin
+    id 'de.fuerstenau.buildconfig' version '1.1.7'
+    
     // Shadow is a Gradle plugin for combining dependency classes and resources
     // with a projectÔøΩs into a single output Jar. The combined Jar is often
     // referred to a fat-jar or uber-jar. Shadow utilizes JarInputStream and
@@ -25,9 +36,6 @@ plugins {
     // https://github.com/TheBoegl/gradle-launch4j
     id 'edu.sc.seis.launch4j' version '1.6.2'
 
-    //id "net.vivin.gradle-semantic-build-versioning" version "2.0.2"
-    //id 'net.nemerosa.versioning' version '2.0.0'
-    
     // https://github.com/researchgate/gradle-release
     // Dieses Plugin setzt voraus, dass Git im Pfad eingetragen ist!
     id 'net.researchgate.release' version '2.4.0'
@@ -36,16 +44,16 @@ plugins {
     // http://axion-release-plugin.readthedocs.io/en/latest/
     //id "pl.allegro.tech.build.axion-release" version "1.4.0"
     
-    // Provides a class (or multiple) containing constants (public static final)
-    // defined in the buildscript and available in the project. It can contain
-    // simple infos like application name or version but also input from other
-    // plugins like subversion commit number or git commit hash.
-    // Die zugeh√∂rige Task lautet "generateBuildConfig"
-    // https://github.com/mfuerstenau/gradle-buildconfig-plugin
-    id 'de.fuerstenau.buildconfig' version '1.1.7'
-    
     // Gradle plugin for generating a changelog based on a Git commit history.
+    // https://plugins.gradle.org/plugin/com.selesse.git.changelog
     id 'com.selesse.git.changelog' version '0.2.1'
+    // https://github.com/tomasbjerre/git-changelog-gradle-plugin
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.40"
+    
+    // SSH
+    // https://gradle-ssh-plugin.github.io/
+    id 'org.hidetake.ssh' version '2.7.0'
+
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -58,7 +66,7 @@ repositories {
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    // Abh√§ngigkeiten zur Compile-Zeit:
+    // Abh‰ngigkeiten zur Compile-Zeit:
     compile 'log4j:log4j:1.2.17'
     compile 'commons-lang:commons-lang:2.2'
     compile 'commons-io:commons-io:2.4'
@@ -80,24 +88,43 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 // ############################################################################
+
+// ############################################################################
+// Allgemeine Definitionen
 String  copyRight   = '(C) 2016 TeamBaltic'
+String mainClass = 'teambaltic.adhelper.gui.ADH_Application'
+String TASKGROUP_JUPIDATOR = "Jupidator"
 def (pv) = project.version.split('-')
 def (v1, v2, v3) =  pv.split('\\.')
-String  releaseNum  = v3.toInteger() + 1000*v2.toInteger() + 1000000*v1.toInteger()
-println "releaseNum = $releaseNum"
-// ############################################################################
-// Jupidator
-def jupidator = [
-    filename: 'jupidator.xml',
-    urlroot : "http://syniphos.i234.me/Download/${project.name}",
+String releaseNum  = (v3 as int) + 1000* ( (v2 as int) + 1000*(v1 as int) )
+File changeLog              = project.file('build/resources/main/CHANGELOG.html')
+File releaseNotes           = project.file('RELEASENOTES.txt')
+File releaseNotesActual     = project.file('misc/build-res/ReleaseNotes-actual.txt')
+File distributionFolderRoot = project.file("Releases")
+File distributionFolder     = project.file(distributionFolderRoot.toString() + "/$releaseNum")
+def jupidatorProps = [
+    basename                : 'releases',
+    filename                : 'releases.xml',
+    version                 : project.version,
+    releaseNum              : releaseNum,
+    urlroot                 : "http://syniphos.i234.me/~kvk/Download/${project.name}",
+    distributionFolderRoot  : distributionFolderRoot,
+    distributionFolder      : distributionFolder,
+    releaseNotesActual      : releaseNotesActual
 ]
+// ############################################################################
+
+// ############################################################################
+task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
+    filePath = changeLog.toString();
+    templateContent = project.file('misc/build-res/changelog.html.template').getText('UTF-8');
+}
 // ############################################################################
 
 // ############################################################################
 // 
 // id 'de.fuerstenau.buildconfig' version '1.1.7'
 // Die erzeugte Datei steht unter build/gen/buildconfig/src/main
-
 buildConfig {
     appName = project.name       // sets value of NAME field
     version = project.version    // sets value of VERSION field,
@@ -107,18 +134,13 @@ buildConfig {
 
     buildConfigField 'String',  'COPYRIGHT',    copyRight
     buildConfigField 'int',     'RELEASE',      releaseNum
-    buildConfigField 'String',  'JUPIDATORURL', "${jupidator.urlroot}/${jupidator.filename}"
+    buildConfigField 'String',  'JUPIDATORURL', "${jupidatorProps.urlroot}/${jupidatorProps.filename}"
+    buildConfigField 'String',  'JUPIDATORURL_TEST', "${jupidatorProps.urlroot}/${jupidatorProps.basename}-new.xml"
 
-    println "Name    = $project.name"
-    println "Version = $project.version"
-    println "Release = $releaseNum"
 }
-
 // ############################################################################
 
 // ############################################################################
-def mainClass = 'teambaltic.adhelper.gui.ADH_Application'
-
 jar {
     manifest {
         attributes 'Main-Class': mainClass
@@ -126,7 +148,7 @@ jar {
 }
 
 launch4j {
-    outfile = "${project.name}-${project.version}.exe"
+    outfile = "${project.name}.exe"
     mainClassName = mainClass
     headerType = "gui"
     copyConfigurable = project.tasks.shadowJar.outputs.files
@@ -134,44 +156,140 @@ launch4j {
     copyright = copyRight
 }
 // ############################################################################
-def docu        = file('misc/Dokumentation/Dokumentation.txt')
-def exe         = file("build/launch4j/${launch4j.outfile}")
-def releaseNotes= file('RELEASENOTES.txt')
-def changeLog	= file('build/resources/main/CHANGELOG.md')
 
-artifacts {
-    archives docu
-    archives exe
-    archives releaseNotes
-    archives changeLog
+// ############################################################################
+// ReleaseNotes aktualisieren
+task updateReleaseNotes << {
+    
+    def aRNU = new ReleaseNotesUpdater(
+        version             : project.version,
+        releaseNum          : releaseNum,
+        releaseNotes        : releaseNotes,
+        releaseNotesActual  : releaseNotesActual
+    )
+    aRNU.process()
+}
+configure(updateReleaseNotes) {
+    group = TASKGROUP_JUPIDATOR
+    description = 'Schreibt den Inhalt der Datei "ReleaseNotes-actual.txt" in die Datei "RELEASENOTES.txt"'
+    outputs.file    releaseNotes
+    inputs.file     releaseNotesActual
+}
+// ############################################################################
+
+// ############################################################################
+// Kopieren der Artifakte in lokales Verzeichnis
+def exe         = file("build/launch4j/${launch4j.outfile}")
+
+task copyArtifacts(type: Copy) {
+    from files( exe, changeLog, releaseNotes )
+    into distributionFolder
+}
+copyArtifacts.dependsOn updateReleaseNotes
+configure(copyArtifacts) {
+    group = TASKGROUP_JUPIDATOR
+    description = 'Kopiert alle Artifakte ins Distributions-Verzeichnis'
+    outputs.file    releaseNotes
+    inputs.file     releaseNotesActual
+}
+// ############################################################################
+
+// ############################################################################
+// Jupidator
+task updateJupidator << {
+    def aJ = new Jupidator( jupidatorProps )
+    aJ.process()
+}
+configure(updateJupidator) {
+    group = TASKGROUP_JUPIDATOR
+    description = 'Jupidator-Dateien aktualisieren und so...'
+    inputs.file releaseNotesActual
+    outputs.file( new File(distributionFolderRoot, "${jupidatorProps.filename}") )
+    outputs.dir distributionFolder
+}
+updateJupidator.dependsOn copyArtifacts
+// ############################################################################
+
+// ############################################################################
+ssh.settings {
+    dryRun = project.hasProperty('dryRun')
 }
 
-uploadArchives {
-    repositories {
-        flatDir {
-            name "VersionRepo/"
-            dirs "Versionen/${project.name}-${project.version}"
+remotes {
+    web01 {
+        host = 'syniphos.i234.me'
+        port = 5022
+        user = 'kvk'
+        identity = file("${projectDir}/misc/build-res/id_rsa.kvk@syniphos")
+    }
+}
+
+task ssh_upload << {
+    ssh.run {
+        session( remotes.web01 ) {
+            put from: "${distributionFolderRoot}/${jupidatorProps.filename}",
+                into: "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
+            put from: "${distributionFolder}",
+                into: "www/Download/${project.name}"
+
         }
     }
 }
+configure(ssh_upload) {
+    group = TASKGROUP_JUPIDATOR
+    description = 'Dateien per SSH auf den Server laden'
+    dependsOn updateJupidator
+}
+
+task ssh_download << {
+    ssh.run {
+        session( remotes.web01 ) {
+            // get content as a string
+            text = get from: 'kannweg.txt'
+        }
+    }
+    
+    println "Downloaded :\n"+text
+}
+
+configure(ssh_download) {
+    group = TASKGROUP_JUPIDATOR
+    description = 'Dateien per SSH vom Server runterladen'
+}
+task ssh_release << {
+    ssh.run {
+        session( remotes.web01 ) {
+            def source = "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
+            def target = "www/Download/${project.name}/${jupidatorProps.filename}"
+            def result = execute "mv $source $target"
+//            println "Result = "+result
+        }
+    }
+}
+
+configure(ssh_release) {
+    group = TASKGROUP_JUPIDATOR
+    description = 'Projekt auf dem Server zum Download freigeben'
+}
+// ############################################################################
 // ############################################################################
 //'net.researchgate.release'
-// Git MUSS im Pfad verf√ºgbar sein!
+// Git MUSS im Pfad verf¸gbar sein!
 // Am besten aus Kommando-Shell aufrufen mit 
 //      gradlew :release -Prelease.useAutomaticVersion=true
-// oder noch besser: √ºber die Eclipse-Launch-Configuration: 
+// oder noch besser: ‹ber die Eclipse-Launch-Configuration: 
 //                                  "Release - AutomaticVersion"
 // Die Version wird in die Datei "gradle.properties" geschrieben.
 
 release {
-    failOnUnversionedFiles = false
-//    failOnCommitNeeded = false
+    failOnUnversionedFiles = true
+    failOnCommitNeeded = true
     buildTasks = ['launch4j']
     tagTemplate = '$name-$version'
     preTagCommitMessage = 'Neues Release: '
-    newVersionCommitMessage = 'Vorbereitung f√ºr n√§chste Version: '
+    newVersionCommitMessage = 'Vorbereitung f¸r n‰chste Version: '
 }
-afterReleaseBuild.dependsOn uploadArchives
+afterReleaseBuild.dependsOn ssh_upload
 // ############################################################################
 
 

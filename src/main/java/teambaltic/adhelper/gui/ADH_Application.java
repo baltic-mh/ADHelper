@@ -65,6 +65,7 @@ import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
+import teambaltic.adhelper.utils.AppUpdater;
 import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -177,6 +178,7 @@ public class ADH_Application
             }
 
         } );
+        new AppUpdater();
     }
 
     protected void addShutdownListener( final IShutdownListener fSL )
