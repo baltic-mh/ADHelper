@@ -6,10 +6,10 @@
 # Üliche Kategorien sind:
 #[NEU]      Für ein neues Feature
 #[BUGFIX]   Für einen behobenen Fehler
-#[ÄNDERUNG] Für ein geäertes Verhalten
+#[ÄNDERUNG] Für ein geändertes Verhalten
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1001006
+//RELEASE: 1002000
 ###############################################################################
-[BUG]   Beim automatischen Update wird die ReleaseNotes nun vorher aktualisiert.
+[NEU]   Automatisches Update eingeführt.
