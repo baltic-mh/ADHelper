@@ -221,8 +221,9 @@ configure(copyArtifacts) {
 // Jupidator
 task updateJupidator << {
     def aJ = new Jupidator( jupidatorProps )
+    def returnCode = aJ.process()
     if( aJ.process() != 0 ){
-        throw new GradleException('Jupidator.process ging schief!')
+        throw new GradleException('Jupidator.process ging schief! ReturnCode = '+returnCode)
     }
 }
 configure(updateJupidator) {
