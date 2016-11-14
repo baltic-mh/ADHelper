@@ -10,7 +10,6 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002002
+//RELEASE: 1002003
 ###############################################################################
-[NEU]	Jupidator URL wird nun über die Datei "Update.url" im GitHub-Repository
-		angegeben.
+[BUGFIX]    Fehler im ShutdownHook korrigiert

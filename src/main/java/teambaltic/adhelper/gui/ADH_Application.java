@@ -125,7 +125,7 @@ public class ADH_Application
             @Override
             public void run()
             {
-                aApplication.shutdown( "Aus unbekanntem Grund aus dem Leben gerissen (Update?)", 1 );
+                aApplication.prepareShutdown();
             }
         } );
 
@@ -350,6 +350,16 @@ public class ADH_Application
 
     public void shutdown(final String fInfo, final int fExitCode)
     {
+        sm_Log.info(fInfo);
+        sm_Log.info("==========================================================");
+        System.exit( fExitCode );
+    }
+
+    /**
+     * Wird innerhalb des ShutdownHooks aufgerufen!
+     */
+    private void prepareShutdown()
+    {
         synchronized( m_ShutdownListeners ){
             final ERole aRole = getRole();
             if( ERole.BAUAUSSCHUSS.equals( aRole )){
@@ -362,10 +372,8 @@ public class ADH_Application
                     sm_Log.warn( "Exception: ", fEx );
                 }
             }
+            sm_Log.info("==========================================================");
         }
-        sm_Log.info(fInfo);
-        sm_Log.info("==========================================================");
-        System.exit( fExitCode );
     }
 
     private void doConfirmedUpload()
