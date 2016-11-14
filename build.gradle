@@ -157,7 +157,7 @@ buildConfig {
 
     buildConfigField 'String',  'COPYRIGHT',    copyRight
     buildConfigField 'int',     'RELEASE',      releaseNum
-    buildConfigField 'String',  'URL_FOR_FILEWITH_JUPIDATORURL', "${jupidatorProps.urlroot}/${jupidatorProps.filename}"
+    buildConfigField 'String',  'URL_FOR_FILEWITH_JUPIDATORURL', 'https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url'
 
 }
 // ############################################################################

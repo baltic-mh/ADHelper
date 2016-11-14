@@ -1,5 +1,10 @@
 eclipse.preferences.version=1
 encoding//buildSrc/src/main/groovy/ReleaseNotesUpdater.groovy=UTF-8
 encoding//misc/TestResources/Tabellen/Arbeitsdienste1.csv=UTF-8
+encoding//src/main/java=UTF-8
+encoding//src/main/resources=UTF-8
+encoding//src/test/java=UTF-8
+encoding/<project>=UTF-8
 encoding/RELEASENOTES.txt=UTF-8
+encoding/Update.url=UTF-8
 encoding/build.gradle=UTF-8

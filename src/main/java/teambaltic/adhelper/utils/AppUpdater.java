@@ -126,10 +126,20 @@ public class AppUpdater implements UpdatedApplication
         }
         final List<String> aNonCommentLines = getNonCommentLines( aContentFromURL );
         if( aNonCommentLines.size() == 0 ){
-            LOG.warn(String.format( "Datei '%s' enthält keine JupidatorURL ", aURLStr, aContentFromURL ));
+            LOG.warn(String.format( "Datei '%s' enthält keine JupidatorURL: %s", aURLStr, aContentFromURL ));
             return null;
         }
-        return aNonCommentLines.get( 0 );
+        if( aNonCommentLines.size() > 1 ){
+            LOG.warn(String.format( "Datei '%s' enthält mehr als eine Nicht-Kommentarzeile: %s", aURLStr, aContentFromURL ));
+        }
+        final String aJupidatorURLStr = aNonCommentLines.get( 0 );
+        try{
+            new URL(aJupidatorURLStr);
+        }catch( final MalformedURLException fEx ){
+            LOG.warn(String.format( "Vermutlich kein URL: %s - %s", fEx.getMessage(), aJupidatorURLStr  ) );
+            return null;
+        }
+        return aJupidatorURLStr;
     }
 
     static List<String> getNonCommentLines( final String fMultiLineString )
