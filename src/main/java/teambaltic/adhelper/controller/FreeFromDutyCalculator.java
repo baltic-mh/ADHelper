@@ -4,7 +4,7 @@
  * Created on 04.04.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -56,7 +56,7 @@ public class FreeFromDutyCalculator
         final int aAge = aStart.getYear() - aBirthday.getYear();
         if( aAge - aMinAgeForDuty >= 3 ){
             // Wir hoffen, dass wir nie mehr als drei Jahre mit der Aberechnung
-            // in Rückstand geraten!
+            // in RÃ¼ckstand geraten!
             return null;
         }
         final LocalDate aFreeByAgeUntil = aBirthday.plusYears( aMinAgeForDuty );
@@ -74,7 +74,7 @@ public class FreeFromDutyCalculator
         final int aAge = aStart.getYear() - aBirthday.getYear();
         if( aMaxAgeForDuty - aAge >= 3 ){
             // Wir hoffen, dass wir nie mehr als drei Jahre mit der Abrechnung
-            // in Rückstand geraten!
+            // in RÃ¼ckstand geraten!
             return null;
         }
         final FreeFromDuty aFFD = new FreeFromDuty( fMember.getID(), REASON.TOO_OLD );

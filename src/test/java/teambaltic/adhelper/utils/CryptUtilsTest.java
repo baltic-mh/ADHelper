@@ -4,7 +4,7 @@
  * Created on 28.03.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -77,7 +77,7 @@ public class CryptUtilsTest
     public void testEncryptDecrypt_String()
     {
         try{
-            final String aTextToEncrypt = "Text, der verschlüsselt werden soll";
+            final String aTextToEncrypt = "Text, der verschlÃ¼sselt werden soll";
             final String aTextEncrypted = CRYPTUTILS.encrypt( aTextToEncrypt );
             final String aTextDecrypted = CRYPTUTILS.decrypt( aTextEncrypted );
             assertEquals( "Encrypted-Decrypted", aTextToEncrypt, aTextDecrypted );

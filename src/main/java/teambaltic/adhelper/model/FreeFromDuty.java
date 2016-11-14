@@ -4,7 +4,7 @@
  * Created on 31.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -18,13 +18,13 @@ import java.time.temporal.TemporalAdjusters;
 public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDuty>
 {
     public enum REASON{
-        // Aus Mitgliedsdaten berechnete Gründe:
+        // Aus Mitgliedsdaten berechnete GrÃ¼nde:
         TOO_YOUNG,
         DUTY_NOT_YET_EFFECTIVE,
         TOO_OLD,
         NO_LONGER_MEMBER,
-        // Explizit anzugebende Gründe:
-        SUSTAINING("Fördermitglied"),
+        // Explizit anzugebende GrÃ¼nde:
+        SUSTAINING("FÃ¶rdermitglied"),
         HONORY("Ehrenmitglied"),
         MANAGEMENT,
         REMOTENESS,

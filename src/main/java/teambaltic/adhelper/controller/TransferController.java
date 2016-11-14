@@ -4,7 +4,7 @@
  * Created on 08.03.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -107,7 +107,7 @@ public class TransferController implements ITransferController
         getRemoteAccess().close();
         final File aSandbox = getSandBox().toFile();
         if( aSandbox.exists() ){
-            sm_Log.info("Lösche Verzeichnis "+aSandbox);
+            sm_Log.info("LÃ¶sche Verzeichnis "+aSandbox);
             org.apache.commons.io.FileUtils.deleteQuietly( aSandbox );
         }
     }
@@ -181,7 +181,7 @@ public class TransferController implements ITransferController
     {
         final ICryptUtils aCryptUtils = getCryptUtils();
         if( aCryptUtils == null ){
-            sm_Log.warn( "Kein Verschlüsselungsobjekt! Hochladen nicht möglich!" );
+            sm_Log.warn( "Kein VerschlÃ¼sselungsobjekt! Hochladen nicht mÃ¶glich!" );
             return null;
         }
         final Path aLocalFile_RelativeToRoot = fFileToUpload.normalize();
@@ -250,7 +250,7 @@ public class TransferController implements ITransferController
         }
         final CheckSumCreator aCSC = getCheckSumCreator();
         final boolean aFolderDirty = isFolderDirty( aCSC, aActivePeriodFolder );
-        sm_Log.info( String.format("Aktive Periode ist lokal %sverändert: %s",
+        sm_Log.info( String.format("Aktive Periode ist lokal %sverÃ¤ndert: %s",
                 aFolderDirty ? "" : "un", aActivePeriodFolder ));
         return aFolderDirty;
     }
@@ -262,7 +262,7 @@ public class TransferController implements ITransferController
         final String aFileName_Uploaded = getAppSettings().getFileName_Uploaded();
         // Damit die Datei mit der Upload-Info auch auf den Server kommt,
         // muss sie bereits VOR dem Zippen da hineingeschrieben werden.
-        // Wenn dann das Upload schief geht, stimmt die Angabe natürlich nicht!
+        // Wenn dann das Upload schief geht, stimmt die Angabe natÃ¼rlich nicht!
         final Path aUploadInfoFile = aFolderToUpload.resolve( aFileName_Uploaded );
         FileUtils.writeUploadInfo( aUploadInfoFile, getUserInfo() );
         final Path aZipped = ZipUtils.zip( aFolderToUpload );
@@ -307,7 +307,7 @@ public class TransferController implements ITransferController
             sm_Log.warn("Exception: ", fEx );
         } finally {
             if( !Files.exists( fFile_BaseData )){
-                throw new IllegalStateException("Keine Arme - keine Kekse! Datei mit BasisDaten nicht verfügbar!");
+                throw new IllegalStateException("Keine Arme - keine Kekse! Datei mit BasisDaten nicht verfÃ¼gbar!");
             };
         }
     }

@@ -4,7 +4,7 @@
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -102,7 +102,7 @@ public class Log4JTest
         try{
             Files.delete( fFile );
         }catch( final IOException fEx ){
-            fail("Konnte Datei nicht löschen: " +fEx.getMessage() );
+            fail("Konnte Datei nicht lÃ¶schen: " +fEx.getMessage() );
         }
     }
 

@@ -4,7 +4,7 @@
  * Created on 03.05.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -70,7 +70,7 @@ public class DateChooserFrame extends JFrame
      */
     public DateChooserFrame()
     {
-        setTitle("W‰hle neuen Arbeitsdiensttermin...");
+        setTitle("W√§hle neuen Arbeitsdiensttermin...");
         final UtilLocalDateModel model = new UtilLocalDateModel();
 //        model.setDate(2016,3,9);
 //        model.setSelected( true );

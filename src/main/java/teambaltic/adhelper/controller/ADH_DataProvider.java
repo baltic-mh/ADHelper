@@ -4,7 +4,7 @@
  * Created on 30.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -87,7 +87,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         if( aPeriod == null ){
             return;
         }
-        sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
+        sm_Log.info( "Einlesen der Daten fÃ¼r Zeitraum: "+fPeriodData );
         m_ChargeCalculator = createChargeCalculator( aPeriod );
 
         // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen

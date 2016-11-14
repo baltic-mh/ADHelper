@@ -4,7 +4,7 @@
  * Created on 14.11.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -62,7 +62,7 @@ public class AppUpdaterTest
 +"# Alle Zeilen in dieser Datei, die mit # beginnen, werden ignoriert.\r\n"
 +"# Die Adresse dieser Datei selbst ist:\r\n"
 +"# https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url\r\n"
-+"# Die folgende Adresse wird vom Programm ADHelper ausgelesen und für die\r\n"
++"# Die folgende Adresse wird vom Programm ADHelper ausgelesen und fÃ¼r die\r\n"
 +"# automatische Aktualisierung benutzt:\r\n"
 +"  http://syniphos.i234.me/~kvk/Download/ADHelper/releases.xml  ";
         final List<String> aNonCommentLines = AppUpdater.getNonCommentLines( aMultiLineString );

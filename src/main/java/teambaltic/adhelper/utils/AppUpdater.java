@@ -4,7 +4,7 @@
  * Created on 22.10.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -126,11 +126,11 @@ public class AppUpdater implements UpdatedApplication
         }
         final List<String> aNonCommentLines = getNonCommentLines( aContentFromURL );
         if( aNonCommentLines.size() == 0 ){
-            LOG.warn(String.format( "Datei '%s' enth‰lt keine JupidatorURL: %s", aURLStr, aContentFromURL ));
+            LOG.warn(String.format( "Datei '%s' enth√§lt keine JupidatorURL: %s", aURLStr, aContentFromURL ));
             return null;
         }
         if( aNonCommentLines.size() > 1 ){
-            LOG.warn(String.format( "Datei '%s' enth‰lt mehr als eine Nicht-Kommentarzeile: %s", aURLStr, aContentFromURL ));
+            LOG.warn(String.format( "Datei '%s' enth√§lt mehr als eine Nicht-Kommentarzeile: %s", aURLStr, aContentFromURL ));
         }
         final String aJupidatorURLStr = aNonCommentLines.get( 0 );
         try{

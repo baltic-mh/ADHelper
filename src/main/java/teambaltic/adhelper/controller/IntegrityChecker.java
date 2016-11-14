@@ -4,7 +4,7 @@
  * Created on 20.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -70,7 +70,7 @@ public final class IntegrityChecker
         final Path aDataFolder = aAppSettings.getFolder_Data();
         final Path aFile_BaseData = aAppSettings.getFile_RootBaseData();
         if( !Files.exists( aFile_BaseData ) ){
-            throw new Exception( "Benötigte Datei nicht gefunden: " + aFile_BaseData.toString() );
+            throw new Exception( "BenÃ¶tigte Datei nicht gefunden: " + aFile_BaseData.toString() );
         }
         final PeriodDataController aIPCtrlr = new PeriodDataController( aAppSettings, null );
         aIPCtrlr.init();
@@ -119,7 +119,7 @@ public final class IntegrityChecker
         }
         for( final Integer aRefID : aSeen_RefIDs ){
             if( !aSeen_IDs.contains( aRefID ) ){
-                aProblems.add( String.format( "Für die RefID %d gibt es kein Mitglied mit dieser ID!", aRefID.intValue() ));
+                aProblems.add( String.format( "FÃ¼r die RefID %d gibt es kein Mitglied mit dieser ID!", aRefID.intValue() ));
             }
         }
         if( aProblems.size() > 0 ){

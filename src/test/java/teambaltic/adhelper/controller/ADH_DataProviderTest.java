@@ -4,7 +4,7 @@
  * Created on 05.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -50,10 +50,10 @@ public class ADH_DataProviderTest
     private static final Logger sm_Log = Logger.getLogger(ADH_DataProviderTest.class);
 
     private static final List<String>COLUMNNAMES = Arrays.asList( new String[]{
-            "Mitglieds_Nr", "Verknüpfung", "Geburtsdatum", "Eintritt", "Austritt",
+            "Mitglieds_Nr", "VerknÃ¼pfung", "Geburtsdatum", "Eintritt", "Austritt",
             "Vorname", "Nachname", "AD-Frei.Grund", "AD-Frei.von", "AD-Frei.bis",
             "Guthaben Arbeitsstunden nach Q2 2014", "Beitragsart_1",
-            "Anrede", "Straße", "Plz", "Ort"} );
+            "Anrede", "StraÃŸe", "Plz", "Ort"} );
 
     private static IClubSettings CLUBSETTINGS;
     private static FreeFromDutyCalculator sm_FFDCalculator;
@@ -145,7 +145,7 @@ public class ADH_DataProviderTest
     @Test
     public void test_LukasBal() throws Exception
     {
-        final String aLineForSingleMember = "10242;;01.01.1970;01.07.2005;31.12.2099;Lukas;Bal;SUSTAINING;01.01.2016;;13,5;Fördermitglied;Herrn;Wilhelmshavener Str. 28;24105;Kiel";
+        final String aLineForSingleMember = "10242;;01.01.1970;01.07.2005;31.12.2099;Lukas;Bal;SUSTAINING;01.01.2016;;13,5;FÃ¶rdermitglied;Herrn;Wilhelmshavener Str. 28;24105;Kiel";
 
         final InfoForSingleMember aMemberInfo = testSingleMember( aLineForSingleMember, 1350 );
         final int aHoursToPayTotal = aMemberInfo.getDutyCharge().getHoursToPayTotal();

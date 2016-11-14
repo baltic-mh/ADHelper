@@ -4,7 +4,7 @@
  * Created on 12.04.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -134,15 +134,15 @@ public class WorkEventsFilterController
     {
         final RowFilter_NurTeilnehmer aFilter_NurTeilnehmer = getRowFilter_NurTeilnehmer();
         if( fSet ){
-            // Bisher sind "Alle" ausgew‰hlt, also soll nun "Nur Dabei" ausgew‰hlt
+            // Bisher sind "Alle" ausgew√§hlt, also soll nun "Nur Dabei" ausgew√§hlt
             // sein:
             getBtn_ToggleDabeiFilter().setText( "Alle" );
             aFilter_NurTeilnehmer.setEnabled( true );
             getSorter().sort();
             return;
         }
-        // Bisher ist "Nur Dabei" ausgew‰hlt, also soll nun "Alle"
-        // ausgew‰hlt sein:
+        // Bisher ist "Nur Dabei" ausgew√§hlt, also soll nun "Alle"
+        // ausgew√§hlt sein:
         aFilter_NurTeilnehmer.setEnabled( false );
         getBtn_ToggleDabeiFilter().setText( "Nur Teilnehmer" );
         getSorter().sort();

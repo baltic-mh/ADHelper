@@ -4,7 +4,7 @@
  * Created on 29.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -123,7 +123,7 @@ public class SingletonWatcher implements ISingletonWatcher
 
         final String aRemoteInfo = getRemoteInfo();
         if( aRemoteInfo != null ){
-            throw new Exception("Es l‰uft schon eine andere Applikation: "+aRemoteInfo);
+            throw new Exception("Es l√§uft schon eine andere Applikation: "+aRemoteInfo);
         }
         if( m_Thread != null ){
             return;

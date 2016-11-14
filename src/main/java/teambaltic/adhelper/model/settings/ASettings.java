@@ -4,7 +4,7 @@
  * Created on 02.03.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -93,7 +93,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     public int getIntValue(final KeyType fKey)
     {
         if( !EPropType.INTVALUE.equals( fKey.getPropType() )){
-            throw new UnsupportedOperationException("Schl¸ssel ist nicht vom Typ INTEGER: "+fKey);
+            throw new UnsupportedOperationException("Schl√ºssel ist nicht vom Typ INTEGER: "+fKey);
         }
         return m_IntegerValues.get( fKey );
     }
@@ -102,7 +102,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     public void setIntValue(final KeyType fKey, final int fNewVal)
     {
         if( !EPropType.INTVALUE.equals( fKey.getPropType() )){
-            throw new UnsupportedOperationException("Schl¸ssel ist nicht vom Typ INTEGER: "+fKey);
+            throw new UnsupportedOperationException("Schl√ºssel ist nicht vom Typ INTEGER: "+fKey);
         }
         m_IntegerValues.put( fKey, Integer.valueOf( fNewVal ) );
     }
@@ -111,7 +111,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     public int getHourValue( final KeyType fKey )
     {
         if( !EPropType.HOURVALUE.equals( fKey.getPropType() )){
-            throw new UnsupportedOperationException("Schl¸ssel ist nicht vom Typ HOURVALUE: "+fKey);
+            throw new UnsupportedOperationException("Schl√ºssel ist nicht vom Typ HOURVALUE: "+fKey);
         }
         return m_HourValues.get( fKey );
     }
@@ -120,7 +120,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     public void setHourValue( final KeyType fKey, final int fNewVal )
     {
         if( !EPropType.HOURVALUE.equals( fKey.getPropType() )){
-            throw new UnsupportedOperationException("Schl¸ssel ist nicht vom Typ HOURVALUE: "+fKey);
+            throw new UnsupportedOperationException("Schl√ºssel ist nicht vom Typ HOURVALUE: "+fKey);
         }
         m_HourValues.put( fKey, Integer.valueOf( fNewVal ) );
     }
@@ -129,7 +129,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     public String getStringValue(final KeyType fKey)
     {
         if( !EPropType.STRINGVALUE.equals( fKey.getPropType() )){
-            throw new UnsupportedOperationException("Schl¸ssel ist nicht vom Typ STRING: "+fKey);
+            throw new UnsupportedOperationException("Schl√ºssel ist nicht vom Typ STRING: "+fKey);
         }
         return m_Props.getProperty( fKey.toString() );
     }
@@ -138,7 +138,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     public void setStringValue(final KeyType fKey, final String fNewVal)
     {
         if( !EPropType.STRINGVALUE.equals( fKey.getPropType() )){
-            throw new UnsupportedOperationException("Schl¸ssel ist nicht vom Typ STRING: "+fKey);
+            throw new UnsupportedOperationException("Schl√ºssel ist nicht vom Typ STRING: "+fKey);
         }
         m_Props.setProperty( fKey.toString(), fNewVal );
     }

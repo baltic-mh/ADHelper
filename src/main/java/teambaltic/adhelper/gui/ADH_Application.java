@@ -4,7 +4,7 @@
  * Created on 08.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -137,7 +137,7 @@ public class ADH_Application
                 try{
                     initSettings( aApplication );
                     sm_Log.info(composeTitle());
-                    sm_Log.info( "Heute ist ein schˆner Tag: "+ new Date() );
+                    sm_Log.info( "Heute ist ein sch√∂ner Tag: "+ new Date() );
                     final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
                     sm_Log.info( "Im Einsatz: "+aUserSettings);
                     final boolean aIsBauausschuss = aUserSettings.isBauausschuss();
@@ -158,7 +158,7 @@ public class ADH_Application
                             aPeriodFoldersKnownOnServer = updateDataFromServer( aTC );
                             IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
                         } else {
-                            throw new Exception( "Keine Verbindung zum Server (f¸r Details siehe log-Datei)!" );
+                            throw new Exception( "Keine Verbindung zum Server (f√ºr Details siehe log-Datei)!" );
                         }
 
                     }
@@ -261,7 +261,7 @@ public class ADH_Application
         aCB_Period.setSelectedItem( aPeriodToSelect );
         if( aCB_Period.getItemCount() == 1 ){
             // Wenn da nur ein Element in der Box ist, hat das vorherige
-            // setSelectedItem keinen Event ausgelˆst!
+            // setSelectedItem keinen Event ausgel√∂st!
             final ItemEvent aItemEvent = new ItemEvent(aCB_Period, 0, aPeriodToSelect, ItemEvent.SELECTED);
             aPDCL.itemStateChanged( aItemEvent );
         }
@@ -279,7 +279,7 @@ public class ADH_Application
         m_frame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(final java.awt.event.WindowEvent e) {
-                shutdown("Beenden durch Benutzer (Schlieﬂen-Knopf)", 0);
+                shutdown("Beenden durch Benutzer (Schlie√üen-Knopf)", 0);
             }
         });
 
@@ -399,8 +399,8 @@ public class ADH_Application
     {
         final Object[] options = {"Daten hochladen!", "Daten verwerfen!"};
         final int n = JOptionPane.showOptionDialog(null,
-            "Die Daten der aktiven Periode sind ge‰ndert worden! Sollen diese Daten auf den Server hochgeladen werden??",
-            "Daten ge‰ndert!",
+            "Die Daten der aktiven Periode sind ge√§ndert worden! Sollen diese Daten auf den Server hochgeladen werden??",
+            "Daten ge√§ndert!",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE,
             null,
@@ -497,7 +497,7 @@ public class ADH_Application
             aProps.load( new FileInputStream( fAppPropFile.toFile() ) );
             final String aPropKey_RootFolder = "FOLDERNAME_ROOT";
             if( !aProps.keySet().contains( aPropKey_RootFolder ) ){
-                exitWithDialog( String.format( "Property-Datei '%s' enth‰lt keine Zeile mit dem Schl¸ssel '%s'",
+                exitWithDialog( String.format( "Property-Datei '%s' enth√§lt keine Zeile mit dem Schl√ºssel '%s'",
                        fAppPropFile, aPropKey_RootFolder ));
             }
             final String aRootFolderName = aProps.getProperty( aPropKey_RootFolder );

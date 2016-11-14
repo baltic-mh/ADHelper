@@ -4,7 +4,7 @@
  * Created on 14.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -47,9 +47,9 @@ public class FinishListener implements ActionListener
     public void actionPerformed( final ActionEvent fEvent )
     {
         if( m_PDC.isFinished( m_DataProvider.getPeriodData() ) ){
-            final Object[] options = {"Ich weiﬂ, was ich tue!", "Nein, das war ein Versehen!"};
+            final Object[] options = {"Ich wei√ü, was ich tue!", "Nein, das war ein Versehen!"};
             final int n = JOptionPane.showOptionDialog(null,
-                "Dieser Abrechnungszeitraum ist bereits abgeschlossen! Sollen die Daten ¸berschrieben werden??",
+                "Dieser Abrechnungszeitraum ist bereits abgeschlossen! Sollen die Daten √ºberschrieben werden??",
                 "Sind Sie ganz sicher?",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE,

@@ -4,7 +4,7 @@
  * Created on 01.03.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -164,7 +164,7 @@ public class SFTPWithKeyTest
                 try{
                     sm_SFTPWithKey.delete( aRemotePath );
                 }catch( final Exception fEx ){
-                    /*Da kommt zwar ne Exception, die Datei ist aber trotzdem gelöscht*/
+                    /*Da kommt zwar ne Exception, die Datei ist aber trotzdem gelÃ¶scht*/
                 }
             }
             assertFalse("Remote file exists1", sm_SFTPWithKey.exists( aRemotePath ));

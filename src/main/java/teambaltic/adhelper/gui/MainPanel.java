@@ -4,7 +4,7 @@
  * Created on 09.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -267,8 +267,8 @@ public class MainPanel extends JPanel
         m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
         add(m_btn_ManageWorkEvents, "14, 14");
 
-        m_btnFinish = new JButton("Zeitraum abschlieﬂen");
-        m_btnFinish.setActionCommand( "Zeitraum abschlieﬂen" );
+        m_btnFinish = new JButton("Zeitraum abschlie√üen");
+        m_btnFinish.setActionCommand( "Zeitraum abschlie√üen" );
         add(m_btnFinish, "16, 14");
 
         m_btnUpload = new JButton("Daten hochladen...");
@@ -291,9 +291,9 @@ public class MainPanel extends JPanel
         if( aSelectedRow == -1 ){
             return false;
         }
-        final Object[] options = {"Ich weiﬂ, was ich tue!", "Nein, das war ein Versehen!"};
+        final Object[] options = {"Ich wei√ü, was ich tue!", "Nein, das war ein Versehen!"};
         final int n = JOptionPane.showOptionDialog(null,
-            "Soll der Arbeitsdiensteintrag wirklich gelˆscht werden?",
+            "Soll der Arbeitsdiensteintrag wirklich gel√∂scht werden?",
             "Sind Sie ganz sicher?",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE,

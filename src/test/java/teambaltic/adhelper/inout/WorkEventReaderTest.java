@@ -4,7 +4,7 @@
  * Created on 04.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -64,7 +64,7 @@ public class WorkEventReaderTest
             aReader.read( aInfoListProvider );
             for( final InfoForSingleMember aSingleInfo : aInfoListProvider.getAll() ){
                 final WorkEventsAttended aWEAForMember = aSingleInfo.getWorkEventsAttended();
-                sm_Log.info(String.format( "Arbeitsdienste für %d: %s", aWEAForMember.getID(), aWEAForMember) );
+                sm_Log.info(String.format( "Arbeitsdienste fÃ¼r %d: %s", aWEAForMember.getID(), aWEAForMember) );
             }
         }catch( final Exception fEx ){
             // TODO Auto-generated catch block

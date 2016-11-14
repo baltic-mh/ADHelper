@@ -4,7 +4,7 @@
  * Created on 01.03.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -96,7 +96,7 @@ public class SingletonWatcherTest
         // Und nun sind wir selbst da:
         try{
             aSW.start();
-            fail( "Start - obwohl eine andere Instanz läuft!");
+            fail( "Start - obwohl eine andere Instanz lÃ¤uft!");
         }catch( final Exception fEx1 ){
             // Alles chicko!
             aCnt_Download   = aRemoteAccess.getCnt_Download();
@@ -115,16 +115,16 @@ public class SingletonWatcherTest
             assertEquals("DownloadCnt", 4, aCnt_Download);
             // Alles chicko!
         }catch( final Exception fEx1 ){
-            fail( "Start geht nicht - obwohl KEINE andere Instanz läuft!");
+            fail( "Start geht nicht - obwohl KEINE andere Instanz lÃ¤uft!");
         }
 
         try{ Thread.sleep( 5000L ); }catch( final InterruptedException fEx ){/**/}
         final int aCnt_Upload     = aRemoteAccess.getCnt_Upload();
         assertTrue("UploadCnt="+aCnt_Upload, aCnt_Upload >= 5 );
 
-        // Bei getRemoteInfo wird über das RemoteAccess-Objekt nach einer BusyDatei
+        // Bei getRemoteInfo wird Ã¼ber das RemoteAccess-Objekt nach einer BusyDatei
         // (auf dem Server) gefragt. Das RemoteAccess-Objekt dieses Tests
-        // liefert die vom SingletonWatcher selbst erzeugte Datei zurück!
+        // liefert die vom SingletonWatcher selbst erzeugte Datei zurÃ¼ck!
         // Daher ist man hier NICHT ALLEINE - obwohl nur ein Objekt existiert ;-)
         aRemoteInfo = aSW.getRemoteInfo();
         assertNotNull("RemoteInfo3", aRemoteInfo);

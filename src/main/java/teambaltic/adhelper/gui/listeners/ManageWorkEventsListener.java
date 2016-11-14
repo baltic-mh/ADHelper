@@ -4,7 +4,7 @@
  * Created on 12.04.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -147,7 +147,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
             case "CANCEL":
                 m_WorkEventsDialog.getContentPanel().getTable().editingStopped( null );
                 if( isDirty() ){
-                    final Object[] options = {"Ich weiﬂ, was ich tue!", "Nein, das war ein Versehen!"};
+                    final Object[] options = {"Ich wei√ü, was ich tue!", "Nein, das war ein Versehen!"};
                     final int n = JOptionPane.showOptionDialog(null,
                         "Es wurden Daten eingegeben! Sollen diese Daten verworfen werden??",
                         "Sind Sie ganz sicher?",
@@ -304,7 +304,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
     }
 
     /**
-     * @return true, wenn irgendetwas ge‰ndert wurde, sonst false
+     * @return true, wenn irgendetwas ge√§ndert wurde, sonst false
      */
     private boolean writeWorkEventsToMembers()
     {
@@ -335,7 +335,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
 
     /**
      * @param fWorkEvent
-     * @return true, wenn irgendetwas ge‰ndert wurde, sonst false
+     * @return true, wenn irgendetwas ge√§ndert wurde, sonst false
      */
     private boolean writeWorkEventToMember( final WorkEvent fWorkEvent )
     {

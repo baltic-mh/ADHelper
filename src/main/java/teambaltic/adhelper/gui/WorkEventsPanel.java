@@ -4,7 +4,7 @@
  * Created on 12.04.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -86,7 +86,7 @@ public class WorkEventsPanel extends JPanel
         super();
 
         m_table = new JTable();
-        m_sorter = new TableRowSorter<TBLModel_WorkEvents>();
+        m_sorter = new TableRowSorter<>();
         m_table.setRowSorter( m_sorter  );
 
         setLayout(new FormLayout(new ColumnSpec[] {

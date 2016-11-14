@@ -4,7 +4,7 @@
  * Created on 31.01.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -97,7 +97,7 @@ public class DutyCalculatorTest
     {
         final String aTestName = "ZuAltUndAustrittImMaerz";
         sm_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
-        // Der ganz alte Opa tritt zum ersten März aus:
+        // Der ganz alte Opa tritt zum ersten MÃ¤rz aus:
         sm_Member.setMemberUntil( LocalDate.of( 2000, 3, 1 ) );
 
         check( aTestName, 0, REASON.TOO_OLD, REASON.NO_LONGER_MEMBER );
@@ -185,11 +185,11 @@ public class DutyCalculatorTest
         final String aTestName = "ZuJungBisEndeMaerzAusTrittImJuni";
         sm_Member.setBirthday( LocalDate.of( 1984, 3, 31 ) );
         sm_Member.setMemberUntil( LocalDate.of( 2000, 6, 1 ) );
-        // Das ältere Kücken tritt zum ersten Juni aus:
+        // Das Ã¤ltere KÃ¼cken tritt zum ersten Juni aus:
         // er wird am 1.4. arbeitsdienstpflichtig und steigt zum 1.6. aus.
-        // Also ist er für die Monate 1-3 nicht dienstpflichtig,
-        // für die Monate 4 und 5 dienstpflichtig
-        // und für Monat 6 wieder nicht dienstpflichtig.
+        // Also ist er fÃ¼r die Monate 1-3 nicht dienstpflichtig,
+        // fÃ¼r die Monate 4 und 5 dienstpflichtig
+        // und fÃ¼r Monat 6 wieder nicht dienstpflichtig.
         // Also 2 von 6 Monaten (- sind 1/3 = eine Stunde!)
         check( aTestName, 2, REASON.TOO_YOUNG, REASON.NO_LONGER_MEMBER );
     }

@@ -4,7 +4,7 @@
  * Created on 02.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -67,7 +67,7 @@ public class FreeFromDutySetFactory implements IItemFactory<FreeFromDutySet>
             final REASON aReason = FreeFromDuty.REASON.valueOf( aReasonString );
             return aReason;
         }catch( final Exception fEx ){
-            sm_Log.warn("Unzul‰ssige Angabe f¸r Grund zur Arbeitsdienstbefreiung: "+aReasonString );
+            sm_Log.warn("Unzul√§ssige Angabe f√ºr Grund zur Arbeitsdienstbefreiung: "+aReasonString );
             return REASON.INDIVIDUALREASON;
         }
     }

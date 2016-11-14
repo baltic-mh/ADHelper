@@ -4,7 +4,7 @@
  * Created on 18.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -89,7 +89,7 @@ public class DetailsReporter
         final List<Month> aMonthsDue = DutyCalculator.getMonthsDue( fInvoicingPeriod, aEffectiveFFDs );
         if( aMonthsDue.size() > 0 ){
             fWriter.write( "--------------------------------------------------------------------------\r\n" );
-            fWriter.write( String.format( "Für AD angerechnete Monate: %s\r\n",
+            fWriter.write( String.format( "FÃ¼r AD angerechnete Monate: %s\r\n",
                     DateUtils.getNames( aMonthsDue ) ));
         }
 

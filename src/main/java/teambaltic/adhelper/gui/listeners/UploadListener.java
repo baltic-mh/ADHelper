@@ -4,7 +4,7 @@
  * Created on 26.03.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die KlimaerwÃ¤rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -82,7 +82,7 @@ public class UploadListener implements ActionListener
         try{
             ERole aRole = m_UserSettingsListener.getUserSettings().getRole();
             while( aRole == null ) {
-                final String aMsg = "Esikmos dürfen hier schon mal gar nichts! Bitte Rolle angeben!";
+                final String aMsg = "Esikmos dÃ¼rfen hier schon mal gar nichts! Bitte Rolle angeben!";
                 JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
                         JOptionPane.ERROR_MESSAGE);
                 m_UserSettingsListener.getDialog().setVisible( true );

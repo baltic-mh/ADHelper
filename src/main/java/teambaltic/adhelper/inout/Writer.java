@@ -4,7 +4,7 @@
  * Created on 15.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -68,7 +68,7 @@ public class Writer
         final LocalDate aToday = LocalDate.now();
         try{
             final List<WorkEvent> aAllWorkEvents = getAllWorkEvents( fDataProvider );
-            // Die Arbeitsdiensteintr‰ge erhalten "Abgerechnet am"
+            // Die Arbeitsdiensteintr√§ge erhalten "Abgerechnet am"
             // wenn ihr Datum vor dem Enddatum des Abrechnungszeitraumes liegt.
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste.csv", "ISO-8859-1");
             aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,

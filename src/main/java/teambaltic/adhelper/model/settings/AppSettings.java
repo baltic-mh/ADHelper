@@ -4,7 +4,7 @@
  * Created on 14.02.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
- * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw‰rmung!
+ * Coole Software - Mein Beitrag im Kampf gegen die Klimaerw√§rmung!
  *
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
@@ -157,7 +157,7 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
     {
         if(    !EKey.FILENAME_CRYPT_PRIV.equals( fPrivOrPub )
             && !EKey.FILENAME_CRYPT_PUBL.equals( fPrivOrPub ) ){
-            throw new IllegalArgumentException("Unzul‰ssiger Parameterwert "+fPrivOrPub);
+            throw new IllegalArgumentException("Unzul√§ssiger Parameterwert "+fPrivOrPub);
         }
         return getStringValue( fPrivOrPub );
     }
