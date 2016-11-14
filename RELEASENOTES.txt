@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1002003	Version: 1.2.3	Datum: 2016-11-14
+[BUGFIX]    Fehler im ShutdownHook korrigiert
+================================================================================
 Release: 1002002	Version: 1.2.2	Datum: 2016-11-14
 [NEU]	Jupidator URL wird nun über die Datei "Update.url" im GitHub-Repository
 		angegeben.
