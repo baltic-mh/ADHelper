@@ -151,13 +151,15 @@ public class Jupidator
         File aJupidatorFile_New = new File(distributionFolderRoot, basename+'-new.xml')
         aJupidatorFile_New.write(outxml,'UTF-8')
 
-        // Alte Datei aus dem Weg räumen:
+        // Alte Datei aus dem Weg rï¿½umen:
         File previous = new File (distributionFolderRoot+"/"+basename+'-previous.xml')
         previous.delete()
         // Aktuelle Datei wir die alte:
         aJupidatorFile_Actual.renameTo( previous )
         // Neue Datei ersetzt die alte:
         aJupidatorFile_New.renameTo( distributionFolderRoot+"/"+filename )
+        
+        return 0
     }
 
 }
