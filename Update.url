@@ -1,0 +1,8 @@
+# Diese Datei beinhaltet die Adresse, an der die freigegebenen Releases
+# zum Download bereitstehen. 
+# Alle Zeilen in dieser Datei, die mit # beginnen, werden ignoriert.
+# Die Adresse dieser Datei selbst ist:
+# https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url
+# Die folgende Adresse wird vom Programm ADHelper ausgelesen und für die
+# automatische Aktualisierung benutzt:
+http://syniphos.i234.me/~kvk/Download/ADHelper/releases.xml

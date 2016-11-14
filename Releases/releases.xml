@@ -18,21 +18,5 @@
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="3828" sourcedir="1002001"/>
     </arch>
   </version>
-  <version release="1002000" version="1.2.0">
-    <description>
-    &lt;dl&gt;
-  &lt;dt&gt;
-    &lt;b&gt;NEU&lt;/b&gt;
-    &lt;dd&gt;Automatisches Update eingeführt.&lt;/dd&gt;
-  &lt;/dt&gt;
-&lt;/dl&gt;
-  </description>
-    <arch>
-      <file destdir="${APPHOME}" name="ADHelper.exe" size="3540685" sourcedir="1002000"/>
-      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="26619" sourcedir="1002000"/>
-      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18565" sourcedir="1002000"/>
-      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="3657" sourcedir="1002000"/>
-    </arch>
-  </version>
   <version release="1" version="0.0.0"/>
 </updatelist>

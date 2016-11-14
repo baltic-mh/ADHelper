@@ -3,13 +3,14 @@
 # Die einzelnen Änderungen/Neuerungen müssen mit einer Kategorie beginnen.
 # Die Kategorie muss in eckigen Klammern stehen.
 # Danach muss in derselben Zeile noch Text stehen
-# Üliche Kategorien sind:
+# Übliche Kategorien sind:
 #[NEU]      Für ein neues Feature
 #[BUGFIX]   Für einen behobenen Fehler
 #[ÄNDERUNG] Für ein geändertes Verhalten
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002001
+//RELEASE: 1002002
 ###############################################################################
-[NEU]   Shutdown-Hook implementiert.
+[NEU]	Jupidator URL wird nun über die Datei "Update.url" im GitHub-Repository
+		angegeben.

@@ -157,8 +157,7 @@ buildConfig {
 
     buildConfigField 'String',  'COPYRIGHT',    copyRight
     buildConfigField 'int',     'RELEASE',      releaseNum
-    buildConfigField 'String',  'JUPIDATORURL', "${jupidatorProps.urlroot}/${jupidatorProps.filename}"
-    buildConfigField 'String',  'JUPIDATORURL_TEST', "${jupidatorProps.urlroot}/${jupidatorProps.basename}-new.xml"
+    buildConfigField 'String',  'URL_FOR_FILEWITH_JUPIDATORURL', "${jupidatorProps.urlroot}/${jupidatorProps.filename}"
 
 }
 // ############################################################################
@@ -190,7 +189,9 @@ task updateReleaseNotes << {
         releaseNotes        : releaseNotes,
         releaseNotesActual  : releaseNotesActual
     )
-    aRNU.process()
+    if( aRNU.process() != 0 ){
+        throw new GradleException('ReleaseNotesUpdater.process ging schief!')
+    }
 }
 configure(updateReleaseNotes) {
     group = TASKGROUP_JUPIDATOR
@@ -220,7 +221,9 @@ configure(copyArtifacts) {
 // Jupidator
 task updateJupidator << {
     def aJ = new Jupidator( jupidatorProps )
-    aJ.process()
+    if( aJ.process() != 0 ){
+        throw new GradleException('Jupidator.process ging schief!')
+    }
 }
 configure(updateJupidator) {
     group = TASKGROUP_JUPIDATOR

@@ -14,6 +14,8 @@ package teambaltic.adhelper.utils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -36,6 +38,9 @@ public class AppUpdater implements UpdatedApplication
     {
         final boolean aTestMode     = isTestMode();
         final String aJupidatorURL  = getJupidatorURL( aTestMode );
+        if( aJupidatorURL == null ){
+            return;
+        }
         final int aReleaseNumber    = getRelease( aTestMode );
 
         final String aUserDir = System.getProperty("user.dir");
@@ -95,7 +100,7 @@ public class AppUpdater implements UpdatedApplication
     }
     private static String getJupidatorURL( final boolean fTestMode )
     {
-        String aJupidatorURL = BuildConfig.JUPIDATORURL;
+        String aJupidatorURL = getJupidatorURL();
         if( fTestMode ) {
             try {
                 final URL aURL = new URL(aJupidatorURL);
@@ -107,6 +112,38 @@ public class AppUpdater implements UpdatedApplication
             }
         }
         return aJupidatorURL;
+    }
+
+    private static String getJupidatorURL()
+    {
+        final String aURLStr = BuildConfig.URL_FOR_FILEWITH_JUPIDATORURL;
+        String aContentFromURL;
+        try{
+            aContentFromURL = NetworkUtils.getContentFromURL( aURLStr );
+        }catch( final Exception fEx ){
+            LOG.warn(String.format( "Konnte Inhalt nicht lesen von URL: %s", aURLStr), fEx );
+            return null;
+        }
+        final List<String> aNonCommentLines = getNonCommentLines( aContentFromURL );
+        if( aNonCommentLines.size() == 0 ){
+            LOG.warn(String.format( "Datei '%s' enthält keine JupidatorURL ", aURLStr, aContentFromURL ));
+            return null;
+        }
+        return aNonCommentLines.get( 0 );
+    }
+
+    static List<String> getNonCommentLines( final String fMultiLineString )
+    {
+        final String[] aAllLines = fMultiLineString.split( "\\n" );
+        final List<String> aNonCommentLines = new ArrayList<>();
+        for( final String aLine : aAllLines ){
+            final String aTrimmedLine = aLine.trim();
+            if( aTrimmedLine.startsWith( "#" ) ){
+                continue;
+            }
+            aNonCommentLines.add( aTrimmedLine );
+        }
+        return aNonCommentLines;
     }
 
 }
