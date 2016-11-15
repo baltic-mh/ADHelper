@@ -83,11 +83,8 @@ public class ADH_Application
     private static final EPeriodDataSelector ALL = EPeriodDataSelector.ALL;
 
     // ------------------------------------------------------------------------
-    private JFrame m_frame;
-    public  JFrame getFrame(){ return m_frame; }
-    // ------------------------------------------------------------------------
-
-    private MainPanel m_MainPanel;
+    private final MainPanel m_MainPanel;
+    private final JFrame m_Frame;
 
     // ------------------------------------------------------------------------
     private IPeriodDataController m_PDC;
@@ -121,6 +118,8 @@ public class ADH_Application
         readAndSetSystemProperties(BuildConfig.NAME);
 
         final ADH_Application aApplication = new ADH_Application();
+        CursorUtils.startWaitCursor( aApplication.m_MainPanel );
+
         Runtime.getRuntime().addShutdownHook( new Thread() {
             @Override
             public void run()
@@ -138,47 +137,15 @@ public class ADH_Application
                     initSettings( aApplication );
                     sm_Log.info(composeTitle());
                     sm_Log.info( "Heute ist ein schöner Tag: "+ new Date() );
-                    final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
-                    sm_Log.info( "Im Einsatz: "+aUserSettings);
-                    final boolean aIsBauausschuss = aUserSettings.isBauausschuss();
                     IntegrityChecker.check( AllSettings.INSTANCE );
-                    final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE );
 
-                    aApplication.initialize();
-                    aApplication.setVisible( true );
+                    aApplication.initializeUI( aApplication.m_Frame);
 
-                    ITransferController aTC = null;
-                    List<Path >aPeriodFoldersKnownOnServer = null;
-                    boolean aOffline = true;
-                    if( !stayLocal() ){
-                        aTC = aInitHelper.initTransferController();
-                        aTC.start();
-                        if( aTC.isConnected() ){
-                            aOffline = false;
-                            aPeriodFoldersKnownOnServer = updateDataFromServer( aTC );
-                            IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
-                        } else {
-                            throw new Exception( "Keine Verbindung zum Server (für Details siehe log-Datei)!" );
-                        }
-
-                    }
-                    final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
-                    if( !aOffline ){
-                        aTC.setPeriodDataController( aPDC );
-                        aPDC.removeDataFolderOrphans( aPeriodFoldersKnownOnServer );
-                        // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
-                        aPDC.createNewPeriod();
-                    }
-                    aApplication.setTitle( aOffline );
-                    aApplication.addShutdownListener( aTC );
-                    final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
-
-                    aApplication.initObjects( aDataProvider, aPDC, aTC, aIsBauausschuss );
 
                 }catch( final Exception fEx ){
                     sm_Log.error( "Unerwartete Exception: ", fEx );
                     final String aMsg = ExceptionUtils.getStackTrace(fEx);
-                    JOptionPane.showMessageDialog( aApplication.m_frame, aMsg, "Fataler Fehler!",
+                    JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
                                 JOptionPane.ERROR_MESSAGE );
                     aApplication.shutdown("Beenden wegen fataler Exception", 1);
                 }
@@ -186,6 +153,23 @@ public class ADH_Application
 
         } );
         new AppUpdater();
+        new Thread("Initialize"){
+            @Override
+            public void run()
+            {
+                try{
+                    aApplication.initialize();
+                    CursorUtils.stopWaitCursor( aApplication.m_MainPanel );
+                }catch( final Exception fEx ){
+                    sm_Log.error( "Unerwartete Exception: ", fEx );
+                    final String aMsg = ExceptionUtils.getStackTrace(fEx);
+                    JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
+                                JOptionPane.ERROR_MESSAGE );
+                    aApplication.shutdown("Beenden wegen fataler Exception", 1);
+                }
+            }
+        }.start();
+
     }
 
     protected void addShutdownListener( final IShutdownListener fSL )
@@ -205,12 +189,50 @@ public class ADH_Application
      */
     public ADH_Application()
     {
+        m_MainPanel = new MainPanel();
+        m_Frame = new JFrame();
+        m_Frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
+                ColumnSpec.decode("906px:grow"),},
+            new RowSpec[] {
+                RowSpec.decode("435px:grow"),}));
+
+        m_Frame.getContentPane().add(m_MainPanel, "1, 1, fill, fill");
+
         m_ShutdownListeners = new ArrayList<>();
     }
 
-    protected void setVisible( final boolean fB )
+    private void initialize() throws Exception, IOException
     {
-        m_frame.setVisible( fB );
+        final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
+        sm_Log.info( "Im Einsatz: "+aUserSettings);
+        final boolean aIsBauausschuss = aUserSettings.isBauausschuss();
+        final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE );
+        ITransferController aTC = null;
+        List<Path >aPeriodFoldersKnownOnServer = null;
+        boolean aOffline = true;
+        if( !stayLocal() ){
+            aTC = aInitHelper.initTransferController();
+            aTC.start();
+            if( aTC.isConnected() ){
+                aOffline = false;
+                aPeriodFoldersKnownOnServer = updateDataFromServer( aTC );
+                IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
+            } else {
+                throw new Exception( "Keine Verbindung zum Server (für Details siehe log-Datei)!" );
+            }
+
+        }
+        final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
+        if( !aOffline ){
+            aTC.setPeriodDataController( aPDC );
+            aPDC.removeDataFolderOrphans( aPeriodFoldersKnownOnServer );
+            // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
+            aPDC.createNewPeriod();
+        }
+        addShutdownListener( aTC );
+        final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
+
+        initObjects( aDataProvider, aPDC, aTC, aIsBauausschuss );
     }
 
     private void initObjects(final ADH_DataProvider fDataProvider,
@@ -270,29 +292,21 @@ public class ADH_Application
 
     /**
      * Initialize the contents of the frame.
+     * @return
      */
-    private void initialize()
+    private void initializeUI(final JFrame aFrame)
     {
-        m_frame = new JFrame();
-        m_frame.setTitle(composeTitle());
-        m_frame.setBounds( 100, 100, 924, 580 );
-        m_frame.addWindowListener(new java.awt.event.WindowAdapter() {
+        aFrame.setTitle(composeTitle());
+        aFrame.setBounds( 100, 100, 924, 580 );
+        aFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(final java.awt.event.WindowEvent e) {
                 shutdown("Beenden durch Benutzer (Schließen-Knopf)", 0);
             }
         });
 
-        m_frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
-                ColumnSpec.decode("906px:grow"),},
-            new RowSpec[] {
-                RowSpec.decode("435px:grow"),}));
-
-        m_MainPanel = new MainPanel();
-        m_frame.getContentPane().add(m_MainPanel, "1, 1, fill, fill");
-
         final JMenuBar menuBar = new JMenuBar();
-        m_frame.setJMenuBar(menuBar);
+        aFrame.setJMenuBar(menuBar);
 
         final JMenu mnDatei = new JMenu("Datei");
         menuBar.add(mnDatei);
@@ -321,6 +335,8 @@ public class ADH_Application
 
         final JMenu mnHilfe = new JMenu("Hilfe");
         menuBar.add(mnHilfe);
+
+        aFrame.setVisible( true );
     }
 
     private static void initSettings( final ADH_Application fAppWindow ) throws Exception
@@ -426,11 +442,6 @@ public class ADH_Application
     {
         final boolean aSysPropStayLocal = Boolean.getBoolean( "staylocal" );
         return aSysPropStayLocal;
-    }
-
-    protected void setTitle( final boolean fOffline )
-    {
-        m_frame.setTitle( composeTitle() );
     }
 
     private static List<Path> updateDataFromServer( final ITransferController fTC ) throws Exception
