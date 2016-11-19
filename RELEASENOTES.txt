@@ -1,4 +1,9 @@
 ================================================================================
+Release: 1002004	Version: 1.2.4	Datum: 2016-11-19
+[ÄNDERUNG]  Beim Programmstart erscheint nun ein Warte-Cursor solange der
+            Datenabgleich mit dem Server läuft
+[BUGFIX]    Basisdatei wird als ISO-8859-1 encodiert angesehen
+================================================================================
 Release: 1002003	Version: 1.2.3	Datum: 2016-11-14
 [BUGFIX]    Fehler im ShutdownHook korrigiert
 ================================================================================
