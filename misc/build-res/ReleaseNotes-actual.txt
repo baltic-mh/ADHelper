@@ -10,6 +10,8 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002003
+//RELEASE: 1002004
 ###############################################################################
-[BUGFIX]    Fehler im ShutdownHook korrigiert
+[ÄNDERUNG]  Beim Programmstart erscheint nun ein Warte-Cursor solange der
+            Datenabgleich mit dem Server läuft
+[BUGFIX]    Basisdatei wird als ISO-8859-1 encodiert angesehen
