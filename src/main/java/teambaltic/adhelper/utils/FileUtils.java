@@ -14,7 +14,6 @@ package teambaltic.adhelper.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -84,7 +83,7 @@ public final class FileUtils
         final List<String> aLines = new ArrayList<>();
         BufferedReader in = null;
         try {
-            in = new BufferedReader( new FileReader( fFile ) );
+            in = new BufferedReader( new InputStreamReader(new FileInputStream( fFile ), StandardCharsets.ISO_8859_1 ) );
             String aLine;
             while( ( aLine = in.readLine() ) != null ){
                 aLinesRead++;

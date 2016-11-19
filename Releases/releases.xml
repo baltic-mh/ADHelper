@@ -2,42 +2,5 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
-  <version release="1002004" version="1.2.4">
-    <description>
-    &lt;dl&gt;
-  &lt;dt&gt;
-    &lt;b&gt;ÄNDERUNG&lt;/b&gt;
-    &lt;dd&gt;Beim Programmstart erscheint nun ein Warte-Cursor solange der
-            Datenabgleich mit dem Server läuft&lt;/dd&gt;
-  &lt;/dt&gt;
-  &lt;dt&gt;
-    &lt;b&gt;BUGFIX&lt;/b&gt;
-    &lt;dd&gt;Basisdatei wird als ISO-8859-1 encodiert angesehen&lt;/dd&gt;
-  &lt;/dt&gt;
-&lt;/dl&gt;
-  </description>
-    <arch>
-      <file destdir="${APPHOME}" name="ADHelper.exe" size="3546705" sourcedir="1002004"/>
-      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="30955" sourcedir="1002004"/>
-      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1002004"/>
-      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="4557" sourcedir="1002004"/>
-    </arch>
-  </version>
-  <version release="1002003" version="1.2.3">
-    <description>
-    &lt;dl&gt;
-  &lt;dt&gt;
-    &lt;b&gt;BUGFIX&lt;/b&gt;
-    &lt;dd&gt;Fehler im ShutdownHook korrigiert&lt;/dd&gt;
-  &lt;/dt&gt;
-&lt;/dl&gt;
-  </description>
-    <arch>
-      <file destdir="${APPHOME}" name="ADHelper.exe" size="3543850" sourcedir="1002003"/>
-      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="29650" sourcedir="1002003"/>
-      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18565" sourcedir="1002003"/>
-      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="4235" sourcedir="1002003"/>
-    </arch>
-  </version>
   <version release="1" version="0.0.0"/>
 </updatelist>
