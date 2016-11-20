@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1002007	Version: 1.2.7	Datum: 2016-11-20
+[ÄNDERUNG]  Umlaute in UI-Elementen auf UTF-8 umgestellt
+================================================================================
 Release: 1002006	Version: 1.2.6	Datum: 2016-11-20
 [NEU]       Die Applikation hat nun ein eigenes Icon
 [ÄNDERUNG]  Nach Änderung der Benutzerrolle beendet sich das Programm für
