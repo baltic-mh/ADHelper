@@ -48,9 +48,6 @@ plugins {
     // https://gradle-ssh-plugin.github.io/
     id 'org.hidetake.ssh' version '2.7.0'
 
-    // Asciidoctor
-    // http://asciidoctor.org/
-    id 'org.asciidoctor.convert' version '1.5.3'
 }
 
 // In this section you declare where to find the dependencies of your project
@@ -308,14 +305,3 @@ release {
 afterReleaseBuild.dependsOn ssh_upload
 // ############################################################################
 
-// ############################################################################
-// Dokumentation mit Asciidoctor
-
-asciidoctor {
-    sourceDir = file('docs')
-    sources {
-      include '01-ADHelper.adoc', '02-usermanual.adoc', '03-developers-guide.adoc'
-    }
-    outputDir = file('build/docs')
-}
-// ############################################################################

@@ -1,5 +1,0 @@
-== Entwicklungsumgebung
-
-=== Eclipse
-
-=== Gradle
