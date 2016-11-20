@@ -100,7 +100,7 @@ public class NewWorkEventDateListener implements ActionListener
     {
         String aText = "Kein Datum angegeben!";
         if( fChoosenDate != null){
-            aText = String.format( "Ungültiges Datum angegeben: %s! Es muss nach dem %s liegen!", fChoosenDate, fLimit);
+            aText = String.format( "Ung\u00FCltiges Datum angegeben: %s! Es muss nach dem %s liegen!", fChoosenDate, fLimit);
         }
         final Object[] options = {"Kommt nicht wieder vor!"};
         JOptionPane.showOptionDialog(null,

@@ -93,7 +93,7 @@ public class UserSettingsListener implements ActionListener
         if( !aCurrentRole.equals( aPreviousRole ) ){
             JOptionPane.showMessageDialog(null,
                     "Die Applikation muss neu gestartet werden!",
-                    "Benutzerrolle geändert!",
+                    "Benutzerrolle ge\u00E4ndert!",
                     JOptionPane.WARNING_MESSAGE);
             getApp().shutdown("Benutzerrolle geändert", 0);
         }
