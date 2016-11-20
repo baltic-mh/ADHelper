@@ -1,4 +1,11 @@
 ================================================================================
+Release: 1002006	Version: 1.2.6	Datum: 2016-11-20
+[NEU]       Die Applikation hat nun ein eigenes Icon
+[ÄNDERUNG]  Nach Änderung der Benutzerrolle beendet sich das Programm für
+            einen Neustart
+[BUGFIX]    Das Bestätigen dees Hochladens von Daten findet nicht mehr im
+            Shutdown-Hook statt
+================================================================================
 Release: 1002004	Version: 1.2.4	Datum: 2016-11-19
 [ÄNDERUNG]  Beim Programmstart erscheint nun ein Warte-Cursor solange der
             Datenabgleich mit dem Server läuft
