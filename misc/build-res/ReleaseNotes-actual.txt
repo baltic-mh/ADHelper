@@ -10,6 +10,6 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002007
+//RELEASE: 1002008
 ###############################################################################
-[ÄNDERUNG]  Umlaute in UI-Elementen auf UTF-8 umgestellt
+[BUGFIX]  Umlaute der Spaltenüberschriften auf UTF-8 umgestellt

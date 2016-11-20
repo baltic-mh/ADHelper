@@ -20,16 +20,16 @@ public interface IKnownColumns
 
     // Tabelle der Mitgliederdaten:
     String BIRTHDAY = "Geburtsdatum";   // Format wie Datum
-    String PLZ = "Plz";                 // Wird nicht verwendet
-    String ORT = "Ort";                 // Wird nicht verwendet
-    String ANREDE = "Anrede";           // Wird nicht verwendet
-    String STREET = "Straße";           // Wird nicht verwendet
+//    String PLZ = "Plz";                 // Wird nicht verwendet
+//    String ORT = "Ort";                 // Wird nicht verwendet
+//    String ANREDE = "Anrede";           // Wird nicht verwendet
+//    String STREET = "Straße";           // Wird nicht verwendet
     String BEITRAGSART = "Beitragsart_1"; // Wird für AD-Befreiung verwendet
     String NAME = "Nachname";
     String FIRSTNAME = "Vorname";
     String EINTRITT = "Eintritt";       // Format wie Datum
     String AUSTRITT = "Austritt";       // Format wie Datum
-    String LINKID = "Verknüpfung";      // Es muss eine Mitgliedsnummer mit diesem Wert geben
+    String LINKID = "Verkn\u00FCpfung";      // Es muss eine Mitgliedsnummer mit diesem Wert geben
     String AD_FREE_REASON = "AD-Frei.Grund";
     String AD_FREE_FROM   = "AD-Frei.von";
     String AD_FREE_UNTIL  = "AD-Frei.bis";

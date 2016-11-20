@@ -31,7 +31,7 @@ import teambaltic.adhelper.utils.FileUtils;
 // ############################################################################
 public class BaseDataReader
 {
-//    private static final Logger sm_Log = Logger.getLogger(BaseInfoReader.class);
+//    private static final Logger sm_Log = Logger.getLogger(BaseDataReader.class);
 
     // ------------------------------------------------------------------------
     private final File m_File;

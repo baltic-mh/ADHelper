@@ -24,7 +24,7 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
         TOO_OLD,
         NO_LONGER_MEMBER,
         // Explizit anzugebende Gründe:
-        SUSTAINING("Fördermitglied"),
+        SUSTAINING("F\u00F6rdermitglied"),
         HONORY("Ehrenmitglied"),
         MANAGEMENT,
         REMOTENESS,
