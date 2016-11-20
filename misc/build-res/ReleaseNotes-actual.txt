@@ -10,6 +10,6 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002008
+//RELEASE: 1003000
 ###############################################################################
-[BUGFIX]  Umlaute der Spaltenüberschriften auf UTF-8 umgestellt
+[NEU]  HTML-Dokumentation hinzugefügt

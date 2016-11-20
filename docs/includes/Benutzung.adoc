@@ -1,0 +1,18 @@
+== Benutzung
+
+=== Mitgliederwart
+
+In der Rolle *MITGLIEDERWART* hat man quasi nur lesenden Zugriff auf die
+Daten. Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine 
+aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
+Server zu laden.
+
+Die neu aus dem Vereinsverwaltungsprogramm exportierte Datei wird, nachdem sie über einen Auswahldialog aus dem Dateisystem erbrowst worden ist, auf ihre Konsistenz hin überprüft. Danach wird sie auf den Server hochgeladen. Alle dann folgenden Berechnungen werden ab dann basieren auf den Stand der neuen Datei durchgeführt.
+
+Das genaue Format der Datei der Basisdaten ist im 
+link:developers-guide.html#Basisdaten[Enwicklerhandbuch]
+angegeben.
+
+=== Bauausschuss
+
+Der *BAUAUSSCHUSS* führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Er nutzt das Programm +ADHelper+ dazu, zu jedem Arbeitsdiensttermin die von den dort anwesenden Mitgliedern geleisteten Arbeitsstunden einzugeben.
