@@ -1,0 +1,25 @@
+= ADHelper
+Mathias-H. Weber <mhw@teambaltic.de>
+v1.0, 17. November 2016
+:doctype: book
+:encoding: utf-8
+:lang: de
+//:toc: left
+//:toclevels: 4
+//:toc-title: Inhaltsverzeichnis
+:last-update-label: Erstellt mit Asciidoctor v{asciidoctor-version} : Zuletzt geändert:
+:icons: font
+:numbered:
+:source-highlighter: highlightjs
+
+
+ADHelper ist ein Werkzeug, um die Verwaltung und Abrechnung von Arbeitsdienststunden im Verein komfortabel und sicher durchführen zu können.
+
+
+== Benutzerhandbuch
+
+Für diejenigen, die das Programm lediglich nutzen und damit umgehen wollen, ist link:html/usermanual.html[diese Dokumentation] gedacht.
+
+== Entwicklerhandbuch
+
+Für Entwickler ist link:html/developers-guide.html[diese Dokumentation] gedacht.
