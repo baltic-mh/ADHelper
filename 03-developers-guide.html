@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.3">
 <meta name="author" content="Mathias-H. Weber">
-<title>ADHelper</title>
+<title>ADHelper - Entwicklerhandbuch</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -419,37 +419,271 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
-<h1>ADHelper</h1>
+<h1>ADHelper - Entwicklerhandbuch</h1>
 <div class="details">
 <span id="author" class="author">Mathias-H. Weber</span><br>
 <span id="email" class="email"><a href="mailto:mhw@teambaltic.de">mhw@teambaltic.de</a></span><br>
 <span id="revnumber">version 1.0,</span>
 <span id="revdate">17. November 2016</span>
 </div>
+<div id="toc" class="toc2">
+<div id="toctitle">Inhaltsverzeichnis</div>
+<ul class="sectlevel0">
+<li><a href="#_entwicklungsumgebung">Entwicklungsumgebung</a>
+<ul class="sectlevel1">
+<li><a href="#_entwicklungsumgebung_2">1. Entwicklungsumgebung</a>
+<ul class="sectlevel2">
+<li><a href="#_eclipse">1.1. Eclipse</a></li>
+<li><a href="#_gradle">1.2. Gradle</a></li>
+</ul>
+</li>
+<li><a href="#_build_prozess_mit_gradle">2. Build-Prozess mit Gradle</a>
+<ul class="sectlevel2">
+<li><a href="#_erzeugen_eines_neuen_releases">2.1. Erzeugen eines neuen Releases</a></li>
+</ul>
+</li>
+<li><a href="#_dokumentation">3. Dokumentation</a></li>
+</ul>
+</li>
+<li><a href="#_anhang">Anhang</a>
+<ul class="sectlevel1">
+<li><a href="#_dateiformate">4. Dateiformate</a>
+<ul class="sectlevel2">
+<li><a href="#_basisdaten">4.1. Basisdaten</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
-<div id="preamble">
+<h1 id="_entwicklungsumgebung" class="sect0"><a class="anchor" href="#_entwicklungsumgebung"></a>Entwicklungsumgebung</h1>
+<div class="sect1">
+<h2 id="_entwicklungsumgebung_2"><a class="anchor" href="#_entwicklungsumgebung_2"></a>1. Entwicklungsumgebung</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>ADHelper ist ein Werkzeug, um die Verwaltung und Abrechnung von Arbeitsdienststunden im Verein komfortabel und sicher durchführen zu können.</p>
+<div class="sect2">
+<h3 id="_eclipse"><a class="anchor" href="#_eclipse"></a>1.1. Eclipse</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_gradle"><a class="anchor" href="#_gradle"></a>1.2. Gradle</h3>
+
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_benutzerhandbuch">1. Benutzerhandbuch</h2>
+<h2 id="_build_prozess_mit_gradle"><a class="anchor" href="#_build_prozess_mit_gradle"></a>2. Build-Prozess mit Gradle</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_erzeugen_eines_neuen_releases"><a class="anchor" href="#_erzeugen_eines_neuen_releases"></a>2.1. Erzeugen eines neuen Releases</h3>
 <div class="paragraph">
-<p>Für diejenigen, die das Programm lediglich nutzen und damit umgehen wollen, ist <a href="02-usermanual.html">diese Dokumentation</a> gedacht.</p>
+<p>Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release<br></p>
+</li>
+</ol>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Editieren der Datei &#8658; misc/build-res/ReleaseNotes-actual.txt</p>
+</div>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Eventuell Anpassung der Datei<br></p>
+</li>
+</ol>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>Editieren der Datei &#8658; misc/Dokumentation/Dokumentation.txt</p>
+</div>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Alle geänderten Dateien müssen in GIT committed und gepusht sein.</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Aufruf der Gradle-Task</p>
+</li>
+</ol>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>gradlew release -Prelease.useAutomaticVersion=true</p>
+</div>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>Überprüfen, ob alles chicko ist!</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Release zum Download freigeben durch Aufruf der Gradle-Task<br></p>
+</li>
+</ol>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>gradlew ssh_release</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_entwicklerhandbuch">2. Entwicklerhandbuch</h2>
+<h2 id="_dokumentation"><a class="anchor" href="#_dokumentation"></a>3. Dokumentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Für Entwickler ist <a href="03-developers-guide.html">diese Dokumentation</a> gedacht.</p>
+<p>Die Dokumentation des Projektes ist mit
+<a href="http://asciidoctor.org/">AsciiDoctor</a>
+erstellt worden.</p>
+</div>
+<div class="paragraph">
+<p>Bei der Installation von
+<a href="https://www.ruby-lang.org/de/downloads/">Ruby</a>
+bin ich auf ein bisher ungelöstes Problem mit dem Umgang mit Zertifikaten gestoßen. Ich habe stattdessen einfach
+<a href="http://jruby.org/">JRuby</a>
+installiert --- damit funktioniert es genau so gut.</p>
+</div>
+<div class="paragraph">
+<p>Als Hilfsmittel zum Editieren der .adoc-Dateien habe ich mir noch
+<a href="http://asciidocfx.com/">AsciiDocFX</a> herunter geladen.</p>
+</div>
+</div>
+</div>
+<h1 id="_anhang" class="sect0"><a class="anchor" href="#_anhang"></a>Anhang</h1>
+<div class="sect1">
+<h2 id="_dateiformate"><a class="anchor" href="#_dateiformate"></a>4. Dateiformate</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Das grundlegende Dateiformat für den Austausch zwischen Vereinsverwaltungsprogramm und ADHelper ist ".csv". Daneben werden einige Text-, Checksummen- und ZIP-Dateien verwendet.</p>
+</div>
+<div class="sect2">
+<h3 id="_basisdaten"><a class="anchor" href="#_basisdaten"></a>4.1. Basisdaten</h3>
+<div class="paragraph">
+<p>Die Datei der Basisdaten ist als '.csv'-Datei aufgebaut.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Die Datei muss nach ISO-8859-1 encodiert sein! (Weil in einer Spaltenüberschrift leider ein Umlaut auftaucht: "Verkn<strong>ü</strong>pfung"!)
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Alle Datumswerte in der Datei müssen im Format DD.MM.YYYY aufgeführt werden (z.B. 09.04.1958). Ein Datumswert von 00.00.000 wird behandelt wie ein nicht vorhandener Wert.</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Tabelle 1. Spalten der Datei BasisDaten.csv</caption>
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Spaltenname</th>
+<th class="tableblock halign-left valign-top">Format</th>
+<th class="tableblock halign-left valign-top">Anmerkung/Beispiel</th>
+</tr>
+</thead>
+<tfoot>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.bis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tfoot>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mitglieds_Nr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Numerisch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muss eindeutig sein</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verknüpfung</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Numerisch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Es muss einen gleichlautenden Eintrag bei                                        Mitglieds_Nr geben</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vorname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Beliebig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nachname</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Beliebig</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Geburtsdatum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format DD.MM.YYYY z.B. <strong>09.04.1958</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eintritt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Format DD.MM.YYYY z.B. <strong>01.02.2003</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Austritt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Beitragsart_1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auswahl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">berücksichtigte Werte:
+    <strong>Fördermitglied</strong>,
+    <strong>Ehrenmitglied</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.Grund</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auswahl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mögliche Werte:
+    <strong>SUSTAINING("Fördermitglied")</strong>,
+    <strong>HONORY("Ehrenmitglied")</strong>,
+    <strong>MANAGEMENT</strong>,
+    <strong>REMOTENESS</strong>,
+    <strong>INDIVIDUALREASON</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.von</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -457,7 +691,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Erstellt mit Asciidoctor v1.5.3 : Zuletzt geändert: 2016-11-20 15:31:56 +01:00
+Erstellt mit Asciidoctor v1.5.3 : Zuletzt geändert: 2016-11-20 15:18:48 +01:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
