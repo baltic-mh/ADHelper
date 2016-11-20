@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +28,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -197,6 +200,7 @@ public class ADH_Application
                 RowSpec.decode("435px:grow"),}));
 
         m_Frame.getContentPane().add(m_MainPanel, "1, 1, fill, fill");
+        setImageIcon(m_Frame);
 
         m_ShutdownListeners = new ArrayList<>();
     }
@@ -343,16 +347,18 @@ public class ADH_Application
     {
         AllSettings.INSTANCE.init();
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
-        fAppWindow.setUserSettingsListener( populateUserSettings( aUserSettings ) );
+        fAppWindow.setUserSettingsListener( populateUserSettings( aUserSettings, fAppWindow ) );
     }
 
-    private static UserSettingsListener populateUserSettings(final IUserSettings fUserSettings)
+    private static UserSettingsListener populateUserSettings(
+            final IUserSettings     fUserSettings,
+            final ADH_Application   fAppWindow)
     {
         final UserSettingsDialog aDialog = new UserSettingsDialog();
         aDialog.getTf_Name().setText( fUserSettings.getName() );
         aDialog.getTf_EMail().setText( fUserSettings.getEMail() );
         final JButton aBtn_OK = aDialog.getBtn_OK();
-        final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings );
+        final UserSettingsListener l = new UserSettingsListener( aDialog, fUserSettings, fAppWindow );
         aBtn_OK.addActionListener( l );
 
         final ERole aRole = fUserSettings.getRole();
@@ -367,6 +373,10 @@ public class ADH_Application
     public void shutdown(final String fInfo, final int fExitCode)
     {
         sm_Log.info(fInfo);
+        final ERole aRole = getRole();
+        if( ERole.BAUAUSSCHUSS.equals( aRole )){
+            doConfirmedUpload();
+        }
         sm_Log.info("==========================================================");
         System.exit( fExitCode );
     }
@@ -377,10 +387,6 @@ public class ADH_Application
     private void prepareShutdown()
     {
         synchronized( m_ShutdownListeners ){
-            final ERole aRole = getRole();
-            if( ERole.BAUAUSSCHUSS.equals( aRole )){
-                doConfirmedUpload();
-            }
             for( final IShutdownListener aShutdownListener : m_ShutdownListeners ){
                 try{
                     aShutdownListener.shutdown();
@@ -566,6 +572,16 @@ public class ADH_Application
         System.exit( 1 );
     }
 
+    private void setImageIcon(final JFrame fFrame)
+    {
+        final InputStream stream = getClass().getResourceAsStream("/ADHelper.jpg");
+        try{
+            final ImageIcon icon = new ImageIcon(ImageIO.read(stream));
+            m_Frame.setIconImage( icon.getImage() );
+        }catch( final IOException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
 }
 
 // ############################################################################

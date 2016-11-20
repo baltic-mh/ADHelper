@@ -15,8 +15,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.gui.ADH_Application;
 import teambaltic.adhelper.gui.UserSettingsDialog;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.settings.IUserSettings;
@@ -36,10 +39,16 @@ public class UserSettingsListener implements ActionListener
     public IUserSettings getUserSettings(){ return m_UserSettings; }
     // ------------------------------------------------------------------------
 
-    public UserSettingsListener(final UserSettingsDialog fDialog, final IUserSettings fUserSettings)
+    // ------------------------------------------------------------------------
+    private final ADH_Application m_App;
+    private ADH_Application getApp(){ return m_App; }
+    // ------------------------------------------------------------------------
+
+    public UserSettingsListener(final UserSettingsDialog fDialog, final IUserSettings fUserSettings, final ADH_Application fAppWindow)
     {
-        m_Dialog = fDialog;
-        m_UserSettings = fUserSettings;
+        m_Dialog        = fDialog;
+        m_UserSettings  = fUserSettings;
+        m_App           = fAppWindow;
     }
 
     @Override
@@ -72,12 +81,21 @@ public class UserSettingsListener implements ActionListener
         final String aEMail = getDialog().getTf_EMail().getText();
         aUserSettings.setStringValue( IUserSettings.EKey.EMAIL, aEMail );
         final Object aSelectedRole = getDialog().getCb_Role().getSelectedItem();
+        final ERole aPreviousRole = aUserSettings.getRole();
         aUserSettings.setStringValue( IUserSettings.EKey.ROLE, aSelectedRole.toString() );
         getDialog().setVisible(false);
+        final ERole aCurrentRole = aUserSettings.getRole();
         try{
             getUserSettings().writeToFile();
         }catch( final IOException fEx ){
             sm_Log.warn("Exception: ", fEx );
+        }
+        if( !aCurrentRole.equals( aPreviousRole ) ){
+            JOptionPane.showMessageDialog(null,
+                    "Die Applikation muss neu gestartet werden!",
+                    "Benutzerrolle geändert!",
+                    JOptionPane.WARNING_MESSAGE);
+            getApp().shutdown("Benutzerrolle geändert", 0);
         }
     }
 

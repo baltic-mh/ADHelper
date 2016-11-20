@@ -10,8 +10,10 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002004
+//RELEASE: 1002005
 ###############################################################################
-[ÄNDERUNG]  Beim Programmstart erscheint nun ein Warte-Cursor solange der
-            Datenabgleich mit dem Server läuft
-[BUGFIX]    Basisdatei wird als ISO-8859-1 encodiert angesehen
+[NEU]       Die Applikation hat nun ein eigenes Icon
+[ÄNDERUNG]  Nach Änderung der Benutzerrolle beendet sich das Programm für
+            einen Neustart
+[BUGFIX]    Das Bestätigen dees Hochladens von Daten findet nicht mehr im
+            Shutdown-Hook statt
