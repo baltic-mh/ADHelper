@@ -10,10 +10,6 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002006
+//RELEASE: 1002007
 ###############################################################################
-[NEU]       Die Applikation hat nun ein eigenes Icon
-[ÄNDERUNG]  Nach Änderung der Benutzerrolle beendet sich das Programm für
-            einen Neustart
-[BUGFIX]    Das Bestätigen dees Hochladens von Daten findet nicht mehr im
-            Shutdown-Hook statt
+[ÄNDERUNG]  Umlaute in UI-Elementen auf UTF-8 umgestellt

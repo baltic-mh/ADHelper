@@ -70,7 +70,7 @@ public class DateChooserFrame extends JFrame
      */
     public DateChooserFrame()
     {
-        setTitle("Wähle neuen Arbeitsdiensttermin...");
+        setTitle("W\u00E4hle neuen Arbeitsdiensttermin...");
         final UtilLocalDateModel model = new UtilLocalDateModel();
 //        model.setDate(2016,3,9);
 //        model.setSelected( true );

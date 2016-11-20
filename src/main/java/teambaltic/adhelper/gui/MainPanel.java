@@ -267,8 +267,8 @@ public class MainPanel extends JPanel
         m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
         add(m_btn_ManageWorkEvents, "14, 14");
 
-        m_btnFinish = new JButton("Zeitraum abschließen");
-        m_btnFinish.setActionCommand( "Zeitraum abschließen" );
+        m_btnFinish = new JButton("Zeitraum abschlie\u00DFen");
+        m_btnFinish.setActionCommand( "Zeitraum abschlie\u00DFen" );
         add(m_btnFinish, "16, 14");
 
         m_btnUpload = new JButton("Daten hochladen...");
@@ -293,7 +293,7 @@ public class MainPanel extends JPanel
         }
         final Object[] options = {"Ich weiß, was ich tue!", "Nein, das war ein Versehen!"};
         final int n = JOptionPane.showOptionDialog(null,
-            "Soll der Arbeitsdiensteintrag wirklich gelöscht werden?",
+            "Soll der Arbeitsdiensteintrag wirklich gel\u00F6scht werden?",
             "Sind Sie ganz sicher?",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.WARNING_MESSAGE,
