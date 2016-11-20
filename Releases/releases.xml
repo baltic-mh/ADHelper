@@ -28,26 +28,5 @@
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="4959" sourcedir="1002006"/>
     </arch>
   </version>
-  <version release="1002005" version="1.2.5">
-    <description>
-    &lt;dl&gt;
-  &lt;dt&gt;
-    &lt;b&gt;ÄNDERUNG&lt;/b&gt;
-    &lt;dd&gt;Beim Programmstart erscheint nun ein Warte-Cursor solange der
-            Datenabgleich mit dem Server läuft&lt;/dd&gt;
-  &lt;/dt&gt;
-  &lt;dt&gt;
-    &lt;b&gt;BUGFIX&lt;/b&gt;
-    &lt;dd&gt;Basisdatei wird als ISO-8859-1 encodiert angesehen&lt;/dd&gt;
-  &lt;/dt&gt;
-&lt;/dl&gt;
-  </description>
-    <arch>
-      <file destdir="${APPHOME}" name="ADHelper.exe" size="3546948" sourcedir="1002005"/>
-      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="31639" sourcedir="1002005"/>
-      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1002005"/>
-      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="4557" sourcedir="1002005"/>
-    </arch>
-  </version>
   <version release="1" version="0.0.0"/>
 </updatelist>
