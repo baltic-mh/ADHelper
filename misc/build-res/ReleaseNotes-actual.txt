@@ -10,7 +10,7 @@
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 ###############################################################################
-//RELEASE: 1002005
+//RELEASE: 1002006
 ###############################################################################
 [NEU]       Die Applikation hat nun ein eigenes Icon
 [ÄNDERUNG]  Nach Änderung der Benutzerrolle beendet sich das Programm für
