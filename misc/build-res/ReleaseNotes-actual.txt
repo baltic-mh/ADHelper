@@ -12,4 +12,4 @@
 ###############################################################################
 //RELEASE: 1003000
 ###############################################################################
-[NEU]  HTML-Dokumentation hinzugefügt
+[NEU]  HTML-Dokumentation hinzugefügt (unter Menu-Punkt "Hilfe")
