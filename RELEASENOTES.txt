@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1003000	Version: 1.3.0	Datum: 2016-11-21
+[NEU]  HTML-Dokumentation hinzugefügt (unter Menu-Punkt "Hilfe")
+================================================================================
 Release: 1002008	Version: 1.2.8	Datum: 2016-11-20
 [BUGFIX]  Umlaute der Spaltenüberschriften auf UTF-8 umgestellt
 ================================================================================
