@@ -2,6 +2,30 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1003001" version="1.3.1">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Ausgabefenster für Log-Meldungen (unter Menu-Punkt "Aktionen")&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Neues Applikations-Icon&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Fenster-Größe und Position beim Start wie beim letzten Schließen &lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="3578274" sourcedir="1003001"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="36350" sourcedir="1003001"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1003001"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="5864" sourcedir="1003001"/>
+    </arch>
+  </version>
   <version release="1003000" version="1.3.0">
     <description>
     &lt;dl&gt;
