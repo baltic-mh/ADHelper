@@ -137,6 +137,22 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getFile( getFolderName_Settings(), getFileName_RemoteAccessSettings() );
     }
     @Override
+    public Path getFile_UISettings()
+    {
+        return getFile( getFolderName_Settings(), getFileName_UISettings() );
+    }
+    @Override
+    public String getFileName_UISettings()
+    {
+        return getStringValue( EKey.FILENAME_UISETTINGS );
+    }
+    @Override
+    public void saveSettings()
+    {
+        // TODO Auto-generated method stub
+
+    }
+    @Override
     public String getFileName_Finished()
     {
         return getStringValue( EKey.FILENAME_FINISHED );

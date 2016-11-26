@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import teambaltic.adhelper.model.EPropType;
@@ -54,8 +55,8 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     {
         InputStream aInputStream;
         final File aPropFile = fPropertyFile.toFile();
+        setPropertyFile( aPropFile );
         if( Files.exists( fPropertyFile ) ){
-            setPropertyFile( aPropFile );
             aInputStream = new FileInputStream( aPropFile );
         } else {
             aInputStream = getResourceAsStream( String.format("%s", aPropFile.getName() ) );
@@ -161,8 +162,12 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         if( aPropertyFile == null ){
             return;
         }
-        m_Props.putAll( m_IntegerValues );
-        m_Props.putAll( m_HourValues );
+        for( final Entry<KeyType, Integer> aEntry : m_IntegerValues.entrySet() ){
+            m_Props.put( aEntry.getKey().toString(), aEntry.getValue().toString() );
+        }
+        for( final Entry<KeyType, Integer> aEntry : m_HourValues.entrySet() ){
+            m_Props.put( aEntry.getKey().toString(), aEntry.getValue().toString() );
+        }
         final OutputStream out = new FileOutputStream( aPropertyFile );
         m_Props.store(out, "This is an optional header comment string");
     }

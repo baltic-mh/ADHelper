@@ -34,6 +34,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
        ,FILENAME_FINISHED
        ,FILENAME_UPLOADED
        ,FILENAME_REMOTEACCESSDATA
+       ,FILENAME_UISETTINGS
 
        ,FILENAME_CRYPT_PRIV
        ,FILENAME_CRYPT_PUBL
@@ -80,6 +81,8 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     Path getFile_ClubData();
     String getFileName_RemoteAccessSettings();
     Path getFile_RemoteAccessSettings();
+    String getFileName_UISettings();
+    Path getFile_UISettings();
     String getFileName_Finished();
     String getFileName_Uploaded();
 
@@ -87,6 +90,8 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     Path getFile_Crypt( EKey fPrivOrPub );
 
     int getCycleTime_SingletonWatcher();
+
+    void saveSettings();
 
 }
 

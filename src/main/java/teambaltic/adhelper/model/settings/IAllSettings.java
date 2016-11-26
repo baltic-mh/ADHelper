@@ -18,6 +18,7 @@ public interface IAllSettings
     IClubSettings getClubSettings();
     IUserSettings getUserSettings();
     IRemoteAccessSettings getRemoteAccessSettings();
+    IUISettings getUISettings();
 }
 
 // ############################################################################

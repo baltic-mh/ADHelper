@@ -53,6 +53,12 @@ public enum AllSettings implements IAllSettings
     public IUserSettings getUserSettings(){ return m_UserSettings; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private IUISettings m_UISettings;
+    @Override
+    public IUISettings getUISettings(){ return m_UISettings; }
+    // ------------------------------------------------------------------------
+
     public void init() throws Exception
     {
         final Path aClubFile = m_AppSettings.getFile_ClubData();
@@ -60,6 +66,9 @@ public enum AllSettings implements IAllSettings
 
         final Path aUserFile = m_AppSettings.getFile_UserSettings();
         m_UserSettings = new UserSettings( aUserFile );
+
+        final Path aUIFile = m_AppSettings.getFile_UISettings();
+        m_UISettings = new UISettings( aUIFile );
 
         // Wenn es keine Zugangsdaten zum Server gibt, arbeiten wir eben lokal!
         final Path aRemoteAccessFile = m_AppSettings.getFile_RemoteAccessSettings();

@@ -9,7 +9,14 @@
 #[ÄNDERUNG] Für ein geändertes Verhalten
 #
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
+# Es muss eine Zeile geben, die mit "//RELEASE:" anfängt gefolgt von der
+# Release-Nummer des anstehenden Releases.
+# Die Release-Nummer wird aus der Versionsnummer gebildet:
+#   Versionsnummer 1.2.3 => Release-Nummer: 1002003
+#   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1003000
+//RELEASE: 1003001
 ###############################################################################
-[NEU]  HTML-Dokumentation hinzugefügt (unter Menu-Punkt "Hilfe")
+[NEU]  Ausgabefenster für Log-Meldungen (unter Menu-Punkt "Aktionen")
+[NEU]  Neues Applikations-Icon
+[NEU]  Fenster-Größe und Position beim Start wie beim letzten Schließen 

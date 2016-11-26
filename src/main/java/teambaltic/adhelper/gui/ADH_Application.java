@@ -70,10 +70,12 @@ import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
+import teambaltic.adhelper.model.settings.IUISettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.utils.AppUpdater;
 import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
+import teambaltic.swingappender.ui.SwingAppenderUI;
 
 // ############################################################################
 public class ADH_Application
@@ -91,6 +93,7 @@ public class ADH_Application
     // ------------------------------------------------------------------------
     private final MainPanel m_MainPanel;
     private final JFrame m_Frame;
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private IPeriodDataController m_PDC;
@@ -134,13 +137,22 @@ public class ADH_Application
             }
         } );
 
+        try{
+            initSettings( aApplication );
+        }catch( final Exception fEx ){
+            sm_Log.error( "Unerwartete Exception: ", fEx );
+            final String aMsg = ExceptionUtils.getStackTrace(fEx);
+            JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
+                        JOptionPane.ERROR_MESSAGE );
+            aApplication.shutdown("Beenden wegen fataler Exception", 1);
+        }
+
         EventQueue.invokeLater( new Runnable() {
 
             @Override
             public void run()
             {
                 try{
-                    initSettings( aApplication );
                     sm_Log.info(composeTitle());
                     sm_Log.info( "Heute ist ein schöner Tag: "+ new Date() );
                     IntegrityChecker.check( AllSettings.INSTANCE );
@@ -299,13 +311,12 @@ public class ADH_Application
 
     /**
      * Initialize the contents of the frame.
-     * @return
      */
-    private void initializeUI(final JFrame aFrame)
+    private void initializeUI(final JFrame fFrame)
     {
-        aFrame.setTitle(composeTitle());
-        aFrame.setBounds( 100, 100, 924, 580 );
-        aFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+        fFrame.setTitle(composeTitle());
+        setPositionAndSize( fFrame );
+        fFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(final java.awt.event.WindowEvent e) {
                 shutdown("Beenden durch Benutzer (Schließen-Knopf)", 0);
@@ -313,7 +324,7 @@ public class ADH_Application
         });
 
         final JMenuBar menuBar = new JMenuBar();
-        aFrame.setJMenuBar(menuBar);
+        fFrame.setJMenuBar(menuBar);
 
         final JMenu mnDatei = new JMenu("Datei");
         menuBar.add(mnDatei);
@@ -336,6 +347,17 @@ public class ADH_Application
         m_mnit_UserSettings.setActionCommand( "Editieren" );
         m_mnit_UserSettings.addActionListener( getUserSettingsListener() );
         mnAktionen.add(m_mnit_UserSettings);
+
+        final JMenuItem mntmShowLogWindow = new JMenuItem("Zeige Log-Ausgaben");
+        mntmShowLogWindow.addActionListener( new ActionListener(){
+            @Override
+            public void actionPerformed( final ActionEvent fE )
+            {
+                SwingAppenderUI.getInstance().show();
+            }
+
+        });
+        mnAktionen.add( mntmShowLogWindow );
 
         final Component horizontalGlue = Box.createHorizontalGlue();
         menuBar.add(horizontalGlue);
@@ -360,7 +382,7 @@ public class ADH_Application
         });
         mnHilfe.add( mntmHelpDocumentation );
 
-        aFrame.setVisible( true );
+        fFrame.setVisible( true );
     }
 
     private static void initSettings( final ADH_Application fAppWindow ) throws Exception
@@ -407,6 +429,7 @@ public class ADH_Application
     private void prepareShutdown()
     {
         synchronized( m_ShutdownListeners ){
+            saveUISettings( m_Frame );
             for( final IShutdownListener aShutdownListener : m_ShutdownListeners ){
                 try{
                     aShutdownListener.shutdown();
@@ -594,10 +617,41 @@ public class ADH_Application
 
     private void setImageIcon(final JFrame fFrame)
     {
-        final InputStream stream = getClass().getResourceAsStream("/ADHelper.jpg");
+        final InputStream stream = getClass().getResourceAsStream("/ADHelper.png");
         try{
             final ImageIcon icon = new ImageIcon(ImageIO.read(stream));
             m_Frame.setIconImage( icon.getImage() );
+        }catch( final IOException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
+
+    private static void setPositionAndSize( final JFrame fFrame )
+    {
+        final IUISettings aUISettings = AllSettings.INSTANCE.getUISettings();
+        final int aH = aUISettings.getMainFrame_Height();
+        final int aW = aUISettings.getMainFrame_Width ();
+
+        final int aX = aUISettings.getMainFrame_PosX();
+        final int aY = aUISettings.getMainFrame_PosY();
+
+        fFrame.setBounds( aX, aY, aW, aH );
+    }
+    private static void saveUISettings( final JFrame fFrame )
+    {
+        final IUISettings aUISettings = AllSettings.INSTANCE.getUISettings();
+        if( aUISettings == null ){
+            return;
+        }
+
+        aUISettings.setMainFrame_Height( fFrame.getHeight() );
+        aUISettings.setMainFrame_Width ( fFrame.getWidth () );
+
+        aUISettings.setMainFrame_PosX( fFrame.getX() );
+        aUISettings.setMainFrame_PosY( fFrame.getY() );
+
+        try{
+            aUISettings.writeToFile();
         }catch( final IOException fEx ){
             sm_Log.warn("Exception: ", fEx );
         }
