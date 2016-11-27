@@ -110,12 +110,12 @@ In der letzten Zeile wird im Feld #Zu zahlende Schulden# angegeben, um wieviele 
 
 ==== Fenster "Arbeitsdienste"
 
-Der Kopf #Arbeitsdienste# im <<Hauptfenster>> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.
+Der Knopf #Arbeitsdienste# im <<Hauptfenster>> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.
 
 .Fenster "Arbeitsdienste"
 image::images/AppAD-0.png[align="center"]
 
-Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossenen Perioden können also nur zur Kontrolle angesehen werden. Die <<Aktive Periode>> erkennt man an dem angehängten #*# im Auswahldialog.
+Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossenen Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten #*# im Auswahldialog.
 
 Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.
 
