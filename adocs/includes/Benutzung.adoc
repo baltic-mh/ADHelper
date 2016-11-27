@@ -1,5 +1,128 @@
 == Benutzung
 
+WARNING: Auf meiner Tastatur ist momentan das "ICKS" kaputt! Wenn also ein "ICKS" benötigt wird, muss ich leider "cks" eingeben. Ich hoffe, das macht nicks ;-) 
+
+=== Begriffe
+
+//[horizontal]
+
+Periode (Zeitraum)::
+    Es besteht eine Arbeitsdienstpflicht für das gesamte Jahr, es muss aber pro Halbjahr eine bestimmte Anzahl von Stunden geleistet werden. Die Abrechnung erfolgt daher jeweils für ein Halbjahr. Dieser Abrechnungszeitraum wird im Programm #Periode# oder #Zeitraum# genannt.
+
+Aktive Periode::
+    Die aktive Periode ist das zeitlich erste Halbjahr, das noch nicht abgerechnet worden ist.
+    
+Abgeschlossene Periode::
+    Eine Periode ist dann abgeschlossen, wenn alle Arbeitsdienstleistungen eingetragen sind, der *BAUAUSSCHUSS* das Abschließen ecksplizit durchgeführt hat und die Daten auf den Server hochgeladen worden sind.
+    Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!
+
+
+=== Bestandteile der Bedienung
+
+==== Hauptfenster
+
+.Hauptfenster
+image::images/App-0.png[align="center"]
+
+Nach dem Start der Applikation erscheint das Hauptfenster, das eine Vielzahl an Informationen enthält.
+
+Die *Titelleiste* gibt die aktuelle Version der benutzten Software an (hier: #_1.3.2-SNAPSHOT_# ), den Namen des Server-Accounts (hier: #_kvk_#) sowie das Hauptverzeichnis, mit dem gearbeitet wird (hier: #_Arbeitsdienstabrechnungen-Test_#)
+
+.Titelleiste
+image::images/App-Titelleiste.png[align="center"]
+
+Im *Selektionsbereich* werden die betrachtete Periode und das Mitglied ausgewählt. Die aktive Periode ist immer mit einem #*# am Ende markiert.
+
+.Selektionsbereich
+image::images/App-Selektion.png[align="center"]
+
+Das Selektieren eines Mitgliedes erfolgt über die Anwahl der Auswahlbocks 
+
+Ist die Auswahlbocks selektiert, kann einfach begonnen werden, mit der Tastatur einen Nachnamen einzugeben. Die Bocks springt dann sofort zum ersten passenden Mitglied.
+
+Für das selektierte Mitglied wird der Name angegeben und dahinter in Klammern die interne Mitgliedsnummer. Werden die Zahlungen für das betreffende Mitglied vom Konto eines anderen Mitgliedes abgebucht (z.B. Vater, Ehefrau, ...), erscheint diese Referenz ebenfalls in der Auswahlzeile.
+
+Im *Informationsbereich* sind einige Angaben zum selektierten Mitglied aufgeführt, die für die Berechnung der Arbeitsdienstpflichten von Bedeutung sind.
+
+.Informationsbereich
+image::images/App-0-Info.png[align="center"]
+
+Die Liste der Arbeitsdienstbefreiungen (#AD-Befreiungen#) gibt an, von wann bis wann das betreffende Mitglied aus welchem Grund von der Arbeitsdienstpflicht befreit ist. Mögliche Gründe für eine Befreiung sind:
+
+ Aus den Mitgliedsdaten ermittelte Gründe:
+
+TOO_YOUNG::
+    Arbeitsdienstpflicht besteht erst mit Vollendung des 16. Lebensjahres.
+
+DUTY_NOT_YET_EFFECTIVE::
+    Arbeitsdienstpflicht besteht erst nach einem halben Jahr Vereinsmitgliedschaft.
+    
+TOO_OLD::
+    Arbeitsdienstpflicht besteht nur bis zur Vollendung des 60. Lebensjahres.
+
+NO_LONGER_MEMBER::
+    Die Person ist zum Zeitpunkt der Abrechnung kein Mitglied im Verein mehr.
+    
+ Explizit anzugebende Gründe:
+ 
+SUSTAINING::
+    Mitglied hat den Status "Fördermitglied"
+HONORY::
+    Mitglied hat den Status "Ehrenmitglied"
+
+MANAGEMENT::
+    Mitglied bekleidet einen Vorstandsposten
+
+REMOTENESS::
+    Mitglied wohnt weiter als 50 km vom Verein entfernt.
+    
+INDIVIDUALREASON::
+    Mitglied ist aus besonderem Grund vom Arbeitsdienst befreit.
+
+Im *Abrechnungsbereich* sind die durch das selektierte Mitglied innerhalb der selektierten Peridoe geleisteten Arbeitdienststunden aufgeführt. Darunter befindet sich die Abrechnung für den ausgewählten Zeitraum.
+
+.Abrechnungsbereich
+image::images/App-0-Abrechnungsbereich.png[align="center"]
+
+Wird das Konto des selektierten Mitglieds von anderen Mitgliedern (z.B. Familienangehörigen) referenziert, werden diese in der Tabelle der Abrechnungen ebenfalls aufgeführt.
+
+Die einzelnen Spalten in der Abrechnungstabelle haben folgende Bedeutung:
+
+Guthaben::
+    Summe der Stunden, die das Mitglied aus der Vergangenheit als Guthaben mit in den Abrechnungszeitraum einbringt.
+    
+Gearbeitet::
+    Summe der Stunden, die das Mitglied innerhalb des Abrechnungszeitraums Arbeitsdienst geleistet hat.
+
+Pflicht::
+    Summe der Stunden, die das Mitglied innerhalb des Abrechnungszeitraums Arbeitsdienst leisten muss.
+
+Guthaben II::
+    Summe aus der Spalte #Guthaben# und der Spalte #Gearbeitet# des betreffenden Mitglieds.
+
+Zu zahlen::
+    Anzahl der Stunden, um die die Pflichtstunden für diesen Zeitraum den Wert der Spalte #Guthaben II# des jeweiligen Mitglieds übersteigen.
+
+Guthaben III::
+    Die Summe der Werte in der Spalte #Guthaben II# stellt das "Familienguthaben" dar. Die Summe der Werte in der Spalte #Zu zahlen# stellt die #Familienschuld# dar. In der Spalte #Guthaben III# wird das Familenguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.
+
+In der letzten Zeile wird im Feld #Zu zahlende Schulden# angegeben, um wieviele Stunden die Familienschuld das Familienguthaben übersteigt.
+
+==== Fenster "Arbeitsdienste"
+
+Der Kopf #Arbeitsdienste# im <<Hauptfenster>> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.
+
+.Fenster "Arbeitsdienste"
+image::images/AppAD-0.png[align="center"]
+
+Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossenen Perioden können also nur zur Kontrolle angesehen werden. Die <<Aktive Periode>> erkennt man an dem angehängten #*# im Auswahldialog.
+
+Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.
+
+Im Feld #Filter# kann man eine Zeichenkette eingeben, die die Liste der angezeigten Personen auf solche einschränkt, bei denen die Eingabe im Namen enthalten ist. Über #Reset Teckstfilter# kann man die Liste wieder vollständig anzeigen lassen.
+
+//--
+
 === Mitgliederwart
 
 In der Rolle *MITGLIEDERWART* hat man quasi nur lesenden Zugriff auf die

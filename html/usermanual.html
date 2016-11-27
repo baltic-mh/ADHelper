@@ -445,8 +445,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_benutzung">5. Benutzung</a>
 <ul class="sectlevel2">
-<li><a href="#_mitgliederwart">5.1. Mitgliederwart</a></li>
-<li><a href="#_bauausschuss">5.2. Bauausschuss</a></li>
+<li><a href="#_begriffe">5.1. Begriffe</a></li>
+<li><a href="#_bestandteile_der_bedienung">5.2. Bestandteile der Bedienung</a>
+<ul class="sectlevel3">
+<li><a href="#_hauptfenster">5.2.1. Hauptfenster</a></li>
+<li><a href="#_fenster_arbeitsdienste">5.2.2. Fenster "Arbeitsdienste"</a></li>
+</ul>
+</li>
+<li><a href="#_mitgliederwart">5.3. Mitgliederwart</a></li>
+<li><a href="#_bauausschuss">5.4. Bauausschuss</a></li>
 </ul>
 </li>
 <li><a href="#_mögliche_probleme">6. Mögliche Probleme</a>
@@ -728,8 +735,211 @@ aussieht. Sie kann bei Nachfragen zur Klärung herangezogen werden.</p>
 <div class="sect1">
 <h2 id="_benutzung"><a class="anchor" href="#_benutzung"></a>5. Benutzung</h2>
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Auf meiner Tastatur ist momentan das "ICKS" kaputt! Wenn also ein "ICKS" benötigt wird, muss ich leider "cks" eingeben. Ich hoffe, das macht nicks ;-)
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
-<h3 id="_mitgliederwart"><a class="anchor" href="#_mitgliederwart"></a>5.1. Mitgliederwart</h3>
+<h3 id="_begriffe"><a class="anchor" href="#_begriffe"></a>5.1. Begriffe</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Periode (Zeitraum)</dt>
+<dd>
+<p>Es besteht eine Arbeitsdienstpflicht für das gesamte Jahr, es muss aber pro Halbjahr eine bestimmte Anzahl von Stunden geleistet werden. Die Abrechnung erfolgt daher jeweils für ein Halbjahr. Dieser Abrechnungszeitraum wird im Programm <mark>Periode</mark> oder <mark>Zeitraum</mark> genannt.</p>
+</dd>
+<dt class="hdlist1">Aktive Periode</dt>
+<dd>
+<p>Die aktive Periode ist das zeitlich erste Halbjahr, das noch nicht abgerechnet worden ist.</p>
+</dd>
+<dt class="hdlist1">Abgeschlossene Periode</dt>
+<dd>
+<p>Eine Periode ist dann abgeschlossen, wenn alle Arbeitsdienstleistungen eingetragen sind, der <strong>BAUAUSSCHUSS</strong> das Abschließen ecksplizit durchgeführt hat und die Daten auf den Server hochgeladen worden sind.
+Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_bestandteile_der_bedienung"><a class="anchor" href="#_bestandteile_der_bedienung"></a>5.2. Bestandteile der Bedienung</h3>
+<div class="sect3">
+<h4 id="_hauptfenster"><a class="anchor" href="#_hauptfenster"></a>5.2.1. Hauptfenster</h4>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/App-0.png" alt="App 0">
+</div>
+<div class="title">Abbildung 6. Hauptfenster</div>
+</div>
+<div class="paragraph">
+<p>Nach dem Start der Applikation erscheint das Hauptfenster, das eine Vielzahl an Informationen enthält.</p>
+</div>
+<div class="paragraph">
+<p>Die <strong>Titelleiste</strong> gibt die aktuelle Version der benutzten Software an (hier: <mark><em>1.3.2-SNAPSHOT</em></mark> ), den Namen des Server-Accounts (hier: <mark><em>kvk</em></mark>) sowie das Hauptverzeichnis, mit dem gearbeitet wird (hier: <mark><em>Arbeitsdienstabrechnungen-Test</em></mark>)</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/App-Titelleiste.png" alt="App Titelleiste">
+</div>
+<div class="title">Abbildung 7. Titelleiste</div>
+</div>
+<div class="paragraph">
+<p>Im <strong>Selektionsbereich</strong> werden die betrachtete Periode und das Mitglied ausgewählt. Die aktive Periode ist immer mit einem <mark>*</mark> am Ende markiert.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/App-Selektion.png" alt="App Selektion">
+</div>
+<div class="title">Abbildung 8. Selektionsbereich</div>
+</div>
+<div class="paragraph">
+<p>Das Selektieren eines Mitgliedes erfolgt über die Anwahl der Auswahlbocks</p>
+</div>
+<div class="paragraph">
+<p>Ist die Auswahlbocks selektiert, kann einfach begonnen werden, mit der Tastatur einen Nachnamen einzugeben. Die Bocks springt dann sofort zum ersten passenden Mitglied.</p>
+</div>
+<div class="paragraph">
+<p>Für das selektierte Mitglied wird der Name angegeben und dahinter in Klammern die interne Mitgliedsnummer. Werden die Zahlungen für das betreffende Mitglied vom Konto eines anderen Mitgliedes abgebucht (z.B. Vater, Ehefrau, &#8230;&#8203;), erscheint diese Referenz ebenfalls in der Auswahlzeile.</p>
+</div>
+<div class="paragraph">
+<p>Im <strong>Informationsbereich</strong> sind einige Angaben zum selektierten Mitglied aufgeführt, die für die Berechnung der Arbeitsdienstpflichten von Bedeutung sind.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/App-0-Info.png" alt="App 0 Info">
+</div>
+<div class="title">Abbildung 9. Informationsbereich</div>
+</div>
+<div class="paragraph">
+<p>Die Liste der Arbeitsdienstbefreiungen (<mark>AD-Befreiungen</mark>) gibt an, von wann bis wann das betreffende Mitglied aus welchem Grund von der Arbeitsdienstpflicht befreit ist. Mögliche Gründe für eine Befreiung sind:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Aus den Mitgliedsdaten ermittelte Gründe:</pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">TOO_YOUNG</dt>
+<dd>
+<p>Arbeitsdienstpflicht besteht erst mit Vollendung des 16. Lebensjahres.</p>
+</dd>
+<dt class="hdlist1">DUTY_NOT_YET_EFFECTIVE</dt>
+<dd>
+<p>Arbeitsdienstpflicht besteht erst nach einem halben Jahr Vereinsmitgliedschaft.</p>
+</dd>
+<dt class="hdlist1">TOO_OLD</dt>
+<dd>
+<p>Arbeitsdienstpflicht besteht nur bis zur Vollendung des 60. Lebensjahres.</p>
+</dd>
+<dt class="hdlist1">NO_LONGER_MEMBER</dt>
+<dd>
+<p>Die Person ist zum Zeitpunkt der Abrechnung kein Mitglied im Verein mehr.</p>
+<div class="literalblock">
+<div class="content">
+<pre>Explizit anzugebende Gründe:</pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">SUSTAINING</dt>
+<dd>
+<p>Mitglied hat den Status "Fördermitglied"</p>
+</dd>
+<dt class="hdlist1">HONORY</dt>
+<dd>
+<p>Mitglied hat den Status "Ehrenmitglied"</p>
+</dd>
+<dt class="hdlist1">MANAGEMENT</dt>
+<dd>
+<p>Mitglied bekleidet einen Vorstandsposten</p>
+</dd>
+<dt class="hdlist1">REMOTENESS</dt>
+<dd>
+<p>Mitglied wohnt weiter als 50 km vom Verein entfernt.</p>
+</dd>
+<dt class="hdlist1">INDIVIDUALREASON</dt>
+<dd>
+<p>Mitglied ist aus besonderem Grund vom Arbeitsdienst befreit.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Im <strong>Abrechnungsbereich</strong> sind die durch das selektierte Mitglied innerhalb der selektierten Peridoe geleisteten Arbeitdienststunden aufgeführt. Darunter befindet sich die Abrechnung für den ausgewählten Zeitraum.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/App-0-Abrechnungsbereich.png" alt="App 0 Abrechnungsbereich">
+</div>
+<div class="title">Abbildung 10. Abrechnungsbereich</div>
+</div>
+<div class="paragraph">
+<p>Wird das Konto des selektierten Mitglieds von anderen Mitgliedern (z.B. Familienangehörigen) referenziert, werden diese in der Tabelle der Abrechnungen ebenfalls aufgeführt.</p>
+</div>
+<div class="paragraph">
+<p>Die einzelnen Spalten in der Abrechnungstabelle haben folgende Bedeutung:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Guthaben</dt>
+<dd>
+<p>Summe der Stunden, die das Mitglied aus der Vergangenheit als Guthaben mit in den Abrechnungszeitraum einbringt.</p>
+</dd>
+<dt class="hdlist1">Gearbeitet</dt>
+<dd>
+<p>Summe der Stunden, die das Mitglied innerhalb des Abrechnungszeitraums Arbeitsdienst geleistet hat.</p>
+</dd>
+<dt class="hdlist1">Pflicht</dt>
+<dd>
+<p>Summe der Stunden, die das Mitglied innerhalb des Abrechnungszeitraums Arbeitsdienst leisten muss.</p>
+</dd>
+<dt class="hdlist1">Guthaben II</dt>
+<dd>
+<p>Summe aus der Spalte <mark>Guthaben</mark> und der Spalte <mark>Gearbeitet</mark> des betreffenden Mitglieds.</p>
+</dd>
+<dt class="hdlist1">Zu zahlen</dt>
+<dd>
+<p>Anzahl der Stunden, um die die Pflichtstunden für diesen Zeitraum den Wert der Spalte <mark>Guthaben II</mark> des jeweiligen Mitglieds übersteigen.</p>
+</dd>
+<dt class="hdlist1">Guthaben III</dt>
+<dd>
+<p>Die Summe der Werte in der Spalte <mark>Guthaben II</mark> stellt das "Familienguthaben" dar. Die Summe der Werte in der Spalte <mark>Zu zahlen</mark> stellt die <mark>Familienschuld</mark> dar. In der Spalte <mark>Guthaben III</mark> wird das Familenguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In der letzten Zeile wird im Feld <mark>Zu zahlende Schulden</mark> angegeben, um wieviele Stunden die Familienschuld das Familienguthaben übersteigt.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_fenster_arbeitsdienste"><a class="anchor" href="#_fenster_arbeitsdienste"></a>5.2.2. Fenster "Arbeitsdienste"</h4>
+<div class="paragraph">
+<p>Der Knopf <mark>Arbeitsdienste</mark> im <a href="#_hauptfenster">Hauptfenster</a> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/AppAD-0.png" alt="AppAD 0">
+</div>
+<div class="title">Abbildung 11. Fenster "Arbeitsdienste"</div>
+</div>
+<div class="paragraph">
+<p>Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossenen Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten <mark>*</mark> im Auswahldialog.</p>
+</div>
+<div class="paragraph">
+<p>Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.</p>
+</div>
+<div class="paragraph">
+<p>Im Feld <mark>Filter</mark> kann man eine Zeichenkette eingeben, die die Liste der angezeigten Personen auf solche einschränkt, bei denen die Eingabe im Namen enthalten ist. Über <mark>Reset Teckstfilter</mark> kann man die Liste wieder vollständig anzeigen lassen.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mitgliederwart"><a class="anchor" href="#_mitgliederwart"></a>5.3. Mitgliederwart</h3>
 <div class="paragraph">
 <p>In der Rolle <strong>MITGLIEDERWART</strong> hat man quasi nur lesenden Zugriff auf die
 Daten. Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine
@@ -746,7 +956,7 @@ angegeben.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_bauausschuss"><a class="anchor" href="#_bauausschuss"></a>5.2. Bauausschuss</h3>
+<h3 id="_bauausschuss"><a class="anchor" href="#_bauausschuss"></a>5.4. Bauausschuss</h3>
 <div class="paragraph">
 <p>Der <strong>BAUAUSSCHUSS</strong> führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Er nutzt das Programm ADHelper dazu, zu jedem Arbeitsdiensttermin die von den dort anwesenden Mitgliedern geleisteten Arbeitsstunden einzugeben.</p>
 </div>
@@ -762,7 +972,7 @@ angegeben.</p>
 <div class="content">
 <img src="images/Exception-AppLaeuftSchon.png" alt="Exception AppLaeuftSchon">
 </div>
-<div class="title">Abbildung 6. Es läuft schon eine andere Applikation</div>
+<div class="title">Abbildung 12. Es läuft schon eine andere Applikation</div>
 </div>
 <div class="paragraph">
 <p>Das Programm hinterlässt eine Spur auf dem Server, dass es läuft. Wenn also irgendwo auf der Welt jemand anderes gerade mit dem Programm arbeitet, kann kein zweites Programm gestartet werden. In der Fehlermeldung wird in der ersten Zeile angegeben, wer gerade mit dem Programm arbeitet.</p>
