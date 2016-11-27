@@ -26,10 +26,14 @@ image::images/App-0.png[align="center"]
 
 Nach dem Start der Applikation erscheint das Hauptfenster, das eine Vielzahl an Informationen enthält.
 
+===== Titelleiste
+
 Die *Titelleiste* gibt die aktuelle Version der benutzten Software an (hier: #_1.3.2-SNAPSHOT_# ), den Namen des Server-Accounts (hier: #_kvk_#) sowie das Hauptverzeichnis, mit dem gearbeitet wird (hier: #_Arbeitsdienstabrechnungen-Test_#)
 
 .Titelleiste
 image::images/App-Titelleiste.png[align="center"]
+
+===== Selektionsbereich
 
 Im *Selektionsbereich* werden die betrachtete Periode und das Mitglied ausgewählt. Die aktive Periode ist immer mit einem #*# am Ende markiert.
 
@@ -42,9 +46,11 @@ Ist die Auswahlbocks selektiert, kann einfach begonnen werden, mit der Tastatur 
 
 Für das selektierte Mitglied wird der Name angegeben und dahinter in Klammern die interne Mitgliedsnummer. Werden die Zahlungen für das betreffende Mitglied vom Konto eines anderen Mitgliedes abgebucht (z.B. Vater, Ehefrau, ...), erscheint diese Referenz ebenfalls in der Auswahlzeile.
 
+===== Informationen zum Mitglied
+
 Im *Informationsbereich* sind einige Angaben zum selektierten Mitglied aufgeführt, die für die Berechnung der Arbeitsdienstpflichten von Bedeutung sind.
 
-.Informationsbereich
+.Informationen zum Mitglied
 image::images/App-0-Info.png[align="center"]
 
 Die Liste der Arbeitsdienstbefreiungen (#AD-Befreiungen#) gibt an, von wann bis wann das betreffende Mitglied aus welchem Grund von der Arbeitsdienstpflicht befreit ist. Mögliche Gründe für eine Befreiung sind:
@@ -79,6 +85,9 @@ REMOTENESS::
 INDIVIDUALREASON::
     Mitglied ist aus besonderem Grund vom Arbeitsdienst befreit.
 
+
+===== Abrechnungsbereich
+
 Im *Abrechnungsbereich* sind die durch das selektierte Mitglied innerhalb der selektierten Peridoe geleisteten Arbeitdienststunden aufgeführt. Darunter befindet sich die Abrechnung für den ausgewählten Zeitraum.
 
 .Abrechnungsbereich
@@ -108,9 +117,35 @@ Guthaben III::
 
 In der letzten Zeile wird im Feld #Zu zahlende Schulden# angegeben, um wieviele Stunden die Familienschuld das Familienguthaben übersteigt.
 
-==== Fenster "Arbeitsdienste"
+===== Aktionsknöpfe
 
-Der Knopf #Arbeitsdienste# im <<Hauptfenster>> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.
+Bei den Aktionsknöpfen zeigt sich ein Unterschied in der Bedienung je nachdem, ob der *MITGLIEDERWART* oder der *BAUAUSSCHUSS* das Programm gestartet hat.
+
+.Aktionsknöpfe
+image::images/App-0-Aktionen.png[align="center"]
+
+====== Mitgliederwart
+
+In der Rolle *MITGLIEDERWART* hat man quasi nur lesenden Zugriff auf die Daten.
+Über den Knopf kbd:[Arbeitsdienste] kann sich der Mitgliederwart einen Einblick in die vorliegenden Daten verschaffen (siehe <<Verwaltung der Arbeitsdienste>>), er kann aber keine Daten eingeben. Der Knopf kbd:[Zeitraum abschließen] ist in dieser Rolle nicht bedienbar.
+
+Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine 
+aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
+Server zu laden. Dazu dient der Knopf kbd:[Daten hochladen]. 
+
+Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei aus dem Dateisystem erbrowst wird.
+Diese wird daraufhin auf ihre Konsistenz überprüft. Bei Erfolg der Prüfung wird sie auf den Server hochgeladen. 
+Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.
+
+Das genaue Format der Datei der Basisdaten ist im link:developers-guide.html#Basisdaten[Enwicklerhandbuch] angegeben.
+
+====== Bauausschuss
+
+Der *BAUAUSSCHUSS* führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Diese Aufgabe zu erleichtern ist die Hauptaufgabe des Programmes +ADHelper+. Die einzelnen Bedienschritte sind im folgenden Abschnitt genauer beschrieben.
+
+=== Verwaltung der Arbeitsdienste
+
+Der Knopf kbd:[Arbeitsdienste ...] im <<Hauptfenster>> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.
 
 .Fenster "Arbeitsdienste"
 image::images/AppAD-0.png[align="center"]
@@ -119,23 +154,51 @@ Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier i
 
 Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.
 
-Im Feld #Filter# kann man eine Zeichenkette eingeben, die die Liste der angezeigten Personen auf solche einschränkt, bei denen die Eingabe im Namen enthalten ist. Über #Reset Teckstfilter# kann man die Liste wieder vollständig anzeigen lassen.
+Im Feld #Filter# kann man eine Zeichenkette eingeben, die die Liste der angezeigten Personen auf solche einschränkt, bei denen die Eingabe im Namen enthalten ist. Über kbd:[Reset Teckstfilter] kann man die Liste wieder vollständig anzeigen lassen.
 
+==== Erfassung von Arbeitsdienststunden
+
+Hat ein Arbeitsdiensttermin stattgefunden, müssen die dort geleisteten Arbeitsstunden in das Programm +ADHelper+ eingegeben werden. Dazu muss im geöffneten Arbeitsdienst-Fenster die aktive Periode ausgewählt sein.
+
+NOTE: Es wird davon ausgegangen, dass der zu erfassende Arbeitsdienst in der gerade aktiven Periode stattgefunden hat. Eine vorauseilende Erfassung von Arbeitsdiensten für künftige Perioden ist nicht vorgesehen.
+
+Ecksistiert für diesen Arbeitsdienst bereits ein Termin-Eintrag in der entsprechenden Auswahlbocks, ist dieser auszuwählen.
+Im Normalfall ist mit dem Knopf kbd:[Neu] ein neuer Termin-Eintrag zu erzeugen.
+
+WARNING: Im Datums-Auswahldialog für einen neuen Arbeitsdiensttermin ist besonders darauf zu achten, dass das korrekte Jahr ausgewählt wird!
+
+Ist ein neuer Termin erzeugt worden, erscheint eine Liste aller aktuell erfassten Vereinsmitglieder. 
+
+.Neuer Arbeitsdiensttermin
+image::images/AppAD-0-neu.png[align="center"]
+
+TODO: Bereits ausgetretene Mitglieder ausfiltern!
+
+Es empfiehlt sich, in dieser Liste zuerst bei allen Personen, die den Arbeitsdienst besucht haben, einen Haken in der Spalte #Teilnahme# zu setzen.
+Zum Auffinden der betreffenden Personen hilft das #Filter#-Feld, in das man den Anfang des Names der zu suchenden Person eintippt. Mit kbd:[Reset Teckstfilter] sieht man wieder alle Mitglieder.
+
+Hat man alle Teilnehmer des Arbeitsdiensttermines auf diese Weise markiert, schränkt man die Ansicht durch Drücken der Knopfes kbd:[Nur Teilnehmer] ein und gewinnt so eine übersichtliche Liste.
+
+.Ansicht "Nur Teilnehmer"
+image::images/AppAD-0-nurTeilnehmer.png[align="center"]
+
+In dieser reduzierten Liste kann für jeden Arbeiter die Anzahl der Stunden eingegen werden. Die Stunden können in Viertelstunden-Auflösung bis macksimal
+10 Stunden eingegeben werden (mehr erlaubt das Arbeitszeitgesetz nicht!)
+
+Ist das geschehen, muss die Eingabe durch Drücken des kbd:[Ok]-Knopfes abgeschickt werden. Die Arbeitsdienststunden können durchaus in mehreren Etappen eingegeben werden.
+
+NOTE: Die neu erfassten Daten sind bis zu diesem Punkt nur auf dem lokalen Rechner gespeichert. Wenn das Programm beendet wird, wird festgestellt, dass sich die Daten gegenüber dem Bestand auf dem Server geändert haben. Es erscheint ein Dialog, ob die modifizierten Daten auf den Server übertragen werden sollen. Eine Bestätigung führt zum Hochladen und alle folgenden Programmläufe basieren auf den aktualisierten Daten. Bei Verwerfen des Hochladens wird der gesamte Ordner der geänderten Periode in den Unterordner *Obsolete* verschoben. Der dann folgende Programmlauf setzt wieder auf dem Datenbestand auf, wie er auf dem Server vorhanden war.
 //--
 
-=== Mitgliederwart
+==== Abschluss eines Abrechnungszeitraumes
 
-In der Rolle *MITGLIEDERWART* hat man quasi nur lesenden Zugriff auf die
-Daten. Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine 
-aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
-Server zu laden.
+Ist sichergestellt, dass alle Arbeitsdiensttermine eines Abrechnungszeitraumes vollständig erfasst sind, kann der Zeitraum abgeschlossen werden. Dazu ist im <<Hauptfenster>> der Knopf kbd:[Zeitraum abschließen] zu drücken.
 
-Die neu aus dem Vereinsverwaltungsprogramm exportierte Datei wird, nachdem sie über einen Auswahldialog aus dem Dateisystem erbrowst worden ist, auf ihre Konsistenz hin überprüft. Danach wird sie auf den Server hochgeladen. Alle dann folgenden Berechnungen werden ab dann basieren auf den Stand der neuen Datei durchgeführt.
+Mit dem "Abschließen"-Vorgang werden im Datenverzeichnis der aktiven Periode einige neue Dateien erzeugt (siehe auch <<Dateien eines Abrechnungszeitraumes>>). 
+Die wichtigste ist die Datei #ZuZahlendeStunden.csv#, die dem Mitgliederwart die Information für die von den betreffenden Mitgliedern einzuziehenden Beträge gibt. Hier ist immer noch einmal eine Plausibilitätsüberprüfung vorzunehmen, bei der insbesondere die Datei #Details.tickst# wertvolle Informationen liefert.
 
-Das genaue Format der Datei der Basisdaten ist im 
-link:developers-guide.html#Basisdaten[Enwicklerhandbuch]
-angegeben.
+NOTE: Auch hier gilt, dass die Information über den "Abschließen"-Vorgang vorerst nur lokal gespeichert ist und verworfen werden kann.
 
-=== Bauausschuss
+Beim nächste Start des Programmes nach dem Abschluss einer Periode wird eine neue Periode angelegt und als _aktiv_ markiert. 
 
-Der *BAUAUSSCHUSS* führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Er nutzt das Programm +ADHelper+ dazu, zu jedem Arbeitsdiensttermin die von den dort anwesenden Mitgliedern geleisteten Arbeitsstunden einzugeben.
+NOTE: Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten erkannt, und bei Beenden des Programmes erscheint wiederum ein Dialog zur Bestätigung für das Hochladen der veränderten Daten.

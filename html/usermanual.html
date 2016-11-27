@@ -448,12 +448,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_begriffe">5.1. Begriffe</a></li>
 <li><a href="#_bestandteile_der_bedienung">5.2. Bestandteile der Bedienung</a>
 <ul class="sectlevel3">
-<li><a href="#_hauptfenster">5.2.1. Hauptfenster</a></li>
-<li><a href="#_fenster_arbeitsdienste">5.2.2. Fenster "Arbeitsdienste"</a></li>
+<li><a href="#_hauptfenster">5.2.1. Hauptfenster</a>
+<ul class="sectlevel4">
+<li><a href="#_titelleiste">Titelleiste</a></li>
+<li><a href="#_selektionsbereich">Selektionsbereich</a></li>
+<li><a href="#_informationen_zum_mitglied">Informationen zum Mitglied</a></li>
+<li><a href="#_abrechnungsbereich">Abrechnungsbereich</a></li>
+<li><a href="#_aktionsknöpfe">Aktionsknöpfe</a></li>
 </ul>
 </li>
-<li><a href="#_mitgliederwart">5.3. Mitgliederwart</a></li>
-<li><a href="#_bauausschuss">5.4. Bauausschuss</a></li>
+</ul>
+</li>
+<li><a href="#_verwaltung_der_arbeitsdienste">5.3. Verwaltung der Arbeitsdienste</a>
+<ul class="sectlevel3">
+<li><a href="#_erfassung_von_arbeitsdienststunden">5.3.1. Erfassung von Arbeitsdienststunden</a></li>
+<li><a href="#_abschluss_eines_abrechnungszeitraumes">5.3.2. Abschluss eines Abrechnungszeitraumes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_mögliche_probleme">6. Mögliche Probleme</a>
@@ -780,6 +791,8 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <div class="paragraph">
 <p>Nach dem Start der Applikation erscheint das Hauptfenster, das eine Vielzahl an Informationen enthält.</p>
 </div>
+<div class="sect4">
+<h5 id="_titelleiste"><a class="anchor" href="#_titelleiste"></a>Titelleiste</h5>
 <div class="paragraph">
 <p>Die <strong>Titelleiste</strong> gibt die aktuelle Version der benutzten Software an (hier: <mark><em>1.3.2-SNAPSHOT</em></mark> ), den Namen des Server-Accounts (hier: <mark><em>kvk</em></mark>) sowie das Hauptverzeichnis, mit dem gearbeitet wird (hier: <mark><em>Arbeitsdienstabrechnungen-Test</em></mark>)</p>
 </div>
@@ -789,6 +802,9 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 </div>
 <div class="title">Abbildung 7. Titelleiste</div>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_selektionsbereich"><a class="anchor" href="#_selektionsbereich"></a>Selektionsbereich</h5>
 <div class="paragraph">
 <p>Im <strong>Selektionsbereich</strong> werden die betrachtete Periode und das Mitglied ausgewählt. Die aktive Periode ist immer mit einem <mark>*</mark> am Ende markiert.</p>
 </div>
@@ -807,6 +823,9 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <div class="paragraph">
 <p>Für das selektierte Mitglied wird der Name angegeben und dahinter in Klammern die interne Mitgliedsnummer. Werden die Zahlungen für das betreffende Mitglied vom Konto eines anderen Mitgliedes abgebucht (z.B. Vater, Ehefrau, &#8230;&#8203;), erscheint diese Referenz ebenfalls in der Auswahlzeile.</p>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_informationen_zum_mitglied"><a class="anchor" href="#_informationen_zum_mitglied"></a>Informationen zum Mitglied</h5>
 <div class="paragraph">
 <p>Im <strong>Informationsbereich</strong> sind einige Angaben zum selektierten Mitglied aufgeführt, die für die Berechnung der Arbeitsdienstpflichten von Bedeutung sind.</p>
 </div>
@@ -814,7 +833,7 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <div class="content">
 <img src="images/App-0-Info.png" alt="App 0 Info">
 </div>
-<div class="title">Abbildung 9. Informationsbereich</div>
+<div class="title">Abbildung 9. Informationen zum Mitglied</div>
 </div>
 <div class="paragraph">
 <p>Die Liste der Arbeitsdienstbefreiungen (<mark>AD-Befreiungen</mark>) gibt an, von wann bis wann das betreffende Mitglied aus welchem Grund von der Arbeitsdienstpflicht befreit ist. Mögliche Gründe für eine Befreiung sind:</p>
@@ -869,6 +888,9 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 </dd>
 </dl>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_abrechnungsbereich"><a class="anchor" href="#_abrechnungsbereich"></a>Abrechnungsbereich</h5>
 <div class="paragraph">
 <p>Im <strong>Abrechnungsbereich</strong> sind die durch das selektierte Mitglied innerhalb der selektierten Peridoe geleisteten Arbeitdienststunden aufgeführt. Darunter befindet sich die Abrechnung für den ausgewählten Zeitraum.</p>
 </div>
@@ -916,16 +938,56 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <p>In der letzten Zeile wird im Feld <mark>Zu zahlende Schulden</mark> angegeben, um wieviele Stunden die Familienschuld das Familienguthaben übersteigt.</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_fenster_arbeitsdienste"><a class="anchor" href="#_fenster_arbeitsdienste"></a>5.2.2. Fenster "Arbeitsdienste"</h4>
+<div class="sect4">
+<h5 id="_aktionsknöpfe"><a class="anchor" href="#_aktionsknöpfe"></a>Aktionsknöpfe</h5>
 <div class="paragraph">
-<p>Der Knopf <mark>Arbeitsdienste</mark> im <a href="#_hauptfenster">Hauptfenster</a> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.</p>
+<p>Bei den Aktionsknöpfen zeigt sich ein Unterschied in der Bedienung je nachdem, ob der <strong>MITGLIEDERWART</strong> oder der <strong>BAUAUSSCHUSS</strong> das Programm gestartet hat.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/App-0-Aktionen.png" alt="App 0 Aktionen">
+</div>
+<div class="title">Abbildung 11. Aktionsknöpfe</div>
+</div>
+<div class="sect5">
+<h6 id="_mitgliederwart"><a class="anchor" href="#_mitgliederwart"></a>Mitgliederwart</h6>
+<div class="paragraph">
+<p>In der Rolle <strong>MITGLIEDERWART</strong> hat man quasi nur lesenden Zugriff auf die Daten.
+Über den Knopf <kbd>Arbeitsdienste</kbd> kann sich der Mitgliederwart einen Einblick in die vorliegenden Daten verschaffen (siehe <a href="#_verwaltung_der_arbeitsdienste">Verwaltung der Arbeitsdienste</a>), er kann aber keine Daten eingeben. Der Knopf <kbd>Zeitraum abschließen</kbd> ist in dieser Rolle nicht bedienbar.</p>
+</div>
+<div class="paragraph">
+<p>Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine
+aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den
+Server zu laden. Dazu dient der Knopf <kbd>Daten hochladen</kbd>.</p>
+</div>
+<div class="paragraph">
+<p>Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei aus dem Dateisystem erbrowst wird.
+Diese wird daraufhin auf ihre Konsistenz überprüft. Bei Erfolg der Prüfung wird sie auf den Server hochgeladen.
+Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.</p>
+</div>
+<div class="paragraph">
+<p>Das genaue Format der Datei der Basisdaten ist im <a href="developers-guide.html#Basisdaten">Enwicklerhandbuch</a> angegeben.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_bauausschuss"><a class="anchor" href="#_bauausschuss"></a>Bauausschuss</h6>
+<div class="paragraph">
+<p>Der <strong>BAUAUSSCHUSS</strong> führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Diese Aufgabe zu erleichtern ist die Hauptaufgabe des Programmes ADHelper. Die einzelnen Bedienschritte sind im folgenden Abschnitt genauer beschrieben.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verwaltung_der_arbeitsdienste"><a class="anchor" href="#_verwaltung_der_arbeitsdienste"></a>5.3. Verwaltung der Arbeitsdienste</h3>
+<div class="paragraph">
+<p>Der Knopf <kbd>Arbeitsdienste &#8230;&#8203;</kbd> im <a href="#_hauptfenster">Hauptfenster</a> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
 <img src="images/AppAD-0.png" alt="AppAD 0">
 </div>
-<div class="title">Abbildung 11. Fenster "Arbeitsdienste"</div>
+<div class="title">Abbildung 12. Fenster "Arbeitsdienste"</div>
 </div>
 <div class="paragraph">
 <p>Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossenen Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten <mark>*</mark> im Auswahldialog.</p>
@@ -934,31 +996,122 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <p>Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.</p>
 </div>
 <div class="paragraph">
-<p>Im Feld <mark>Filter</mark> kann man eine Zeichenkette eingeben, die die Liste der angezeigten Personen auf solche einschränkt, bei denen die Eingabe im Namen enthalten ist. Über <mark>Reset Teckstfilter</mark> kann man die Liste wieder vollständig anzeigen lassen.</p>
+<p>Im Feld <mark>Filter</mark> kann man eine Zeichenkette eingeben, die die Liste der angezeigten Personen auf solche einschränkt, bei denen die Eingabe im Namen enthalten ist. Über <kbd>Reset Teckstfilter</kbd> kann man die Liste wieder vollständig anzeigen lassen.</p>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_mitgliederwart"><a class="anchor" href="#_mitgliederwart"></a>5.3. Mitgliederwart</h3>
+<div class="sect3">
+<h4 id="_erfassung_von_arbeitsdienststunden"><a class="anchor" href="#_erfassung_von_arbeitsdienststunden"></a>5.3.1. Erfassung von Arbeitsdienststunden</h4>
 <div class="paragraph">
-<p>In der Rolle <strong>MITGLIEDERWART</strong> hat man quasi nur lesenden Zugriff auf die
-Daten. Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine
-aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den
-Server zu laden.</p>
+<p>Hat ein Arbeitsdiensttermin stattgefunden, müssen die dort geleisteten Arbeitsstunden in das Programm ADHelper eingegeben werden. Dazu muss im geöffneten Arbeitsdienst-Fenster die aktive Periode ausgewählt sein.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Es wird davon ausgegangen, dass der zu erfassende Arbeitsdienst in der gerade aktiven Periode stattgefunden hat. Eine vorauseilende Erfassung von Arbeitsdiensten für künftige Perioden ist nicht vorgesehen.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Die neu aus dem Vereinsverwaltungsprogramm exportierte Datei wird, nachdem sie über einen Auswahldialog aus dem Dateisystem erbrowst worden ist, auf ihre Konsistenz hin überprüft. Danach wird sie auf den Server hochgeladen. Alle dann folgenden Berechnungen werden ab dann basieren auf den Stand der neuen Datei durchgeführt.</p>
+<p>Ecksistiert für diesen Arbeitsdienst bereits ein Termin-Eintrag in der entsprechenden Auswahlbocks, ist dieser auszuwählen.
+Im Normalfall ist mit dem Knopf <kbd>Neu</kbd> ein neuer Termin-Eintrag zu erzeugen.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Im Datums-Auswahldialog für einen neuen Arbeitsdiensttermin ist besonders darauf zu achten, dass das korrekte Jahr ausgewählt wird!
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>Das genaue Format der Datei der Basisdaten ist im
-<a href="developers-guide.html#Basisdaten">Enwicklerhandbuch</a>
-angegeben.</p>
+<p>Ist ein neuer Termin erzeugt worden, erscheint eine Liste aller aktuell erfassten Vereinsmitglieder.</p>
 </div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/AppAD-0-neu.png" alt="AppAD 0 neu">
 </div>
-<div class="sect2">
-<h3 id="_bauausschuss"><a class="anchor" href="#_bauausschuss"></a>5.4. Bauausschuss</h3>
+<div class="title">Abbildung 13. Neuer Arbeitsdiensttermin</div>
+</div>
 <div class="paragraph">
-<p>Der <strong>BAUAUSSCHUSS</strong> führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Er nutzt das Programm ADHelper dazu, zu jedem Arbeitsdiensttermin die von den dort anwesenden Mitgliedern geleisteten Arbeitsstunden einzugeben.</p>
+<p>TODO: Bereits ausgetretene Mitglieder ausfiltern!</p>
+</div>
+<div class="paragraph">
+<p>Es empfiehlt sich, in dieser Liste zuerst bei allen Personen, die den Arbeitsdienst besucht haben, einen Haken in der Spalte <mark>Teilnahme</mark> zu setzen.
+Zum Auffinden der betreffenden Personen hilft das <mark>Filter</mark>-Feld, in das man den Anfang des Names der zu suchenden Person eintippt. Mit <kbd>Reset Teckstfilter</kbd> sieht man wieder alle Mitglieder.</p>
+</div>
+<div class="paragraph">
+<p>Hat man alle Teilnehmer des Arbeitsdiensttermines auf diese Weise markiert, schränkt man die Ansicht durch Drücken der Knopfes <kbd>Nur Teilnehmer</kbd> ein und gewinnt so eine übersichtliche Liste.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/AppAD-0-nurTeilnehmer.png" alt="AppAD 0 nurTeilnehmer">
+</div>
+<div class="title">Abbildung 14. Ansicht "Nur Teilnehmer"</div>
+</div>
+<div class="paragraph">
+<p>In dieser reduzierten Liste kann für jeden Arbeiter die Anzahl der Stunden eingegen werden. Die Stunden können in Viertelstunden-Auflösung bis macksimal
+10 Stunden eingegeben werden (mehr erlaubt das Arbeitszeitgesetz nicht!)</p>
+</div>
+<div class="paragraph">
+<p>Ist das geschehen, muss die Eingabe durch Drücken des <kbd>Ok</kbd>-Knopfes abgeschickt werden. Die Arbeitsdienststunden können durchaus in mehreren Etappen eingegeben werden.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Die neu erfassten Daten sind bis zu diesem Punkt nur auf dem lokalen Rechner gespeichert. Wenn das Programm beendet wird, wird festgestellt, dass sich die Daten gegenüber dem Bestand auf dem Server geändert haben. Es erscheint ein Dialog, ob die modifizierten Daten auf den Server übertragen werden sollen. Eine Bestätigung führt zum Hochladen und alle folgenden Programmläufe basieren auf den aktualisierten Daten. Bei Verwerfen des Hochladens wird der gesamte Ordner der geänderten Periode in den Unterordner <strong>Obsolete</strong> verschoben. Der dann folgende Programmlauf setzt wieder auf dem Datenbestand auf, wie er auf dem Server vorhanden war.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_abschluss_eines_abrechnungszeitraumes"><a class="anchor" href="#_abschluss_eines_abrechnungszeitraumes"></a>5.3.2. Abschluss eines Abrechnungszeitraumes</h4>
+<div class="paragraph">
+<p>Ist sichergestellt, dass alle Arbeitsdiensttermine eines Abrechnungszeitraumes vollständig erfasst sind, kann der Zeitraum abgeschlossen werden. Dazu ist im <a href="#_hauptfenster">Hauptfenster</a> der Knopf <kbd>Zeitraum abschließen</kbd> zu drücken.</p>
+</div>
+<div class="paragraph">
+<p>Mit dem "Abschließen"-Vorgang werden im Datenverzeichnis der aktiven Periode einige neue Dateien erzeugt (siehe auch <a href="#_dateien_eines_abrechnungszeitraumes">Dateien eines Abrechnungszeitraumes</a>).
+Die wichtigste ist die Datei <mark>ZuZahlendeStunden.csv</mark>, die dem Mitgliederwart die Information für die von den betreffenden Mitgliedern einzuziehenden Beträge gibt. Hier ist immer noch einmal eine Plausibilitätsüberprüfung vorzunehmen, bei der insbesondere die Datei <mark>Details.tickst</mark> wertvolle Informationen liefert.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Auch hier gilt, dass die Information über den "Abschließen"-Vorgang vorerst nur lokal gespeichert ist und verworfen werden kann.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Beim nächste Start des Programmes nach dem Abschluss einer Periode wird eine neue Periode angelegt und als <em>aktiv</em> markiert.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten erkannt, und bei Beenden des Programmes erscheint wiederum ein Dialog zur Bestätigung für das Hochladen der veränderten Daten.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -972,7 +1125,7 @@ angegeben.</p>
 <div class="content">
 <img src="images/Exception-AppLaeuftSchon.png" alt="Exception AppLaeuftSchon">
 </div>
-<div class="title">Abbildung 12. Es läuft schon eine andere Applikation</div>
+<div class="title">Abbildung 15. Es läuft schon eine andere Applikation</div>
 </div>
 <div class="paragraph">
 <p>Das Programm hinterlässt eine Spur auf dem Server, dass es läuft. Wenn also irgendwo auf der Welt jemand anderes gerade mit dem Programm arbeitet, kann kein zweites Programm gestartet werden. In der Fehlermeldung wird in der ersten Zeile angegeben, wer gerade mit dem Programm arbeitet.</p>
