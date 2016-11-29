@@ -113,7 +113,7 @@ Zu zahlen::
     Anzahl der Stunden, um die die Pflichtstunden für diesen Zeitraum den Wert der Spalte #Guthaben II# des jeweiligen Mitglieds übersteigen.
 
 Guthaben III::
-    Die Summe der Werte in der Spalte #Guthaben II# stellt das "Familienguthaben" dar. Die Summe der Werte in der Spalte #Zu zahlen# stellt die #Familienschuld# dar. In der Spalte #Guthaben III# wird das Familienguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.
+    Die Summe der Werte in der Spalte #Guthaben II# stellt das _Familienguthaben_ dar. Die Summe der Werte in der Spalte #Zu zahlen# stellt die _Familienschuld_ dar. In der Spalte #Guthaben III# wird das Familienguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.
 
 In der letzten Zeile wird im Feld #Zu zahlende Stunden# angegeben, um wieviele Stunden die Familienschuld das Familienguthaben übersteigt.
 
@@ -131,9 +131,9 @@ In der Rolle *MITGLIEDERWART* hat man quasi nur lesenden Zugriff auf die Daten.
 
 Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine 
 aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
-Server zu laden. Dazu dient der Knopf kbd:[Daten hochladen]. 
+Server zu laden. Dazu dient der Knopf kbd:[Daten hochladen...]. 
 
-Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei aus dem Dateisystem erbrowst wird.
+Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei im Dateisystem erbrowst wird.
 Diese wird daraufhin auf ihre Konsistenz überprüft. Bei Erfolg der Prüfung wird sie auf den Server hochgeladen. 
 Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.
 
@@ -150,7 +150,7 @@ Der Knopf kbd:[Arbeitsdienste ...] im <<Hauptfenster>> öffnet das Fenster zur E
 .Fenster "Arbeitsdienste"
 image::images/AppAD-0.png[align="center"]
 
-Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossenen Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten #*# im Auswahldialog.
+Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossener Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten #*# im Auswahldialog.
 
 Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.
 

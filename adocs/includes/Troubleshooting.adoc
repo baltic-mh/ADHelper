@@ -11,3 +11,7 @@ Wenn das Programm beendet wird, wird die Spur auf dem Server entfernt und eine a
 
 IMPORTANT: In seltenen Fällen kann es vorkommen, dass die Spur auf dem Server nicht gelöscht wird (z.B. wenn das Programm abstürzt oder gewaltsam beendet wird). Wird dann das Programm kurz danach erneut gestartet wird, erscheint die oben gezeigte Fehlermeldung. Als Benutzer wird dann der eigene Account angezeigt. +
 In so einem Fall einfach das Programm nach ca. 10 Sekunden Wartezeit erneut starten.
+
+=== Fehlerhafte Anzeige von Umlauten
+
+Leider werden in manchen Dialogen die deutschen Umläute nicht korrekt angezeigt. Ich habe bislang kein Mittel gefunden, wie ich es hinbekomme, dass die Sonderzeichen sowohl in der Log-Datei wie auch in der Bedienoberfläche korrekt angezeigt werden. Ich werde mich weiter bemühen, aber das hat mindere Priorität.

@@ -470,6 +470,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_mögliche_probleme">6. Mögliche Probleme</a>
 <ul class="sectlevel2">
 <li><a href="#_exception_es_läuft_schon_eine_andere_applikation">6.1. Exception "Es läuft schon eine andere Applikation"</a></li>
+<li><a href="#_fehlerhafte_anzeige_von_umlauten">6.2. Fehlerhafte Anzeige von Umlauten</a></li>
 </ul>
 </li>
 </ul>
@@ -930,7 +931,7 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 </dd>
 <dt class="hdlist1">Guthaben III</dt>
 <dd>
-<p>Die Summe der Werte in der Spalte <mark>Guthaben II</mark> stellt das "Familienguthaben" dar. Die Summe der Werte in der Spalte <mark>Zu zahlen</mark> stellt die <mark>Familienschuld</mark> dar. In der Spalte <mark>Guthaben III</mark> wird das Familienguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.</p>
+<p>Die Summe der Werte in der Spalte <mark>Guthaben II</mark> stellt das <em>Familienguthaben</em> dar. Die Summe der Werte in der Spalte <mark>Zu zahlen</mark> stellt die <em>Familienschuld</em> dar. In der Spalte <mark>Guthaben III</mark> wird das Familienguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.</p>
 </dd>
 </dl>
 </div>
@@ -958,10 +959,10 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <div class="paragraph">
 <p>Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine
 aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den
-Server zu laden. Dazu dient der Knopf <kbd>Daten hochladen</kbd>.</p>
+Server zu laden. Dazu dient der Knopf <kbd>Daten hochladen&#8230;&#8203;</kbd>.</p>
 </div>
 <div class="paragraph">
-<p>Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei aus dem Dateisystem erbrowst wird.
+<p>Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei im Dateisystem erbrowst wird.
 Diese wird daraufhin auf ihre Konsistenz überprüft. Bei Erfolg der Prüfung wird sie auf den Server hochgeladen.
 Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.</p>
 </div>
@@ -990,7 +991,7 @@ Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neue
 <div class="title">Abbildung 12. Fenster "Arbeitsdienste"</div>
 </div>
 <div class="paragraph">
-<p>Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossenen Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten <mark>*</mark> im Auswahldialog.</p>
+<p>Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossener Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten <mark>*</mark> im Auswahldialog.</p>
 </div>
 <div class="paragraph">
 <p>Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.</p>
@@ -1145,6 +1146,12 @@ In so einem Fall einfach das Programm nach ca. 10 Sekunden Wartezeit erneut star
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fehlerhafte_anzeige_von_umlauten"><a class="anchor" href="#_fehlerhafte_anzeige_von_umlauten"></a>6.2. Fehlerhafte Anzeige von Umlauten</h3>
+<div class="paragraph">
+<p>Leider werden in manchen Dialogen die deutschen Umläute nicht korrekt angezeigt. Ich habe bislang kein Mittel gefunden, wie ich es hinbekomme, dass die Sonderzeichen sowohl in der Log-Datei wie auch in der Bedienoberfläche korrekt angezeigt werden. Ich werde mich weiter bemühen, aber das hat mindere Priorität.</p>
 </div>
 </div>
 </div>
