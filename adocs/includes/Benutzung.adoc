@@ -113,9 +113,9 @@ Zu zahlen::
     Anzahl der Stunden, um die die Pflichtstunden für diesen Zeitraum den Wert der Spalte #Guthaben II# des jeweiligen Mitglieds übersteigen.
 
 Guthaben III::
-    Die Summe der Werte in der Spalte #Guthaben II# stellt das "Familienguthaben" dar. Die Summe der Werte in der Spalte #Zu zahlen# stellt die #Familienschuld# dar. In der Spalte #Guthaben III# wird das Familenguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.
+    Die Summe der Werte in der Spalte #Guthaben II# stellt das "Familienguthaben" dar. Die Summe der Werte in der Spalte #Zu zahlen# stellt die #Familienschuld# dar. In der Spalte #Guthaben III# wird das Familienguthaben gegen die Familienschuld aufgerechnet. Dabei werden die Guthaben der Familienmitglieder gleichmäßig reduziert.
 
-In der letzten Zeile wird im Feld #Zu zahlende Schulden# angegeben, um wieviele Stunden die Familienschuld das Familienguthaben übersteigt.
+In der letzten Zeile wird im Feld #Zu zahlende Stunden# angegeben, um wieviele Stunden die Familienschuld das Familienguthaben übersteigt.
 
 ===== Aktionsknöpfe
 
