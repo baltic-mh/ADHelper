@@ -2,4 +2,15 @@
 
 === Eclipse
 
+==== Bugtracking
+
+Zur Fehlerverfolgung wird
+http://www.mantisbt.org/index.php[Mantis]
+eingesetzt.
+
+Für den direkten Zugang aus Eclipse heraus gibt es einen 
+https://marketplace.eclipse.org/content/mylyn-mantis-connector[Mylyn-Connector], 
+den man direkt aus dem MarketPlace installieren kann.
+
+
 === Gradle
