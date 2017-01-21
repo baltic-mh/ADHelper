@@ -40,6 +40,7 @@ public class Writer
 {
     private static final Logger sm_Log = Logger.getLogger(Writer.class);
     private static final String LF = "\r\n";
+    private static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
 
     // ------------------------------------------------------------------------
     private final ADH_DataProvider m_DataProvider;
@@ -70,7 +71,7 @@ public class Writer
             final List<WorkEvent> aAllWorkEvents = getAllWorkEvents( fDataProvider );
             // Die Arbeitsdiensteinträge erhalten "Abgerechnet am"
             // wenn ihr Datum vor dem Enddatum des Abrechnungszeitraumes liegt.
-            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste.csv", "ISO-8859-1");
+            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste.csv", CHARSET_ISO_8859_1);
             aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.DATE, IKnownColumns.HOURSWORKED,
@@ -121,7 +122,7 @@ public class Writer
             final Path fOutputFolder )
     {
         try{
-            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/ZuZahlendeStunden.csv", "ISO-8859-1");
+            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/ZuZahlendeStunden.csv", CHARSET_ISO_8859_1);
             aFileWriter.write( String.format("%s;%s;%s"+LF, IKnownColumns.MEMBERID, IKnownColumns.NAME, IKnownColumns.HOURSTOPAY ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
                 final DutyCharge aCharge = aSingleInfo.getDutyCharge();
@@ -154,7 +155,7 @@ public class Writer
         final IPeriod aIP = fDataProvider.getPeriod();
         final String aBalanceAt = getNewBalanceDateString( aIP.getEnd() );
         try{
-            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", "ISO-8859-1");
+            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", CHARSET_ISO_8859_1);
             aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT_ALT, IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
@@ -208,7 +209,7 @@ public class Writer
             aShiftedLines.add( String.join( ";", aAttributes.values() ) );
         }
 
-        final PrintWriter aFileWriter = new PrintWriter(fFile, "ISO-8859-1");
+        final PrintWriter aFileWriter = new PrintWriter(fFile, CHARSET_ISO_8859_1);
         for( final String aShiftedLine : aShiftedLines ){
             aFileWriter.write( aShiftedLine+LF);
         }
