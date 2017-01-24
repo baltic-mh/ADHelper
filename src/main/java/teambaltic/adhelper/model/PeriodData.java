@@ -41,7 +41,8 @@ public class PeriodData
     @Override
     public String toString()
     {
-        final String aPeriodString = getPeriod().toString();
+        final IPeriod aPeriod = getPeriod();
+        final String aPeriodString = aPeriod == null ? "null" : aPeriod.toString();
         return aPeriodString + (isActive() ? "*" : "");
     }
 }

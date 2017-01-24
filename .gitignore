@@ -20,9 +20,11 @@ misc/SSH-Schluessel/
 
 BasisDaten*
 
-# Dateien, die zum Laufzeitsystem des Programmes gehören:
+# Dateien, die zum Laufzeitsystem des Programmes gehï¿½ren:
 Arbeitsdienstabrechnungen*/
 Ausgabe.txt
+
+misc/TestResources/ReferenzDaten/Daten
 
 #####################################
 

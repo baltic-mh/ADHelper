@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -152,18 +153,18 @@ public class Writer
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder)
     {
-        final IPeriod aIP = fDataProvider.getPeriod();
-        final String aBalanceAt = getNewBalanceDateString( aIP.getEnd() );
+        final IPeriod aPeriod = fDataProvider.getPeriod();
+        final String aBalanceAt = getNewBalanceDateString( aPeriod.getEnd() );
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", CHARSET_ISO_8859_1);
             aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT_ALT, IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
-                final DutyCharge aCharge = aSingleInfo.getDutyCharge();
-                final int aMemberID = aCharge.getMemberID();
-                final int aBalance_Old = aCharge.getBalance_Original();
-                final int aBalance_New = aCharge.getBalance_ChargedAndAdjusted();
+                final int aMemberID = aSingleInfo.getID();
+                final Balance aBalance = aSingleInfo.getBalance();
+                final int aBalance_Old = aBalance.getValue_Original();
+                final int aBalance_New = aBalance.getValue_ChargedAndAdjusted();
                 if( aBalance_Old == 0 && aBalance_New == 0 ){
                     continue;
                 }

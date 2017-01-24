@@ -28,6 +28,7 @@ import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
 import teambaltic.adhelper.gui.model.TBLModel_DutyCharge;
 import teambaltic.adhelper.gui.model.TBLModel_DutyFree;
 import teambaltic.adhelper.gui.renderer.RNDR_CB_Member;
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
@@ -147,7 +148,10 @@ public class GUIUpdater
         final JTextField aTF_Eintritt = m_Panel.getTf_Eintritt();
         aTF_Eintritt.setText( aMember.getMemberFrom().toString() );
         final JTextField aTF_Austritt = m_Panel.getTf_Austritt();
-        aTF_Austritt.setText( aMember.getMemberUntil().toString() );
+        final LocalDate aMemberUntil = aMember.getMemberUntil();
+        if( aMemberUntil != null ){
+            aTF_Austritt.setText( aMemberUntil.toString() );
+        }
     }
 
     private static void fillPanel_WorkEventsAttended(
@@ -220,28 +224,31 @@ public class GUIUpdater
             final MainPanel fPanel, final ADH_DataProvider fDataProvider )
     {
         fDataModel.setRowCount( 0 );
-        final DutyCharge aDutyChargeOfThisMember = fInfoForSingleMember.getDutyCharge();
-        final List<DutyCharge> aAllDutyCharges = aDutyChargeOfThisMember.getAllDutyCharges();
-        for( final DutyCharge aDutyCharge : aAllDutyCharges ){
-            final String aMemberName = fDataProvider.getMemberName( aDutyCharge.getMemberID() );
-            addRow_DutyCharge( fDataModel, aMemberName, aDutyCharge );
+        final List<InfoForSingleMember> aAllRelatives = fInfoForSingleMember.getAllRelatives();
+        for( final InfoForSingleMember aInfoForThisRelative : aAllRelatives ){
+            final String aMemberName = fDataProvider.getMemberName( aInfoForThisRelative.getID() );
+            final DutyCharge aDutyCharge = aInfoForThisRelative.getDutyCharge();
+            final Balance aBalance = aInfoForThisRelative.getBalance();
+            addRow_DutyChargeAndBalance( fDataModel, aMemberName, aDutyCharge, aBalance );
         }
+        final DutyCharge aDutyChargeOfThisMember = fInfoForSingleMember.getDutyCharge();
         fPanel.setTotalHoursToPay( aDutyChargeOfThisMember.getHoursToPayTotal() / 100.0f );
     }
 
-    private static void addRow_DutyCharge(
+    private static void addRow_DutyChargeAndBalance(
             final TBLModel_DutyCharge fDataModel,
             final String fMemberName,
-            final DutyCharge fDutyCharge )
+            final DutyCharge fDutyCharge,
+            final Balance fBalance )
     {
         final Vector<Object> rowData = new Vector<>();
         rowData.addElement( fMemberName );
-        rowData.addElement( fDutyCharge.getBalance_Original()/100.0f );
+        rowData.addElement( fBalance.getValue_Original()/100.0f );
         rowData.addElement( fDutyCharge.getHoursWorked()/100.0f );
         rowData.addElement( fDutyCharge.getHoursDue()/100.0f );
-        rowData.addElement( fDutyCharge.getBalance_Charged()/100.0f );
+        rowData.addElement( fBalance.getValue_Charged()/100.0f );
         rowData.addElement( fDutyCharge.getHoursToPay()/100.0f );
-        rowData.addElement( fDutyCharge.getBalance_ChargedAndAdjusted()/100.0f );
+        rowData.addElement( fBalance.getValue_ChargedAndAdjusted()/100.0f );
         fDataModel.addRow( rowData );
     }
 

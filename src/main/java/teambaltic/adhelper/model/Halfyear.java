@@ -46,6 +46,14 @@ public class Halfyear extends APeriod
     public LocalDate getEnd(){ return m_End;}
     // ------------------------------------------------------------------------
 
+    public Halfyear(final LocalDate fStartDate)
+    {
+        this( fStartDate.getYear(), fStartDate.getMonthValue() );
+    }
+    public Halfyear(final int fYear, final int fMonth )
+    {
+        this( fYear, fMonth > 6 ? EPart.SECOND : EPart.FIRST );
+    }
     public Halfyear(final Year fYear, final EPart fPart)
     {
         this( fYear.getValue(), fPart );
@@ -104,6 +112,7 @@ public class Halfyear extends APeriod
     {
         return Halfyear.next( this );
     }
+
 }
 
 // ############################################################################

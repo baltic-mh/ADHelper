@@ -33,6 +33,15 @@ public class BaseDataReader
 {
 //    private static final Logger sm_Log = Logger.getLogger(BaseDataReader.class);
 
+    private static final Comparator<? super IClubMember> COMPARATOR =
+            new Comparator<IClubMember>(){
+                @Override
+                public int compare( final IClubMember fClubMember1, final IClubMember fClubMember2 )
+                {
+                    return( fClubMember1.getName().compareTo( fClubMember2.getName() ) );
+                }
+            };
+
     // ------------------------------------------------------------------------
     private final File m_File;
     public File getFile(){ return m_File; }
@@ -40,6 +49,7 @@ public class BaseDataReader
 
     private final IItemFactory<IClubMember>     m_MemberFactory;
     private final IItemFactory<FreeFromDutySet> m_FFDSetFactory;
+
 
     public BaseDataReader(final File fFile)
     {
@@ -70,15 +80,7 @@ public class BaseDataReader
             aAllMembers.add( aInfo.getMember() );
         }
 
-        final Comparator<? super IClubMember> aComp = new Comparator<IClubMember>(){
-            @Override
-            public int compare( final IClubMember fClubMember1, final IClubMember fClubMember2 )
-            {
-                return( fClubMember1.getName().compareTo( fClubMember2.getName() ) );
-            }
-
-        };
-        aAllMembers.sort( aComp );
+        aAllMembers.sort( COMPARATOR );
         return aAllMembers;
 
     }
@@ -92,7 +94,7 @@ public class BaseDataReader
         fInfo.setMember( aClubMember );
         final FreeFromDutySet aFFDSet = m_FFDSetFactory.createItem( aID, fAttributes);
         fInfo.setFreeFromDutySet( aFFDSet );
-        fInfo.setDutyCharge( new DutyCharge(aID, 0 ) );
+        fInfo.setDutyCharge( new DutyCharge(aID, null ) );
     }
 
 }

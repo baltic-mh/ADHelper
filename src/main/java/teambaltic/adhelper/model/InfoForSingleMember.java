@@ -11,11 +11,18 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 // ############################################################################
 public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
 {
+    private static final Logger sm_Log = Logger.getLogger(InfoForSingleMember.class);
 
     // ------------------------------------------------------------------------
     private final int m_ID;
@@ -37,8 +44,11 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    public int getBalance(){ return getDutyCharge().getBalance_ChargedAndAdjusted(); }
-    public void setBalance( final int fValue ){ setDutyCharge( new DutyCharge( getID(), fValue) ); }
+    private BalanceHistory m_BalanceHistory;
+    public BalanceHistory getBalanceHistory(){ return m_BalanceHistory; }
+    public void setBalanceHistory( final BalanceHistory fBalanceHistory ){ m_BalanceHistory = fBalanceHistory; }
+    public Balance getBalance(){ return getBalanceHistory().getNewestValue(); }
+    public void addBalance( final Balance fItem ){ getBalanceHistory().addBalance( fItem ); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -53,9 +63,23 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     public void setDutyCharge( final DutyCharge fDutyCharge ){ m_DutyCharge = fDutyCharge; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private final Map<Integer, InfoForSingleMember> m_Relatives;
+    public List<InfoForSingleMember> getAllRelatives()
+    {
+        final List <InfoForSingleMember> aAllItems = new ArrayList<>();
+        aAllItems.add( this );
+        aAllItems.addAll( m_Relatives.values() );
+        return aAllItems;
+    }
+    // ------------------------------------------------------------------------
+
+
     public InfoForSingleMember(final int fID)
     {
         m_ID = fID;
+        m_BalanceHistory = new BalanceHistory( fID );
+        m_Relatives = new HashMap<>();
     }
 
     @Override
@@ -71,6 +95,21 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     {
         return getMember().toString();
     }
+
+    public void addRelative( final InfoForSingleMember fItem )
+    {
+        final int aRelativeID = fItem.getID();
+        synchronized( m_Relatives ){
+            final Integer aIntegerKey = Integer.valueOf( aRelativeID );
+            if( m_Relatives.containsKey( aIntegerKey ) ){
+                sm_Log.warn( String.format("%d: Relative %d already linked! Will be ignored!",
+                        getID(), aRelativeID ) );
+                return;
+            }
+            m_Relatives.put( aIntegerKey, fItem );
+        }
+    }
+
 }
 
 // ############################################################################

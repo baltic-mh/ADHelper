@@ -30,6 +30,7 @@ import org.junit.Test;
 
 import teambaltic.adhelper.inout.BaseDataReader;
 import teambaltic.adhelper.inout.DetailsReporter;
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.Halfyear;
@@ -37,9 +38,12 @@ import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
+import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.ClubSettings;
+import teambaltic.adhelper.model.settings.IAppSettings.EKey;
 import teambaltic.adhelper.model.settings.IClubSettings;
 import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.Log4J;
@@ -55,7 +59,10 @@ public class ADH_DataProviderTest
             "Guthaben Arbeitsstunden nach Q2 2014", "Beitragsart_1",
             "Anrede", "Straße", "Plz", "Ort"} );
 
+    private static final Path PATH_CLUBSETTINGS  = Paths.get("misc/TestResources/VereinsDaten.properties");
+
     private static IClubSettings CLUBSETTINGS;
+
     private static FreeFromDutyCalculator sm_FFDCalculator;
 
     // ########################################################################
@@ -64,10 +71,11 @@ public class ADH_DataProviderTest
     @BeforeClass
     public static void initOnceBeforeStart()
     {
+        System.setProperty( EKey.FOLDERNAME_ROOT.name(), "misc/TestResources");
         Log4J.initLog4J();
         try{
             AllSettings.INSTANCE.init();
-            CLUBSETTINGS = AllSettings.INSTANCE.getClubSettings();
+            CLUBSETTINGS = new ClubSettings( PATH_CLUBSETTINGS );
             sm_FFDCalculator = new FreeFromDutyCalculator( CLUBSETTINGS );
         }catch( final Exception fEx ){
             fail("Exception: "+ fEx.getMessage() );
@@ -151,9 +159,8 @@ public class ADH_DataProviderTest
         final int aHoursToPayTotal = aMemberInfo.getDutyCharge().getHoursToPayTotal();
 
         assertEquals("Lukas muss 0 Stunden zahlen!", 0, aHoursToPayTotal);
-        final int aBalance = aMemberInfo.getDutyCharge().getBalance_ChargedAndAdjusted();
+        final int aBalance = aMemberInfo.getBalance().getValue_ChargedAndAdjusted();
         assertEquals("... weil er noch 10,5 Stunden Guthaben hat!", 1050, aBalance);
-
 
     }
 
@@ -188,10 +195,14 @@ public class ADH_DataProviderTest
 
         final InfoForSingleMember aMemberInfo = new InfoForSingleMember(aID);
         final ADH_DataProvider aChef = new ADH_DataProvider(null, AllSettings.INSTANCE);
+        final Path aPeriodFolder = Paths.get( "misc/TestResources/PeriodDataControllerTest/Daten/2014-07-01 - 2014-12-31" );
+        final PeriodData aPeriodData = new PeriodData( aPeriodFolder );
+        aChef.setPeriodData( aPeriodData );
         aChef.add( aMemberInfo );
 
         aReader.populateInfoForSingleMember( aMemberInfo, aAttributes );
-        aMemberInfo.setBalance( fGuthaben );
+        final Balance aBalance = new Balance( aID, aPeriodData.getPeriod(), fGuthaben );
+        aMemberInfo.addBalance( aBalance );
 
         final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
         final FreeFromDutySet aFFDSet = aMemberInfo.getFreeFromDutySet();

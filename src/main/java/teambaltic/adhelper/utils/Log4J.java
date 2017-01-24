@@ -25,6 +25,8 @@ import org.apache.log4j.PropertyConfigurator;
 public final class Log4J
 {
 
+    private static final String LOG4J_PROPERTIES = "log4j-runtime.properties";
+
     private Log4J() {/**/}
 
     public static void initLog4J()
@@ -32,16 +34,16 @@ public final class Log4J
         final Properties aProperties = new Properties();
         InputStream is = null;
         try {
-            is = new FileInputStream("log4j.properties");
+            is = new FileInputStream(LOG4J_PROPERTIES);
         } catch (final FileNotFoundException fEx) { /**/
         }
         if (is == null) {
-            is = Log4J.class.getResourceAsStream("log4j.properties");
+            is = Log4J.class.getResourceAsStream(LOG4J_PROPERTIES);
             if (is == null) {
-                is = Log4J.class.getResourceAsStream("/log4j.properties");
+                is = Log4J.class.getResourceAsStream("/"+LOG4J_PROPERTIES);
                 if (is == null) {
                     BasicConfigurator.configure();
-                    Logger.getRootLogger().error("Datei log4j.properties nicht gefunden!");
+                    Logger.getRootLogger().error(String.format( "Datei '%s' nicht gefunden!", LOG4J_PROPERTIES ));
                     return;
                 }
             }
@@ -50,7 +52,7 @@ public final class Log4J
             aProperties.load(is);
             PropertyConfigurator.configure(aProperties);
         } catch (final Throwable fEx) {
-            System.err.println("Could not load log4j properties! "+ fEx.getMessage());
+            System.err.println(String.format( "Probleme beim Laden aus Datei '%s' : %s", LOG4J_PROPERTIES, fEx.getMessage() ));
         }
     }
 

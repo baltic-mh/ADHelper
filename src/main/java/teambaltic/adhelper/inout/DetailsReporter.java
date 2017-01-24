@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.DutyCalculator;
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
@@ -115,19 +116,21 @@ public class DetailsReporter
         aSB.append( String.format("%-27s  %6s %6s %6s %6s %6s %6s\r\n",
                 "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
         aSB.append( "--------------------------------------------------------------------------\r\n" );
-        final List<DutyCharge> aAllDutyCharges = aCharge.getAllDutyCharges();
-        for( final DutyCharge aC : aAllDutyCharges ){
-            final IClubMember aRelatedMember = fDataProvider.getMember( aC.getMemberID() );
+        final List<InfoForSingleMember> aAllRelatives = fSingleInfo.getAllRelatives();
+        for( final InfoForSingleMember aInfoOfThisMember : aAllRelatives ){
+            final IClubMember aRelatedMember = aInfoOfThisMember.getMember();
+            final Balance aBalance = aInfoOfThisMember.getBalance();
+            final DutyCharge aC = aInfoOfThisMember.getDutyCharge();
             final int aHoursDue = aC.getHoursDue();
             aTotalDue += aHoursDue;
             aSB.append( String.format("%-27s %6.2f %6.2f   %6.2f  %6.2f  %6.2f  %6.2f\r\n",
                     aRelatedMember.getName(),
-                    aC.getBalance_Original()/100.0,
+                    aBalance.getValue_Original()/100.0,
                     aC.getHoursWorked()/100.0,
                     aHoursDue/100.0,
-                    aC.getBalance_Charged()/100.0,
+                    aBalance.getValue_Charged()/100.0,
                     aC.getHoursToPay()/100.0,
-                    aC.getBalance_ChargedAndAdjusted()/100.0
+                    aBalance.getValue_ChargedAndAdjusted()/100.0
                     ) );
         }
         aSB.append( "--------------------------------------------------------------------------\r\n" );

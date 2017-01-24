@@ -58,6 +58,17 @@ public class FreeFromDutySet implements IIdentifiedItem<FreeFromDutySet>
         return 0;
     }
 
+    @Override
+    public String toString()
+    {
+        synchronized( m_FreeFromDutyMap ){
+            final StringBuffer aSB = new StringBuffer( String.format( "%d => ", getID() ) );
+            for( final FreeFromDuty aFFD : m_FreeFromDutyMap.values() ){
+                aSB.append( String.format( "%s | ", aFFD ) );
+            }
+            return aSB.toString();
+        }
+    }
 }
 
 // ############################################################################

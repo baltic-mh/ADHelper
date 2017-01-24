@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
@@ -105,7 +106,10 @@ public class ChargeCalculatorTest
 
         final ChargeCalculator aCC = new ChargeCalculator( aInvoicingPeriod, CLUBSETTINGS );
 
-        final DutyCharge aCharge_MHW = new DutyCharge(MHW.getID(), MHW_BalanceValue );
+        final Balance aMHW_Balance = new Balance( MHW.getID(), aInvoicingPeriod, MHW_BalanceValue );
+        INFO4_MHW.addBalance( aMHW_Balance );
+
+        final DutyCharge aCharge_MHW = new DutyCharge( MHW.getID(), aMHW_Balance);
         INFO4_MHW.setDutyCharge( aCharge_MHW );
         aCC.calculate( INFO4_MHW );
 
@@ -119,8 +123,8 @@ public class ChargeCalculatorTest
 //        aCC.calculate( aCharge_MMW, null, null );
 //        aCharge_MHW.addRelative( aCharge_MMW );
 
-        aCC.balance( aCharge_MHW );
-        reportCharge( aCharge_MHW );
+        aCC.balance( INFO4_MHW );
+        reportCharge( INFO4_MHW );
         TestUtils.logMethodEnd( aStartTime, aMethodName );
     }
 
@@ -156,6 +160,7 @@ public class ChargeCalculatorTest
         aWorkEvent2_MW.setDate( LocalDate.of( 2016, 4, 1 ) );
 
         INFO4_MHW = new InfoForSingleMember( aID_MW );
+        INFO4_MHW.setMember( MHW );
         INFO4_MHW.setWorkEventsAttended( MHW_WorkEventsAttended );
         INFO4_MHW.setFreeFromDutySet( MHW_FFDSet );
 
@@ -195,24 +200,26 @@ public class ChargeCalculatorTest
 
     }
 
-    private static void reportCharge( final DutyCharge fCharge )
+    private static void reportCharge( final InfoForSingleMember fINFO4_SingleMember )
     {
-        final List<DutyCharge> aAllDutyCharges = fCharge.getAllDutyCharges();
+        final List<InfoForSingleMember> aAllRelatives = fINFO4_SingleMember.getAllRelatives();
         sm_Log.info( String.format("%-20s  %5s %5s %5s %5s %5s %5s",
                 "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
-        for( final DutyCharge aC : aAllDutyCharges ){
+        for( final InfoForSingleMember aInfoForThisRelative : aAllRelatives ){
+            final Balance aBalance = aInfoForThisRelative.getBalance();
+            final DutyCharge aDutyCharge = aInfoForThisRelative.getDutyCharge();
             sm_Log.info( String.format("%-20s  %5.1f %5.1f    %5.1f   %5.1f   %5.1f   %5.1f",
-                    MemberListProvider.get( aC.getMemberID() ).getName(),
-                    aC.getBalance_Original()/100.0,
-                    aC.getHoursWorked()/100.0,
-                    aC.getHoursDue()/100.0,
-                    aC.getBalance_Charged()/100.0,
-                    aC.getHoursToPay()/100.0,
-                    aC.getBalance_ChargedAndAdjusted()/100.0
+                    aInfoForThisRelative.getMember().getName(),
+                    aBalance.getValue_Original()/100.0,
+                    aDutyCharge.getHoursWorked()/100.0,
+                    aDutyCharge.getHoursDue()/100.0,
+                    aBalance.getValue_Charged()/100.0,
+                    aDutyCharge.getHoursToPay()/100.0,
+                    aBalance.getValue_ChargedAndAdjusted()/100.0
                     ) );
         }
         sm_Log.info(String.format( "Verbleibende Stunden zu zahlen: %5.1f",
-                fCharge.getHoursToPayTotal()/100.0));
+                fINFO4_SingleMember.getDutyCharge().getHoursToPayTotal()/100.0));
     }
 
 }

@@ -46,8 +46,8 @@ public class DutyCalculator
             final IPeriod fInvoicingPeriod,
             final IClubSettings fClubSettings)
     {
-        m_Period   = fInvoicingPeriod;
-        m_ClubSettings      = fClubSettings;
+        m_Period        = fInvoicingPeriod;
+        m_ClubSettings  = fClubSettings;
     }
 
     public int calculateHoursToWork( final Collection<FreeFromDuty> fFFDItems )

@@ -54,7 +54,9 @@ public class MemberFactory implements IItemFactory<IClubMember>
         final String aAustrittValue = fAttributes.get( IKnownColumns.AUSTRITT );
         final LocalDate aAustritt = ParseUtils.getDate( aAustrittValue );
         if( aAustritt != null ){
-            fCM.setMemberUntil( aAustritt );
+            if( LocalDate.now().plusYears( 2 ).compareTo( aAustritt ) > 0 ){
+                fCM.setMemberUntil( aAustritt );
+            }
         }
 
         final String aLinkIDValue = fAttributes.get( IKnownColumns.LINKID );

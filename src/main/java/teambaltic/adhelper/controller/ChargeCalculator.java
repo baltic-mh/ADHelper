@@ -14,6 +14,7 @@ package teambaltic.adhelper.controller;
 import java.util.Collection;
 import java.util.List;
 
+import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IPeriod;
@@ -36,7 +37,7 @@ public class ChargeCalculator
     public DutyCalculator getDutyCalculator(){ return m_DutyCalculator; }
     // ------------------------------------------------------------------------
 
-    public ChargeCalculator(final IPeriod fPeriod, final IClubSettings fClubSettings)
+    public ChargeCalculator( final IPeriod fPeriod, final IClubSettings fClubSettings )
     {
         m_DutyCalculator = new DutyCalculator( fPeriod, fClubSettings );
     }
@@ -46,7 +47,7 @@ public class ChargeCalculator
         return getDutyCalculator().getPeriod();
     }
 
-    public DutyCharge calculate(final InfoForSingleMember fMemberInfo)
+    public DutyCharge calculate( final InfoForSingleMember fMemberInfo )
     {
         final WorkEventsAttended aWEA = fMemberInfo.getWorkEventsAttended();
         final IPeriod aPeriod = getDutyCalculator().getPeriod();
@@ -59,13 +60,19 @@ public class ChargeCalculator
         final int aHoursDue = getDutyCalculator().calculateHoursToWork( aFreeFromDutyItems );
         aCharge.setHoursDue( aHoursDue );
 
-        final int aBalanceValue = aCharge.getBalance_Original();
+        Balance aBalance = fMemberInfo.getBalance();
+        if(  aBalance == null ){
+            aBalance = new Balance( fMemberInfo.getID(), aPeriod, 0);
+            fMemberInfo.addBalance( aBalance );
+        }
+
+        final int aBalanceValue = aBalance.getValue_Original();
         int aBalanceCharged = aBalanceValue + aHoursWorked - aHoursDue;
         if( aBalanceCharged < 0 ){
             aBalanceCharged = 0;
         }
-        aCharge.setBalance_Charged( aBalanceCharged );
-        aCharge.setBalance_ChargedAndAdjusted( aBalanceCharged );
+        aBalance.setValue_Charged( aBalanceCharged );
+        aBalance.setValue_ChargedAndAdjusted( aBalanceCharged );
 
         int aHoursToPay = aHoursDue - aHoursWorked - aBalanceValue;
         if( aHoursToPay < 0 ){
@@ -76,18 +83,21 @@ public class ChargeCalculator
         return aCharge;
     }
 
-    public void balance( final DutyCharge fCharge )
+    public void balance( final InfoForSingleMember fMemberInfo )
     {
-        final List <DutyCharge> aAllCharges = fCharge.getAllDutyCharges();
+        final List <InfoForSingleMember> aAllRelatives = fMemberInfo.getAllRelatives();
         int aHoursToPayTotal  = 0;
         int aBalanceTotal     = 0;
-        for( final DutyCharge aCharge : aAllCharges ){
+        for( final InfoForSingleMember aInfoForThisMember : aAllRelatives ){
+            final DutyCharge aCharge = aInfoForThisMember.getDutyCharge();
+            final Balance aBalance = aInfoForThisMember.getBalance();
             aHoursToPayTotal += aCharge.getHoursToPay();
-            aBalanceTotal    += aCharge.getBalance_Charged();
+            aBalanceTotal    += aBalance.getValue_Charged();
         }
         while( aBalanceTotal > 0 && aHoursToPayTotal > 0 ){
-            for( final DutyCharge aCharge : aAllCharges ){
-                int aChargedAndAdjusted = aCharge.getBalance_ChargedAndAdjusted();
+            for( final InfoForSingleMember aInfoForThisMember : aAllRelatives ){
+                final Balance aBalance = aInfoForThisMember.getBalance();
+                int aChargedAndAdjusted = aBalance.getValue_ChargedAndAdjusted();
                 if( aChargedAndAdjusted <= 0 ){
                     continue;
                 }
@@ -104,14 +114,14 @@ public class ChargeCalculator
                     aHoursToPayTotal    -= 100;
                     aChargedAndAdjusted -= 100;
                 }
-                aCharge.setBalance_ChargedAndAdjusted( aChargedAndAdjusted );
+                aBalance.setValue_ChargedAndAdjusted( aChargedAndAdjusted );
                 if(aHoursToPayTotal == 0){
                     break;
                 }
 
             }
         }
-        fCharge.setHoursToPayTotal( aHoursToPayTotal );
+        fMemberInfo.getDutyCharge().setHoursToPayTotal( aHoursToPayTotal );
     }
 
 }

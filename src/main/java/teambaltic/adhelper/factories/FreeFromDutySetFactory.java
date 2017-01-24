@@ -48,8 +48,7 @@ public class FreeFromDutySetFactory implements IItemFactory<FreeFromDutySet>
                 return null;
             }
         }
-        final FreeFromDuty aItem = new FreeFromDuty( fID, aReason );
-        fillDates( aItem, fAttributes );
+        final FreeFromDuty aItem = createItem( fID, aReason, fAttributes );
 
         return aItem;
     }
@@ -72,18 +71,35 @@ public class FreeFromDutySetFactory implements IItemFactory<FreeFromDutySet>
         }
     }
 
+    private static FreeFromDuty createItem( final int fID, final REASON fReason, final Map<String, String> fAttributes )
+    {
+        final FreeFromDuty aItem = new FreeFromDuty( fID, fReason );
+        fillDates( aItem, fAttributes );
+        if( REASON.NO_LONGER_MEMBER.equals( fReason ) ){
+            if( DateUtils.MAX_DATE.equals( aItem.getFrom() ) ){
+                return null;
+            }
+        }
+        return aItem;
+    }
+
     private static void fillDates( final FreeFromDuty fItem, final Map<String, String> fAttributes )
     {
         final String aFromValue = fAttributes.get( IKnownColumns.AD_FREE_FROM );
         LocalDate aFrom = ParseUtils.getDate( aFromValue );
         if( aFrom == null ){
             aFrom = DateUtils.MIN_DATE;
+        } else {
+            aFrom = DateUtils.limitToMaxValue( aFrom );
         }
         fItem.setFrom( aFrom );
+
         final String aUntilValue = fAttributes.get( IKnownColumns.AD_FREE_UNTIL );
         LocalDate aUntil = ParseUtils.getDate( aUntilValue );
         if( aUntil == null ){
             aUntil = DateUtils.MAX_DATE;
+        } else {
+            aUntil = DateUtils.limitToMaxValue( aUntil );
         }
         fItem.setUntil( aUntil );
     }

@@ -24,8 +24,10 @@ import teambaltic.adhelper.model.IPeriod;
 // ############################################################################
 public final class DateUtils
 {
-    public static final LocalDate MIN_DATE = LocalDate.of( 1966, 10, 3 );
-    public static final LocalDate MAX_DATE = LocalDate.of( 2966, 10, 3 );
+    public static final LocalDate MIN_DATE  = LocalDate.of( 1966, 10, 3 );
+    public static final LocalDate MAX_DATE  = LocalDate.of( 2966, 10, 3 );
+    // Dies ist der Default-Wert, den das Mitgliederprogramm als "unendlich" annimmt:
+    public static final LocalDate MAX_DATE2 = LocalDate.of( 2099, 12, 1 );;
 
     private DateUtils(){/**/}
 
@@ -116,6 +118,15 @@ public final class DateUtils
 
         return aMonthsNotCovered;
     }
+
+    public static LocalDate limitToMaxValue( LocalDate fDate )
+    {
+        if( DateUtils.MAX_DATE2.equals( fDate ) ){
+            fDate = DateUtils.MAX_DATE;
+        }
+        return fDate;
+    }
+
 }
 
 // ############################################################################

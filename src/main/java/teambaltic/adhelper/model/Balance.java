@@ -26,33 +26,51 @@ public class Balance implements IIdentifiedItem<Balance>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final int m_Value;
-    public int getValue(){return m_Value; }
+    private final int m_Value_Original;
+    public int getValue_Original(){return m_Value_Original; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private LocalDate m_ValidOn;
-    public LocalDate getValidOn(){ return m_ValidOn; }
-    public void setValidOn( final LocalDate fNewVal ){ m_ValidOn = fNewVal; }
+    private final LocalDate m_ValidFrom;
+    public LocalDate getValidFrom(){ return m_ValidFrom; }
     // ------------------------------------------------------------------------
 
-    public Balance( final int fMemberID, final int fValue )
+    // ------------------------------------------------------------------------
+    private int m_Value_Charged;
+    public int getValue_Charged(){ return m_Value_Charged; }
+    public void setValue_Charged( final int fNewVal ){ m_Value_Charged = fNewVal; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private int m_Value_ChargedAndAdjusted;
+    public int getValue_ChargedAndAdjusted(){ return m_Value_ChargedAndAdjusted; }
+    public void setValue_ChargedAndAdjusted( final int fNewVal ){ m_Value_ChargedAndAdjusted = fNewVal; }
+    // ------------------------------------------------------------------------
+
+    public Balance(final int fMemberID, final IPeriod fPeriod, final int fValue_Original)
     {
-        m_MemberID  = fMemberID;
-        m_Value     = fValue;
+        this(fMemberID, fPeriod.getStart(), fValue_Original);
+    }
+    public Balance( final int fMemberID, final LocalDate fValidFrom, final int fValue_Original )
+    {
+        m_MemberID       = fMemberID;
+        m_Value_Original = fValue_Original;
+        m_ValidFrom      = fValidFrom;
+        setValue_Charged( fValue_Original );
+        setValue_ChargedAndAdjusted( fValue_Original );
     }
 
     @Override
     public String toString()
     {
-        return String.format("%5.1f", getValue() / 100.0f);
+        return String.format("%5.1f", getValue_Original() / 100.0f);
     }
 
     @Override
     public int compareTo( final Balance fOther )
     {
-        final int aThisValue = getValue();
-        final int aOtherValue = fOther.getValue();
+        final int aThisValue = getValue_ChargedAndAdjusted();
+        final int aOtherValue = fOther.getValue_ChargedAndAdjusted();
         if( aThisValue < aOtherValue ){
             return -1;
         }

@@ -11,7 +11,12 @@
 // ############################################################################
 package teambaltic.adhelper.utils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 // ############################################################################
 public final class TestUtils
@@ -53,6 +58,20 @@ public final class TestUtils
         final StackTraceElement[] aStackTrace = aException.getStackTrace();
         final String aMethodName = aStackTrace[fStacktraceIdx].getMethodName();
         return aMethodName;
+    }
+
+    public static void initLog4J()
+    {
+        InputStream is = null;
+        try {
+            is = new FileInputStream("log4j-test.properties");
+        } catch (final FileNotFoundException fEx) { /**/
+        }
+        try {
+            PropertyConfigurator.configure(is);
+        } catch (final Throwable fEx) {
+            System.err.println("Could not load log4j properties! "+ fEx.getMessage());
+        }
     }
 
 }

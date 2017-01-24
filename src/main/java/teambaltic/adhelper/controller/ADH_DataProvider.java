@@ -23,6 +23,8 @@ import teambaltic.adhelper.inout.BalanceReader;
 import teambaltic.adhelper.inout.BaseDataReader;
 import teambaltic.adhelper.inout.WorkEventReader;
 import teambaltic.adhelper.inout.Writer;
+import teambaltic.adhelper.model.Balance;
+import teambaltic.adhelper.model.BalanceHistory;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
@@ -47,6 +49,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     private PeriodData m_PeriodData;
     public  PeriodData getPeriodData(){ return m_PeriodData; }
     public IPeriod getPeriod(){ return m_PeriodData == null ? null : m_PeriodData.getPeriod();}
+    void setPeriodData(final PeriodData fPeriodData ){ m_PeriodData = fPeriodData ; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -166,18 +169,16 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             if( aLinkID == 0 ){
                 continue;
             }
-            final IClubMember aLinkedToMember = getMember( aLinkID );
+            final InfoForSingleMember aLinkedToMember = get( aLinkID );
             if( aLinkedToMember == null ){
                 sm_Log.error( String.format( "%s: Die LinkID %d existiert nicht als Mitgliedsnummer!",
                         aMember, aLinkID) );
                 continue;
             }
             if( sm_Log.isDebugEnabled() ){
-                sm_Log.debug( "Verbinde : "+aMember.getName() +" => "+aLinkedToMember.getName());
+                sm_Log.debug( "Verbinde : "+aMember.getName() +" => "+aLinkedToMember.toString() );
             }
-            final DutyCharge aCharge = aSingleInfo.getDutyCharge();
-            final DutyCharge aChargeToLinkTo = getDutyCharge( aLinkID );
-            aChargeToLinkTo.addRelative( aCharge );
+            aLinkedToMember.addRelative( aSingleInfo );
 
             final WorkEventsAttended aWEA = aSingleInfo.getWorkEventsAttended();
             if( aWEA == null ){
@@ -198,8 +199,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             if( aMember.getLinkID() != 0 ){
                 continue;
             }
-            final DutyCharge aCharge = aSingleInfo.getDutyCharge();
-            m_ChargeCalculator.balance( aCharge );
+            m_ChargeCalculator.balance( aSingleInfo );
         }
     }
 
@@ -207,6 +207,18 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     {
         final InfoForSingleMember aInfo = get( fMemberID );
         return aInfo.getMember();
+    }
+
+    public Balance getBalance( final int fMemberID )
+    {
+        final InfoForSingleMember aInfo = get( fMemberID );
+        return aInfo.getBalance();
+    }
+
+    public BalanceHistory getBalanceHistory( final int fMemberID )
+    {
+        final InfoForSingleMember aInfo = get( fMemberID );
+        return aInfo.getBalanceHistory();
     }
 
     private DutyCharge getDutyCharge( final int fMemberID )

@@ -46,15 +46,12 @@ public class BalanceFactory implements IItemFactory<Balance>
         try{
             final float aFloatValue = Float.parseFloat( aBalanceValueString.replaceAll( ",", "." ) );
             final int   aIntValue = Math.round( aFloatValue * 100 );
-            final Balance aItem = new Balance( fID, aIntValue );
-            if( aBalanceValidOnString != null && !"".equals( aBalanceValidOnString ) ){
-                final String[] aParts = aBalanceValidOnString.split( "\\." );
-                final int aYear = Integer.parseInt( aParts[2] );
-                final int aMonth = Integer.parseInt( aParts[1] );
-                final int aDayOfMonth = Integer.parseInt( aParts[0] );
-                final LocalDate aValidOn = LocalDate.of( aYear, aMonth, aDayOfMonth );
-                aItem.setValidOn( aValidOn );
-            }
+            final String[] aParts = aBalanceValidOnString.split( "\\." );
+            final int aYear = Integer.parseInt( aParts[2] );
+            final int aMonth = Integer.parseInt( aParts[1] );
+            final int aDayOfMonth = Integer.parseInt( aParts[0] );
+            final LocalDate aValidFrom = LocalDate.of( aYear, aMonth, aDayOfMonth );
+            final Balance aItem = new Balance( fID, aValidFrom, aIntValue );
             return aItem;
         }catch( final NumberFormatException fEx ){
             sm_Log.warn("Guthaben-Angabe ist keine Zahl: "+ aBalanceValueString );
