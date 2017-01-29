@@ -151,6 +151,15 @@ public final class FileUtils
         return aNewName;
     }
 
+    public static Path getPathWithPostfixAppended(
+            final Path fPreviousPath, final String fPostfix )
+    {
+        final Path aParent = fPreviousPath.getParent();
+        final String aFileNameWithPostfixAppended = getFileNameWithPostfixAppended( fPreviousPath.toFile(), fPostfix );
+        final Path aNewPath = aParent.resolve( aFileNameWithPostfixAppended );
+        return aNewPath;
+    }
+
     public static Path makeBackupCopy( final Path fFile ) throws IOException
     {
         final String aFileName  = fFile.toFile().getName();

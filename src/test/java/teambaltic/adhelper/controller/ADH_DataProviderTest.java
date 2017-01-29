@@ -61,9 +61,14 @@ public class ADH_DataProviderTest
 
     private static final Path PATH_CLUBSETTINGS  = Paths.get("misc/TestResources/VereinsDaten.properties");
 
+    private static final Halfyear INVOICINGPERIOD = new Halfyear( 2014, EPart.SECOND );
+
     private static IClubSettings CLUBSETTINGS;
 
     private static FreeFromDutyCalculator sm_FFDCalculator;
+
+    private static ADH_DataProvider CHEF;
+
 
     // ########################################################################
     // INITIALISIERUNG
@@ -80,6 +85,7 @@ public class ADH_DataProviderTest
         }catch( final Exception fEx ){
             fail("Exception: "+ fEx.getMessage() );
         }
+        CHEF = init();
     }
 
     @Before
@@ -99,9 +105,14 @@ public class ADH_DataProviderTest
     @Test
     public void test_Read()
     {
-        final ADH_DataProvider aChef = init();
+        try{
+            readData( CHEF );
+        }catch( final Exception fEx ){
+            sm_Log.warn("Exception: ", fEx );
+            fail(fEx.getMessage());
+        }
 
-        for( final InfoForSingleMember aInfo : aChef.getAll() ){
+        for( final InfoForSingleMember aInfo : CHEF.getAll() ){
             final IClubMember aMember = aInfo.getMember();
             sm_Log.info("Mitglied: "+aMember);
             final Collection<FreeFromDuty> aFreeFromDutyItems = aInfo.getFreeFromDutyItems();
@@ -126,15 +137,10 @@ public class ADH_DataProviderTest
     @Test
     public void test_Calculate()
     {
-        final ADH_DataProvider aChef = init();
-
-        final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
-        aChef.setChargeCalculator( aChef.createChargeCalculator(aInvoicingPeriod) );
-
-        aChef.calculateDutyCharges( aInvoicingPeriod );
-        aChef.joinRelatives();
-        aChef.balanceRelatives();
-        DetailsReporter.report( aChef, Paths.get( "." ) );
+        CHEF.calculateDutyCharges( INVOICINGPERIOD );
+        CHEF.joinRelatives();
+        CHEF.balanceRelatives( INVOICINGPERIOD );
+        DetailsReporter.report( CHEF, Paths.get( "." ) );
 
     }
 
@@ -159,7 +165,7 @@ public class ADH_DataProviderTest
         final int aHoursToPayTotal = aMemberInfo.getDutyCharge().getHoursToPayTotal();
 
         assertEquals("Lukas muss 0 Stunden zahlen!", 0, aHoursToPayTotal);
-        final int aBalance = aMemberInfo.getBalance().getValue_ChargedAndAdjusted();
+        final int aBalance = aMemberInfo.getBalance( INVOICINGPERIOD ).getValue_ChargedAndAdjusted();
         assertEquals("... weil er noch 10,5 Stunden Guthaben hat!", 1050, aBalance);
 
     }
@@ -170,22 +176,35 @@ public class ADH_DataProviderTest
 
     private static ADH_DataProvider init()
     {
-        final Path aBaseInfoFile  = Paths.get("misc/TestResources/Tabellen/BasisDaten.csv");
-        final Path aWorkEventFile = Paths.get("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
         try{
             final ADH_DataProvider aChef = new ADH_DataProvider(null, AllSettings.INSTANCE);
-            aChef.readBaseData( aBaseInfoFile );
-            aChef.readWorkEvents( aWorkEventFile );
+            final Path aPeriodFolder = Paths.get( "misc/TestResources/PeriodDataControllerTest/Daten", INVOICINGPERIOD.toString() );
+            final PeriodData aPeriodData = new PeriodData( aPeriodFolder );
+            aChef.setPeriodData( aPeriodData );
             return aChef;
         }catch( final Exception fEx ){
-            // TODO Auto-generated catch block
             sm_Log.warn("Exception: ", fEx );
+            fail( fEx.getMessage() );
         }
         return null;
     }
 
+    private static void readData( final ADH_DataProvider fChef ) throws Exception
+    {
+        final Path aBaseInfoFile  = Paths.get("misc/TestResources/Tabellen/BasisDaten.csv");
+        final Path aWorkEventFile = Paths.get("misc/TestResources/Tabellen/Arbeitsdienste1.csv");
+        try{
+            fChef.readBaseData( aBaseInfoFile, 0 );
+        }catch( final Exception fEx ){
+            sm_Log.warn("Exception: ", fEx );
+            fail( fEx.getMessage() );
+        }
+        fChef.readWorkEvents( aWorkEventFile );
+    }
+
     private static InfoForSingleMember testSingleMember( final String fLineForSingleMember, final int fGuthaben ) throws Exception
     {
+        CHEF.clear();
         final File aFile = new File("Dummy");
         final BaseDataReader aReader = new BaseDataReader( aFile );
 
@@ -194,24 +213,18 @@ public class ADH_DataProviderTest
         final int aID = Integer.parseInt( aIDString );
 
         final InfoForSingleMember aMemberInfo = new InfoForSingleMember(aID);
-        final ADH_DataProvider aChef = new ADH_DataProvider(null, AllSettings.INSTANCE);
-        final Path aPeriodFolder = Paths.get( "misc/TestResources/PeriodDataControllerTest/Daten/2014-07-01 - 2014-12-31" );
-        final PeriodData aPeriodData = new PeriodData( aPeriodFolder );
-        aChef.setPeriodData( aPeriodData );
-        aChef.add( aMemberInfo );
-
         aReader.populateInfoForSingleMember( aMemberInfo, aAttributes );
-        final Balance aBalance = new Balance( aID, aPeriodData.getPeriod(), fGuthaben );
+        final Balance aBalance = new Balance( aID, INVOICINGPERIOD, fGuthaben );
         aMemberInfo.addBalance( aBalance );
 
-        final Halfyear aInvoicingPeriod = new Halfyear( 2014, EPart.SECOND );
+        CHEF.add( aMemberInfo );
+
         final FreeFromDutySet aFFDSet = aMemberInfo.getFreeFromDutySet();
         sm_FFDCalculator.populateFFDSetFromMemberData(
-                aFFDSet, aInvoicingPeriod, aMemberInfo.getMember() );
+                aFFDSet, INVOICINGPERIOD, aMemberInfo.getMember() );
 
-        aChef.setChargeCalculator( aChef.createChargeCalculator(aInvoicingPeriod) );
-        aChef.calculateDutyCharges( aInvoicingPeriod );
-        DetailsReporter.report( aChef, Paths.get( "." ) );
+        CHEF.calculateDutyCharges( INVOICINGPERIOD );
+        DetailsReporter.report( CHEF, Paths.get( "." ) );
         return aMemberInfo;
     }
 

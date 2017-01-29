@@ -47,7 +47,29 @@ public class PeriodDataController implements IPeriodDataController
     private String getFileName_Uploaded(){ return getAppSettings().getFileName_Uploaded(); }
     private String getFileName_WorkEvents(){return getAppSettings().getFileName_WorkEvents(); }
     private String getFileName_Balances(){return getAppSettings().getFileName_Balances(); }
+    private String getFileName_BalanceHistory(){return getAppSettings().getFileName_BalanceHistory(); }
     // ------------------------------------------------------------------------
+
+    @Override
+    public Path getFile_BaseData( final PeriodData fPeriodData )
+    {
+        return fPeriodData.getFolder().resolve( getFileName_BaseData() );
+    }
+    @Override
+    public Path getFile_WorkEvents( final PeriodData fPeriodData )
+    {
+        return fPeriodData.getFolder().resolve( getFileName_WorkEvents() );
+    }
+    @Override
+    public Path getFile_Balances( final PeriodData fPeriodData )
+    {
+        return fPeriodData.getFolder().resolve( getFileName_Balances() );
+    }
+    @Override
+    public Path getFile_BalanceHistory( final PeriodData fPeriodData )
+    {
+        return fPeriodData.getFolder().resolve( getFileName_BalanceHistory() );
+    }
 
     // ------------------------------------------------------------------------
     private final IUserSettings m_UserSettings;
@@ -205,7 +227,9 @@ public class PeriodDataController implements IPeriodDataController
         final PeriodData aPredecessor = getPredecessor( fNewlyCreatedPeriodData );
 
         copyBasicFilesToFolder(aBaseDataFile, fNewlyCreatedPeriodData.getFolder(), aPredecessor.getFolder(),
-                fAppSettings.getFileName_WorkEvents(), fAppSettings.getFileName_Balances());
+                fAppSettings.getFileName_WorkEvents(),
+                fAppSettings.getFileName_BalanceHistory(),
+                fAppSettings.getFileName_Balances());
     }
 
     private static void copyBasicFilesToFolder(
@@ -213,6 +237,7 @@ public class PeriodDataController implements IPeriodDataController
             final Path fPeriodDataFolder,
             final Path fPredecessorFolder,
             final String fFileName_WorkEvents,
+            final String fFileName_BalanceHistory,
             final String fFileName_Balances )
                     throws IOException
     {
@@ -227,11 +252,16 @@ public class PeriodDataController implements IPeriodDataController
         final String aNewName_WEF = FileUtils.getFileNameWithPostfixAppended( aWEF, "_old" );
         FileUtils.copyFileToFolder( aWEF, fPeriodDataFolder, aNewName_WEF );
 
-        final File aBalancesFile = fPredecessorFolder.resolve( fFileName_Balances ).toFile();
-        final Path aShiftedBalanceFile = FileUtils.copyFileToFolder( aBalancesFile, fPeriodDataFolder );
-        final String aNewName_BF = FileUtils.getFileNameWithPostfixAppended( aBalancesFile, "_old" );
-        FileUtils.copyFileToFolder( aBalancesFile, fPeriodDataFolder, aNewName_BF );
-        Writer.shiftBalanceValues( aShiftedBalanceFile.toFile() );
+        final File aBalanceHistoryFile = fPredecessorFolder.resolve( fFileName_BalanceHistory ).toFile();
+        if( aBalanceHistoryFile.exists() ){
+            FileUtils.copyFileToFolder( aBalanceHistoryFile, fPeriodDataFolder );
+        } else {
+            final File aBalancesFile = fPredecessorFolder.resolve( fFileName_Balances ).toFile();
+            final Path aShiftedBalanceFile = FileUtils.copyFileToFolder( aBalancesFile, fPeriodDataFolder );
+            final String aNewName_BF = FileUtils.getFileNameWithPostfixAppended( aBalancesFile, "_old" );
+            FileUtils.copyFileToFolder( aBalancesFile, fPeriodDataFolder, aNewName_BF );
+            Writer.shiftBalanceValues( aShiftedBalanceFile.toFile() );
+        }
     }
 
     @Override
@@ -363,22 +393,6 @@ public class PeriodDataController implements IPeriodDataController
 
         }
 
-    }
-
-    @Override
-    public Path getFile_BaseData( final PeriodData fPeriodData )
-    {
-        return fPeriodData.getFolder().resolve( getFileName_BaseData() );
-    }
-    @Override
-    public Path getFile_WorkEvents( final PeriodData fPeriodData )
-    {
-        return fPeriodData.getFolder().resolve( getFileName_WorkEvents() );
-    }
-    @Override
-    public Path getFile_Balances( final PeriodData fPeriodData )
-    {
-        return fPeriodData.getFolder().resolve( getFileName_Balances() );
     }
 
     @Override

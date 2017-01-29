@@ -47,7 +47,7 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     private BalanceHistory m_BalanceHistory;
     public BalanceHistory getBalanceHistory(){ return m_BalanceHistory; }
     public void setBalanceHistory( final BalanceHistory fBalanceHistory ){ m_BalanceHistory = fBalanceHistory; }
-    public Balance getBalance(){ return getBalanceHistory().getNewestValue(); }
+    public Balance getBalance(final IPeriod fPeriod){ return getBalanceHistory().getValue(fPeriod); }
     public void addBalance( final Balance fItem ){ getBalanceHistory().addBalance( fItem ); }
     // ------------------------------------------------------------------------
 

@@ -62,8 +62,8 @@ public class GUIUpdater
     private final RNDR_CB_Member m_Renderer_Member;
 
     public GUIUpdater(
-            final MainPanel fPanel,
-            final ADH_DataProvider fDataProvider,
+            final MainPanel             fPanel,
+            final ADH_DataProvider      fDataProvider,
             final IPeriodDataController fPDC )
     {
         m_Panel = fPanel;
@@ -106,7 +106,7 @@ public class GUIUpdater
         final TBLModel_AttendedWorkEvent aDM_WorkEventsAttended = m_Panel.getWorkEventsAttended();
         fillPanel_WorkEventsAttended ( aDM_WorkEventsAttended, fPeriodData, aInfoForSingleMember, m_Panel, m_DataProvider );
         final TBLModel_DutyCharge aDM_DutyChargs = m_Panel.getDataModel_DutyCharge();
-        fillPanel_DutyCharge( aDM_DutyChargs, aInfoForSingleMember, m_Panel, m_DataProvider );
+        fillPanel_DutyCharge( aDM_DutyChargs, aInfoForSingleMember, m_Panel, m_DataProvider, fPeriodData.getPeriod() );
 
         if( fPeriodData != null ){
             configureButtons( m_Panel, getPDC(), fPeriodData );
@@ -156,9 +156,10 @@ public class GUIUpdater
 
     private static void fillPanel_WorkEventsAttended(
             final TBLModel_AttendedWorkEvent fDataModel,
-            final PeriodData fPeriodData,
-            final InfoForSingleMember fInfoForSingleMember,
-            final MainPanel fPanel, final ADH_DataProvider fDataProvider )
+            final PeriodData                 fPeriodData,
+            final InfoForSingleMember        fInfoForSingleMember,
+            final MainPanel                  fPanel,
+            final ADH_DataProvider           fDataProvider )
     {
         fDataModel.setRowCount( 0 );
         final WorkEventsAttended aWorkEventsAttended = fInfoForSingleMember.getWorkEventsAttended();
@@ -177,9 +178,9 @@ public class GUIUpdater
 
     private static void addWorkEventRow(
             final TBLModel_AttendedWorkEvent fDataModel,
-            final String fMemberName,
-            final int    fMemberID,
-            final WorkEvent fWorkEvent )
+            final String                     fMemberName,
+            final int                        fMemberID,
+            final WorkEvent                  fWorkEvent )
     {
         final Vector<Object> rowData = new Vector<>();
         rowData.addElement( Integer.valueOf( fMemberID ) );
@@ -190,9 +191,11 @@ public class GUIUpdater
         fDataModel.addRow( rowData );
     }
 
-    private static void fillPanel_DutyFree(final TBLModel_DutyFree fDataModel,
-            final InfoForSingleMember fInfoForSingleMember,
-            final MainPanel fPanel, final ADH_DataProvider fDataProvider )
+    private static void fillPanel_DutyFree(
+            final TBLModel_DutyFree     fDataModel,
+            final InfoForSingleMember   fInfoForSingleMember,
+            final MainPanel             fPanel,
+            final ADH_DataProvider      fDataProvider )
     {
         fDataModel.setRowCount( 0 );
         final FreeFromDutySet aFreeFromDutySet = fInfoForSingleMember.getFreeFromDutySet();
@@ -205,8 +208,8 @@ public class GUIUpdater
 
     private static void addRow_DutyFree(
             final TBLModel_DutyFree fDataModel,
-            final FreeFromDuty fFreeFromDuty,
-            final IPeriod fPeriod )
+            final FreeFromDuty      fFreeFromDuty,
+            final IPeriod           fPeriod )
     {
         if( !fPeriod.isWithinMyPeriod( fFreeFromDuty ) ){
             return;
@@ -219,16 +222,19 @@ public class GUIUpdater
         fDataModel.addRow( rowData );
     }
 
-    private static void fillPanel_DutyCharge(final TBLModel_DutyCharge fDataModel,
-            final InfoForSingleMember fInfoForSingleMember,
-            final MainPanel fPanel, final ADH_DataProvider fDataProvider )
+    private static void fillPanel_DutyCharge(
+            final TBLModel_DutyCharge   fDataModel,
+            final InfoForSingleMember   fInfoForSingleMember,
+            final MainPanel             fPanel,
+            final ADH_DataProvider      fDataProvider,
+            final IPeriod               fPeriod )
     {
         fDataModel.setRowCount( 0 );
         final List<InfoForSingleMember> aAllRelatives = fInfoForSingleMember.getAllRelatives();
         for( final InfoForSingleMember aInfoForThisRelative : aAllRelatives ){
             final String aMemberName = fDataProvider.getMemberName( aInfoForThisRelative.getID() );
             final DutyCharge aDutyCharge = aInfoForThisRelative.getDutyCharge();
-            final Balance aBalance = aInfoForThisRelative.getBalance();
+            final Balance aBalance = aInfoForThisRelative.getBalance( fPeriod );
             addRow_DutyChargeAndBalance( fDataModel, aMemberName, aDutyCharge, aBalance );
         }
         final DutyCharge aDutyChargeOfThisMember = fInfoForSingleMember.getDutyCharge();
@@ -236,10 +242,10 @@ public class GUIUpdater
     }
 
     private static void addRow_DutyChargeAndBalance(
-            final TBLModel_DutyCharge fDataModel,
-            final String fMemberName,
-            final DutyCharge fDutyCharge,
-            final Balance fBalance )
+            final TBLModel_DutyCharge   fDataModel,
+            final String                fMemberName,
+            final DutyCharge            fDutyCharge,
+            final Balance               fBalance )
     {
         final Vector<Object> rowData = new Vector<>();
         rowData.addElement( fMemberName );

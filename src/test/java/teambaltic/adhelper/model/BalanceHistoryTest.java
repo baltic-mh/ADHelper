@@ -54,7 +54,7 @@ public class BalanceHistoryTest
         final BalanceHistory aTestObject = new BalanceHistory( aMemberID );
 
         populate( aMemberID, aTestObject, 5 );
-        final Balance aNewestValue = aTestObject.getNewestValue();
+        final Balance aNewestValue = aTestObject.getValue( new Halfyear(2017, 7 ) );
 
         assertEquals("NewestValue", 54, aNewestValue.getValue_Original());
     }

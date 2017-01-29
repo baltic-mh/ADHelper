@@ -13,6 +13,7 @@ package teambaltic.adhelper.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,7 @@ import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IClubSettings;
+import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
@@ -69,18 +71,22 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private ChargeCalculator m_ChargeCalculator;
-    public void setChargeCalculator( final ChargeCalculator fNewVal ){ m_ChargeCalculator = fNewVal; }
-    public ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
+    private final ChargeCalculator m_ChargeCalculator;
+    private ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
     // ------------------------------------------------------------------------
 
     public ADH_DataProvider( final IPeriodDataController fPDC, final IAllSettings fSettings ) throws Exception
     {
-        m_PDC = fPDC;
-        m_AllSettings = fSettings;
+        m_PDC               = fPDC;
+        m_AllSettings       = fSettings;
+        m_ChargeCalculator  = new ChargeCalculator( getClubSettings() );
     }
 
     public void init( final PeriodData fPeriodData ) throws Exception
+    {
+        init( fPeriodData, 0 );
+    }
+    public void init( final PeriodData fPeriodData, final int fOnlyID ) throws Exception
     {
         if( fPeriodData.equals( m_PeriodData ) ){
             return;
@@ -91,63 +97,64 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             return;
         }
         sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
-        m_ChargeCalculator = createChargeCalculator( aPeriod );
 
         // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen
-        readBaseData( getPDC().getFile_BaseData( fPeriodData ) );
+        readBaseData( getPDC().getFile_BaseData( fPeriodData ), fOnlyID );
         readWorkEvents( getPDC().getFile_WorkEvents( fPeriodData ) );
-        readBalances( getPDC().getFile_Balances( fPeriodData ) );
+        readBalances( fPeriodData );
 
         populateFreeFromDutySets( aPeriod );
         joinRelatives();
 
         calculateDutyCharges( aPeriod );
-        balanceRelatives();
+        balanceRelatives( aPeriod );
 
     }
 
-    public void readBaseData( final Path fFileToReadFrom ) throws Exception
+    private void readBalances(final PeriodData fPeriodData) throws Exception
+    {
+        Path aFileToReadFrom = getPDC().getFile_BalanceHistory( fPeriodData );
+        final boolean aOld = !Files.exists( aFileToReadFrom );
+        if( aOld ){
+            aFileToReadFrom = getPDC().getFile_Balances( fPeriodData );
+            aFileToReadFrom = FileUtils.getPathWithPostfixAppended( aFileToReadFrom, "_old" );
+        }
+        readBalances( aFileToReadFrom, aOld );
+        if( aOld ){
+            Writer.writeToFile_BalanceHistories( this, fPeriodData.getFolder() );
+        }
+    }
+    public void readBaseData( final Path fFileToReadFrom, final int fOnlyID ) throws Exception
     {
         clear();
         setBaseDataFile( fFileToReadFrom.toFile() );
         final BaseDataReader aReader = new BaseDataReader( getBaseDataFile() );
-        m_Members = aReader.read( this );
+        m_Members = aReader.read( this, fOnlyID );
         Collections.sort( m_Members );
     }
 
-    public void readWorkEvents( final Path fFileToReadFrom )
+    public void readWorkEvents( final Path fFileToReadFrom ) throws Exception
     {
         final WorkEventReader aReader = new WorkEventReader( fFileToReadFrom.toFile() );
-        try{
-            aReader.read( this );
-        }catch( final Exception fEx ){
-            // TODO Auto-generated catch block
-            sm_Log.warn("Exception: ", fEx );
-        }
+        aReader.read( this );
     }
 
-    public void readBalances( final Path fFileToReadFrom )
+    public void readBalances( final Path fFileToReadFrom, final boolean fOld ) throws Exception
     {
-        final BalanceReader aReader = new BalanceReader( fFileToReadFrom.toFile() );
-        try{
-            aReader.read( this );
-        }catch( final Exception fEx ){
-            // TODO Auto-generated catch block
-            sm_Log.warn("Exception: "+ fEx.getMessage() );
-        }
+        final BalanceReader aReader = new BalanceReader( fFileToReadFrom.toFile(), fOld );
+        aReader.read( this );
     }
 
-    public void calculateDutyCharges(final IPeriod fInvoicingPeriod)
+    public void calculateDutyCharges(final IPeriod fPeriod)
     {
         for( final InfoForSingleMember aSingleInfo : getAll() ){
-            getChargeCalculator().calculate( aSingleInfo );
+            final DutyCharge aCharge = getChargeCalculator().calculate( aSingleInfo, fPeriod );
+            final IPeriod aNextPeriod = fPeriod.createSuccessor();
+            final Balance aChargedBalanceOfThisPeriod = aSingleInfo.getBalance( fPeriod );
+            final Balance aStartBalanceForNextPeriod = new Balance(aSingleInfo.getID(), aNextPeriod, aChargedBalanceOfThisPeriod.getValue_ChargedAndAdjusted());
+            aSingleInfo.addBalance( aStartBalanceForNextPeriod );
+            aSingleInfo.setDutyCharge( aCharge );
         }
-    }
-
-    public ChargeCalculator createChargeCalculator( final IPeriod fInvoicingPeriod )
-    {
-        final ChargeCalculator aChargeCalculator = new ChargeCalculator( fInvoicingPeriod, getClubSettings() );
-        return aChargeCalculator;
     }
 
     private void populateFreeFromDutySets(final IPeriod fInvoicingPeriod)
@@ -192,14 +199,14 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         }
     }
 
-    public void balanceRelatives()
+    public void balanceRelatives(final IPeriod fPeriod)
     {
         for( final InfoForSingleMember aSingleInfo : getAll() ){
             final IClubMember aMember = aSingleInfo.getMember();
             if( aMember.getLinkID() != 0 ){
                 continue;
             }
-            m_ChargeCalculator.balance( aSingleInfo );
+            m_ChargeCalculator.balance( aSingleInfo, fPeriod );
         }
     }
 
@@ -209,22 +216,10 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         return aInfo.getMember();
     }
 
-    public Balance getBalance( final int fMemberID )
-    {
-        final InfoForSingleMember aInfo = get( fMemberID );
-        return aInfo.getBalance();
-    }
-
     public BalanceHistory getBalanceHistory( final int fMemberID )
     {
         final InfoForSingleMember aInfo = get( fMemberID );
         return aInfo.getBalanceHistory();
-    }
-
-    private DutyCharge getDutyCharge( final int fMemberID )
-    {
-        final InfoForSingleMember aInfo = get( fMemberID );
-        return aInfo.getDutyCharge();
     }
 
     private WorkEventsAttended getWorkEventsAttended( final int fMemberID )

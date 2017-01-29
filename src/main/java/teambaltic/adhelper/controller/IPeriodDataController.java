@@ -59,6 +59,7 @@ public interface IPeriodDataController
     Path getFile_BaseData( PeriodData fPeriodData );
     Path getFile_WorkEvents( PeriodData fPeriodData );
     Path getFile_Balances( PeriodData fPeriodData );
+    Path getFile_BalanceHistory( PeriodData fPeriodData );
     void removeDataFolderOrphans( List<Path> fPeriodFoldersKnownOnServer );
 
 }

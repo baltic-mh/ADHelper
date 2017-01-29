@@ -90,7 +90,7 @@ public class DetailsReporter
         final List<Month> aMonthsDue = DutyCalculator.getMonthsDue( fInvoicingPeriod, aEffectiveFFDs );
         if( aMonthsDue.size() > 0 ){
             fWriter.write( "--------------------------------------------------------------------------\r\n" );
-            fWriter.write( String.format( "Für AD angerechnete Monate: %s\r\n",
+            fWriter.write( String.format( "Fuer AD angerechnete Monate: %s\r\n",
                     DateUtils.getNames( aMonthsDue ) ));
         }
 
@@ -119,7 +119,7 @@ public class DetailsReporter
         final List<InfoForSingleMember> aAllRelatives = fSingleInfo.getAllRelatives();
         for( final InfoForSingleMember aInfoOfThisMember : aAllRelatives ){
             final IClubMember aRelatedMember = aInfoOfThisMember.getMember();
-            final Balance aBalance = aInfoOfThisMember.getBalance();
+            final Balance aBalance = aInfoOfThisMember.getBalance( fInvoicingPeriod );
             final DutyCharge aC = aInfoOfThisMember.getDutyCharge();
             final int aHoursDue = aC.getHoursDue();
             aTotalDue += aHoursDue;

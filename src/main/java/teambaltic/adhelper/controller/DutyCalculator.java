@@ -35,35 +35,28 @@ public class DutyCalculator
 //    private static final Logger sm_Log = Logger.getLogger(DutyCalculator.class);
 
     // ------------------------------------------------------------------------
-    private final IPeriod m_Period;
-    public IPeriod getPeriod(){ return m_Period; }
-    // ------------------------------------------------------------------------
-
     private final IClubSettings m_ClubSettings;
     private IClubSettings getClubSettings(){ return m_ClubSettings; }
+    // ------------------------------------------------------------------------
 
-    public DutyCalculator(
-            final IPeriod fInvoicingPeriod,
-            final IClubSettings fClubSettings)
+    public DutyCalculator( final IClubSettings fClubSettings )
     {
-        m_Period        = fInvoicingPeriod;
         m_ClubSettings  = fClubSettings;
     }
 
-    public int calculateHoursToWork( final Collection<FreeFromDuty> fFFDItems )
+    public int calculateHoursToWork( final Collection<FreeFromDuty> fFFDItems, final IPeriod fPeriod )
     {
         if( fFFDItems == null ){
             return getClubSettings().getDutyHoursPerPeriod();
         }
-        final IPeriod aIP = getPeriod();
-        final Collection<FreeFromDuty> aEffectiveFFDs = getEffectiveFreeFromDutyItems( aIP, fFFDItems );
-        final List<Month> aMonthsDue = getMonthsDue( aIP, aEffectiveFFDs );
+        final Collection<FreeFromDuty> aEffectiveFFDs = getEffectiveFreeFromDutyItems( fPeriod, fFFDItems );
+        final List<Month> aMonthsDue = getMonthsDue( fPeriod, aEffectiveFFDs );
         final int aNumMonthsDue = aMonthsDue.size();
         if( aNumMonthsDue == 0 ){
             return 0;
         }
 
-        final Period aPeriod = Period.between( aIP.getStart(), aIP.getEnd() );
+        final Period aPeriod = Period.between( fPeriod.getStart(), fPeriod.getEnd() );
         final int aMonthsInInvoicingPeriod = aPeriod.getMonths()+1;
         final int aHoursToWork = getClubSettings().getDutyHoursPerPeriod() *
                 aNumMonthsDue / aMonthsInInvoicingPeriod;

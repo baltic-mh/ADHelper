@@ -52,7 +52,7 @@ public class PeriodDataChangedListener implements ItemListener
                 return;
             }
             try{
-                getDataProvider().init( aPeriodData );
+                getDataProvider().init( aPeriodData, Integer.parseInt( System.getProperty( "onlyid", "0" ) ) );
                 getGUIUpdater().updateGUI( aPeriodData );
             }catch( final Exception fEx ){
                 // TODO Auto-generated catch block

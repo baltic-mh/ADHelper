@@ -172,7 +172,7 @@ public class ManageWorkEventsListener implements ActionListener, TableModelListe
                 if( aDataChanged ){
                     m_DataProvider.writeToFile_WorkEvents();
                     m_DataProvider.calculateDutyCharges(aSelectedPeriod.getPeriod());
-                    m_DataProvider.balanceRelatives();
+                    m_DataProvider.balanceRelatives( aSelectedPeriod.getPeriod());
                     getGUIUpdater().updateGUI();
                 }
                 m_WorkEventsDialog.setVisible(false);

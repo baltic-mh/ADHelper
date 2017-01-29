@@ -63,7 +63,7 @@ public class BaseInfoReaderTest
         final BaseDataReader aReader = new BaseDataReader( aFile );
         final ListProvider<InfoForSingleMember> aInfoListProvider = new ListProvider<>();
         try{
-            aReader.read(  aInfoListProvider );
+            aReader.read(  aInfoListProvider, 0 );
             final Collection<InfoForSingleMember> aInfoList = aInfoListProvider.getAll();
             for( final InfoForSingleMember aInfo : aInfoList ){
                 final IClubMember aMember = aInfo.getMember();

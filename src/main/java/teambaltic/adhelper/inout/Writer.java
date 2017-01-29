@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.model.Balance;
+import teambaltic.adhelper.model.BalanceHistory;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -42,6 +43,8 @@ public class Writer
     private static final Logger sm_Log = Logger.getLogger(Writer.class);
     private static final String LF = "\r\n";
     private static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
+    private static final String BALANCEFORMAT_OLD = "%s;%s;%.2f;%.2f;%s"+LF;
+    private static final String BALANCEFORMAT = "%s;%s;%.2f;%s"+LF;
 
     // ------------------------------------------------------------------------
     private final ADH_DataProvider m_DataProvider;
@@ -59,6 +62,7 @@ public class Writer
         writeToFile_WorkEvents( getDataProvider(), fOutputFolder );
         writeToFile_Obligations( getDataProvider(), fOutputFolder );
         writeToFile_Balances( getDataProvider(), fOutputFolder );
+        writeToFile_BalanceHistories( getDataProvider(), fOutputFolder );
         DetailsReporter.report( getDataProvider(), fOutputFolder );
     }
 
@@ -118,7 +122,7 @@ public class Writer
         return aAllWorkEvents;
     }
 
-    private static void writeToFile_Obligations(
+    public static void writeToFile_Obligations(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder )
     {
@@ -149,7 +153,7 @@ public class Writer
         }
     }
 
-    private static void writeToFile_Balances(
+    public static void writeToFile_Balances(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder)
     {
@@ -157,22 +161,13 @@ public class Writer
         final String aBalanceAt = getNewBalanceDateString( aPeriod.getEnd() );
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", CHARSET_ISO_8859_1);
-            aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
+            aFileWriter.write( String.format("%s;%s,%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT_ALT, IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
-                final int aMemberID = aSingleInfo.getID();
-                final Balance aBalance = aSingleInfo.getBalance();
-                final int aBalance_Old = aBalance.getValue_Original();
-                final int aBalance_New = aBalance.getValue_ChargedAndAdjusted();
-                if( aBalance_Old == 0 && aBalance_New == 0 ){
-                    continue;
-                }
-                final String aLine = String.format( "%s;%s;%.2f;%.2f;%s"+LF,
-                        aMemberID, fDataProvider.getMemberName( aMemberID ),
-                        aBalance_Old/100.0f, aBalance_New/100.0f, aBalanceAt );
-//                sm_Log.info( aLine );
-                aFileWriter.write( aLine );
+                final String aMemberName = fDataProvider.getMemberName( aSingleInfo.getID() );
+                final Balance aBalance = aSingleInfo.getBalance( aPeriod );
+                writeSingleBalanceLine( aFileWriter, aMemberName, aBalance, aBalanceAt, false );
             }
             aFileWriter.close();
         }catch( final FileNotFoundException fEx ){
@@ -180,6 +175,61 @@ public class Writer
         }catch( final UnsupportedEncodingException fEx ){
             sm_Log.warn("Exception: ", fEx );
         }
+    }
+
+    public static void writeToFile_BalanceHistories(
+            final ADH_DataProvider fDataProvider,
+            final Path fOutputFolder)
+    {
+        try{
+            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/GuthabenVerlauf.csv", CHARSET_ISO_8859_1);
+            aFileWriter.write( String.format("%s;%s;%s;%s"+LF,
+                    IKnownColumns.MEMBERID, IKnownColumns.NAME,
+                    IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
+            for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
+                final String aMemberName = fDataProvider.getMemberName( aSingleInfo.getID() );
+                final BalanceHistory aBalanceHistory = aSingleInfo.getBalanceHistory();
+                for(final LocalDate aValidFrom : aBalanceHistory.getValidFromList() ){
+                    final Balance aBalance = aBalanceHistory.getValue( aValidFrom );
+                    if( aBalance.getValue_Original() == 0 ){
+                        continue;
+                    }
+                    writeSingleBalanceLine( aFileWriter, aMemberName, aBalance, toStringWithDots(aValidFrom), true );
+                }
+            }
+            aFileWriter.close();
+        }catch( final FileNotFoundException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }catch( final UnsupportedEncodingException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
+
+    private static void writeSingleBalanceLine(
+            final PrintWriter   fFileWriter,
+            final String        fMemberName,
+            final Balance       fBalance,
+            final String        fValidFrom,
+            final boolean       fNewFormat )
+    {
+        final int aBalance_Org = fBalance.getValue_Original();
+        final int aBalance_CAA = fBalance.getValue_ChargedAndAdjusted();
+        if( aBalance_Org == 0 && aBalance_CAA == 0 ){
+            return;
+        }
+
+        final String aLine;
+        if( fNewFormat ){
+            aLine = String.format( BALANCEFORMAT,
+                    fBalance.getMemberID(), fMemberName,
+                    aBalance_Org/100.0f, fValidFrom );
+        } else {
+            aLine = String.format( BALANCEFORMAT_OLD,
+                    fBalance.getMemberID(), fMemberName,
+                    aBalance_Org/100.0f, aBalance_CAA/100.0f, fValidFrom );
+        }
+//                sm_Log.info( aLine );
+        fFileWriter.write( aLine );
     }
 
     private static String getNewBalanceDateString( final LocalDate fDate )

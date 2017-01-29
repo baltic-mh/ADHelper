@@ -63,7 +63,8 @@ public class Balance implements IIdentifiedItem<Balance>
     @Override
     public String toString()
     {
-        return String.format("%5.1f", getValue_Original() / 100.0f);
+        return String.format("%d (%s) => %5.2f/%5.2f/%5.2f", getID(), getValidFrom(),
+                getValue_Original() / 100.0f, getValue_Charged() / 100.0f, getValue_ChargedAndAdjusted() / 100.0f);
     }
 
     @Override

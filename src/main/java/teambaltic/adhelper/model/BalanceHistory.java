@@ -15,7 +15,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -32,12 +34,25 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final List<Balance> m_BalanceList;
+    private final Map<LocalDate, Balance> m_BalanceMap;
     public List<Balance> getBalanceList(){
         if( !isListSorted() ){
-            sortBalanceList();
+            sortValidFromList();
         }
-        return new ArrayList<>(m_BalanceList);
+        return new ArrayList<>(m_BalanceMap.values());
+    }
+    public Balance getValue( final IPeriod fPeriod ){ return getValue( fPeriod.getStart() ); }
+    public Balance getValue( final LocalDate fValidFrom ){ return m_BalanceMap.get( fValidFrom ); }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final List<LocalDate> m_ValidFromList;
+    public List<LocalDate> getValidFromList()
+    {
+        if( !isListSorted() ){
+            sortValidFromList();
+        }
+        return new ArrayList<>( m_ValidFromList );
     }
     // ------------------------------------------------------------------------
 
@@ -47,34 +62,26 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
     private void setListSorted( final boolean fListSorted ){ m_ListSorted = fListSorted; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private Balance m_NewestValue;
-    public Balance getNewestValue()
-    {
-        synchronized( m_BalanceList ){
-            if( m_BalanceList.size() == 0 ){
-                return null;
-            }
-            if( !isListSorted() ){
-                sortBalanceList();
-                m_NewestValue = m_BalanceList.get( m_BalanceList.size() - 1 );
-            }
-            return m_NewestValue;
-        }
-    }
-    // ------------------------------------------------------------------------
-
     public BalanceHistory( final int fMemberID )
     {
-        m_MemberID  = fMemberID;
-        m_BalanceList = new ArrayList<>();
+        m_MemberID   = fMemberID;
+        m_BalanceMap = new LinkedHashMap<>();
+        m_ValidFromList = new ArrayList<>();
     }
 
     public void addBalance( final Balance fNewBalance )
     {
-        synchronized( m_BalanceList ){
-            checkNewKid( fNewBalance );
-            m_BalanceList.add( fNewBalance );
+        if( fNewBalance == null ) {
+            return;
+        }
+        synchronized( m_BalanceMap ){
+            final boolean aOK = checkNewKid( fNewBalance );
+            if( !aOK ){
+                return;
+            }
+            final LocalDate aValidFrom = fNewBalance.getValidFrom();
+            m_BalanceMap.put( aValidFrom, fNewBalance );
+            m_ValidFromList.add( aValidFrom );
             setListSorted( false );
         }
     }
@@ -91,12 +98,12 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
     @Override
     public String toString()
     {
-        synchronized( m_BalanceList ){
+        synchronized( m_BalanceMap ){
             if( !isListSorted() ){
-                sortBalanceList();
+                sortValidFromList();
             }
             final StringBuffer aSB = new StringBuffer( String.format( "%d => ", getID() ) );
-            for( final Balance aBalance : m_BalanceList ){
+            for( final Balance aBalance : m_BalanceMap.values() ){
                 aSB.append( String.format( "%s : %d | ", aBalance.getValidFrom(), aBalance.getValue_Original() ) );
             }
             return aSB.toString();
@@ -105,15 +112,13 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
     /**
      * Sortiert die übergebene Liste nach Datum, aufsteigend
      */
-    private void sortBalanceList()
+    private void sortValidFromList()
     {
-        synchronized( m_BalanceList ){
-            Collections.sort( m_BalanceList, new Comparator<Balance>() {
+        synchronized( m_BalanceMap ){
+            Collections.sort( m_ValidFromList, new Comparator<LocalDate>() {
                 @Override
-                public int compare( final Balance fBalance1, final Balance fBalance2 )
+                public int compare( final LocalDate aValidFrom1, final LocalDate aValidFrom2 )
                 {
-                    final LocalDate aValidFrom1 = fBalance1.getValidFrom();
-                    final LocalDate aValidFrom2 = fBalance2.getValidFrom();
                     final int aDatesCompared = aValidFrom1.compareTo( aValidFrom2 );
                     return aDatesCompared;
                 }
@@ -122,7 +127,7 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
         }
     }
 
-    private void checkNewKid(final Balance fBalanceToAdd)
+    private boolean checkNewKid(final Balance fBalanceToAdd)
     {
         final int aMemberID = getMemberID();
         final int aMemberIDToAdd = fBalanceToAdd.getMemberID();
@@ -131,12 +136,16 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
                     aMemberIDToAdd, aMemberID) );
         }
         final LocalDate aNewValidFrom = fBalanceToAdd.getValidFrom();
-        for( final Balance aBalance : m_BalanceList ){
-            if( aNewValidFrom.equals( aBalance.getValidFrom() )){
-                throw new IllegalStateException( String.format("Für Mitglied '%d' existieren zwei Guthabenwerte mit demselben Stichdatum: %s",
-                        aMemberID, aNewValidFrom) );
-            }
+        if( aNewValidFrom == null ){
+            throw new IllegalStateException( String.format("Guthaben für Mitglied '%d' hat kein gültiges Stichdatum!",
+                    aMemberID) );
         }
+        final Balance aBalance = m_BalanceMap.get( aNewValidFrom );
+        if( aBalance != null ){
+            sm_Log.warn( String.format("Für Mitglied '%d' existieren zwei Guthabenwerte mit demselben Stichdatum: %s",
+                    aMemberID, aNewValidFrom) );
+        }
+        return true;
     }
 }
 

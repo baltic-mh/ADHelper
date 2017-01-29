@@ -107,10 +107,24 @@ public class Halfyear extends APeriod
         return new Halfyear( fPrevious.getYear()+1, EPart.FIRST );
     }
 
+    public static Halfyear previous( final Halfyear fNext )
+    {
+        if( EPart.SECOND.equals( fNext.getPart() ) ){
+            return new Halfyear( fNext.getYear(), EPart.FIRST );
+        }
+        return new Halfyear( fNext.getYear()-1, EPart.SECOND );
+    }
+
     @Override
     public IPeriod createSuccessor()
     {
         return Halfyear.next( this );
+    }
+
+    @Override
+    public IPeriod createPredeccessor()
+    {
+        return Halfyear.previous( this );
     }
 
 }

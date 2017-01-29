@@ -12,7 +12,6 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +21,6 @@ import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.factories.BalanceFactory;
 import teambaltic.adhelper.factories.IItemFactory;
 import teambaltic.adhelper.model.Balance;
-import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.FileUtils;
@@ -38,11 +36,13 @@ public class BalanceReader
     // ------------------------------------------------------------------------
 
     private final IItemFactory<Balance> m_ItemFactory;
+    private final IItemFactory<Balance> m_ItemFactory_Old;
 
-    public BalanceReader( final File fFile )
+    public BalanceReader( final File fFile, final boolean fOld )
     {
         m_File = fFile;
         m_ItemFactory = new BalanceFactory();
+        m_ItemFactory_Old = !fOld ? null : new BalanceFactory( true );
     }
 
     public void read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
@@ -50,43 +50,25 @@ public class BalanceReader
         final File aFile = getFile();
         FileUtils.checkFile( aFile );
 
-        final Map<Integer, InfoForSingleMember> aMemberInfoMap = new HashMap<>();
-
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
         final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
         for( final String aSingleLine : aAllLines ){
             final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
             final int aMemberID = Integer.parseInt( aIDString );
-            final InfoForSingleMember aInfo = getMemberInfo( aMemberID, aMemberInfoMap, fListProvider );
+            final InfoForSingleMember aInfo = fListProvider.get( aMemberID );
             if( aInfo == null ){
                 sm_Log.error( String.format( "Mitglied mit der ID %d nicht gefunden!", aMemberID ) );
                 continue;
             }
             final Balance aItem = m_ItemFactory.createItem( aMemberID, aAttributes);
             aInfo.addBalance( aItem );
-        }
-
-        for( final InfoForSingleMember aInfo : aMemberInfoMap.values() ){
-            final int aMemberID    = aInfo.getID();
-            final Balance aBalance = aInfo.getBalance();
-            aInfo.setDutyCharge( new DutyCharge(aMemberID, aBalance ) );
-        }
-    }
-
-    private static InfoForSingleMember getMemberInfo(
-            final int fMemberID,
-            final Map<Integer, InfoForSingleMember> fMemberInfoMap,
-            final ListProvider<InfoForSingleMember> fListProvider )
-    {
-        InfoForSingleMember aInfo = fMemberInfoMap.get( fMemberID );
-        if( aInfo == null ){
-            aInfo = fListProvider.get( fMemberID );
-            if( aInfo != null ){
-                fMemberInfoMap.put( fMemberID, aInfo );
+            if( m_ItemFactory_Old != null ){
+                final Balance aOldItem = m_ItemFactory_Old.createItem( aMemberID, aAttributes );
+                aInfo.addBalance( aOldItem );
             }
         }
-        return aInfo;
+
     }
 
 }

@@ -37,32 +37,28 @@ public class ChargeCalculator
     public DutyCalculator getDutyCalculator(){ return m_DutyCalculator; }
     // ------------------------------------------------------------------------
 
-    public ChargeCalculator( final IPeriod fPeriod, final IClubSettings fClubSettings )
+    public ChargeCalculator( final IClubSettings fClubSettings )
     {
-        m_DutyCalculator = new DutyCalculator( fPeriod, fClubSettings );
+        m_DutyCalculator = new DutyCalculator( fClubSettings );
     }
 
-    public IPeriod getPeriod()
+    public DutyCharge calculate( final InfoForSingleMember fMemberInfo, final IPeriod fPeriod )
     {
-        return getDutyCalculator().getPeriod();
-    }
+        final int aMemberID = fMemberInfo.getID();
+        final DutyCharge aCharge = new DutyCharge( aMemberID );
 
-    public DutyCharge calculate( final InfoForSingleMember fMemberInfo )
-    {
         final WorkEventsAttended aWEA = fMemberInfo.getWorkEventsAttended();
-        final IPeriod aPeriod = getDutyCalculator().getPeriod();
-        final int aHoursWorked = aWEA == null ? 0 : aWEA.getTotalHoursWorked( aPeriod );
+        final int aHoursWorked = aWEA == null ? 0 : aWEA.getTotalHoursWorked( fPeriod );
 
-        final DutyCharge aCharge = fMemberInfo.getDutyCharge();
         aCharge.setHoursWorked( aHoursWorked );
 
         final Collection<FreeFromDuty> aFreeFromDutyItems = fMemberInfo.getFreeFromDutyItems();
-        final int aHoursDue = getDutyCalculator().calculateHoursToWork( aFreeFromDutyItems );
+        final int aHoursDue = getDutyCalculator().calculateHoursToWork( aFreeFromDutyItems, fPeriod );
         aCharge.setHoursDue( aHoursDue );
 
-        Balance aBalance = fMemberInfo.getBalance();
+        Balance aBalance = fMemberInfo.getBalance( fPeriod );
         if(  aBalance == null ){
-            aBalance = new Balance( fMemberInfo.getID(), aPeriod, 0);
+            aBalance = new Balance( aMemberID, fPeriod, 0);
             fMemberInfo.addBalance( aBalance );
         }
 
@@ -83,20 +79,20 @@ public class ChargeCalculator
         return aCharge;
     }
 
-    public void balance( final InfoForSingleMember fMemberInfo )
+    public void balance( final InfoForSingleMember fMemberInfo, final IPeriod fPeriod )
     {
         final List <InfoForSingleMember> aAllRelatives = fMemberInfo.getAllRelatives();
         int aHoursToPayTotal  = 0;
         int aBalanceTotal     = 0;
         for( final InfoForSingleMember aInfoForThisMember : aAllRelatives ){
             final DutyCharge aCharge = aInfoForThisMember.getDutyCharge();
-            final Balance aBalance = aInfoForThisMember.getBalance();
+            final Balance aBalance = aInfoForThisMember.getBalance( fPeriod );
             aHoursToPayTotal += aCharge.getHoursToPay();
             aBalanceTotal    += aBalance.getValue_Charged();
         }
         while( aBalanceTotal > 0 && aHoursToPayTotal > 0 ){
             for( final InfoForSingleMember aInfoForThisMember : aAllRelatives ){
-                final Balance aBalance = aInfoForThisMember.getBalance();
+                final Balance aBalance = aInfoForThisMember.getBalance( fPeriod );
                 int aChargedAndAdjusted = aBalance.getValue_ChargedAndAdjusted();
                 if( aChargedAndAdjusted <= 0 ){
                     continue;

@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
@@ -52,7 +53,7 @@ public class ReferenzTest
     public static void initOnceBeforeStart()
     {
         System.setProperty( EKey.FOLDERNAME_ROOT.name(), FOLDERNAME_ROOT);
-        System.setProperty( "log4j.debug", "true" );
+        System.setProperty( "log4j.debug", "false" );
         TestUtils.initLog4J();
         try{
             AllSettings.INSTANCE.init();
@@ -83,7 +84,7 @@ public class ReferenzTest
     public void test()
     {
         try{
-            DATAPROVIDER.init( ACTIVEPERIOD );
+            DATAPROVIDER.init( ACTIVEPERIOD, 0 );
         }catch( final Exception fEx ){
             sm_Log.warn("Exception: ", fEx );
             fail( "Mist: "+fEx.getMessage() );
@@ -93,9 +94,10 @@ public class ReferenzTest
         final Map<Integer, Integer> aCharges_Ref  = readCharges ( ACTIVEPERIOD.getFolder() );
 
         final List<InfoForSingleMember> aAll = DATAPROVIDER.getAll();
+        sm_Log.info( String.format( "Überprüfe %d Datensätze...", aAll.size()) );
         for( final InfoForSingleMember aInfoForSingleMember : aAll ){
             compareCharges ( aInfoForSingleMember, aCharges_Ref );
-            compareBalances( aInfoForSingleMember, aBalances_Ref );
+            compareBalances( aInfoForSingleMember, aBalances_Ref, ACTIVEPERIOD.getPeriod().createSuccessor() );
         }
     }
 
@@ -135,13 +137,18 @@ public class ReferenzTest
 
     private static void compareBalances(
             final InfoForSingleMember fInfoForSingleMember,
-            final Map<Integer, Integer> fBalances_Ref)
+            final Map<Integer, Integer> fBalances_Ref, final IPeriod fPeriod)
     {
         final int aID = fInfoForSingleMember.getID();
-        final Balance aBalance = fInfoForSingleMember.getBalance();
+        final Balance aBalance = fInfoForSingleMember.getBalance( fPeriod );
         final Integer aBalance_Ref = fBalances_Ref.get( aID );
+        if( aBalance == null && aBalance_Ref == null ){
+            return;
+        }
         if( aBalance_Ref == null){
             assertEquals(fInfoForSingleMember.toString()+": Balance", ZERO, Integer.valueOf(aBalance.getValue_ChargedAndAdjusted()));
+        } else if ( aBalance == null) {
+            assertEquals(fInfoForSingleMember.toString()+": Balance", aBalance_Ref, Integer.valueOf(0));
         } else {
             assertEquals(fInfoForSingleMember.toString()+": Balance", aBalance_Ref, Integer.valueOf(aBalance.getValue_ChargedAndAdjusted()));
         }

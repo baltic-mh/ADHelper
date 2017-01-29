@@ -15,8 +15,6 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1004000
+//RELEASE: 1005000
 ###############################################################################
-[NEU]  Vorbereitungen für Gutenhaben-Verlauf
-[NEU]  Referenz-Test eingeführt (Daten werden nicht ins Repository gestellt)
-[ÄNDERUNG]  Guthaben und Pflichtstunden rigoros voneinander getrennt
+[NEU]  Gutenhaben-Verlauf vollständig implementiert

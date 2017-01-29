@@ -104,14 +104,14 @@ public class ChargeCalculatorTest
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
         final IPeriod aInvoicingPeriod = new Halfyear( 2016, EPart.FIRST );
 
-        final ChargeCalculator aCC = new ChargeCalculator( aInvoicingPeriod, CLUBSETTINGS );
+        final ChargeCalculator aCC = new ChargeCalculator( CLUBSETTINGS );
 
         final Balance aMHW_Balance = new Balance( MHW.getID(), aInvoicingPeriod, MHW_BalanceValue );
         INFO4_MHW.addBalance( aMHW_Balance );
 
-        final DutyCharge aCharge_MHW = new DutyCharge( MHW.getID(), aMHW_Balance);
+        final DutyCharge aCharge_MHW = new DutyCharge( MHW.getID() );
         INFO4_MHW.setDutyCharge( aCharge_MHW );
-        aCC.calculate( INFO4_MHW );
+        aCC.calculate( INFO4_MHW, aInvoicingPeriod );
 
 //        final DutyCharge aCharge_MTW = new DutyCharge(MTW.getID(), 0);
 //        aCC.calculate( aCharge_MTW, null, null );
@@ -123,8 +123,8 @@ public class ChargeCalculatorTest
 //        aCC.calculate( aCharge_MMW, null, null );
 //        aCharge_MHW.addRelative( aCharge_MMW );
 
-        aCC.balance( INFO4_MHW );
-        reportCharge( INFO4_MHW );
+        aCC.balance( INFO4_MHW, aInvoicingPeriod );
+        reportCharge( INFO4_MHW, aInvoicingPeriod );
         TestUtils.logMethodEnd( aStartTime, aMethodName );
     }
 
@@ -200,13 +200,13 @@ public class ChargeCalculatorTest
 
     }
 
-    private static void reportCharge( final InfoForSingleMember fINFO4_SingleMember )
+    private static void reportCharge( final InfoForSingleMember fINFO4_SingleMember, final IPeriod fPeriod )
     {
         final List<InfoForSingleMember> aAllRelatives = fINFO4_SingleMember.getAllRelatives();
         sm_Log.info( String.format("%-20s  %5s %5s %5s %5s %5s %5s",
                 "Name", "Guth.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
         for( final InfoForSingleMember aInfoForThisRelative : aAllRelatives ){
-            final Balance aBalance = aInfoForThisRelative.getBalance();
+            final Balance aBalance = aInfoForThisRelative.getBalance( fPeriod );
             final DutyCharge aDutyCharge = aInfoForThisRelative.getDutyCharge();
             sm_Log.info( String.format("%-20s  %5.1f %5.1f    %5.1f   %5.1f   %5.1f   %5.1f",
                     aInfoForThisRelative.getMember().getName(),

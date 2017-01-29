@@ -46,7 +46,7 @@ public class DutyCharge implements IIdentifiedItem<DutyCharge>
     public void setHoursToPayTotal( final int fNewVal ){ m_HoursToPayTotal = fNewVal; }
     // ------------------------------------------------------------------------
 
-    public DutyCharge( final int fMemberID, final Balance fBalance )
+    public DutyCharge( final int fMemberID )
     {
         m_MemberID = fMemberID;
     }

@@ -21,7 +21,6 @@ import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.factories.FreeFromDutySetFactory;
 import teambaltic.adhelper.factories.IItemFactory;
 import teambaltic.adhelper.factories.MemberFactory;
-import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -59,7 +58,7 @@ public class BaseDataReader
         m_FFDSetFactory = new FreeFromDutySetFactory();
     }
 
-    public List<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
+    public List<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider, final int fOnlyID) throws Exception
     {
         final File aFile = getFile();
         FileUtils.checkFile( aFile );
@@ -71,6 +70,9 @@ public class BaseDataReader
             final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
             final int aID = Integer.parseInt( aIDString );
+            if( fOnlyID > 0 && fOnlyID != aID ) {
+                continue;
+            }
             InfoForSingleMember aInfo = fListProvider.get( aID );
             if( aInfo == null ){
                 aInfo = new InfoForSingleMember( aID );
@@ -94,7 +96,6 @@ public class BaseDataReader
         fInfo.setMember( aClubMember );
         final FreeFromDutySet aFFDSet = m_FFDSetFactory.createItem( aID, fAttributes);
         fInfo.setFreeFromDutySet( aFFDSet );
-        fInfo.setDutyCharge( new DutyCharge(aID, null ) );
     }
 
 }

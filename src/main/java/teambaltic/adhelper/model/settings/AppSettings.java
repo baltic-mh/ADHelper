@@ -107,6 +107,11 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getStringValue( EKey.FILENAME_BALANCES );
     }
     @Override
+    public String getFileName_BalanceHistory()
+    {
+        return getStringValue( EKey.FILENAME_BALANCEHISTORY );
+    }
+    @Override
     public String getFileName_UserSettings()
     {
         return getStringValue( EKey.FILENAME_USERDATA );

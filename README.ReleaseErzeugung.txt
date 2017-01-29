@@ -1,5 +1,8 @@
 Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:
 
+0. In der Datei gradle.properties die Versionsnummer anpassen. Wenn dies nicht
+   gemacht wird, wird einfach die Build-Nummer um eins erhöht.
+
 1. Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release
     => misc/build-res/ReleaseNotes-actual.txt
 

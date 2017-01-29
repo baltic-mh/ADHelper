@@ -24,6 +24,7 @@ public interface IPeriod
     boolean isWithinMyPeriod( LocalDate fEvent );
     boolean isWithinMyPeriod( IPeriod   fOtherPeriod );
     IPeriod createSuccessor();
+    IPeriod createPredeccessor();
 }
 
 // ############################################################################

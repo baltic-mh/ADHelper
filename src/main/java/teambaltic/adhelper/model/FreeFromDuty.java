@@ -128,6 +128,11 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
     {
         return null;
     }
+    @Override
+    public IPeriod createPredeccessor()
+    {
+        return null;
+    }
 }
 
 // ############################################################################
