@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1005000	Version: 1.5.0	Datum: 2017-01-29
+[NEU]  Gutenhaben-Verlauf vollständig implementiert
+================================================================================
 Release: 1004000	Version: 1.4.0	Datum: 2017-01-24
 [NEU]  Vorbereitungen für Gutenhaben-Verlauf
 [NEU]  Referenz-Test eingeführt (Daten werden nicht ins Repository gestellt)
