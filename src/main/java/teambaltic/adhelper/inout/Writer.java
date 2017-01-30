@@ -177,12 +177,13 @@ public class Writer
         }
     }
 
-    public static void writeToFile_BalanceHistories(
+    public static Path writeToFile_BalanceHistories(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder)
     {
         try{
-            final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/GuthabenVerlauf.csv", CHARSET_ISO_8859_1);
+            final Path aPath = fOutputFolder.resolve( "GuthabenVerlauf.csv" );
+            final PrintWriter aFileWriter = new PrintWriter(aPath.toFile(), CHARSET_ISO_8859_1);
             aFileWriter.write( String.format("%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
@@ -198,10 +199,10 @@ public class Writer
                 }
             }
             aFileWriter.close();
-        }catch( final FileNotFoundException fEx ){
+            return aPath;
+        }catch( final Exception fEx ){
             sm_Log.warn("Exception: ", fEx );
-        }catch( final UnsupportedEncodingException fEx ){
-            sm_Log.warn("Exception: ", fEx );
+            return null;
         }
     }
 

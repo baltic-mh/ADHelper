@@ -121,7 +121,9 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         }
         readBalances( aFileToReadFrom, aOld );
         if( aOld ){
-            Writer.writeToFile_BalanceHistories( this, fPeriodData.getFolder() );
+            final Path aFile_BalanceHistories = Writer.writeToFile_BalanceHistories( this, fPeriodData.getFolder() );
+            // Die Datei soll nicht älter sein, als die Datei, aus der die Daten gelesen wurden:
+            aFile_BalanceHistories.toFile().setLastModified( aFileToReadFrom.toFile().lastModified() );
         }
     }
     public void readBaseData( final Path fFileToReadFrom, final int fOnlyID ) throws Exception
