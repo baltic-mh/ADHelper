@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1005001" version="1.5.1">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;ÄNDERUNG&lt;/b&gt;
+    &lt;dd&gt;Verbesserung der Erkennung von lokalen Datenänderungen&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="3586130" sourcedir="1005001"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="38817" sourcedir="1005001"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1005001"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="6584" sourcedir="1005001"/>
+    </arch>
+  </version>
   <version release="1005000" version="1.5.0">
     <description>
     &lt;dl&gt;

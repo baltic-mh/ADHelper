@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1005001	Version: 1.5.1	Datum: 2017-01-30
+[ÄNDERUNG]  Verbesserung der Erkennung von lokalen Datenänderungen
+================================================================================
 Release: 1005000	Version: 1.5.0	Datum: 2017-01-29
 [NEU]  Gutenhaben-Verlauf vollständig implementiert
 ================================================================================
