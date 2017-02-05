@@ -15,6 +15,7 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1005001
+//RELEASE: 1005002
 ###############################################################################
-[ÄNDERUNG]  Verbesserung der Erkennung von lokalen Datenänderungen
+[ÄNDERUNG] Vorschlag für neuen Arbeitsdienst-Termin innerhalb aktiver Periode
+[ÄNDERUNG] Upload nur noch möglich, wenn tatsächlich Daten geändert wurden
