@@ -249,7 +249,12 @@ public class TransferController implements ITransferController
             return false;
         }
         final CheckSumCreator aCSC = getCheckSumCreator();
-        final boolean aFolderDirty = isFolderDirty( aCSC, aActivePeriodFolder );
+        final Path aZipFile = Paths.get(aActivePeriodFolder.toString()+".zip");
+        final Path aLocalCheckSumFile = aCSC.getCheckSumFile( aZipFile );
+
+        final String aFileName_Uploaded = getAppSettings().getFileName_Uploaded();
+        final boolean aFolderDirty = FileUtils.isFolderDirty(
+                aActivePeriodFolder, aFileName_Uploaded, aLocalCheckSumFile );
         sm_Log.info( String.format("Aktive Periode ist lokal %sverändert: %s",
                 aFolderDirty ? "" : "un", aActivePeriodFolder ));
         return aFolderDirty;
@@ -258,6 +263,9 @@ public class TransferController implements ITransferController
     @Override
     public boolean uploadPeriodData() throws Exception
     {
+        if( !isActivePeriodModifiedLocally() ) {
+            return false;
+        }
         final Path aFolderToUpload = getPDC().getActivePeriodFolder();
         final String aFileName_Uploaded = getAppSettings().getFileName_Uploaded();
         // Damit die Datei mit der Upload-Info auch auf den Server kommt,
@@ -383,37 +391,6 @@ public class TransferController implements ITransferController
         }
         ZipUtils.unzip( aFileToDownload );
         Files.delete( aFileToDownload );
-    }
-
-    private static boolean isFolderDirty(final CheckSumCreator fCSC, final Path fFolderToUpload)
-    {
-        if( !Files.exists( fFolderToUpload )){
-            return false;
-        }
-        final File[] aEntries = fFolderToUpload.toFile().listFiles();
-        if( aEntries == null || aEntries.length == 0 ){
-            return false;
-        }
-        final Path aZipFile = Paths.get(fFolderToUpload.toString()+".zip");
-        final Path aLocalCheckSumFile = fCSC.getCheckSumFile( aZipFile );
-        if( !Files.exists( aLocalCheckSumFile )){
-            return true;
-        }
-//        final long aLastModified_Folder = fFolderToUpload.toFile().lastModified();
-//        final long aLastModified_LocalCheckSumFile = aLocalCheckSumFile.toFile().lastModified();
-//        // Hier besteht in aller Regel nur ein Differenz von wenigen Sekunden:
-//        if( aLastModified_Folder > aLastModified_LocalCheckSumFile ){
-//            return true;
-//        }
-        final CheckSumInfo aCSILocal = CheckSumInfo.readFromFile( aLocalCheckSumFile );
-        final long aTimeStampOfUpload = aCSILocal.getTimeStamp();
-        for( final File aEntry : aEntries ){
-            final long aLastModified = aEntry.lastModified();
-            if( aTimeStampOfUpload < aLastModified ){
-                return true;
-            }
-        }
-        return false;
     }
 
 }

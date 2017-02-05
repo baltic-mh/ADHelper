@@ -261,7 +261,7 @@ public class ADH_Application
     {
         setPDC( fPDC );
         setTransferController( fTransferController );
-        m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC );
+        m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC, fTransferController );
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
 
         final PeriodDataChangedListener aPDCL = initComboBox_PeriodData( fDataProvider, fPDC );

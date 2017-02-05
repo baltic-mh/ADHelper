@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.IPeriodDataController;
+import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.gui.model.CBModel_Member;
 import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
@@ -59,16 +60,23 @@ public class GUIUpdater
     public  PeriodData getPeriodData(){ return m_PeriodData; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private final ITransferController m_TransferController;
+    private ITransferController getTransferController(){ return m_TransferController; }
+    // ------------------------------------------------------------------------
+
     private final RNDR_CB_Member m_Renderer_Member;
 
     public GUIUpdater(
             final MainPanel             fPanel,
             final ADH_DataProvider      fDataProvider,
-            final IPeriodDataController fPDC )
+            final IPeriodDataController fPDC,
+            final ITransferController   fTransferController )
     {
         m_Panel = fPanel;
         m_DataProvider = fDataProvider;
         m_PDC = fPDC;
+        m_TransferController = fTransferController;
         m_Renderer_Member = new RNDR_CB_Member( m_DataProvider );
     }
 
@@ -109,7 +117,7 @@ public class GUIUpdater
         fillPanel_DutyCharge( aDM_DutyChargs, aInfoForSingleMember, m_Panel, m_DataProvider, fPeriodData.getPeriod() );
 
         if( fPeriodData != null ){
-            configureButtons( m_Panel, getPDC(), fPeriodData );
+            configureButtons( m_Panel, getTransferController(), getPDC(), fPeriodData );
         }
     }
 
@@ -260,13 +268,14 @@ public class GUIUpdater
 
     private static void configureButtons(
             final MainPanel fPanel,
+            final ITransferController fTransferController,
             final IPeriodDataController fPDC,
             final PeriodData fPeriodData)
     {
         final boolean aFinished = fPDC.isFinished( fPeriodData );
         fPanel.enableBtn_Finish( !aFinished );
-//        fPanel.enableBtn_Upload( aFinished && !fPDC.isUploaded( fPeriodData ) );
-        fPanel.enableBtn_Upload( true );
+        final boolean aEnable = fPeriodData.isActive() && fTransferController.isActivePeriodModifiedLocally();
+        fPanel.enableBtn_Upload( aEnable );
 
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         fPanel.configure( aUserSettings.getRole() );

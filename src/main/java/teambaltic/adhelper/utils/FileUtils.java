@@ -35,6 +35,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 
+import teambaltic.adhelper.model.CheckSumInfo;
+
 // ############################################################################
 public final class FileUtils
 {
@@ -250,6 +252,51 @@ public final class FileUtils
     {
         Files.move( fFrom, fTo );
     }
+
+    public static boolean isFolderDirty(
+            final Path fFolderToUpload,
+            final String fFileName_Uploaded,
+            final Path fLocalCheckSumFile )
+    {
+        if( !Files.exists( fFolderToUpload )){
+            return false;
+        }
+        final File[] aEntries = fFolderToUpload.toFile().listFiles();
+        if( aEntries == null || aEntries.length == 0 ){
+            return false;
+        }
+        final long aTimeStampOfUpload = getTimeStampOfUpload( fFolderToUpload, fFileName_Uploaded, fLocalCheckSumFile );
+        for( final File aEntry : aEntries ){
+            final long aLastModified = aEntry.lastModified();
+            if( aTimeStampOfUpload < aLastModified ){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static long getTimeStampOfUpload(
+            final Path fFolderToUpload,
+            final String fFileName_Uploaded,
+            final Path fLocalCheckSumFile )
+    {
+        final Path aUploadedFile = fFolderToUpload.resolve( fFileName_Uploaded );
+        if( Files.exists( aUploadedFile )){
+            final List<String> aAllLines = FileUtils.readAllLines( aUploadedFile, 1 );
+            final String aLastLine = aAllLines.get( aAllLines.size()-1 );
+            final String aTimeStampString = aLastLine.split( ";" )[0];
+            final long aTimeStampOfUpload = Long.valueOf( aTimeStampString );
+            return aTimeStampOfUpload;
+        }
+
+        if( !Files.exists( fLocalCheckSumFile )){
+            return 0L;
+        }
+        final CheckSumInfo aCSILocal = CheckSumInfo.readFromFile( fLocalCheckSumFile );
+        final long aTimeStampOfUpload = aCSILocal.getTimeStamp();
+        return aTimeStampOfUpload;
+    }
+
 }
 
 // ############################################################################
