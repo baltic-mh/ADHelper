@@ -61,6 +61,9 @@ public class NewWorkEventDateListener implements ActionListener
         final String aActionCommand = fEvent.getActionCommand();
         switch( aActionCommand ){
             case "NEU":
+                final PeriodData aActivePeriodData = getPDC().getActivePeriod();
+                final IPeriod    aActivePeriod     = aActivePeriodData.getPeriod();
+                m_DateChooserFrame.setDate( aActivePeriod.getStart() );
                 m_DateChooserFrame.setVisible( true );
                 break;
 

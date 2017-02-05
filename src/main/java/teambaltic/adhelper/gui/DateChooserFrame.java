@@ -119,6 +119,15 @@ public class DateChooserFrame extends JFrame
         m_btn_Cancel.addActionListener(fListener);
         m_btn_OK.addActionListener(fListener);
     }
+
+    public void setDate( final LocalDate fDate )
+    {
+        @SuppressWarnings("unchecked")
+        final DateModel<LocalDate> aModel = (DateModel<LocalDate>) m_DatePanel.getModel();
+        aModel.setDate(fDate.getYear(), fDate.getMonthValue(), fDate.getDayOfMonth() );
+        aModel.setSelected( true );
+
+    }
 }
 
 // ############################################################################
