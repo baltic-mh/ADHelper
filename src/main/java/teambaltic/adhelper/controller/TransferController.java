@@ -255,8 +255,10 @@ public class TransferController implements ITransferController
         final String aFileName_Uploaded = getAppSettings().getFileName_Uploaded();
         final boolean aFolderDirty = FileUtils.isFolderDirty(
                 aActivePeriodFolder, aFileName_Uploaded, aLocalCheckSumFile );
-        sm_Log.info( String.format("Aktive Periode ist lokal %sverändert: %s",
-                aFolderDirty ? "" : "un", aActivePeriodFolder ));
+        if( sm_Log.isDebugEnabled() ){
+            sm_Log.debug( String.format("Aktive Periode ist lokal %sverändert: %s",
+                    aFolderDirty ? "" : "un", aActivePeriodFolder ));
+        }
         return aFolderDirty;
     }
 

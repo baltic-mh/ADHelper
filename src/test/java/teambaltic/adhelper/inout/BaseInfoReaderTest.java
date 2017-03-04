@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teambaltic.adhelper.controller.ListProvider;
-import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.Log4J;
@@ -68,12 +68,9 @@ public class BaseInfoReaderTest
             for( final InfoForSingleMember aInfo : aInfoList ){
                 final IClubMember aMember = aInfo.getMember();
                 final StringBuffer aSB = new StringBuffer( "Mitglied: "+aMember );
-                final Collection<FreeFromDuty> aFreeFromDutyItems = aInfo.getFreeFromDutyItems();
-                if( aFreeFromDutyItems.size() > 0 ){
-                    aSB.append( " | AD-Befreiung: " );
-                    for( final FreeFromDuty aFreeFromDuty : aFreeFromDutyItems ){
-                            aSB.append( " | "+aFreeFromDuty );
-                    }
+                final FreeFromDutySet aFreeFromDutySet = aInfo.getFreeFromDutySet();
+                if( aFreeFromDutySet != null ){
+                    aSB.append( " | AD-Befreiung: "+aFreeFromDutySet );
                 }
                 sm_Log.info( aSB.toString() );
             }

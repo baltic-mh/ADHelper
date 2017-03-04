@@ -77,8 +77,7 @@ public class DetailsReporter
         fWriter.write( String.format( "(%d) %-21s Abrechnungszeitraum: %s\r\n",
                 aMember.getID(), aMember.getName(), fInvoicingPeriod ));
         final DutyCharge aCharge = fSingleInfo.getDutyCharge();
-        final Collection<FreeFromDuty> aFFDItems = fSingleInfo.getFreeFromDutyItems();
-        final Collection<FreeFromDuty> aEffectiveFFDs = DutyCalculator.getEffectiveFreeFromDutyItems( fInvoicingPeriod, aFFDItems );
+        final Collection<FreeFromDuty> aEffectiveFFDs = fSingleInfo.getFreeFromDutyItems(fInvoicingPeriod);
         if( aEffectiveFFDs.size() > 0 ){
             fWriter.write( "--------------------------------------------------------------------------\r\n" );
             for( final FreeFromDuty aFFD : aEffectiveFFDs ){

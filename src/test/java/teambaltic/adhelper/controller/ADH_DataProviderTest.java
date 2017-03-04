@@ -18,7 +18,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +30,6 @@ import org.junit.Test;
 import teambaltic.adhelper.inout.BaseDataReader;
 import teambaltic.adhelper.inout.DetailsReporter;
 import teambaltic.adhelper.model.Balance;
-import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
@@ -115,13 +113,9 @@ public class ADH_DataProviderTest
         for( final InfoForSingleMember aInfo : CHEF.getAll() ){
             final IClubMember aMember = aInfo.getMember();
             sm_Log.info("Mitglied: "+aMember);
-            final Collection<FreeFromDuty> aFreeFromDutyItems = aInfo.getFreeFromDutyItems();
-            if( aFreeFromDutyItems.size() > 0 ){
-                final StringBuffer aSB = new StringBuffer( "\tAD-Befreiung: " );
-                for( final FreeFromDuty aFreeFromDuty : aFreeFromDutyItems ){
-                    aSB.append( "  | "+aFreeFromDuty );
-                }
-                sm_Log.info( aSB.toString() );
+            final FreeFromDutySet aFreeFromDutySet = aInfo.getFreeFromDutySet();
+            if( aFreeFromDutySet != null ){
+                sm_Log.info( "\tAD-Befreiung: "+aFreeFromDutySet );
             }
             final WorkEventsAttended aWorkEventsAttended = aInfo.getWorkEventsAttended();
             if( aWorkEventsAttended != null ){

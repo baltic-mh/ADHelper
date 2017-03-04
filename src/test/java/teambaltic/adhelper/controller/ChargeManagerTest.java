@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -41,9 +42,9 @@ import teambaltic.adhelper.utils.Log4J;
 import teambaltic.adhelper.utils.TestUtils;
 
 // ############################################################################
-public class ChargeCalculatorTest
+public class ChargeManagerTest
 {
-    private static final Logger sm_Log = Logger.getLogger(ChargeCalculatorTest.class);
+    private static final Logger sm_Log = Logger.getLogger(ChargeManagerTest.class);
     private static ClubSettings CLUBSETTINGS;
 
     private static ClubMember MHW;
@@ -104,14 +105,16 @@ public class ChargeCalculatorTest
         final long aStartTime = TestUtils.logMethodStart( aMethodName );
         final IPeriod aInvoicingPeriod = new Halfyear( 2016, EPart.FIRST );
 
-        final ChargeCalculator aCC = new ChargeCalculator( CLUBSETTINGS );
+        final ChargeManager aCM = new ChargeManager( CLUBSETTINGS );
 
         final Balance aMHW_Balance = new Balance( MHW.getID(), aInvoicingPeriod, MHW_BalanceValue );
         INFO4_MHW.addBalance( aMHW_Balance );
 
         final DutyCharge aCharge_MHW = new DutyCharge( MHW.getID() );
         INFO4_MHW.setDutyCharge( aCharge_MHW );
-        aCC.calculate( INFO4_MHW, aInvoicingPeriod );
+        final int aHoursWorked = ChargeManager.getHoursWorked( INFO4_MHW, aInvoicingPeriod );
+        final Collection<FreeFromDuty> aFreeFromDutyItems = INFO4_MHW.getFreeFromDutyItems( aInvoicingPeriod );
+        aCM.createDutyCharge( INFO4_MHW.getID(), aInvoicingPeriod, aMHW_Balance, aHoursWorked, aFreeFromDutyItems );
 
 //        final DutyCharge aCharge_MTW = new DutyCharge(MTW.getID(), 0);
 //        aCC.calculate( aCharge_MTW, null, null );
@@ -123,7 +126,9 @@ public class ChargeCalculatorTest
 //        aCC.calculate( aCharge_MMW, null, null );
 //        aCharge_MHW.addRelative( aCharge_MMW );
 
-        aCC.balance( INFO4_MHW, aInvoicingPeriod );
+        final DutyCharge aDutyCharge = INFO4_MHW.getDutyCharge();
+        final List<InfoForSingleMember> aAllRelatives = INFO4_MHW.getAllRelatives();
+        aCM.balance( aAllRelatives, aInvoicingPeriod, aDutyCharge );
         reportCharge( INFO4_MHW, aInvoicingPeriod );
         TestUtils.logMethodEnd( aStartTime, aMethodName );
     }

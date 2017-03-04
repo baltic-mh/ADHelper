@@ -83,12 +83,19 @@ public class ReferenzTest
     @Test
     public void test()
     {
+        // Mit diesem Wert kann man steuern, ob alle Daten eingelesen und
+        // bearbeitet werden oder nur für ein einzelnes Mitglied.
+        // Wenn aOnlyID == 0 ist, werden alle Daten eingelesen, sonst nur
+        // das durch die ID angegebene Mitglied.
+        final int aOnlyID = 0;//10197;
         try{
-            DATAPROVIDER.init( ACTIVEPERIOD, 0 );
+            DATAPROVIDER.init( ACTIVEPERIOD, aOnlyID );
         }catch( final Exception fEx ){
             sm_Log.warn("Exception: ", fEx );
             fail( "Mist: "+fEx.getMessage() );
         }
+
+//        Writer.writeToFile_BalanceHistories( DATAPROVIDER, ACTIVEPERIOD.getFolder() );
 
         final Map<Integer, Integer> aBalances_Ref = readBalances( ACTIVEPERIOD.getFolder() );
         final Map<Integer, Integer> aCharges_Ref  = readCharges ( ACTIVEPERIOD.getFolder() );
@@ -97,6 +104,9 @@ public class ReferenzTest
         sm_Log.info( String.format( "Überprüfe %d Datensätze...", aAll.size()) );
         for( final InfoForSingleMember aInfoForSingleMember : aAll ){
             compareCharges ( aInfoForSingleMember, aCharges_Ref );
+            compareBalances( aInfoForSingleMember, aBalances_Ref, ACTIVEPERIOD.getPeriod() );
+            // Da die Guthaben-III-Werte (belastet und ausgeglichen) verglichen werden
+            // müssen auch die Guthaben der Folgeperiode passen:
             compareBalances( aInfoForSingleMember, aBalances_Ref, ACTIVEPERIOD.getPeriod().createSuccessor() );
         }
     }

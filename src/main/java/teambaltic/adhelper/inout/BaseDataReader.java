@@ -70,8 +70,17 @@ public class BaseDataReader
             final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
             final int aID = Integer.parseInt( aIDString );
-            if( fOnlyID > 0 && fOnlyID != aID ) {
-                continue;
+            if( fOnlyID > 0 ) {
+                if( fOnlyID != aID ) {
+                    final String aRefIDString = aAttributes.get( IKnownColumns.LINKID );
+                    if( "".equals( aRefIDString ) ) {
+                        continue;
+                    }
+                    final int aRefID = Integer.parseInt( aRefIDString );
+                    if( fOnlyID != aRefID ) {
+                        continue;
+                    }
+                }
             }
             InfoForSingleMember aInfo = fListProvider.get( aID );
             if( aInfo == null ){

@@ -11,8 +11,10 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
@@ -29,7 +31,9 @@ public class FreeFromDutySet implements IIdentifiedItem<FreeFromDutySet>
 
     // ------------------------------------------------------------------------
     private final Map<REASON, FreeFromDuty> m_FreeFromDutyMap;
-    public Collection<FreeFromDuty> getFreeFromDutyItems(){ return m_FreeFromDutyMap.values(); }
+    public Collection<FreeFromDuty> getFreeFromDutyItems(final IPeriod fPeriod){
+        return getEffectiveFreeFromDutyItems(fPeriod, m_FreeFromDutyMap.values());
+    }
     // ------------------------------------------------------------------------
 
     public FreeFromDutySet( final int fMemberID )
@@ -69,6 +73,21 @@ public class FreeFromDutySet implements IIdentifiedItem<FreeFromDutySet>
             return aSB.toString();
         }
     }
+
+    static List<FreeFromDuty> getEffectiveFreeFromDutyItems(
+            final IPeriod fInvoicingPeriod,
+            final Collection<FreeFromDuty> fFFDItems )
+    {
+        final List<FreeFromDuty> aEffectiveFFDs = new ArrayList<>();
+        for( final FreeFromDuty aFreeFromDutyItem : fFFDItems ){
+            if( fInvoicingPeriod.isWithinMyPeriod( aFreeFromDutyItem ) ){
+                aEffectiveFFDs.add( aFreeFromDutyItem );
+            }
+        }
+        return aEffectiveFFDs;
+    }
+
+
 }
 
 // ############################################################################

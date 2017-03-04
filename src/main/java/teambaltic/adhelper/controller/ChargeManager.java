@@ -30,47 +30,35 @@ import teambaltic.adhelper.model.settings.IClubSettings;
  *
  *  Das DueDate ist das Ende des zur Berechnung stehenden Halbjahres.
  */
-public class ChargeCalculator
+public class ChargeManager
 {
     // ------------------------------------------------------------------------
     private final DutyCalculator m_DutyCalculator;
     public DutyCalculator getDutyCalculator(){ return m_DutyCalculator; }
     // ------------------------------------------------------------------------
 
-    public ChargeCalculator( final IClubSettings fClubSettings )
+    public ChargeManager( final IClubSettings fClubSettings )
     {
         m_DutyCalculator = new DutyCalculator( fClubSettings );
     }
 
-    public DutyCharge calculate( final InfoForSingleMember fMemberInfo, final IPeriod fPeriod )
+    public DutyCharge createDutyCharge(
+            final int aMemberID,
+            final IPeriod fPeriod,
+            final Balance fBalance,
+            final int fHoursWorked,
+            final Collection<FreeFromDuty> fFreeFromDutyItems )
     {
-        final int aMemberID = fMemberInfo.getID();
         final DutyCharge aCharge = new DutyCharge( aMemberID );
 
-        final WorkEventsAttended aWEA = fMemberInfo.getWorkEventsAttended();
-        final int aHoursWorked = aWEA == null ? 0 : aWEA.getTotalHoursWorked( fPeriod );
+        aCharge.setHoursWorked( fHoursWorked );
 
-        aCharge.setHoursWorked( aHoursWorked );
-
-        final Collection<FreeFromDuty> aFreeFromDutyItems = fMemberInfo.getFreeFromDutyItems();
-        final int aHoursDue = getDutyCalculator().calculateHoursToWork( aFreeFromDutyItems, fPeriod );
+        final int aHoursDue = getDutyCalculator().calculateHoursToWork( fFreeFromDutyItems, fPeriod );
         aCharge.setHoursDue( aHoursDue );
 
-        Balance aBalance = fMemberInfo.getBalance( fPeriod );
-        if(  aBalance == null ){
-            aBalance = new Balance( aMemberID, fPeriod, 0);
-            fMemberInfo.addBalance( aBalance );
-        }
+        final int aBalanceValue = fBalance.getValue_Original();
 
-        final int aBalanceValue = aBalance.getValue_Original();
-        int aBalanceCharged = aBalanceValue + aHoursWorked - aHoursDue;
-        if( aBalanceCharged < 0 ){
-            aBalanceCharged = 0;
-        }
-        aBalance.setValue_Charged( aBalanceCharged );
-        aBalance.setValue_ChargedAndAdjusted( aBalanceCharged );
-
-        int aHoursToPay = aHoursDue - aHoursWorked - aBalanceValue;
+        int aHoursToPay = aHoursDue - fHoursWorked - aBalanceValue;
         if( aHoursToPay < 0 ){
             aHoursToPay = 0;
         }
@@ -79,9 +67,11 @@ public class ChargeCalculator
         return aCharge;
     }
 
-    public void balance( final InfoForSingleMember fMemberInfo, final IPeriod fPeriod )
+    public void balance(
+            final List <InfoForSingleMember> aAllRelatives,
+            final IPeriod fPeriod,
+            final DutyCharge fDutyCharge )
     {
-        final List <InfoForSingleMember> aAllRelatives = fMemberInfo.getAllRelatives();
         int aHoursToPayTotal  = 0;
         int aBalanceTotal     = 0;
         for( final InfoForSingleMember aInfoForThisMember : aAllRelatives ){
@@ -117,7 +107,14 @@ public class ChargeCalculator
 
             }
         }
-        fMemberInfo.getDutyCharge().setHoursToPayTotal( aHoursToPayTotal );
+        fDutyCharge.setHoursToPayTotal( aHoursToPayTotal );
+    }
+
+    public static int getHoursWorked( final InfoForSingleMember fSingleInfo, final IPeriod fPeriod )
+    {
+        final WorkEventsAttended aWEA = fSingleInfo.getWorkEventsAttended();
+        final int aHoursWorked = aWEA == null ? 0 : aWEA.getTotalHoursWorked( fPeriod );
+        return aHoursWorked;
     }
 
 }

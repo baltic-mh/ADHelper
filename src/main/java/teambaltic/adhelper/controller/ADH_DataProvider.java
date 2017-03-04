@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import teambaltic.adhelper.inout.Writer;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.BalanceHistory;
 import teambaltic.adhelper.model.DutyCharge;
+import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
@@ -71,15 +73,15 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final ChargeCalculator m_ChargeCalculator;
-    private ChargeCalculator getChargeCalculator(){ return m_ChargeCalculator; }
+    private final ChargeManager m_ChargeManager;
+    private ChargeManager getChargeManager(){ return m_ChargeManager; }
     // ------------------------------------------------------------------------
 
     public ADH_DataProvider( final IPeriodDataController fPDC, final IAllSettings fSettings ) throws Exception
     {
-        m_PDC               = fPDC;
-        m_AllSettings       = fSettings;
-        m_ChargeCalculator  = new ChargeCalculator( getClubSettings() );
+        m_PDC           = fPDC;
+        m_AllSettings   = fSettings;
+        m_ChargeManager = new ChargeManager( getClubSettings() );
     }
 
     public void init( final PeriodData fPeriodData ) throws Exception
@@ -150,13 +152,36 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void calculateDutyCharges(final IPeriod fPeriod)
     {
         for( final InfoForSingleMember aSingleInfo : getAll() ){
-            final DutyCharge aCharge = getChargeCalculator().calculate( aSingleInfo, fPeriod );
-            final IPeriod aNextPeriod = fPeriod.createSuccessor();
-            final Balance aChargedBalanceOfThisPeriod = aSingleInfo.getBalance( fPeriod );
-            final Balance aStartBalanceForNextPeriod = new Balance(aSingleInfo.getID(), aNextPeriod, aChargedBalanceOfThisPeriod.getValue_ChargedAndAdjusted());
-            aSingleInfo.addBalance( aStartBalanceForNextPeriod );
+            Balance aBalance = aSingleInfo.getBalance( fPeriod );
+            if(  aBalance == null ){
+                aBalance = new Balance( aSingleInfo.getID(), fPeriod, 0);
+                aSingleInfo.addBalance( aBalance );
+            }
+            final int aHoursWorked = ChargeManager.getHoursWorked( aSingleInfo, fPeriod );
+            final Collection<FreeFromDuty> aFreeFromDutyItems = aSingleInfo.getFreeFromDutyItems( fPeriod );
+            final DutyCharge aCharge = getChargeManager().createDutyCharge(
+                    aSingleInfo.getID(), fPeriod, aBalance, aHoursWorked, aFreeFromDutyItems );
             aSingleInfo.setDutyCharge( aCharge );
+            /*final Balance aChargedBalanceOfThisPeriod = */chargeBalance( aBalance, fPeriod, aCharge );
         }
+    }
+
+    private static Balance chargeBalance(
+            final Balance fBalance,
+            final IPeriod fPeriod,
+            final DutyCharge fCharge)
+    {
+        final int aBalanceValue = fBalance.getValue_Original();
+        final int aHoursWorked = fCharge.getHoursWorked();
+        final int aHoursDue    = fCharge.getHoursDue();
+        int aBalanceCharged = aBalanceValue + aHoursWorked - aHoursDue;
+        if( aBalanceCharged < 0 ){
+            aBalanceCharged = 0;
+        }
+        fBalance.setValue_Charged( aBalanceCharged );
+        fBalance.setValue_ChargedAndAdjusted( aBalanceCharged );
+
+        return fBalance;
     }
 
     private void populateFreeFromDutySets(final IPeriod fInvoicingPeriod)
@@ -203,12 +228,23 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     public void balanceRelatives(final IPeriod fPeriod)
     {
+        final IPeriod aNextPeriod = fPeriod.createSuccessor();
         for( final InfoForSingleMember aSingleInfo : getAll() ){
-            final IClubMember aMember = aSingleInfo.getMember();
-            if( aMember.getLinkID() != 0 ){
-                continue;
+            try{
+                final IClubMember aMember = aSingleInfo.getMember();
+                if( aMember.getLinkID() != 0 ){
+                    continue;
+                }
+                final List<InfoForSingleMember> aAllRelatives = aSingleInfo.getAllRelatives();
+                final DutyCharge aDutyCharge = aSingleInfo.getDutyCharge();
+                m_ChargeManager.balance( aAllRelatives, fPeriod, aDutyCharge );
+            } finally {
+                final Balance aBalanceOfThisPeriod = aSingleInfo.getBalance( fPeriod );
+                final int aValue_ChargedAndAdjusted = aBalanceOfThisPeriod.getValue_ChargedAndAdjusted();
+                final Balance aStartBalanceForNextPeriod = new Balance(
+                      aSingleInfo.getID(), aNextPeriod, aValue_ChargedAndAdjusted );
+                aSingleInfo.addBalance( aStartBalanceForNextPeriod );
             }
-            m_ChargeCalculator.balance( aSingleInfo, fPeriod );
         }
     }
 

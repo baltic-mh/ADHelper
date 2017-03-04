@@ -141,11 +141,19 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
                     aMemberID) );
         }
         final Balance aBalance = m_BalanceMap.get( aNewValidFrom );
-        if( aBalance != null ){
-            sm_Log.warn( String.format("Für Mitglied '%d' existieren zwei Guthabenwerte mit demselben Stichdatum: %s",
-                    aMemberID, aNewValidFrom) );
+        if( aBalance == null ){
+            return true;
         }
-        return true;
+
+        final int aOldValue_Original = aBalance.getValue_Original();
+        final int aNewValue_Original = fBalanceToAdd.getValue_Original();
+        if( aNewValue_Original != aOldValue_Original){
+            sm_Log.error( String.format("Für Mitglied '%d' existieren zwei Guthabenwerte mit"
+                    +" demselben Stichdatum (%s) aber unterschiedlichen Werten: Alt: %d Neu: %d."
+                    +" Der neue Wert wird ignoriert!",
+                    aMemberID, aNewValidFrom, aOldValue_Original, aNewValue_Original) );
+        }
+        return false;
     }
 }
 

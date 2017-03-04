@@ -49,8 +49,7 @@ public class DutyCalculator
         if( fFFDItems == null ){
             return getClubSettings().getDutyHoursPerPeriod();
         }
-        final Collection<FreeFromDuty> aEffectiveFFDs = getEffectiveFreeFromDutyItems( fPeriod, fFFDItems );
-        final List<Month> aMonthsDue = getMonthsDue( fPeriod, aEffectiveFFDs );
+        final List<Month> aMonthsDue = getMonthsDue( fPeriod, fFFDItems );
         final int aNumMonthsDue = aMonthsDue.size();
         if( aNumMonthsDue == 0 ){
             return 0;
@@ -61,19 +60,6 @@ public class DutyCalculator
         final int aHoursToWork = getClubSettings().getDutyHoursPerPeriod() *
                 aNumMonthsDue / aMonthsInInvoicingPeriod;
         return aHoursToWork;
-    }
-
-    public static List<FreeFromDuty> getEffectiveFreeFromDutyItems(
-            final IPeriod fInvoicingPeriod,
-            final Collection<FreeFromDuty> fFFDItems )
-    {
-        final List<FreeFromDuty> aEffectiveFFDs = new ArrayList<>();
-        for( final FreeFromDuty aFreeFromDutyItem : fFFDItems ){
-            if( fInvoicingPeriod.isWithinMyPeriod( aFreeFromDutyItem ) ){
-                aEffectiveFFDs.add( aFreeFromDutyItem );
-            }
-        }
-        return aEffectiveFFDs;
     }
 
     public static List<Month> getMonthsDue(

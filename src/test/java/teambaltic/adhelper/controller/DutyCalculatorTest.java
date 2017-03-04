@@ -12,11 +12,15 @@
 package teambaltic.adhelper.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -57,7 +61,7 @@ public class DutyCalculatorTest
     {
         Log4J.initLog4J();
         try{
-            CLUBSETTINGS = new ClubSettings( Paths.get( "Daten/Einstellungen/VereinsDaten.prop") );
+            CLUBSETTINGS = new ClubSettings( Paths.get( "misc/TestResources/VereinsDaten.properties") );
             sm_FFDCalculator = new FreeFromDutyCalculator( CLUBSETTINGS );
         }catch( final Exception fEx ){
             fail("Exception: "+ fEx.getMessage() );
@@ -88,7 +92,7 @@ public class DutyCalculatorTest
     {
         final String aTestName = "SimplyTooOld";
         sm_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
-        check( aTestName, 0, REASON.TOO_OLD, REASON.NO_LONGER_MEMBER );
+        check( aTestName, 0, REASON.TOO_OLD );
 
     }
 
@@ -120,7 +124,7 @@ public class DutyCalculatorTest
         final String aTestName = "ErstImMaerzZuAltAberAustrittImFebruar";
         sm_Member.setBirthday( LocalDate.of( 1940, 3, 31 ) );
         // (bevor er in den Genuss kommt, alt genug zu sein, ist er ausgetreten :-/
-        sm_Member.setMemberUntil( LocalDate.of( 2000, 3, 1 ) );
+        sm_Member.setMemberUntil( LocalDate.of( 2000, 2, 29 ) );
 
         check( aTestName, 1, REASON.NO_LONGER_MEMBER, REASON.TOO_OLD );
 
@@ -198,11 +202,13 @@ public class DutyCalculatorTest
     {
         sm_FFDCalculator.populateFFDSetFromMemberData( sm_FreeFromDutySet, sm_InvoicingPeriod, sm_Member );
 
-        final List<FreeFromDuty> aEffectiveItems = DutyCalculator.getEffectiveFreeFromDutyItems( sm_InvoicingPeriod, sm_Info.getFreeFromDutyItems() );
+        final Collection<FreeFromDuty> aEffectiveItems = sm_Info.getFreeFromDutyItems(sm_InvoicingPeriod);
         assertEquals(fTestName+": EffectiveFFDs.size", fExp_Reasons.length, aEffectiveItems.size());
-        for( int aIDX = 0; aIDX < fExp_Reasons.length; aIDX++ ){
-            final FreeFromDuty aFreeFromDuty = aEffectiveItems.get( aIDX );
-            assertEquals( fTestName+": FFD "+aIDX, fExp_Reasons[aIDX], aFreeFromDuty.getReason() );
+        final List<REASON> aReasonList = Arrays.asList( fExp_Reasons );
+        for( final Iterator<FreeFromDuty> aIterator = aEffectiveItems.iterator(); aIterator.hasNext(); ){
+            final FreeFromDuty aFreeFromDuty = aIterator.next();
+            final REASON aReason = aFreeFromDuty.getReason();
+            assertTrue( fTestName+": FFD "+aReason, aReasonList.contains( aReason ));
         }
 
         final List<Month> aMonthsDue = DutyCalculator.getMonthsDue( sm_InvoicingPeriod, aEffectiveItems );

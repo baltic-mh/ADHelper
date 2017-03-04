@@ -207,21 +207,17 @@ public class GUIUpdater
     {
         fDataModel.setRowCount( 0 );
         final FreeFromDutySet aFreeFromDutySet = fInfoForSingleMember.getFreeFromDutySet();
-        final Collection<FreeFromDuty> aFreeFromDutyItems = aFreeFromDutySet.getFreeFromDutyItems();
         final IPeriod aPeriod = fDataProvider.getPeriod();
+        final Collection<FreeFromDuty> aFreeFromDutyItems = aFreeFromDutySet.getFreeFromDutyItems( aPeriod );
         for( final FreeFromDuty aFreeFromDuty : aFreeFromDutyItems ){
-            addRow_DutyFree( fDataModel, aFreeFromDuty, aPeriod );
+            addRow_DutyFree( fDataModel, aFreeFromDuty );
         }
     }
 
     private static void addRow_DutyFree(
             final TBLModel_DutyFree fDataModel,
-            final FreeFromDuty      fFreeFromDuty,
-            final IPeriod           fPeriod )
+            final FreeFromDuty      fFreeFromDuty )
     {
-        if( !fPeriod.isWithinMyPeriod( fFreeFromDuty ) ){
-            return;
-        }
         final Vector<Object> rowData = new Vector<>();
         final LocalDate aFrom = fFreeFromDuty.getFrom();
         rowData.addElement( fFreeFromDuty.getReason() );

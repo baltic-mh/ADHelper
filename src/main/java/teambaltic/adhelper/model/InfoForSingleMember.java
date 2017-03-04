@@ -39,7 +39,7 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     // ------------------------------------------------------------------------
     private FreeFromDutySet m_FreeFromDutySet;
     public FreeFromDutySet getFreeFromDutySet(){ return m_FreeFromDutySet; }
-    public Collection<FreeFromDuty> getFreeFromDutyItems(){ return m_FreeFromDutySet.getFreeFromDutyItems(); }
+    public Collection<FreeFromDuty> getFreeFromDutyItems(final IPeriod fPeriod){ return m_FreeFromDutySet.getFreeFromDutyItems(fPeriod); }
     public void setFreeFromDutySet( final FreeFromDutySet fNewVal ){ m_FreeFromDutySet = fNewVal; }
     // ------------------------------------------------------------------------
 
