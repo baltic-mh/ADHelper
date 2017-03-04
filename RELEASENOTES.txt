@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1005003	Version: 1.5.3	Datum: 2017-03-04
+[ÄNDERUNG] Verbesserungen und Vereinfachungen bei der Guthabenberechnung
+[INTERN] Plugin-Versionen aktualisiert
+================================================================================
 Release: 1005002	Version: 1.5.2	Datum: 2017-02-05
 [ÄNDERUNG] Vorschlag für neuen Arbeitsdienst-Termin innerhalb aktiver Periode
 [ÄNDERUNG] Upload nur noch möglich, wenn tatsächlich Daten geändert wurden
