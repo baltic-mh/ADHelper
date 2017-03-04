@@ -20,7 +20,7 @@ plugins {
     // plugins like subversion commit number or git commit hash.
     // Die zugehörige Task lautet "generateBuildConfig"
     // https://github.com/mfuerstenau/gradle-buildconfig-plugin
-    id 'de.fuerstenau.buildconfig' version '1.1.7'
+    id 'de.fuerstenau.buildconfig' version '1.1.8'
     
     // Shadow is a Gradle plugin for combining dependency classes and resources
     // with a project�s into a single output Jar. The combined Jar is often
@@ -29,12 +29,12 @@ plugins {
     // output jar without incurring the I/O overhead of expanding the jars to
     // disk.
     // http://imperceptiblethoughts.com/shadow/
-    id "com.github.johnrengelman.shadow" version "1.2.3"
+    id "com.github.johnrengelman.shadow" version "1.2.4"
 
     // The gradle-launch4j plugin uses launch4j to create windows .exe files
     // for java applications.
     // https://github.com/TheBoegl/gradle-launch4j
-    id 'edu.sc.seis.launch4j' version '1.6.2'
+    id 'edu.sc.seis.launch4j' version '2.3.0'
 
     // https://github.com/researchgate/gradle-release
     // Dieses Plugin setzt voraus, dass Git im Pfad eingetragen ist!
@@ -46,7 +46,7 @@ plugins {
     
     // SSH
     // https://gradle-ssh-plugin.github.io/
-    id 'org.hidetake.ssh' version '2.7.0'
+    id 'org.hidetake.ssh' version '2.8.0'
 
 }
 
