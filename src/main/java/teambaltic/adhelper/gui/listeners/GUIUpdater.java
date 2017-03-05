@@ -195,7 +195,6 @@ public class GUIUpdater
         rowData.addElement( fMemberName );
         rowData.addElement( fWorkEvent.getDate() );
         rowData.addElement( fWorkEvent.getHours()/100.0f );
-        rowData.addElement( fWorkEvent.getCleared() );
         fDataModel.addRow( rowData );
     }
 

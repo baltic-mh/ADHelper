@@ -35,12 +35,6 @@ public class WorkEvent implements IIdentifiedItem<WorkEvent>
     public void setHours( final int fHours ) { m_Hours = fHours; }
     // ------------------------------------------------------------------------
 
-    // ------------------------------------------------------------------------
-    private LocalDate m_Cleared;
-    public LocalDate getCleared(){ return m_Cleared; }
-    public void setCleared( final LocalDate fCleared ){ m_Cleared = fCleared; }
-    // ------------------------------------------------------------------------
-
     public WorkEvent( final int fMemberID )
     {
         m_MemberID = fMemberID;

@@ -23,15 +23,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableRowSorter;
 
-import teambaltic.adhelper.gui.model.TBLModel_WorkEvents;
+import teambaltic.adhelper.gui.model.TBLModel_Participation;
 
 // ############################################################################
-public class WorkEventsFilterController
+public class TeilnehmerFilterController
     implements ActionListener, DocumentListener
 {
     // ------------------------------------------------------------------------
-    private final TableRowSorter<TBLModel_WorkEvents> m_Sorter;
-    private TableRowSorter<TBLModel_WorkEvents> getSorter(){ return m_Sorter; }
+    private final TableRowSorter<TBLModel_Participation> m_Sorter;
+    private TableRowSorter<TBLModel_Participation> getSorter(){ return m_Sorter; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -46,25 +46,17 @@ public class WorkEventsFilterController
 
     // ------------------------------------------------------------------------
     private final JButton m_btn_ToggleDabeiFilter;
-
-    private JButton getBtn_ToggleDabeiFilter()
-    {
-        return m_btn_ToggleDabeiFilter;
-    }
+    private JButton getBtn_ToggleDabeiFilter() { return m_btn_ToggleDabeiFilter; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final JTextField m_tf_Filter;
-
-    private JTextField getTf_Filter()
-    {
-        return m_tf_Filter;
-    }
+    private JTextField getTf_Filter(){ return m_tf_Filter; }
     // ------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public WorkEventsFilterController(
-            final TableRowSorter<TBLModel_WorkEvents> fSorter,
+    public TeilnehmerFilterController(
+            final TableRowSorter<TBLModel_Participation> fSorter,
             final JButton fBtn_ToggleDabeiFilter,
             final JTextField fTF_Filter)
     {

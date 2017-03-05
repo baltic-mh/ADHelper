@@ -13,10 +13,10 @@ package teambaltic.adhelper.gui;
 
 import javax.swing.RowFilter;
 
-import teambaltic.adhelper.gui.model.TBLModel_WorkEvents;
+import teambaltic.adhelper.gui.model.TBLModel_Participation;
 
 // ############################################################################
-public class RowFilter_NurTeilnehmer extends RowFilter<TBLModel_WorkEvents, Integer>
+public class RowFilter_NurTeilnehmer extends RowFilter<TBLModel_Participation, Integer>
 {
     // ------------------------------------------------------------------------
     private boolean m_Enabled;
@@ -30,7 +30,7 @@ public class RowFilter_NurTeilnehmer extends RowFilter<TBLModel_WorkEvents, Inte
     }
 
     @Override
-    public boolean include(final RowFilter.Entry<? extends TBLModel_WorkEvents, ? extends Integer> fEntry)
+    public boolean include(final RowFilter.Entry<? extends TBLModel_Participation, ? extends Integer> fEntry)
     {
         if( !isEnabled() ){
             return true;
@@ -44,8 +44,8 @@ public class RowFilter_NurTeilnehmer extends RowFilter<TBLModel_WorkEvents, Inte
         }
         aValue = fEntry.getValue( 3 );
         if( aValue instanceof Double ){
-            final boolean aHatGearbeitet = ((Double)aValue).doubleValue() > 0.0;
-            if( aHatGearbeitet ){
+            final boolean aParticipates = ((Double)aValue).doubleValue() > 0.0;
+            if( aParticipates ){
                 return true;
             }
         }

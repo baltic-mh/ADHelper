@@ -20,13 +20,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.table.TableCellEditor;
 
 // ############################################################################
-public class WorkedHoursSpinnerEditor extends AbstractCellEditor implements TableCellEditor
+public class HoursSpinnerEditor extends AbstractCellEditor implements TableCellEditor
 {
     private static final long serialVersionUID = 3347552072237679344L;
 
     private final JSpinner spinner;
 
-    public WorkedHoursSpinnerEditor()
+    public HoursSpinnerEditor()
     {
        spinner = new JSpinner(new SpinnerNumberModel(Double.valueOf( 0.0 ), Double.valueOf( 0.0 ), Double.valueOf( 10.0 ), Double.valueOf( 0.25 )));
        final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.##");

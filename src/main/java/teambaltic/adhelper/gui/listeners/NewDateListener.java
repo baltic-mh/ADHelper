@@ -26,9 +26,9 @@ import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.PeriodData;
 
 // ############################################################################
-public class NewWorkEventDateListener implements ActionListener
+public class NewDateListener implements ActionListener
 {
-    private static final Logger sm_Log = Logger.getLogger(NewWorkEventDateListener.class);
+    private static final Logger sm_Log = Logger.getLogger(NewDateListener.class);
 
     private final DateChooserFrame m_DateChooserFrame;
 
@@ -38,19 +38,19 @@ public class NewWorkEventDateListener implements ActionListener
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final ManageWorkEventsListener m_ManageWorkEventsListener;
-    private ManageWorkEventsListener getManageWorkEventsListener()
+    private final ManageParticipationsListener m_ManageparticipationsListener;
+    private ManageParticipationsListener getManageWorkEventsListener()
     {
-        return m_ManageWorkEventsListener;
+        return m_ManageparticipationsListener;
     }
     // ------------------------------------------------------------------------
 
-    public NewWorkEventDateListener(
-            final ManageWorkEventsListener fManageWorkEventsListener,
+    public NewDateListener(
+            final ManageParticipationsListener fManageparticipationsListener,
             final DateChooserFrame fDateChooserFrame,
             final IPeriodDataController fPDC)
     {
-        m_ManageWorkEventsListener = fManageWorkEventsListener;
+        m_ManageparticipationsListener = fManageparticipationsListener;
         m_DateChooserFrame = fDateChooserFrame;
         m_PDC = fPDC;
     }

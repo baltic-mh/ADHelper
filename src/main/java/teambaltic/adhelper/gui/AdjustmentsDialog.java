@@ -13,19 +13,20 @@ package teambaltic.adhelper.gui;
 
 import javax.swing.JDialog;
 
-import teambaltic.adhelper.gui.model.TBLModel_WorkEvents;
+import teambaltic.adhelper.gui.model.TBLModel_Adjustments;
 
 // ############################################################################
-public class WorkEventsDialog extends ParticipationsDialog
+public class AdjustmentsDialog extends ParticipationsDialog
 {
     private static final long serialVersionUID = -7487662229096717267L;
 
     private static int IDX_SEED = 100100;
+
     private static final Object[][] DATA = {
-            { Boolean.FALSE, Integer.valueOf( IDX_SEED++ ), "Smith, Kathy", Float.valueOf(123.0f) },
-            { Boolean.FALSE, Integer.valueOf( IDX_SEED++ ), "Black, Joe", null },
-            { Boolean.FALSE, Integer.valueOf( IDX_SEED++ ), "Flash, Jumpin Jack", null },
-            { Boolean.TRUE, Integer.valueOf( IDX_SEED++ ), "White, Jane", null }
+            { Boolean.FALSE, Integer.valueOf( IDX_SEED++ ), "Smith, Kathy", Float.valueOf(123.0f), "Kommentar 1" },
+            { Boolean.FALSE, Integer.valueOf( IDX_SEED++ ), "Black, Joe", null, null },
+            { Boolean.FALSE, Integer.valueOf( IDX_SEED++ ), "Flash, Jumpin Jack", null, null },
+            { Boolean.TRUE, Integer.valueOf( IDX_SEED++ ), "White, Jane", null, null }
         };
 
     /**
@@ -34,7 +35,7 @@ public class WorkEventsDialog extends ParticipationsDialog
     public static void main( final String[] args )
     {
         try{
-            final WorkEventsDialog dialog = new WorkEventsDialog();
+            final AdjustmentsDialog dialog = new AdjustmentsDialog();
             dialog.populate();
             dialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
             dialog.setVisible( true );
@@ -45,23 +46,22 @@ public class WorkEventsDialog extends ParticipationsDialog
 
     private void populate()
     {
-        final TBLModel_WorkEvents aModel = new TBLModel_WorkEvents( DATA, false );
+        final TBLModel_Adjustments aModel = new TBLModel_Adjustments( DATA, false );
         getContentPanel().populate( aModel );
     }
 
     /**
      * Create the dialog.
      */
-    public WorkEventsDialog()
+    public AdjustmentsDialog()
     {
-        super("Arbeitsdienste");
-
+        super("Ausgleichsbuchungen");
     }
 
     @Override
     protected ParticipationsPanel createContentPanel()
     {
-        return new WorkEventsPanel();
+        return new AdjustmentsPanel();
     }
 
 }

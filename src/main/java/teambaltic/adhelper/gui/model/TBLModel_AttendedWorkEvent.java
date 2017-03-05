@@ -22,7 +22,7 @@ public class TBLModel_AttendedWorkEvent extends DefaultTableModel
     {
         super( null,
                 new String[] {
-                       "ID", "Arbeiter", "Arbeitdienst am", "Stunden gearbeitet", "Abgerechnet am"
+                       "ID", "Arbeiter", "Arbeitdienst am", "Stunden gearbeitet"
                     }
                 );
     }

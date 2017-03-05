@@ -83,16 +83,12 @@ public class Writer
                     IKnownColumns.CLEARED) );
             for( final WorkEvent aWorkEvent : aAllWorkEvents ){
                 final LocalDate aWorkEventDate = aWorkEvent.getDate();
-                if( aIP.isBeforeMyEnd( aWorkEventDate ) ){
-                   aWorkEvent.setCleared( aToday );
-                }
                 final int aMemberID = aWorkEvent.getMemberID();
                 final String aMemberName = fDataProvider.getMemberName( aMemberID );
-                final String aLine = String.format( "%s;%s;%s;%.2f;%s"+LF,
+                final String aLine = String.format( "%s;%s;%s;%.2f"+LF,
                         aMemberID, aMemberName,
                         toStringWithDots(aWorkEventDate),
-                        aWorkEvent.getHours()/100.0f,
-                        toStringWithDots(aWorkEvent.getCleared()) );
+                        aWorkEvent.getHours()/100.0f );
                 aFileWriter.write( aLine );
             }
             aFileWriter.close();
