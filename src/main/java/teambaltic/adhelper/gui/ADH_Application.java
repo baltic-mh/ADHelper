@@ -171,6 +171,7 @@ public class ADH_Application
             }
 
         } );
+        sm_Log.info( "Suche nach neuerer Programmversion..." );
         new AppUpdater();
         new Thread("Initialize"){
             @Override

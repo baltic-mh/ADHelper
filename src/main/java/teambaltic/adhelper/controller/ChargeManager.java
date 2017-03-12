@@ -60,7 +60,7 @@ public class ChargeManager
 
         final int aBalanceValue = fBalance.getValue_Original();
 
-        final int aCreditHours = getCreditHours( fCreditHours );
+        final int aCreditHours = getCreditHoursValue( fCreditHours );
 
         int aHoursToPay = aHoursDue - fHoursWorked - aBalanceValue - aCreditHours;
         if( aHoursToPay < 0 ){
@@ -73,13 +73,11 @@ public class ChargeManager
 
     public void balance(final IPeriod fPeriod, final InfoForSingleMember fMemberInfo )
     {
-        calculateDutyCharge( fPeriod, fMemberInfo );
-
         final List<InfoForSingleMember> aAllRelatives = fMemberInfo.getAllRelatives();
         int aHoursToPayTotal  = 0;
         int aBalanceTotal     = 0;
         for( final InfoForSingleMember aInfoForThisMember : aAllRelatives ){
-            final DutyCharge aCharge = aInfoForThisMember.getDutyCharge();
+            final DutyCharge aCharge = createDutyCharge( fPeriod, aInfoForThisMember );
             final Balance aBalance = aInfoForThisMember.getBalance( fPeriod );
             aHoursToPayTotal += aCharge.getHoursToPay();
             aBalanceTotal    += aBalance.getValue_Charged();
@@ -115,7 +113,7 @@ public class ChargeManager
         aDutyCharge.setHoursToPayTotal( aHoursToPayTotal );
     }
 
-    private void calculateDutyCharge( final IPeriod fPeriod, final InfoForSingleMember fMemberInfo )
+    private DutyCharge createDutyCharge( final IPeriod fPeriod, final InfoForSingleMember fMemberInfo )
     {
         Balance aBalance = fMemberInfo.getBalance( fPeriod );
         final int aID = fMemberInfo.getID();
@@ -126,10 +124,11 @@ public class ChargeManager
         final int aHoursWorked = getHoursWorked( fMemberInfo, fPeriod );
         final CreditHours aCreditHours = fMemberInfo.getCreditHours( fPeriod );
         final Collection<FreeFromDuty> aFreeFromDutyItems = fMemberInfo.getFreeFromDutyItems( fPeriod );
-        final DutyCharge aCharge = createDutyCharge(
+        final DutyCharge aDutyCharge = createDutyCharge(
                 aID, fPeriod, aBalance, aHoursWorked, aCreditHours, aFreeFromDutyItems );
-        fMemberInfo.setDutyCharge( aCharge );
-        chargeBalance( fPeriod, aBalance, aCharge, aCreditHours );
+        fMemberInfo.setDutyCharge( aDutyCharge );
+        chargeBalance( fPeriod, aBalance, aDutyCharge, aCreditHours );
+        return aDutyCharge;
     }
 
     private static void chargeBalance(
@@ -141,7 +140,7 @@ public class ChargeManager
         final int aBalanceValue = fBalance.getValue_Original();
         final int aHoursWorked  = fCharge.getHoursWorked();
         final int aHoursDue     = fCharge.getHoursDue();
-        final int aCreditHours  = getCreditHours( fCreditHours );
+        final int aCreditHours  = getCreditHoursValue( fCreditHours );
         int aBalanceCharged = aBalanceValue + aCreditHours + aHoursWorked - aHoursDue;
         if( aBalanceCharged < 0 ){
             aBalanceCharged = 0;
@@ -150,7 +149,7 @@ public class ChargeManager
         fBalance.setValue_ChargedAndAdjusted( aBalanceCharged );
     }
 
-    private static int getCreditHours( final CreditHours fCreditHours )
+    private static int getCreditHoursValue( final CreditHours fCreditHours )
     {
         final int aCreditHours  = fCreditHours == null ? 0 : fCreditHours.getHours();
         return aCreditHours;

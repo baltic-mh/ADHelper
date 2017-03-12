@@ -66,7 +66,7 @@ public class BalanceReader
             aInfo.addBalance( aItem );
             if( m_ItemFactory_Old != null ){
                 final Balance aOldItem = new Balance( aMemberID );
-                m_ItemFactory_Old.populateItem( aItem, aAttributes );
+                m_ItemFactory_Old.populateItem( aOldItem, aAttributes );
                 aInfo.addBalance( aOldItem );
             }
         }

@@ -85,7 +85,7 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
             }
             final LocalDate aValidFrom = fNewBalance.getValidFrom();
             m_BalanceMap.put( aValidFrom, fNewBalance );
-            if( m_ValidFromList.contains( aValidFrom ) ){
+            if( !m_ValidFromList.contains( aValidFrom ) ){
                 m_ValidFromList.add( aValidFrom );
                 setListSorted( false );
             }

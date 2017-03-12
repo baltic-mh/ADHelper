@@ -209,19 +209,12 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             final InfoForSingleMember   fMemberInfo,
             final IPeriod               fNextPeriod )
     {
-        try{
-            final IClubMember aMember = fMemberInfo.getMember();
-            if( aMember.getLinkID() != 0 ){
-                return;
-            }
-            m_ChargeManager.balance( fPeriod, fMemberInfo );
-        } finally {
-            final Balance aBalanceOfThisPeriod = fMemberInfo.getBalance( fPeriod );
-            final int aValue_ChargedAndAdjusted = aBalanceOfThisPeriod.getValue_ChargedAndAdjusted();
-            final Balance aStartBalanceForNextPeriod = new Balance(
-                  fMemberInfo.getID(), fNextPeriod, aValue_ChargedAndAdjusted );
-            fMemberInfo.addBalance( aStartBalanceForNextPeriod, true );
-        }
+        getChargeManager().balance( fPeriod, fMemberInfo );
+        final Balance aBalanceOfThisPeriod = fMemberInfo.getBalance( fPeriod );
+        final int aValue_ChargedAndAdjusted = aBalanceOfThisPeriod.getValue_ChargedAndAdjusted();
+        final Balance aStartBalanceForNextPeriod = new Balance(
+              fMemberInfo.getID(), fNextPeriod, aValue_ChargedAndAdjusted );
+        fMemberInfo.addBalance( aStartBalanceForNextPeriod, true );
     }
 
     public IClubMember getMember( final int fMemberID )

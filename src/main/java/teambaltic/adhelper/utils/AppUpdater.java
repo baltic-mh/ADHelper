@@ -55,7 +55,7 @@ public class AppUpdater implements UpdatedApplication
             aGUI.setProperty("LogList", "true");
             aUpdater.actionDisplay();
         } catch (final UpdaterException fEx) {
-            LOG.error(String.format("Problems to access repository (%s): %s", aJupidatorURL, fEx.getMessage()), fEx );
+            LOG.error(String.format("Probleme beim Zugriff auf den Update-Server (%s): %s", aJupidatorURL, fEx.getMessage()) );
         }
     }
     /**
