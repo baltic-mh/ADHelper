@@ -15,7 +15,6 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1005003
+//RELEASE: 1005004
 ###############################################################################
-[ÄNDERUNG] Verbesserungen und Vereinfachungen bei der Guthabenberechnung
-[INTERN] Plugin-Versionen aktualisiert
+[NEU] Möglichkeit für Korrekturbuchungen geschaffen
