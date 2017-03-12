@@ -20,6 +20,7 @@ v1.0, 17. November 2016
 :sectanchors:
 // Makro "kbd:" aktivieren:
 :experimental:
+:imagesdir: images
 
 == Installation
 
@@ -32,7 +33,7 @@ WARNING: Die Server-ZugangsDaten sind unter keinen Umständen an
 Dritte weiterzugeben.
 
 .Benötigte Dateien
-image::images/filesystem-prerequisites.png[align="center"]
+image::filesystem-prerequisites.png[align="center"]
 
 
 Das Executable wird am besten in ein eigenes leeres Verzeichnis kopiert.
@@ -40,7 +41,7 @@ Die Zip-Datei ist in dasselbe Verzeichnis zu kopieren und dort zu entpacken.
 Danach kann die Zip-Datei gelöscht werden.
 
 .Nach Extrahieren und Löschen der ClientGrundAusstattung
-image::images/filesystem-extracted.png[align="center"]
+image::filesystem-extracted.png[align="center"]
 
 == Erster Start
 
@@ -49,8 +50,8 @@ zur Eingabe der Benutzerdaten. Hier ist ein Name und eine zugehörige
 eMail-Adresse anzugeben. Diese Daten werden benutzt, um beim Hochladen
 von Dateien den Absender zu bestimmen.
 
-image::images/Dialog-BenutzerDaten.png[align="center"]
-//image::images/Dialog-BenutzerDaten.png[float="center",align="center"]
+image::Dialog-BenutzerDaten.png[align="center"]
+//image::Dialog-BenutzerDaten.png[float="center",align="center"]
 
 
 Wichtig ist die Auswahl der Rolle, in der man das Programm benutzen möchte.

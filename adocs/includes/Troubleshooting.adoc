@@ -3,7 +3,7 @@
 === Exception "Es läuft schon eine andere Applikation"
 
 .Es läuft schon eine andere Applikation
-image::images/Exception-AppLaeuftSchon.png[]
+image::Exception-AppLaeuftSchon.png[]
 
 Das Programm hinterlässt eine Spur auf dem Server, dass es läuft. Wenn also irgendwo auf der Welt jemand anderes gerade mit dem Programm arbeitet, kann kein zweites Programm gestartet werden. In der Fehlermeldung wird in der ersten Zeile angegeben, wer gerade mit dem Programm arbeitet.
 
@@ -15,3 +15,8 @@ In so einem Fall einfach das Programm nach ca. 10 Sekunden Wartezeit erneut star
 === Fehlerhafte Anzeige von Umlauten
 
 Leider werden in manchen Dialogen die deutschen Umläute nicht korrekt angezeigt. Ich habe bislang kein Mittel gefunden, wie ich es hinbekomme, dass die Sonderzeichen sowohl in der Log-Datei wie auch in der Bedienoberfläche korrekt angezeigt werden. Ich werde mich weiter bemühen, aber das hat mindere Priorität.
+
+=== Programm-Update
+
+Der automatische Neustart nach Installation einer neuen Programmversion schlägt aktuell immer fehl. Das Programm muss dann manuell noch einmal gestartet werden.
+

@@ -8,7 +8,7 @@ Der Dateibaum innerhalb des Installationsverzeichnisses sieht grundsätzlich wie
 
 [[image-dateibaum,Dateibaum]]
 .Dateibaum
-image::images/filesystem-freshinstall.png[]
+image::filesystem-freshinstall.png[]
 
 
 === Verzeichnis "Arbeitsdienstabrechnungen"
@@ -32,7 +32,7 @@ In diesem Unterverzeichnis sind einige Dateien enthalten, die
 Programmparameter setzen. Sie sind für den normalen Benutzer ohne Belang, sie sind aber für ein korrektes Funktionieren des Programmes unerlässlich. 
 
 .Verzeichnis Einstellungen
-image::images/Verzeichnis-Einstellungen.png[]
+image::Verzeichnis-Einstellungen.png[]
 
 So sind in der Datei +BenutzerDaten.properties+ die Eingaben gespeichert, die beim ersten Start des Programmes eingegeben wurden und den Benutzer identifizieren. In der Datei +ServerZugangsDaten.properties+ sind alle Angaben enthalten, um den Server zu finden und eine Verbindung zu ihm aufzubauen.
 
@@ -48,7 +48,7 @@ In diesem Unterverzeichis liegen die erzeugten und zu verwaltenden Daten.
 Sie sind nach Abrechnungszeiträumen gruppiert. Ein Abrechnungszeitraum ist jeweils ein Halbjahr vom 1.1. bis zum 30.6 bzw. vom 1.7 bis zum 31.12. eines Jahres.
 
 .Verzeichnis Daten
-image::images/Verzeichnis-Daten.png[]
+image::Verzeichnis-Daten.png[]
 
 Das Verzeichnis +Obsolete+ enthält die Daten verworfener Programmläufe: Wenn der *BAUAUSSCHUSS* während eines Programmlaufes Daten geändert hat, beim Beenden des Programmes auf die Nachfrage, ob diese Daten auf den Server geladen werden sollen, aber mit kbd:[NEIN] geantwortet hat.
 
@@ -70,12 +70,16 @@ Basisdaten.csv::
     angelegt wird, wenn damit begonnen wird, den Abrechnungszeitraum zu
     bearbeiten.
 
-Guthaben.csv (bzw. Guthaben_old.csv)::
+(#veraltet#)Guthaben.csv (bzw. Guthaben_old.csv) ::
     Beide Dateien sind eine Kopie der Datei "Guthaben.csv" aus dem
     Ordner der vorangegangenen Abrechnungsperiode. 
     Bei der Erzeugung der Kopie ohne das Suffix "_old" wird dafür Sorge
     getragen, dass das in der vorherigen Periode errechnete Endguthaben
     für die neue Periode als Anfangsguthaben markiert wird.
+
+GuthabenVerlauf.csv::
+    Diese Datei enthält die gesamte Geschichte des Guthabenverlaufes aller Mitglieder.
+
 Arbeitsdienste.csv (bzw. Arbeitsdienste_old.csv)::
     Auch diese beiden Dateien entstehen durch eine Kopie der Datei
     "Arbeitsdienste.csv" der vorangegangenen Abrechnungsperiode. Sie
@@ -102,10 +106,13 @@ Abgeschlossen.txt::
 
 Bei Abschluss eines Abrechnungszeitraumes werden folgende Ausgabe-Dateien erzeugt:
     
-Guthaben.csv::
+(_veraltet_: Guthaben.csv) GuthabenVerlauf.csv ::
     Hier werden die nach Hinzufügen der im Abrechnungszeitraum
     geleisteten Arbeitsdienststunden und Abzug der Pflichtstunden die
     verbleibenden bzw- erwirtschafteten Guthabenstunden hinterlegt.
+
+Guschriften.csv::
+    Dies ist eine Liste mit allen Mitgliedern, denen im betreffenden Abrechnungszeitraum eine Gutschrift in Form von Arbeitsstunden wegen früherer Fehlbuchungen gewährt worden ist.
 
 ZuZahlendeStunden.csv::
     Dies ist eine Liste mit allen Mitgliedern, die im betreffenden

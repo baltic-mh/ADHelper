@@ -8,5 +8,5 @@ Für die Bearbeitung der Arbeitsdienststunden benötigt das Programm +ADHelper+ 
 
 Die Arbeitsdienste werden in Halbjahres-Intervallen (Perioden) abgrechnet. Nach einer Abrechung eines Halbjahres wird von +ADHelper+ eine Liste(5) erzeugt, aus der hervorgeht, welches Mitglied für wieviele nicht geleistete Arbeitdienststunden Ersatzzahlungen leisten muss.
 
-image::images/Funktionsweise.png[]
+image::Funktionsweise.png[]
 

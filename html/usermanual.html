@@ -462,15 +462,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_verwaltung_der_arbeitsdienste">5.3. Verwaltung der Arbeitsdienste</a>
 <ul class="sectlevel3">
 <li><a href="#_erfassung_von_arbeitsdienststunden">5.3.1. Erfassung von Arbeitsdienststunden</a></li>
-<li><a href="#_abschluss_eines_abrechnungszeitraumes">5.3.2. Abschluss eines Abrechnungszeitraumes</a></li>
+<li><a href="#_erfassung_von_gutschriften">5.3.2. Erfassung von Gutschriften</a></li>
+<li><a href="#_abschluss_eines_abrechnungszeitraumes">5.3.3. Abschluss eines Abrechnungszeitraumes</a></li>
 </ul>
 </li>
+<li><a href="#_log_ausgaben">5.4. Log-Ausgaben</a></li>
+<li><a href="#_automatisches_update">5.5. Automatisches Update[]</a></li>
 </ul>
 </li>
 <li><a href="#_mögliche_probleme">6. Mögliche Probleme</a>
 <ul class="sectlevel2">
 <li><a href="#_exception_es_läuft_schon_eine_andere_applikation">6.1. Exception "Es läuft schon eine andere Applikation"</a></li>
 <li><a href="#_fehlerhafte_anzeige_von_umlauten">6.2. Fehlerhafte Anzeige von Umlauten</a></li>
+<li><a href="#_programm_update">6.3. Programm-Update</a></li>
 </ul>
 </li>
 </ul>
@@ -673,13 +677,17 @@ Quelldateien:</p>
 angelegt wird, wenn damit begonnen wird, den Abrechnungszeitraum zu
 bearbeiten.</p>
 </dd>
-<dt class="hdlist1">Guthaben.csv (bzw. Guthaben_old.csv)</dt>
+<dt class="hdlist1">(<mark>veraltet</mark>)Guthaben.csv (bzw. Guthaben_old.csv) </dt>
 <dd>
 <p>Beide Dateien sind eine Kopie der Datei "Guthaben.csv" aus dem
 Ordner der vorangegangenen Abrechnungsperiode.
 Bei der Erzeugung der Kopie ohne das Suffix "_old" wird dafür Sorge
 getragen, dass das in der vorherigen Periode errechnete Endguthaben
 für die neue Periode als Anfangsguthaben markiert wird.</p>
+</dd>
+<dt class="hdlist1">GuthabenVerlauf.csv</dt>
+<dd>
+<p>Diese Datei enthält die gesamte Geschichte des Guthabenverlaufes aller Mitglieder.</p>
 </dd>
 <dt class="hdlist1">Arbeitsdienste.csv (bzw. Arbeitsdienste_old.csv)</dt>
 <dd>
@@ -720,11 +728,15 @@ lesend zugegriffen werden.</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1">Guthaben.csv</dt>
+<dt class="hdlist1">(<em>veraltet</em>: Guthaben.csv) GuthabenVerlauf.csv </dt>
 <dd>
 <p>Hier werden die nach Hinzufügen der im Abrechnungszeitraum
 geleisteten Arbeitsdienststunden und Abzug der Pflichtstunden die
 verbleibenden bzw- erwirtschafteten Guthabenstunden hinterlegt.</p>
+</dd>
+<dt class="hdlist1">Guschriften.csv</dt>
+<dd>
+<p>Dies ist eine Liste mit allen Mitgliedern, denen im betreffenden Abrechnungszeitraum eine Gutschrift in Form von Arbeitsstunden wegen früherer Fehlbuchungen gewährt worden ist.</p>
 </dd>
 <dt class="hdlist1">ZuZahlendeStunden.csv</dt>
 <dd>
@@ -799,7 +811,7 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/App-Titelleiste.png" alt="App Titelleiste">
+<img src="images/images/App-Titelleiste.png" alt="App Titelleiste">
 </div>
 <div class="title">Abbildung 7. Titelleiste</div>
 </div>
@@ -897,7 +909,7 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/App-0-Abrechnungsbereich.png" alt="App 0 Abrechnungsbereich">
+<img src="images/images/App-0-Abrechnungsbereich.png" alt="App 0 Abrechnungsbereich">
 </div>
 <div class="title">Abbildung 10. Abrechnungsbereich</div>
 </div>
@@ -913,6 +925,10 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <dd>
 <p>Summe der Stunden, die das Mitglied aus der Vergangenheit als Guthaben mit in den Abrechnungszeitraum einbringt.</p>
 </dd>
+<dt class="hdlist1">Gutschrift</dt>
+<dd>
+<p>In diesem Abrechnungszeitraum gutgeschriebene Stunden (aufgrund früherer Fehlbuchungen)</p>
+</dd>
 <dt class="hdlist1">Gearbeitet</dt>
 <dd>
 <p>Summe der Stunden, die das Mitglied innerhalb des Abrechnungszeitraums Arbeitsdienst geleistet hat.</p>
@@ -923,7 +939,7 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 </dd>
 <dt class="hdlist1">Guthaben II</dt>
 <dd>
-<p>Summe aus der Spalte <mark>Guthaben</mark> und der Spalte <mark>Gearbeitet</mark> des betreffenden Mitglieds.</p>
+<p>Summe aus den Spalten <mark>Guthaben</mark>, <mark>Gutschrift</mark> und <mark>Gearbeitet</mark> des betreffenden Mitglieds.</p>
 </dd>
 <dt class="hdlist1">Zu zahlen</dt>
 <dd>
@@ -986,7 +1002,7 @@ Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neue
 </div>
 <div class="imageblock" style="text-align: center">
 <div class="content">
-<img src="images/AppAD-0.png" alt="AppAD 0">
+<img src="images/images/AppAD-0.png" alt="AppAD 0">
 </div>
 <div class="title">Abbildung 12. Fenster "Arbeitsdienste"</div>
 </div>
@@ -1078,7 +1094,28 @@ Die neu erfassten Daten sind bis zu diesem Punkt nur auf dem lokalen Rechner ges
 </div>
 </div>
 <div class="sect3">
-<h4 id="_abschluss_eines_abrechnungszeitraumes"><a class="anchor" href="#_abschluss_eines_abrechnungszeitraumes"></a>5.3.2. Abschluss eines Abrechnungszeitraumes</h4>
+<h4 id="_erfassung_von_gutschriften"><a class="anchor" href="#_erfassung_von_gutschriften"></a>5.3.2. Erfassung von Gutschriften</h4>
+<div class="paragraph">
+<p>Wenn festgestellt worden ist, dass bei einem Mitglied in der Vergangenheit ein Fehler in der Berechnung bzw. Abbuchung vorlag, besteht die Möglichkeit, Gutschriften zu erfassen. Eine Gutschrift erfolgt in Stunden.</p>
+</div>
+<div class="paragraph">
+<p>Die Erfassung von Gutschriften ist praktisch identisch mit der der Arbeitsstunden.</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/AppGS-0-neu.png" alt="AppGS 0 neu">
+</div>
+<div class="title">Abbildung 15. Neue Gutschrift</div>
+</div>
+<div class="paragraph">
+<p>Der wesentliche Unterschied ist, dass es immer nur eine Gutschrift pro Mitglied und Abrechnungszeitraum geben kann und der Termin immer fest auf den Beginn des Abrechnungszeitraum gelegt wird.</p>
+</div>
+<div class="paragraph">
+<p>Für jede Gutschrift ist ein Kommentar anzulegen, der erläutert, warum die Gutschrift gewährt worden ist.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_abschluss_eines_abrechnungszeitraumes"><a class="anchor" href="#_abschluss_eines_abrechnungszeitraumes"></a>5.3.3. Abschluss eines Abrechnungszeitraumes</h4>
 <div class="paragraph">
 <p>Ist sichergestellt, dass alle Arbeitsdiensttermine eines Abrechnungszeitraumes vollständig erfasst sind, kann der Zeitraum abgeschlossen werden. Dazu ist im <a href="#_hauptfenster">Hauptfenster</a> der Knopf <kbd>Zeitraum abschließen</kbd> zu drücken.</p>
 </div>
@@ -1115,6 +1152,35 @@ Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_log_ausgaben"><a class="anchor" href="#_log_ausgaben"></a>5.4. Log-Ausgaben</h3>
+<div class="paragraph">
+<p>Das Programm erzeugt während des Laufes einige Log-Ausgaben. Diese gehen einerseits in eine Datei und können andererseits auch in einem Fenster sichtbar gemacht werden. Das Fenster ist bei Programmstart aktiviert und kann gefahrlos geschlossen werden. Es kann jederzeit über das Menu
+ <kbd>Aktionen/Zeige Logausgaben</kbd> wiederhergestellt werden.</p>
+</div>
+<div class="paragraph">
+<div class="title">Fenster der Log-Ausgaben</div>
+<p>image::App-0-LogWindow.png</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_automatisches_update"><a class="anchor" href="#_automatisches_update"></a>5.5. Automatisches Update[]</h3>
+<div class="paragraph">
+<p>Das Programm überprüft, ob auf dem Server eine neuere als die installierte Version bereitsteht. Ist das der Fall, öffnet sich ein Fenster, in dem die neue Version angekündigt und vorgestellt wird:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/App-0-Update.png" alt="App 0 Update">
+</div>
+<div class="title">Abbildung 16. Update-Fenster</div>
+</div>
+<div class="paragraph">
+<p>Soweit keine gewichtigen Gründe dagegen sprechen, sollte <em>immer</em> die neueste Version installiert werden.</p>
+</div>
+<div class="paragraph">
+<p>Der automatische Neustart nach der Installation einer neuen Programmversion schlägt aktuell immer fehl. Das Programm muss dann manuell noch einmal gestartet werden.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1126,7 +1192,7 @@ Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten
 <div class="content">
 <img src="images/Exception-AppLaeuftSchon.png" alt="Exception AppLaeuftSchon">
 </div>
-<div class="title">Abbildung 15. Es läuft schon eine andere Applikation</div>
+<div class="title">Abbildung 17. Es läuft schon eine andere Applikation</div>
 </div>
 <div class="paragraph">
 <p>Das Programm hinterlässt eine Spur auf dem Server, dass es läuft. Wenn also irgendwo auf der Welt jemand anderes gerade mit dem Programm arbeitet, kann kein zweites Programm gestartet werden. In der Fehlermeldung wird in der ersten Zeile angegeben, wer gerade mit dem Programm arbeitet.</p>
@@ -1154,13 +1220,19 @@ In so einem Fall einfach das Programm nach ca. 10 Sekunden Wartezeit erneut star
 <p>Leider werden in manchen Dialogen die deutschen Umläute nicht korrekt angezeigt. Ich habe bislang kein Mittel gefunden, wie ich es hinbekomme, dass die Sonderzeichen sowohl in der Log-Datei wie auch in der Bedienoberfläche korrekt angezeigt werden. Ich werde mich weiter bemühen, aber das hat mindere Priorität.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_programm_update"><a class="anchor" href="#_programm_update"></a>6.3. Programm-Update</h3>
+<div class="paragraph">
+<p>Der automatische Neustart nach Installation einer neuen Programmversion schlägt aktuell immer fehl. Das Programm muss dann manuell noch einmal gestartet werden.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Erstellt mit Asciidoctor v1.5.3 : Zuletzt geändert: 2016-11-20 15:19:35 +01:00
+Erstellt mit Asciidoctor v1.5.3 : Zuletzt geändert: 2017-03-12 12:45:23 +01:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
