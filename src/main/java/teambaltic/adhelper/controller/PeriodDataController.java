@@ -46,6 +46,7 @@ public class PeriodDataController implements IPeriodDataController
     private String getFileName_Finished(){ return getAppSettings().getFileName_Finished(); }
     private String getFileName_Uploaded(){ return getAppSettings().getFileName_Uploaded(); }
     private String getFileName_WorkEvents(){return getAppSettings().getFileName_WorkEvents(); }
+    private String getFileName_CreditHours(){return getAppSettings().getFileName_CreditHours(); }
     private String getFileName_Balances(){return getAppSettings().getFileName_Balances(); }
     private String getFileName_BalanceHistory(){return getAppSettings().getFileName_BalanceHistory(); }
     // ------------------------------------------------------------------------
@@ -59,6 +60,11 @@ public class PeriodDataController implements IPeriodDataController
     public Path getFile_WorkEvents( final PeriodData fPeriodData )
     {
         return fPeriodData.getFolder().resolve( getFileName_WorkEvents() );
+    }
+    @Override
+    public Path getFile_CreditHours( final PeriodData fPeriodData )
+    {
+        return fPeriodData.getFolder().resolve( getFileName_CreditHours() );
     }
     @Override
     public Path getFile_Balances( final PeriodData fPeriodData )

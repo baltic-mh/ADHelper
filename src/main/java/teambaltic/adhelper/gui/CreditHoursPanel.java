@@ -11,18 +11,27 @@
 // ############################################################################
 package teambaltic.adhelper.gui;
 
+import javax.swing.JButton;
+
 // ############################################################################
-public class AdjustmentsPanel extends ParticipationsPanel
+public class CreditHoursPanel extends ParticipationsPanel
 {
     private static final long serialVersionUID = 157096461352369629L;
 
     /**
      * Create the panel.
      */
-    public AdjustmentsPanel()
+    public CreditHoursPanel()
     {
         super();
+    }
 
+    @Override
+    protected void configureButtons( final boolean fReadOnly )
+    {
+        super.configureButtons( fReadOnly );
+        final JButton aBtn_Neu = getBtn_Neu();
+        aBtn_Neu.setEnabled( false );
     }
 
 }

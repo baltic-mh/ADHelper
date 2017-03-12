@@ -59,6 +59,7 @@ import teambaltic.adhelper.controller.InitHelper;
 import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.listeners.FinishListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
+import teambaltic.adhelper.gui.listeners.ManageCreditHoursListener;
 import teambaltic.adhelper.gui.listeners.ManageWorkEventsListener;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
 import teambaltic.adhelper.gui.listeners.PeriodDataChangedListener;
@@ -271,7 +272,12 @@ public class ADH_Application
 
         final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC, m_GUIUpdater, fIsBauausschuss);
         m_MainPanel.getBtn_ManageWorkEvents().addActionListener( aManageWorkEventsListener );
-        final JComboBox<PeriodData> aCB_Period2 = aManageWorkEventsListener.getCmb_Period();
+        final JComboBox<PeriodData> aCB_Period1 = aManageWorkEventsListener.getCmb_Period();
+        aCB_Period1.addItemListener( aPDCL );
+
+        final ManageCreditHoursListener aManageCreditHoursListener = new ManageCreditHoursListener(fDataProvider, fPDC, m_GUIUpdater, fIsBauausschuss);
+        m_MainPanel.getBtn_ManageCreditHours().addActionListener( aManageCreditHoursListener );
+        final JComboBox<PeriodData> aCB_Period2 = aManageCreditHoursListener.getCmb_Period();
         aCB_Period2.addItemListener( aPDCL );
 
         final JButton aBtnFinish = m_MainPanel.getBtnFinish();

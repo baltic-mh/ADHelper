@@ -23,7 +23,7 @@ public class TBLModel_DutyCharge extends DefaultTableModel
     {
         super( null,
                 new String[] {
-                        "Name", "Guthaben", "Gearbeitet", "Pflicht", "Guthaben II", "Zu zahlen", "Guthaben III"
+                        "Name", "Guthaben", "Gutschrift", "Gearbeitet", "Pflicht", "Guthaben II", "Zu zahlen", "Guthaben III"
                     }
                 );
     }

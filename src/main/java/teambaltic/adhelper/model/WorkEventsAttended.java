@@ -19,7 +19,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
+public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>,
+    IParticipationItemContainer<WorkEvent>
 {
     private static final Logger sm_Log = Logger.getLogger(WorkEventsAttended.class);
 
@@ -36,7 +37,7 @@ public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
 
     // ------------------------------------------------------------------------
     private final Map<Integer, WorkEventsAttended> m_WorkEventsOfRelatives;
-    public List<WorkEventsAttended> getAllWorkEventsAttended()
+    private List<WorkEventsAttended> getAllWorkEventsAttended()
     {
         final List <WorkEventsAttended> aAllItems = new ArrayList<>();
         aAllItems.add( this );
@@ -52,7 +53,8 @@ public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
         m_WorkEventsOfRelatives = new HashMap<>();
     }
 
-    public void addWorkEvent( final WorkEvent fEvent ){
+    @Override
+    public void add( final WorkEvent fEvent ){
         synchronized( m_WorkEvents ){
             m_WorkEvents.add( fEvent );
         }
@@ -63,6 +65,11 @@ public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
         synchronized( m_WorkEvents ){
             return new ArrayList<>( m_WorkEvents );
         }
+    }
+    @Override
+    public List<WorkEvent> getParticipationList()
+    {
+        return getWorkEvents();
     }
 
     public List<WorkEvent> getWorkEvents( final IPeriod fInvoicingPeriod )
@@ -135,6 +142,7 @@ public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>
         return aSB.toString();
     }
 
+    @Override
     public void remove( final WorkEvent fWE )
     {
         WorkEvent aMoriturus = null;

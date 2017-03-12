@@ -29,12 +29,10 @@ public class FreeFromDutySetFactory implements IItemFactory<FreeFromDutySet>
     private static final Logger sm_Log = Logger.getLogger(FreeFromDutySetFactory.class);
 
     @Override
-    public FreeFromDutySet createItem( final int fID, final Map<String, String> fAttributes )
+    public void populateItem( final FreeFromDutySet fFFDSet, final Map<String, String> fAttributes )
     {
-        final FreeFromDutySet aFFDSet = new FreeFromDutySet( fID );
-        final FreeFromDuty aItemFromBaseData = createItemFromBaseData( fID, fAttributes );
-        aFFDSet.addItem( aItemFromBaseData );
-        return aFFDSet;
+        final FreeFromDuty aItemFromBaseData = createItemFromBaseData( fFFDSet.getID(), fAttributes );
+        fFFDSet.addItem( aItemFromBaseData );
     }
 
     private static FreeFromDuty createItemFromBaseData( final int fID, final Map<String, String> fAttributes )

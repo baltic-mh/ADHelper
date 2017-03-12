@@ -43,9 +43,12 @@ public interface IKnownColumns
 
     // Tabelle der Arbeitsdienste:
     String HOURSWORKED = "Gel.Stunden";
-    String CLEARED = "Abgerechnet.Am";
     // Tabelle der ZuZahlendenStunden:
     String HOURSTOPAY = "Zu zahl. Stunden";
+
+    // Tabelle der gutgeschriebenen Stunden
+    String COMMENT = "Kommentar";
+    String CREDITHOURS = "Gut-Stunden";
 
 }
 

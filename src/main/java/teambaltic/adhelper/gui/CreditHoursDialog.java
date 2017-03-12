@@ -13,10 +13,10 @@ package teambaltic.adhelper.gui;
 
 import javax.swing.JDialog;
 
-import teambaltic.adhelper.gui.model.TBLModel_Adjustments;
+import teambaltic.adhelper.gui.model.TBLModel_CreditHours;
 
 // ############################################################################
-public class AdjustmentsDialog extends ParticipationsDialog
+public class CreditHoursDialog extends ParticipationsDialog
 {
     private static final long serialVersionUID = -7487662229096717267L;
 
@@ -35,7 +35,7 @@ public class AdjustmentsDialog extends ParticipationsDialog
     public static void main( final String[] args )
     {
         try{
-            final AdjustmentsDialog dialog = new AdjustmentsDialog();
+            final CreditHoursDialog dialog = new CreditHoursDialog();
             dialog.populate();
             dialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
             dialog.setVisible( true );
@@ -46,22 +46,22 @@ public class AdjustmentsDialog extends ParticipationsDialog
 
     private void populate()
     {
-        final TBLModel_Adjustments aModel = new TBLModel_Adjustments( DATA, false );
+        final TBLModel_CreditHours aModel = new TBLModel_CreditHours( DATA, false );
         getContentPanel().populate( aModel );
     }
 
     /**
      * Create the dialog.
      */
-    public AdjustmentsDialog()
+    public CreditHoursDialog()
     {
-        super("Ausgleichsbuchungen");
+        super("Gutschriften");
     }
 
     @Override
     protected ParticipationsPanel createContentPanel()
     {
-        return new AdjustmentsPanel();
+        return new CreditHoursPanel();
     }
 
 }

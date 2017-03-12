@@ -67,6 +67,10 @@ public class MainPanel extends JPanel
     private final JButton m_btn_ManageWorkEvents;
     public JButton getBtn_ManageWorkEvents(){ return m_btn_ManageWorkEvents; }
     // ------------------------------------------------------------------------
+    private final JButton m_btn_ManageCreditHours;
+    public JButton getBtn_ManageCreditHours(){ return m_btn_ManageCreditHours; }
+    // ------------------------------------------------------------------------
+
 
     // ------------------------------------------------------------------------
     private final TBLModel_DutyCharge m_DataModel_DutyCharge;
@@ -263,9 +267,13 @@ public class MainPanel extends JPanel
         m_tbl_WorkEventsAttended.setFillsViewportHeight(true);
         scrollPane.setViewportView(m_tbl_WorkEventsAttended);
 
-        m_btn_ManageWorkEvents = new JButton("Arbeitsdienste...");
-        m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
-        add(m_btn_ManageWorkEvents, "14, 14");
+                m_btn_ManageWorkEvents = new JButton("Arbeitsdienste...");
+                m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
+                add(m_btn_ManageWorkEvents, "12, 14");
+
+                m_btn_ManageCreditHours = new JButton("Gutschriften...");
+                m_btn_ManageCreditHours.setActionCommand( "OPEN" );
+                add(m_btn_ManageCreditHours, "14, 14");
 
         m_btnFinish = new JButton("Zeitraum abschlie\u00DFen");
         m_btnFinish.setActionCommand( "Zeitraum abschlie\u00DFen" );

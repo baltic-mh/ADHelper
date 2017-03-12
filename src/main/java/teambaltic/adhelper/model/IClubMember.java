@@ -17,10 +17,15 @@ import java.time.LocalDate;
 public interface IClubMember extends IIdentifiedItem< IClubMember >
 {
     int getLinkID();
+    void setLinkID( int fIntValue );
     String getName();
+    void setName( String fFormat );
     LocalDate getBirthday();
+    void setBirthday( LocalDate fBirthday );
     LocalDate getMemberFrom();
+    void setMemberFrom( LocalDate fEintritt );
     LocalDate getMemberUntil();
+    void setMemberUntil( LocalDate fAustritt );
 }
 
 // ############################################################################

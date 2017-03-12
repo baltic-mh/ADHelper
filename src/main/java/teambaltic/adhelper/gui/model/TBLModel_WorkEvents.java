@@ -16,7 +16,7 @@ public class TBLModel_WorkEvents extends TBLModel_Participation
 {
     private static final long serialVersionUID = 3040033628089631180L;
 
-    private static final String[]   COLUMNHEADERS = new String[] { "Beteiligung", "ID", "Name", "Stunden" };
+    public  static final String[]   COLUMNHEADERS = new String[] { "Beteiligung", "ID", "Name", "Stunden" };
     private static final Class<?>[] COLUMNCLASSES = new Class<?>[] { Boolean.class, Integer.class, String.class, Float.class };
     private static final Integer [] EDITABLECOLUMNS = new Integer [] { Integer.valueOf(0), Integer.valueOf(3) };
 

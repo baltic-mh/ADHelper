@@ -181,16 +181,17 @@ public class ParticipationsPanel extends JPanel
         m_table.setRowSorter( m_sorter  );
 
         m_table.setModel( fModel );
-        m_table.getColumnModel().getColumn(0).setMaxWidth(75);
-        m_table.getColumnModel().getColumn(1).setMaxWidth(75);
-        m_table.getColumnModel().getColumn(1).setCellRenderer( CENTERRENDERER );
-        m_table.getColumnModel().getColumn(3).setMaxWidth(150);
-        m_table.getColumn("Stunden").setCellEditor(new HoursSpinnerEditor());
+        m_table.getColumnModel().getColumn(fModel.getColIdx_Participationflag()).setMaxWidth(75);
+        m_table.getColumnModel().getColumn(fModel.getColIdx_ID()).setMaxWidth(75);
+        m_table.getColumnModel().getColumn(fModel.getColIdx_Name()).setCellRenderer( CENTERRENDERER );
+        m_table.getColumnModel().getColumn(fModel.getColIdx_Hours()).setMaxWidth(150);
+        final String aColName_Hours = fModel.getColumnName( fModel.getColIdx_Hours() );
+        m_table.getColumn(aColName_Hours).setCellEditor(new HoursSpinnerEditor());
 
         configureButtons( fModel.isReadOnly() );
     }
 
-    private void configureButtons( final boolean fReadOnly )
+    protected void configureButtons( final boolean fReadOnly )
     {
         final JButton aBtn_ToggleTeilnehmerFilter = getBtn_ToggleTeilnehmerFilter();
         m_FilterController.setFilter_NurTeilnehmer( fReadOnly );
@@ -209,10 +210,6 @@ public class ParticipationsPanel extends JPanel
         return centerRenderer;
     }
 
-    public TBLModel_Participation getTableModel()
-    {
-        return (TBLModel_Participation) getTable().getModel();
-    }
 }
 
 // ############################################################################

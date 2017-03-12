@@ -30,6 +30,7 @@ import teambaltic.adhelper.gui.model.TBLModel_DutyCharge;
 import teambaltic.adhelper.gui.model.TBLModel_DutyFree;
 import teambaltic.adhelper.gui.renderer.RNDR_CB_Member;
 import teambaltic.adhelper.model.Balance;
+import teambaltic.adhelper.model.CreditHours;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
@@ -238,7 +239,8 @@ public class GUIUpdater
             final String aMemberName = fDataProvider.getMemberName( aInfoForThisRelative.getID() );
             final DutyCharge aDutyCharge = aInfoForThisRelative.getDutyCharge();
             final Balance aBalance = aInfoForThisRelative.getBalance( fPeriod );
-            addRow_DutyChargeAndBalance( fDataModel, aMemberName, aDutyCharge, aBalance );
+            final CreditHours aCreditsHours = aInfoForThisRelative.getCreditHours( fPeriod );
+            addRow_DutyChargeAndBalance( fDataModel, aMemberName, aDutyCharge, aBalance, aCreditsHours );
         }
         final DutyCharge aDutyChargeOfThisMember = fInfoForSingleMember.getDutyCharge();
         fPanel.setTotalHoursToPay( aDutyChargeOfThisMember.getHoursToPayTotal() / 100.0f );
@@ -248,11 +250,17 @@ public class GUIUpdater
             final TBLModel_DutyCharge   fDataModel,
             final String                fMemberName,
             final DutyCharge            fDutyCharge,
-            final Balance               fBalance )
+            final Balance               fBalance,
+            final CreditHours           fCreditsHours )
     {
         final Vector<Object> rowData = new Vector<>();
         rowData.addElement( fMemberName );
         rowData.addElement( fBalance.getValue_Original()/100.0f );
+        float aCreditHours = 0.0f;
+        if( fCreditsHours != null ){
+            aCreditHours = fCreditsHours.getHours()/100.0f;
+        }
+        rowData.addElement( aCreditHours );
         rowData.addElement( fDutyCharge.getHoursWorked()/100.0f );
         rowData.addElement( fDutyCharge.getHoursDue()/100.0f );
         rowData.addElement( fBalance.getValue_Charged()/100.0f );

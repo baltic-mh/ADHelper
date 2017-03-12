@@ -114,7 +114,7 @@ public class ChargeManagerTest
         INFO4_MHW.setDutyCharge( aCharge_MHW );
         final int aHoursWorked = ChargeManager.getHoursWorked( INFO4_MHW, aInvoicingPeriod );
         final Collection<FreeFromDuty> aFreeFromDutyItems = INFO4_MHW.getFreeFromDutyItems( aInvoicingPeriod );
-        aCM.createDutyCharge( INFO4_MHW.getID(), aInvoicingPeriod, aMHW_Balance, aHoursWorked, aFreeFromDutyItems );
+        aCM.createDutyCharge( INFO4_MHW.getID(), aInvoicingPeriod, aMHW_Balance, aHoursWorked, null,aFreeFromDutyItems );
 
 //        final DutyCharge aCharge_MTW = new DutyCharge(MTW.getID(), 0);
 //        aCC.calculate( aCharge_MTW, null, null );
@@ -126,9 +126,7 @@ public class ChargeManagerTest
 //        aCC.calculate( aCharge_MMW, null, null );
 //        aCharge_MHW.addRelative( aCharge_MMW );
 
-        final DutyCharge aDutyCharge = INFO4_MHW.getDutyCharge();
-        final List<InfoForSingleMember> aAllRelatives = INFO4_MHW.getAllRelatives();
-        aCM.balance( aAllRelatives, aInvoicingPeriod, aDutyCharge );
+        aCM.balance( aInvoicingPeriod, INFO4_MHW );
         reportCharge( INFO4_MHW, aInvoicingPeriod );
         TestUtils.logMethodEnd( aStartTime, aMethodName );
     }
@@ -156,11 +154,11 @@ public class ChargeManagerTest
         MHW_WorkEventsAttended = new WorkEventsAttended( aID_MW );
         WorkEventsAttendedListProvider.add( MHW_WorkEventsAttended );
         final WorkEvent aWorkEvent1_MW = new WorkEvent( aID_MW );
-        MHW_WorkEventsAttended.addWorkEvent( aWorkEvent1_MW );
+        MHW_WorkEventsAttended.add( aWorkEvent1_MW );
         aWorkEvent1_MW.setHours( 100 );
         aWorkEvent1_MW.setDate( LocalDate.of( 2016, 3, 1 ) );
         final WorkEvent aWorkEvent2_MW = new WorkEvent( aID_MW );
-        MHW_WorkEventsAttended.addWorkEvent( aWorkEvent2_MW );
+        MHW_WorkEventsAttended.add( aWorkEvent2_MW );
         aWorkEvent2_MW.setHours( 100 );
         aWorkEvent2_MW.setDate( LocalDate.of( 2016, 4, 1 ) );
 
@@ -187,11 +185,11 @@ public class ChargeManagerTest
         BJW_WorkEventsAttended = new WorkEventsAttended( aID_BJ );
         WorkEventsAttendedListProvider.add( BJW_WorkEventsAttended );
         final WorkEvent aWorkEvent1_BJ = new WorkEvent( aID_BJ );
-        BJW_WorkEventsAttended.addWorkEvent( aWorkEvent1_BJ );
+        BJW_WorkEventsAttended.add( aWorkEvent1_BJ );
         aWorkEvent1_BJ.setHours( 200 );
         aWorkEvent1_BJ.setDate( LocalDate.of( 2016, 3, 1 ) );
         final WorkEvent aWorkEvent2_BJ = new WorkEvent( aID_BJ );
-        BJW_WorkEventsAttended.addWorkEvent( aWorkEvent2_BJ );
+        BJW_WorkEventsAttended.add( aWorkEvent2_BJ );
         aWorkEvent2_BJ.setHours( 100 );
         aWorkEvent2_BJ.setDate( LocalDate.of( 2016, 4, 1 ) );
 

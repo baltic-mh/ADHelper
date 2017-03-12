@@ -26,13 +26,15 @@ public class Balance implements IIdentifiedItem<Balance>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final int m_Value_Original;
+    private int m_Value_Original;
     public int getValue_Original(){return m_Value_Original; }
+    public void setValue_Original( final int fValue_Original ){ m_Value_Original = fValue_Original; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final LocalDate m_ValidFrom;
+    private LocalDate m_ValidFrom;
     public LocalDate getValidFrom(){ return m_ValidFrom; }
+    public void setValidFrom( final LocalDate fValidFrom ){ m_ValidFrom = fValidFrom; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -47,17 +49,22 @@ public class Balance implements IIdentifiedItem<Balance>
     public void setValue_ChargedAndAdjusted( final int fNewVal ){ m_Value_ChargedAndAdjusted = fNewVal; }
     // ------------------------------------------------------------------------
 
-    public Balance(final int fMemberID, final IPeriod fPeriod, final int fValue_Original)
-    {
-        this(fMemberID, fPeriod.getStart(), fValue_Original);
-    }
-    public Balance( final int fMemberID, final LocalDate fValidFrom, final int fValue_Original )
+    public Balance( final int fMemberID )
     {
         m_MemberID       = fMemberID;
-        m_Value_Original = fValue_Original;
-        m_ValidFrom      = fValidFrom;
-        setValue_Charged( fValue_Original );
-        setValue_ChargedAndAdjusted( fValue_Original );
+    }
+
+    public Balance(final int fMemberID, final IPeriod fPeriod, final int fValue_Original)
+    {
+        this(fMemberID);
+        setValidFrom( fPeriod.getStart() );
+        setValues(fValue_Original);
+    }
+    public void setValues( final int fStartValue )
+    {
+        m_Value_Original = fStartValue;
+        setValue_Charged( fStartValue );
+        setValue_ChargedAndAdjusted( fStartValue );
     }
 
     @Override

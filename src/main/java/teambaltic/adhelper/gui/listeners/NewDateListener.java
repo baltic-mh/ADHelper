@@ -23,10 +23,11 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.gui.DateChooserFrame;
 import teambaltic.adhelper.model.IPeriod;
+import teambaltic.adhelper.model.Participation;
 import teambaltic.adhelper.model.PeriodData;
 
 // ############################################################################
-public class NewDateListener implements ActionListener
+public class NewDateListener<ParticipationType extends Participation> implements ActionListener
 {
     private static final Logger sm_Log = Logger.getLogger(NewDateListener.class);
 
@@ -38,20 +39,20 @@ public class NewDateListener implements ActionListener
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final ManageParticipationsListener m_ManageparticipationsListener;
-    private ManageParticipationsListener getManageWorkEventsListener()
+    private final ManageParticipationsListener<ParticipationType> m_ManageparticipationsListener;
+    private ManageParticipationsListener<ParticipationType> getManageWorkEventsListener()
     {
         return m_ManageparticipationsListener;
     }
     // ------------------------------------------------------------------------
 
     public NewDateListener(
-            final ManageParticipationsListener fManageparticipationsListener,
-            final DateChooserFrame fDateChooserFrame,
+            final ManageParticipationsListener<ParticipationType> fManageparticipationsListener,
             final IPeriodDataController fPDC)
     {
         m_ManageparticipationsListener = fManageparticipationsListener;
-        m_DateChooserFrame = fDateChooserFrame;
+        m_DateChooserFrame = new DateChooserFrame();
+        m_DateChooserFrame.addActionListener( this );
         m_PDC = fPDC;
     }
 

@@ -15,33 +15,37 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.controller.IPeriodDataController.EPeriodDataSelector;
-import teambaltic.adhelper.gui.DateChooserFrame;
 import teambaltic.adhelper.gui.ParticipationsDialog;
 import teambaltic.adhelper.gui.ParticipationsPanel;
 import teambaltic.adhelper.gui.model.CBModel_Dates;
 import teambaltic.adhelper.gui.model.CBModel_PeriodData;
 import teambaltic.adhelper.gui.model.TBLModel_Participation;
+import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IParticipationItemContainer;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
+import teambaltic.adhelper.model.Participation;
 import teambaltic.adhelper.model.PeriodData;
-import teambaltic.adhelper.model.WorkEvent;
-import teambaltic.adhelper.model.WorkEventsAttended;
 
 // ############################################################################
-public abstract class ManageParticipationsListener implements ActionListener, TableModelListener
+public abstract class ManageParticipationsListener<ParticipationType extends Participation>
+    implements ActionListener, TableModelListener
 {
 //    private static final Logger sm_Log = Logger.getLogger(ManageParticipationsListener.class);
 
@@ -77,16 +81,21 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
     protected ParticipationsDialog createDialog();
 
     abstract
-    protected Object[][] getData( final LocalDate fADDate, final ADH_DataProvider fDataProvider );
+    protected IParticipationItemContainer<ParticipationType> getParticipationItemContainer( final InfoForSingleMember fInfoForSingleMember );
+    abstract
+    protected IParticipationItemContainer<ParticipationType> createParticipationItemContainer( final int fMemberID );
+    abstract
+    protected void setParticipationItemContainer( InfoForSingleMember fInfoForSingleMember,
+                       IParticipationItemContainer<ParticipationType> fParticipationItemContainer );
 
     abstract
     protected TBLModel_Participation createTableModel( final Object[][] fData, final boolean fReadOnly );
 
-    /**
-     * @return true, wenn irgendetwas geändert wurde, sonst false
-     */
     abstract
-    protected boolean writeToMembers(final ADH_DataProvider fDataProvider);
+    protected List<LocalDate> getParticipationDates( final ADH_DataProvider fDataProvider );
+
+    abstract
+    protected ParticipationType createParticipation( final LocalDate fSelectedDate, final Vector<Object> fRowValues );
 
     abstract
     protected void writeToFile(ADH_DataProvider fDataProvider);
@@ -94,7 +103,7 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
 
     private final ParticipationsDialog m_Dialog;
 
-    private final NewDateListener m_NewDateListener;
+    private final NewDateListener<ParticipationType> m_NewDateListener;
 
     public ManageParticipationsListener(
             final ADH_DataProvider fDataProvider,
@@ -108,9 +117,7 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
         m_IsBauausschuss = fIsBauausschuss;
 
         m_Dialog = createDialog();
-        final DateChooserFrame aDateChooserFrame = new DateChooserFrame();
-        m_NewDateListener = new NewDateListener(this, aDateChooserFrame, fPDC );
-        aDateChooserFrame.addActionListener( m_NewDateListener );
+        m_NewDateListener = new NewDateListener<>(this, fPDC );
         getBtn_Ok().addActionListener( this );
         getBtn_Neu().addActionListener( this );
         getBtn_Abbrechen().addActionListener( this );
@@ -126,6 +133,20 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
     {
         final ParticipationsPanel aPanel = m_Dialog.getContentPanel();
         return aPanel;
+    }
+
+    private JTable getTable()
+    {
+        return getPanel().getTable();
+    }
+
+    protected TBLModel_Participation getTableModel()
+    {
+        TableModel aTableModel = getTable().getModel();
+        if( !(aTableModel instanceof TBLModel_Participation) ){
+            aTableModel = createTableModel( null, true );
+        }
+        return (TBLModel_Participation) aTableModel;
     }
 
     private JButton getBtn_Abbrechen()
@@ -164,7 +185,7 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
         final PeriodData aSelectedPeriod = (PeriodData) aCmb_Period.getSelectedItem();
         switch( aActionCommand ){
             case "CANCEL":
-                getPanel().getTable().editingStopped( null );
+                stopTableEditing();
                 if( isDirty() ){
                     final Object[] options = {"Ich wei\u00DF, was ich tue!", "Nein, das war ein Versehen!"};
                     final int n = JOptionPane.showOptionDialog(null,
@@ -186,12 +207,13 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
                 break;
 
             case "OK":
-                getPanel().getTable().editingStopped( null );
+                stopTableEditing();
                 final boolean aDataChanged = writeToMembers( getDataProvider() );
                 if( aDataChanged ){
                     writeToFile(m_DataProvider);
-                    m_DataProvider.calculateDutyCharges(aSelectedPeriod.getPeriod());
-                    m_DataProvider.balanceRelatives( aSelectedPeriod.getPeriod());
+//                    m_DataProvider.calculateDutyCharges(aSelectedPeriod.getPeriod());
+//                    m_DataProvider.balanceRelatives( aSelectedPeriod.getPeriod());
+                    m_DataProvider.balance( aSelectedPeriod.getPeriod());
                     getGUIUpdater().updateGUI();
                 }
                 m_Dialog.setVisible(false);
@@ -227,6 +249,16 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
 
     }
 
+    private void stopTableEditing()
+    {
+        final JTable aTable = getTable();
+        if( aTable.isEditing() ){
+            final TableCellEditor tce = aTable.getCellEditor();
+            tce.stopCellEditing();
+        }
+        aTable.editingStopped( null );
+    }
+
     private boolean isReadOnly( final PeriodData fSelectedPeriod, final LocalDate fSelectedDate )
     {
         if( ALLPERIODS == fSelectedPeriod ){
@@ -250,74 +282,182 @@ public abstract class ManageParticipationsListener implements ActionListener, Ta
         fCmb_Period.setModel( new CBModel_PeriodData( aPeriods ) );
     }
 
-    private void populateCmbDates( final JComboBox<LocalDate> fCmb_Date, final IPeriod fSelectedPeriod )
+    protected void populateCmbDates( final JComboBox<LocalDate> fCmb_Date, final IPeriod fSelectedPeriod )
     {
-        final List<LocalDate> aWorkEventDates = getWorkEventDates( getDataProvider() );
-        final List<LocalDate> aWorkEventDates_Filtered = new ArrayList<>(aWorkEventDates.size());
+        final List<LocalDate> aParticipationDates = getParticipationDates( getDataProvider() );
+        final List<LocalDate> aParticipationDates_Filtered = new ArrayList<>(aParticipationDates.size());
         if( fSelectedPeriod == null ){
-            aWorkEventDates_Filtered.addAll( aWorkEventDates );
+            aParticipationDates_Filtered.addAll( aParticipationDates );
         } else {
-            for( final LocalDate aWorkEventDate : aWorkEventDates ){
+            for( final LocalDate aWorkEventDate : aParticipationDates ){
                 if( !fSelectedPeriod.isWithinMyPeriod( aWorkEventDate ) ){
                     continue;
                 }
-                aWorkEventDates_Filtered.add( aWorkEventDate );
+                aParticipationDates_Filtered.add( aWorkEventDate );
             }
         }
-        final LocalDate[] aLDArray = new LocalDate[aWorkEventDates_Filtered.size()];
-        fCmb_Date.setModel( new CBModel_Dates( aWorkEventDates_Filtered.toArray( aLDArray )) );
+        final LocalDate[] aLDArray = new LocalDate[aParticipationDates_Filtered.size()];
+        fCmb_Date.setModel( new CBModel_Dates( aParticipationDates_Filtered.toArray( aLDArray )) );
         fCmb_Date.setSelectedIndex( fCmb_Date.getItemCount()-1 );
-    }
-
-    private static List<LocalDate> getWorkEventDates( final ADH_DataProvider fDataProvider )
-    {
-        final List<InfoForSingleMember> aAll = fDataProvider.getAll();
-
-        final List<LocalDate> aWorkEventDates = new ArrayList<>();
-        for( final InfoForSingleMember aInfoForSingleMember : aAll ){
-            final WorkEventsAttended aWorkEventsAttended = aInfoForSingleMember.getWorkEventsAttended();
-            if( aWorkEventsAttended == null ){
-                continue;
-            }
-            final List<WorkEvent> aWorkEvents = aWorkEventsAttended.getWorkEvents();
-            for( final WorkEvent aWorkEvent : aWorkEvents ){
-                final LocalDate aWorkEventDate = aWorkEvent.getDate();
-                if( aWorkEventDates.contains( aWorkEventDate ) ){
-                    continue;
-                }
-                aWorkEventDates.add( aWorkEventDate );
-            }
-        }
-        Collections.sort( aWorkEventDates );
-        return aWorkEventDates;
     }
 
     @Override
     public void tableChanged( final TableModelEvent fEvent )
     {
 //        final int aCol = fEvent.getColumn();
-//        if( aCol == 3 ){
-//            setDirty( true );
-//        }
+////        if( aCol == 3 ){
+////            setDirty( true );
+////        }
 //        final int row = fEvent.getFirstRow();
-//        final int col = fEvent.getColumn();
-//        final TBLModel_WorkEvents model = (TBLModel_WorkEvents)fEvent.getSource();
-//        final String columnName = model.getColumnName(col);
-//        final Object data = model.getValueAt(row, col);
-
-        // Do something with the data...
+//        final TBLModel_Participation model = (TBLModel_Participation)fEvent.getSource();
+//        final String columnName = model.getColumnName(aCol);
+//        final Object data = model.getValueAt(row, aCol);
+//
+//        // Do something with the data...
 //        System.out.println(String.format("Data changed: col %s row %d - val %s",
 //                columnName, row, data));
     }
 
     // ------------------------------------------------------------------------
     private boolean isDirty(){
-        final ParticipationsPanel aPanel = getPanel();
-        final TBLModel_Participation aModel = aPanel.getTableModel();
+        final TBLModel_Participation aModel = getTableModel();
         return aModel.isDirty();
     }
     // ------------------------------------------------------------------------
 
+    protected Object[][] getData( final LocalDate fDate, final ADH_DataProvider fDataProvider )
+    {
+        if( fDate == null ){
+            return null;
+        }
+        final int aColIdx_ParticipationFlag = getColIdx_ParticipationFlag();
+        final int aColIdx_ID                = getColIdx_ID();
+        final int aColIdx_Name              = getColIdx_Name();
+        final int aColumnIdxHours           = getColIdx_Hours();
+        final List<InfoForSingleMember> aAll = fDataProvider.getAll();
+        final int aNumColumns = getNumColumns();
+        final Object[][] aData = new Object[aAll.size()][aNumColumns];
+        for( int aIdx = 0; aIdx < aAll.size(); aIdx++ ){
+            final InfoForSingleMember aInfoForSingleMember = aAll.get( aIdx );
+            final IClubMember aMember = aInfoForSingleMember.getMember();
+            final Object[] aDataRow = new Object[aNumColumns];
+            aDataRow[aColIdx_ParticipationFlag] = Boolean.FALSE;
+            aDataRow[aColIdx_ID] = aMember.getID();
+            aDataRow[aColIdx_Name] = aMember.getName();
+            final IParticipationItemContainer<ParticipationType> aParticipationItemContainer = getParticipationItemContainer( aInfoForSingleMember );
+            if( aParticipationItemContainer != null ){
+                final List<ParticipationType> aParticipationList = aParticipationItemContainer.getParticipationList();
+                for( final ParticipationType aParticipation : aParticipationList ){
+                    if( fDate.equals( aParticipation.getDate() ) ){
+                        aDataRow[aColIdx_ParticipationFlag] = Boolean.TRUE;
+                        aDataRow[aColumnIdxHours] = aParticipation.getHours() /100.0;
+                        fillSpecificColumnData( aDataRow, aParticipation );
+                        break;
+                    }
+                }
+            }
+            aData[aIdx] = aDataRow;
+        }
+        return aData;
+    }
+
+    // Wenn eine abgeleitete Klasse eine andere Reihenfolge bei den Spalten hat,
+    // muss sie die getColIdx_*-Methoden überschreiben:
+    protected int getColIdx_ParticipationFlag()
+    {
+        return getTableModel().getColIdx_Participationflag();
+    }
+
+    protected int getColIdx_ID()
+    {
+        return getTableModel().getColIdx_ID();
+    }
+
+    protected int getColIdx_Name()
+    {
+        return getTableModel().getColIdx_Name();
+    }
+
+    protected int getColIdx_Hours()
+    {
+        return getTableModel().getColIdx_Hours();
+    }
+
+    protected int getNumColumns()
+    {
+        return getTableModel().getCOLUMNCLASSES().length;
+    }
+
+    protected void fillSpecificColumnData( final Object[] fDataRow, final ParticipationType fParticipation )
+    {
+        // Default-Implementierung - die tut nix!
+    }
+
+    /**
+     * @return true, wenn irgendetwas geändert wurde, sonst false
+     */
+    protected boolean writeToMembers( final ADH_DataProvider fDataProvider )
+    {
+        final JComboBox<LocalDate> aCmb_Date = getCmb_Date();
+        final LocalDate aSelectedDate = (LocalDate) aCmb_Date.getSelectedItem();
+
+        final JTable aTable = getTable();
+        final TBLModel_Participation aModel = (TBLModel_Participation) aTable.getModel();
+        @SuppressWarnings("unchecked")
+        final Vector<Vector<Object>> aDataVector = aModel.getDataVector();
+        final int aRowCount = aModel.getRowCount();
+        boolean aDataChanged = false;
+        for( int aIdx = 0; aIdx < aRowCount; aIdx++ ){
+            final Double aHoursValue = aModel.getHours( aIdx );
+            if( aHoursValue == null ){
+                continue;
+            } else {
+                final Vector<Object> aRowVector = aDataVector.get( aIdx );
+                final ParticipationType aParticipationEvent = createParticipation( aSelectedDate, aRowVector );
+                aDataChanged |= writeToMember( fDataProvider, aParticipationEvent );
+            }
+        }
+        return aDataChanged;
+    }
+
+    /**
+     * @param fDataProvider
+     * @return true, wenn irgendetwas geändert wurde, sonst false
+     */
+    protected boolean writeToMember( final ADH_DataProvider fDataProvider, final ParticipationType fParticipationItem )
+    {
+        if( fParticipationItem.getHours() == 0 ){
+            return false;
+        }
+        final int aMemberID = fParticipationItem.getMemberID();
+        final InfoForSingleMember aInfoForSingleMember = fDataProvider.get( aMemberID );
+        IParticipationItemContainer<ParticipationType> aParticipationItemContainer = getParticipationItemContainer( aInfoForSingleMember );
+        if( aParticipationItemContainer == null ){
+            aParticipationItemContainer = createParticipationItemContainer( aMemberID );
+            setParticipationItemContainer( aInfoForSingleMember, aParticipationItemContainer );
+        }
+        final LocalDate aDate   = fParticipationItem.getDate();
+        final List<ParticipationType> aItemList = aParticipationItemContainer.getParticipationList();
+        boolean aSkip = false;
+        for( final ParticipationType aKnownParticipationItem : aItemList ){
+            final LocalDate aDateOfKnownParticipationItem = aKnownParticipationItem.getDate();
+            if( aDateOfKnownParticipationItem.equals( aDate )){
+                if( aKnownParticipationItem.equals( fParticipationItem ) ){
+                    aSkip = true;
+                } else {
+                    aParticipationItemContainer.remove( aKnownParticipationItem );
+                }
+                break;
+            }
+        }
+        if( !aSkip ){
+            aParticipationItemContainer.add( fParticipationItem );
+        }
+        return !aSkip;
+    }
+
+
 }
 
 // ############################################################################
+

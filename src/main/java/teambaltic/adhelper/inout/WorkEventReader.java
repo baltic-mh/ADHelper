@@ -12,66 +12,24 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import teambaltic.adhelper.controller.ListProvider;
-import teambaltic.adhelper.factories.IItemFactory;
 import teambaltic.adhelper.factories.WorkEventFactory;
-import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
-import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
-public class WorkEventReader
+public class WorkEventReader extends ParticipationReader<WorkEvent>
 {
-    private static final Logger sm_Log = Logger.getLogger(WorkEventReader.class);
-
-    // ------------------------------------------------------------------------
-    private final File m_File;
-    public File getFile(){ return m_File; }
-    // ------------------------------------------------------------------------
-
-    private final IItemFactory<WorkEvent> m_WorkEventFactory;
+//    private static final Logger sm_Log = Logger.getLogger(WorkEventReader.class);
 
     public WorkEventReader( final File fFile )
     {
-        m_File = fFile;
-        m_WorkEventFactory = new WorkEventFactory();
+        super( fFile, new WorkEventFactory() );
     }
 
-    public void read(final ListProvider<InfoForSingleMember> fListProvider) throws Exception
-    {
-        final File aFile = getFile();
-        FileUtils.checkFile( aFile );
-
-        final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
-        final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
-        for( final String aSingleLine : aAllLines ){
-            if( aSingleLine.isEmpty() ){
-                continue;
-            }
-            final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
-            final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
-            final int aID = Integer.parseInt( aIDString );
-            final InfoForSingleMember aInfo = fListProvider.get( aID );
-            if( aInfo == null ){
-                sm_Log.error( String.format( "Mitglied mit der ID %d nicht gefunden!", aID ) );
-                continue;
-            }
-
-            final WorkEventsAttended aWorkEventsAttended = getCreateWorkEventsAttended( aInfo );
-            final WorkEvent aWorkEvent = m_WorkEventFactory.createItem( aID, aAttributes);
-            aWorkEventsAttended.addWorkEvent( aWorkEvent );
-        }
-
-    }
-
-    private static WorkEventsAttended getCreateWorkEventsAttended( final InfoForSingleMember fInfo )
+    @Override
+    protected WorkEventsAttended getCreateParticipationItemContainer( final InfoForSingleMember fInfo )
     {
         WorkEventsAttended aWorkEventsAttended = fInfo.getWorkEventsAttended();
         if( aWorkEventsAttended == null ){

@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,12 +22,11 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.inout.BalanceReader;
 import teambaltic.adhelper.inout.BaseDataReader;
+import teambaltic.adhelper.inout.CreditHoursReader;
 import teambaltic.adhelper.inout.WorkEventReader;
 import teambaltic.adhelper.inout.Writer;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.BalanceHistory;
-import teambaltic.adhelper.model.DutyCharge;
-import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
@@ -101,15 +99,14 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
 
         // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen
-        readBaseData( getPDC().getFile_BaseData( fPeriodData ), fOnlyID );
-        readWorkEvents( getPDC().getFile_WorkEvents( fPeriodData ) );
+        readBaseData   ( getPDC().getFile_BaseData( fPeriodData ), fOnlyID );
+        readWorkEvents ( getPDC().getFile_WorkEvents ( fPeriodData ) );
+        readCreditHours( getPDC().getFile_CreditHours( fPeriodData ) );
         readBalances( fPeriodData );
 
         populateFreeFromDutySets( aPeriod );
         joinRelatives();
-
-        calculateDutyCharges( aPeriod );
-        balanceRelatives( aPeriod );
+        balance( aPeriod );
 
     }
 
@@ -143,45 +140,19 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         aReader.read( this );
     }
 
+    public void readCreditHours( final Path fFileToReadFrom ) throws Exception
+    {
+        if( !Files.exists( fFileToReadFrom )){
+            return;
+        }
+        final CreditHoursReader aReader = new CreditHoursReader( fFileToReadFrom.toFile() );
+        aReader.read( this );
+    }
+
     public void readBalances( final Path fFileToReadFrom, final boolean fOld ) throws Exception
     {
         final BalanceReader aReader = new BalanceReader( fFileToReadFrom.toFile(), fOld );
         aReader.read( this );
-    }
-
-    public void calculateDutyCharges(final IPeriod fPeriod)
-    {
-        for( final InfoForSingleMember aSingleInfo : getAll() ){
-            Balance aBalance = aSingleInfo.getBalance( fPeriod );
-            if(  aBalance == null ){
-                aBalance = new Balance( aSingleInfo.getID(), fPeriod, 0);
-                aSingleInfo.addBalance( aBalance );
-            }
-            final int aHoursWorked = ChargeManager.getHoursWorked( aSingleInfo, fPeriod );
-            final Collection<FreeFromDuty> aFreeFromDutyItems = aSingleInfo.getFreeFromDutyItems( fPeriod );
-            final DutyCharge aCharge = getChargeManager().createDutyCharge(
-                    aSingleInfo.getID(), fPeriod, aBalance, aHoursWorked, aFreeFromDutyItems );
-            aSingleInfo.setDutyCharge( aCharge );
-            /*final Balance aChargedBalanceOfThisPeriod = */chargeBalance( aBalance, fPeriod, aCharge );
-        }
-    }
-
-    private static Balance chargeBalance(
-            final Balance fBalance,
-            final IPeriod fPeriod,
-            final DutyCharge fCharge)
-    {
-        final int aBalanceValue = fBalance.getValue_Original();
-        final int aHoursWorked = fCharge.getHoursWorked();
-        final int aHoursDue    = fCharge.getHoursDue();
-        int aBalanceCharged = aBalanceValue + aHoursWorked - aHoursDue;
-        if( aBalanceCharged < 0 ){
-            aBalanceCharged = 0;
-        }
-        fBalance.setValue_Charged( aBalanceCharged );
-        fBalance.setValue_ChargedAndAdjusted( aBalanceCharged );
-
-        return fBalance;
     }
 
     private void populateFreeFromDutySets(final IPeriod fInvoicingPeriod)
@@ -226,25 +197,30 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         }
     }
 
-    public void balanceRelatives(final IPeriod fPeriod)
+    public void balance(final IPeriod fPeriod)
     {
         final IPeriod aNextPeriod = fPeriod.createSuccessor();
         for( final InfoForSingleMember aSingleInfo : getAll() ){
-            try{
-                final IClubMember aMember = aSingleInfo.getMember();
-                if( aMember.getLinkID() != 0 ){
-                    continue;
-                }
-                final List<InfoForSingleMember> aAllRelatives = aSingleInfo.getAllRelatives();
-                final DutyCharge aDutyCharge = aSingleInfo.getDutyCharge();
-                m_ChargeManager.balance( aAllRelatives, fPeriod, aDutyCharge );
-            } finally {
-                final Balance aBalanceOfThisPeriod = aSingleInfo.getBalance( fPeriod );
-                final int aValue_ChargedAndAdjusted = aBalanceOfThisPeriod.getValue_ChargedAndAdjusted();
-                final Balance aStartBalanceForNextPeriod = new Balance(
-                      aSingleInfo.getID(), aNextPeriod, aValue_ChargedAndAdjusted );
-                aSingleInfo.addBalance( aStartBalanceForNextPeriod );
+            balance( fPeriod, aSingleInfo, aNextPeriod );
+        }
+    }
+    private void balance(
+            final IPeriod               fPeriod,
+            final InfoForSingleMember   fMemberInfo,
+            final IPeriod               fNextPeriod )
+    {
+        try{
+            final IClubMember aMember = fMemberInfo.getMember();
+            if( aMember.getLinkID() != 0 ){
+                return;
             }
+            m_ChargeManager.balance( fPeriod, fMemberInfo );
+        } finally {
+            final Balance aBalanceOfThisPeriod = fMemberInfo.getBalance( fPeriod );
+            final int aValue_ChargedAndAdjusted = aBalanceOfThisPeriod.getValue_ChargedAndAdjusted();
+            final Balance aStartBalanceForNextPeriod = new Balance(
+                  fMemberInfo.getID(), fNextPeriod, aValue_ChargedAndAdjusted );
+            fMemberInfo.addBalance( aStartBalanceForNextPeriod, true );
         }
     }
 
@@ -283,6 +259,11 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void writeToFile_WorkEvents()
     {
         Writer.writeToFile_WorkEvents( this, getPeriodData().getFolder() );
+    }
+
+    public void writeToFile_CreditHours()
+    {
+        Writer.writeToFile_CreditHours( this, getPeriodData().getFolder() );
     }
 
 }

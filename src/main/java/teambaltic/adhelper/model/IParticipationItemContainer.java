@@ -1,23 +1,25 @@
 /**
- * WorkEvent.java
+ * IParticipationItemContainer.java
  *
- * Created on 30.01.2016
+ * Created on 09.03.2017
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
  *
  * Coole Software - Mein Beitrag im Kampf gegen die Klimaerwärmung!
  *
- * Copyright (C) 2016 Team Baltic. All rights reserved
+ * Copyright (C) 2017 Team Baltic. All rights reserved
  */
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import java.util.List;
+
 // ############################################################################
-public class WorkEvent extends Participation
+public interface IParticipationItemContainer<ParticipationType extends Participation>
 {
-    public WorkEvent( final int fMemberID )
-    {
-        super( fMemberID );
-    }
+    List<ParticipationType> getParticipationList();
+
+    void add( ParticipationType fParticipationItem );
+    void remove( ParticipationType fParticipationItem );
 
 }
 

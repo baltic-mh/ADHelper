@@ -21,6 +21,7 @@ import teambaltic.adhelper.controller.ListProvider;
 import teambaltic.adhelper.factories.FreeFromDutySetFactory;
 import teambaltic.adhelper.factories.IItemFactory;
 import teambaltic.adhelper.factories.MemberFactory;
+import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -101,9 +102,11 @@ public class BaseDataReader
             final Map<String, String> fAttributes )
     {
         final int aID = fInfo.getID();
-        final IClubMember aClubMember = m_MemberFactory.createItem( aID, fAttributes);
+        final ClubMember aClubMember = new ClubMember( aID );
+        m_MemberFactory.populateItem( aClubMember, fAttributes);
         fInfo.setMember( aClubMember );
-        final FreeFromDutySet aFFDSet = m_FFDSetFactory.createItem( aID, fAttributes);
+        final FreeFromDutySet aFFDSet = new FreeFromDutySet( aID );
+        m_FFDSetFactory.populateItem( aFFDSet, fAttributes);
         fInfo.setFreeFromDutySet( aFFDSet );
     }
 

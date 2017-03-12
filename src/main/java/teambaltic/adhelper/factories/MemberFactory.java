@@ -14,7 +14,6 @@ package teambaltic.adhelper.factories;
 import java.time.LocalDate;
 import java.util.Map;
 
-import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.utils.ParseUtils;
@@ -25,15 +24,7 @@ public class MemberFactory implements IItemFactory<IClubMember>
 //    private static final Logger sm_Log = Logger.getLogger(MemberFactory.class);
 
     @Override
-    public IClubMember createItem( final int fID, final Map<String, String> fAttributes )
-    {
-        final ClubMember aCM = new ClubMember( fID );
-        populate( aCM, fAttributes );
-        return aCM;
-    }
-
-    private static void populate(
-            final ClubMember fCM, final Map<String, String> fAttributes )
+    public void populateItem( final IClubMember fCM, final Map<String, String> fAttributes )
     {
         final String aNachname = fAttributes.get( IKnownColumns.NAME );
         final String aVorname  = fAttributes.get( IKnownColumns.FIRSTNAME );

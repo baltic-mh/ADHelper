@@ -28,6 +28,8 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.BalanceHistory;
+import teambaltic.adhelper.model.CreditHours;
+import teambaltic.adhelper.model.CreditHoursGranted;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -45,6 +47,7 @@ public class Writer
     private static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
     private static final String BALANCEFORMAT_OLD = "%s;%s;%.2f;%.2f;%s"+LF;
     private static final String BALANCEFORMAT = "%s;%s;%.2f;%s"+LF;
+    private static final String CREDITFORMAT = "%s;%s;%.2f;%s;%s"+LF;
 
     // ------------------------------------------------------------------------
     private final ADH_DataProvider m_DataProvider;
@@ -59,28 +62,24 @@ public class Writer
     public void writeFiles( final Path fOutputFolder )
             throws IOException
     {
-        writeToFile_WorkEvents( getDataProvider(), fOutputFolder );
-        writeToFile_Obligations( getDataProvider(), fOutputFolder );
-        writeToFile_Balances( getDataProvider(), fOutputFolder );
+        writeToFile_WorkEvents  ( getDataProvider(), fOutputFolder );
+        writeToFile_CreditHours ( getDataProvider(), fOutputFolder );
+        writeToFile_Obligations ( getDataProvider(), fOutputFolder );
+        writeToFile_Balances    ( getDataProvider(), fOutputFolder );
         writeToFile_BalanceHistories( getDataProvider(), fOutputFolder );
-        DetailsReporter.report( getDataProvider(), fOutputFolder );
+        DetailsReporter.report  ( getDataProvider(), fOutputFolder );
     }
 
     public static void writeToFile_WorkEvents(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder )
     {
-        final IPeriod aIP = fDataProvider.getPeriod();
-        final LocalDate aToday = LocalDate.now();
         try{
             final List<WorkEvent> aAllWorkEvents = getAllWorkEvents( fDataProvider );
-            // Die Arbeitsdiensteinträge erhalten "Abgerechnet am"
-            // wenn ihr Datum vor dem Enddatum des Abrechnungszeitraumes liegt.
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Arbeitsdienste.csv", CHARSET_ISO_8859_1);
-            aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
+            aFileWriter.write( String.format("%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
-                    IKnownColumns.DATE, IKnownColumns.HOURSWORKED,
-                    IKnownColumns.CLEARED) );
+                    IKnownColumns.DATE, IKnownColumns.HOURSWORKED ) );
             for( final WorkEvent aWorkEvent : aAllWorkEvents ){
                 final LocalDate aWorkEventDate = aWorkEvent.getDate();
                 final int aMemberID = aWorkEvent.getMemberID();
@@ -225,6 +224,53 @@ public class Writer
                     fBalance.getMemberID(), fMemberName,
                     aBalance_Org/100.0f, aBalance_CAA/100.0f, fValidFrom );
         }
+//                sm_Log.info( aLine );
+        fFileWriter.write( aLine );
+    }
+
+    public static Path writeToFile_CreditHours(
+            final ADH_DataProvider fDataProvider,
+            final Path fOutputFolder)
+    {
+        try{
+            final Path aPath = fOutputFolder.resolve( "Gutschriften.csv" );
+            final PrintWriter aFileWriter = new PrintWriter(aPath.toFile(), CHARSET_ISO_8859_1);
+            aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
+                    IKnownColumns.MEMBERID, IKnownColumns.NAME,
+                    IKnownColumns.CREDITHOURS, IKnownColumns.DATE, IKnownColumns.COMMENT ) );
+            for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
+                final String aMemberName = fDataProvider.getMemberName( aSingleInfo.getID() );
+                final CreditHoursGranted aCreditHoursGranted = aSingleInfo.getCreditHoursGranted();
+                if( aCreditHoursGranted == null ){
+                    continue;
+                }
+                for(final CreditHours aCreditHours : aCreditHoursGranted.getCreditHoursList(null) ){
+                    final int aHours = aCreditHours.getHours();
+                    if( aHours == 0 ){
+                        continue;
+                    }
+                    writeSingleCreditHoursLine( aFileWriter, aMemberName, aCreditHours, toStringWithDots(aCreditHours.getDate()) );
+                }
+            }
+            aFileWriter.close();
+            return aPath;
+        }catch( final Exception fEx ){
+            sm_Log.warn("Exception: ", fEx );
+            return null;
+        }
+    }
+
+    private static void writeSingleCreditHoursLine(
+            final PrintWriter   fFileWriter,
+            final String        fMemberName,
+            final CreditHours   fCreditHours,
+            final String        fGrantedAt )
+    {
+        final int aHours = fCreditHours.getHours();
+        final String aLine = String.format( CREDITFORMAT,
+                fCreditHours.getMemberID(), fMemberName,
+                aHours/100.0f, fGrantedAt, fCreditHours.getComment() );
+
 //                sm_Log.info( aLine );
         fFileWriter.write( aLine );
     }

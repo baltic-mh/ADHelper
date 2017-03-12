@@ -48,13 +48,31 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     public BalanceHistory getBalanceHistory(){ return m_BalanceHistory; }
     public void setBalanceHistory( final BalanceHistory fBalanceHistory ){ m_BalanceHistory = fBalanceHistory; }
     public Balance getBalance(final IPeriod fPeriod){ return getBalanceHistory().getValue(fPeriod); }
-    public void addBalance( final Balance fItem ){ getBalanceHistory().addBalance( fItem ); }
+    public void addBalance( final Balance fItem ){ addBalance( fItem, false ); }
+    public void addBalance( final Balance fItem, final boolean fOverride ){ getBalanceHistory().addBalance( fItem, fOverride ); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private WorkEventsAttended m_WorkEventsAttended;
     public WorkEventsAttended getWorkEventsAttended(){ return m_WorkEventsAttended; }
     public void setWorkEventsAttended( final WorkEventsAttended fNewVal ){ m_WorkEventsAttended = fNewVal; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private CreditHoursGranted m_CreditHoursGranted;
+    public CreditHoursGranted getCreditHoursGranted(){ return m_CreditHoursGranted; }
+    public void setCreditHoursGranted( final CreditHoursGranted fNewVal ){ m_CreditHoursGranted = fNewVal; }
+    public CreditHours getCreditHours(final IPeriod fPeriod){
+        final CreditHoursGranted aCreditHoursGranted = getCreditHoursGranted();
+        if( aCreditHoursGranted == null ){
+            return null;
+        }
+        final List<CreditHours> aCreditHoursList = aCreditHoursGranted.getCreditHoursList( fPeriod );
+        if( aCreditHoursList == null || aCreditHoursList.size() == 0 ){
+            return null;
+        }
+        return aCreditHoursList.get( 0 );
+    }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------

@@ -40,13 +40,16 @@ public class BalanceFactory implements IItemFactory<Balance>
     }
 
     @Override
-    public Balance createItem( final int fID, final Map<String, String> fAttributes )
+    public void populateItem( final Balance fItem, final Map<String, String> fAttributes )
     {
-        final Balance aItem = isOld() ? readBalanceOld( fID, fAttributes ) : readBalanceNew( fID, fAttributes );
-        return aItem;
+        if( isOld() ){
+            readBalanceOld( fItem, fAttributes );
+        } else {
+            readBalanceNew( fItem, fAttributes );
+        }
     }
 
-    private static Balance readBalanceNew( final int fID, final Map<String, String> fAttributes )
+    private static void readBalanceNew( final Balance fItem, final Map<String, String> fAttributes )
     {
         String aBalanceValueString   = null;
         String aBalanceValidFromString = null;
@@ -58,13 +61,13 @@ public class BalanceFactory implements IItemFactory<Balance>
             }
         }
         if( aBalanceValueString == null || "".equals(aBalanceValueString) ){
-            return null;
+            return;
         }
         final LocalDate aValidFrom = readValidFrom( aBalanceValidFromString );
-        return createBalance( fID, aBalanceValueString, aValidFrom );
+        populateItem( fItem, aBalanceValueString, aValidFrom );
     }
 
-    private static Balance readBalanceOld( final int fID, final Map<String, String> fAttributes )
+    private static void readBalanceOld( final Balance fItem, final Map<String, String> fAttributes )
     {
         String aBalanceValueString   = null;
         String aBalanceValidFromString = null;
@@ -76,24 +79,23 @@ public class BalanceFactory implements IItemFactory<Balance>
             }
         }
         if( aBalanceValueString == null || "".equals(aBalanceValueString) ){
-            return null;
+            return;
         }
         final LocalDate aValidFrom = readValidFrom( aBalanceValidFromString );
         final IPeriod aPeriod = new Halfyear( aValidFrom );
         final LocalDate aValidFrom_Old = aPeriod.createPredeccessor().getStart();
-        return createBalance( fID, aBalanceValueString, aValidFrom_Old );
+        populateItem( fItem, aBalanceValueString, aValidFrom_Old );
     }
 
-    private static Balance createBalance( final int fID, final String fBalanceValueString, final LocalDate fValidFrom )
+    private static void populateItem( final Balance fItem, final String fBalanceValueString, final LocalDate fValidFrom )
     {
+        fItem.setValidFrom( fValidFrom );
         try{
             final float aFloatValue = Float.parseFloat( fBalanceValueString.replaceAll( ",", "." ) );
             final int   aIntValue = Math.round( aFloatValue * 100 );
-            final Balance aBalance = new Balance( fID, fValidFrom, aIntValue );
-            return aBalance;
+            fItem.setValues( aIntValue );
         }catch( final NumberFormatException fEx ){
             sm_Log.warn("Guthaben-Angabe ist keine Zahl: "+ fBalanceValueString );
-            return null;
         }
     }
 

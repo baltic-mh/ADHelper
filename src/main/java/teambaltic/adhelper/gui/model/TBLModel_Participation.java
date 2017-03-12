@@ -16,13 +16,29 @@ import javax.swing.table.DefaultTableModel;
 // ############################################################################
 public class TBLModel_Participation extends DefaultTableModel
 {
-    // Der Stundenwert muss immer in der vierten Spalte stehen:
-    public static final int COLUMN_IDX_HOURS = 3;
-
     private static final long serialVersionUID = 3040033628089631180L;
 
-    private final Class<?>[] m_COLUMNCLASSES;
+    // Solange die abgeleiteten Klassen dieselbe Reihenfolge der Spalten haben,
+    // können diese Konstanten verwendet werden. Sonst müssen die Methoden
+    // überschrieben werden.
+    private static final int COLUMN_IDX_PARTICIPATIONFLAG = 0;
+    public int getColIdx_Participationflag(){ return COLUMN_IDX_PARTICIPATIONFLAG; }
+
+    private static final int COLUMN_IDX_ID = 1;
+    public int getColIdx_ID(){ return COLUMN_IDX_ID; }
+
+    private static final int COLUMN_IDX_NAME = 2;
+    public int getColIdx_Name(){ return COLUMN_IDX_NAME; }
+
+    private static final int COLUMN_IDX_HOURS  = 3;
+    public int getColIdx_Hours(){ return COLUMN_IDX_HOURS; }
+
     private final Integer [] m_EDITABLECOLUMNS;
+
+    // ------------------------------------------------------------------------
+    private final Class<?>[] m_COLUMNCLASSES;
+    public Class<?>[] getCOLUMNCLASSES(){ return m_COLUMNCLASSES; }
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final boolean m_ReadOnly;
@@ -73,7 +89,7 @@ public class TBLModel_Participation extends DefaultTableModel
     @Override
     public void setValueAt(final Object fNewValue, final int fRow, final int fCol)
     {
-        if( fCol == COLUMN_IDX_HOURS ){
+        if( fCol == getColIdx_Hours() ){
             final Object aOldValue = getValueAt(fRow, fCol);
             if( !areValuesEqual( aOldValue, fNewValue ) ){
                 setDirty( true );
@@ -95,7 +111,7 @@ public class TBLModel_Participation extends DefaultTableModel
 
     public Double getHours( final int aIdx )
     {
-        final Double aHoursValue = (Double) getValueAt( aIdx, COLUMN_IDX_HOURS );
+        final Double aHoursValue = (Double) getValueAt( aIdx, getColIdx_Hours() );
         return aHoursValue;
     }
 

@@ -71,18 +71,24 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
 
     public void addBalance( final Balance fNewBalance )
     {
+        addBalance( fNewBalance, false );
+    }
+    public void addBalance( final Balance fNewBalance, final boolean fOverride )
+    {
         if( fNewBalance == null ) {
             return;
         }
         synchronized( m_BalanceMap ){
-            final boolean aOK = checkNewKid( fNewBalance );
+            final boolean aOK = checkNewKid( fNewBalance, fOverride );
             if( !aOK ){
                 return;
             }
             final LocalDate aValidFrom = fNewBalance.getValidFrom();
             m_BalanceMap.put( aValidFrom, fNewBalance );
-            m_ValidFromList.add( aValidFrom );
-            setListSorted( false );
+            if( m_ValidFromList.contains( aValidFrom ) ){
+                m_ValidFromList.add( aValidFrom );
+                setListSorted( false );
+            }
         }
     }
 
@@ -127,7 +133,7 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
         }
     }
 
-    private boolean checkNewKid(final Balance fBalanceToAdd)
+    private boolean checkNewKid(final Balance fBalanceToAdd, final boolean fIgnoreChangedValues)
     {
         final int aMemberID = getMemberID();
         final int aMemberIDToAdd = fBalanceToAdd.getMemberID();
@@ -141,7 +147,7 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
                     aMemberID) );
         }
         final Balance aBalance = m_BalanceMap.get( aNewValidFrom );
-        if( aBalance == null ){
+        if( aBalance == null || fIgnoreChangedValues ){
             return true;
         }
 

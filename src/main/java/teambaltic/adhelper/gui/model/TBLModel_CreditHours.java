@@ -12,15 +12,17 @@
 package teambaltic.adhelper.gui.model;
 
 // ############################################################################
-public class TBLModel_Adjustments extends TBLModel_Participation
+public class TBLModel_CreditHours extends TBLModel_Participation
 {
     private static final long serialVersionUID = 3040033628089631180L;
 
-    private static final String[]   COLUMNHEADERS   = new String[] { "Auswahl", "ID", "Name", "Stunden", "Kommentar" };
+    public  static final String[]   COLUMNHEADERS   = new String[] { "Auswahl", "ID", "Name", "Stunden", "Kommentar" };
     private static final Class<?>[] COLUMNCLASSES   = new Class<?>[] { Boolean.class, Integer.class, String.class, Float.class, String.class };
     private static final Integer [] EDITABLECOLUMNS = new Integer [] { Integer.valueOf(0), Integer.valueOf(3), Integer.valueOf(4) };
 
-    public TBLModel_Adjustments(final Object[][] fData, final boolean fReadOnly)
+    public int getColIdx_Comment(){ return 4; }
+
+    public TBLModel_CreditHours(final Object[][] fData, final boolean fReadOnly)
     {
         super( COLUMNHEADERS, COLUMNCLASSES, EDITABLECOLUMNS, fData, fReadOnly );
     }
