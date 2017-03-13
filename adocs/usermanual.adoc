@@ -1,6 +1,6 @@
 = ADHelper - Benutzerhandbuch
 Mathias-H. Weber <mhw@teambaltic.de>
-v1.0, 17. November 2016
+v1.6, 17. März 2017
 :doctype: book
 :encoding: utf-8
 :lang: de

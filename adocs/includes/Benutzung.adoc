@@ -31,7 +31,7 @@ Nach dem Start der Applikation erscheint das Hauptfenster, das eine Vielzahl an 
 Die *Titelleiste* gibt die aktuelle Version der benutzten Software an (hier: #_1.3.2-SNAPSHOT_# ), den Namen des Server-Accounts (hier: #_kvk_#) sowie das Hauptverzeichnis, mit dem gearbeitet wird (hier: #_Arbeitsdienstabrechnungen-Test_#)
 
 .Titelleiste
-image::images/App-Titelleiste.png[align="center"]
+image::App-Titelleiste.png[align="center"]
 
 ===== Selektionsbereich
 
@@ -91,7 +91,7 @@ INDIVIDUALREASON::
 Im *Abrechnungsbereich* sind die durch das selektierte Mitglied innerhalb der selektierten Peridoe geleisteten Arbeitdienststunden aufgeführt. Darunter befindet sich die Abrechnung für den ausgewählten Zeitraum.
 
 .Abrechnungsbereich
-image::images/App-0-Abrechnungsbereich.png[align="center"]
+image::App-0-Abrechnungsbereich.png[align="center"]
 
 Wird das Konto des selektierten Mitglieds von anderen Mitgliedern (z.B. Familienangehörigen) referenziert, werden diese in der Tabelle der Abrechnungen ebenfalls aufgeführt.
 
@@ -151,7 +151,7 @@ Der *BAUAUSSCHUSS* führt die Arbeitsdiensttermine im Verein durch und führt Bu
 Der Knopf kbd:[Arbeitsdienste ...] im <<Hauptfenster>> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.
 
 .Fenster "Arbeitsdienste"
-image::images/AppAD-0.png[align="center"]
+image::AppAD-0.png[align="center"]
 
 Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossener Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten #*# im Auswahldialog.
 
@@ -227,7 +227,7 @@ Das Programm erzeugt während des Laufes einige Log-Ausgaben. Diese gehen einers
 .Fenster der Log-Ausgaben
 image::App-0-LogWindow.png
 
-=== Automatisches Update[]
+=== Automatisches Update
 
 Das Programm überprüft, ob auf dem Server eine neuere als die installierte Version bereitsteht. Ist das der Fall, öffnet sich ein Fenster, in dem die neue Version angekündigt und vorgestellt wird:
 

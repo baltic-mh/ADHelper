@@ -23,7 +23,7 @@ repositories {
 
 // ############################################################################
 // Allgemeine Definitionen
-String  copyRight   = '(C) 2016 TeamBaltic'
+String  copyRight   = '(C) 2017 TeamBaltic'
 // ############################################################################
 
 // ############################################################################
@@ -43,6 +43,15 @@ configure(copyArtifacts) {
 // ############################################################################
 // Dokumentation mit Asciidoctor
 asciidoctor {
+//    backends 'pdf','html5'
+    backends 'html5'
+    attributes \
+        'stylesdir'     : '../stylesheets',
+        'stylesheet'    : 'riak.css'
+//        'stylesheet'    : 'readthedocs.css'
+//        'pdf-stylesdir' : 'theme',
+//        'pdf-style'     : 'custom',
+        
     sourceDir = file('adocs')
     sources {
       include 'usermanual.adoc', 'developers-guide.adoc'
