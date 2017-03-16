@@ -88,7 +88,7 @@ INDIVIDUALREASON::
 
 ===== Abrechnungsbereich
 
-Im *Abrechnungsbereich* sind die durch das selektierte Mitglied innerhalb der selektierten Peridoe geleisteten Arbeitdienststunden aufgeführt. Darunter befindet sich die Abrechnung für den ausgewählten Zeitraum.
+Im *Abrechnungsbereich* sind die durch das selektierte Mitglied innerhalb der selektierten Periode geleisteten Arbeitsdienststunden aufgeführt. Darunter befindet sich die Abrechnung für den ausgewählten Zeitraum.
 
 .Abrechnungsbereich
 image::App-0-Abrechnungsbereich.png[align="center"]
@@ -144,7 +144,7 @@ Das genaue Format der Datei der Basisdaten ist im link:developers-guide.html#Bas
 
 ====== Bauausschuss
 
-Der *BAUAUSSCHUSS* führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Diese Aufgabe zu erleichtern ist die Hauptaufgabe des Programmes +ADHelper+. Die einzelnen Bedienschritte sind im folgenden Abschnitt genauer beschrieben.
+Der *BAUAUSSCHUSS* führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Diese Aufgabe zu erleichtern, ist die Hauptaufgabe des Programmes +ADHelper+. Die einzelnen Bedienschritte sind im folgenden Abschnitt genauer beschrieben.
 
 === Verwaltung der Arbeitsdienste
 
@@ -153,7 +153,7 @@ Der Knopf kbd:[Arbeitsdienste ...] im <<Hauptfenster>> öffnet das Fenster zur E
 .Fenster "Arbeitsdienste"
 image::AppAD-0.png[align="center"]
 
-Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten nicht-abgeschlossener Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten #*# im Auswahldialog.
+Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten bereits abgeschlossener Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten #*# im Auswahldialog.
 
 Innerhalb des ausgewählten Zeitraumes gibt es in aller Regel mehr als einen Arbeitdiensttermin, aus denen man mit der zweiten Auswahlbocks auswählen kann. Es werden alle Mitglieder aufgelistet, die am ausgewählten Arbeitsdiensttermin Stunden geleistet haben.
 
