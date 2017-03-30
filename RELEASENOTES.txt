@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1006002	Version: 1.6.2	Datum: 2017-03-30
+[BUGFIX] Prüfung auf Update läuft nun im Hintergrund. Beseitig Deadlock bei Problemen mit Serverzugang.
+================================================================================
 Release: 1006001	Version: 1.6.1	Datum: 2017-03-12
 [NEU] Möglichkeit für Korrekturbuchungen geschaffen
 ================================================================================

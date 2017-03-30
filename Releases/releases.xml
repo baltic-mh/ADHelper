@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1006002" version="1.6.2">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;BUGFIX&lt;/b&gt;
+    &lt;dd&gt;Prüfung auf Update läuft nun im Hintergrund. Beseitig Deadlock bei Problemen mit Serverzugang.&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="3610588" sourcedir="1006002"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="45173" sourcedir="1006002"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1006002"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="7939" sourcedir="1006002"/>
+    </arch>
+  </version>
   <version release="1006001" version="1.6.1">
     <description>
     &lt;dl&gt;
