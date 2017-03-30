@@ -171,8 +171,8 @@ public class ADH_Application
             }
 
         } );
-        sm_Log.info( "Suche nach neuerer Programmversion..." );
-        new AppUpdater();
+        checkForUpdate();
+
         new Thread("Initialize"){
             @Override
             public void run()
@@ -663,6 +663,19 @@ public class ADH_Application
             sm_Log.warn("Exception: ", fEx );
         }
     }
+
+    private static void checkForUpdate()
+    {
+        sm_Log.info( "Suche nach neuerer Programmversion..." );
+        new Thread("CheckForUpdate"){
+            @Override
+            public void run()
+            {
+                new AppUpdater();
+            }
+        }.start();
+    }
+
 }
 
 // ############################################################################

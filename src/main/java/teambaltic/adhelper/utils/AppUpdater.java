@@ -117,6 +117,7 @@ public class AppUpdater implements UpdatedApplication
     private static String getJupidatorURL()
     {
         final String aURLStr = BuildConfig.URL_FOR_FILEWITH_JUPIDATORURL;
+        LOG.info("Lese UpdateURL von: "+aURLStr);
         String aContentFromURL;
         try{
             aContentFromURL = NetworkUtils.getContentFromURL( aURLStr );
@@ -136,9 +137,10 @@ public class AppUpdater implements UpdatedApplication
         try{
             new URL(aJupidatorURLStr);
         }catch( final MalformedURLException fEx ){
-            LOG.warn(String.format( "Vermutlich kein URL: %s - %s", fEx.getMessage(), aJupidatorURLStr  ) );
+            LOG.error(String.format( "Vermutlich kein URL: %s - %s", fEx.getMessage(), aJupidatorURLStr  ) );
             return null;
         }
+        LOG.info("UpdateURL: "+aJupidatorURLStr);
         return aJupidatorURLStr;
     }
 
