@@ -27,6 +27,11 @@ public class TBLModel_CreditHours extends TBLModel_Participation
         super( COLUMNHEADERS, COLUMNCLASSES, EDITABLECOLUMNS, fData, fReadOnly );
     }
 
+    @Override
+    public double getMaxHoursValue()
+    {
+        return 100.0;
+    }
 }
 
 // ############################################################################

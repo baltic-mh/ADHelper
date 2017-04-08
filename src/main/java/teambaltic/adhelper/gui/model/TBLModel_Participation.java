@@ -13,6 +13,8 @@ package teambaltic.adhelper.gui.model;
 
 import javax.swing.table.DefaultTableModel;
 
+import teambaltic.adhelper.gui.UIUtils;
+
 // ############################################################################
 public class TBLModel_Participation extends DefaultTableModel
 {
@@ -89,20 +91,25 @@ public class TBLModel_Participation extends DefaultTableModel
     @Override
     public void setValueAt(final Object fNewValue, final int fRow, final int fCol)
     {
+        Object aNewValue = fNewValue;
         if( fCol == getColIdx_Hours() ){
-            final Object aOldValue = getValueAt(fRow, fCol);
-            if( !areValuesEqual( aOldValue, fNewValue ) ){
+            final Double aNewHourValue = UIUtils.getDoubleValue( fNewValue );
+            final Double aAdjustedHoursValue = adjustHoursValue( aNewHourValue );
+
+            final Double aOldHourValue = (Double) getValueAt(fRow, fCol);
+            if( !areValuesEqual( aOldHourValue, aAdjustedHoursValue ) ){
                 setDirty( true );
             }
+            aNewValue = aAdjustedHoursValue;
         }
-        super.setValueAt( fNewValue, fRow, fCol );
+        super.setValueAt( aNewValue, fRow, fCol );
     }
 
-    private static boolean areValuesEqual( final Object fOldValue, final Object fNewValue )
+    private static boolean areValuesEqual( final Double fOldValue, final Double fNewValue )
     {
         // NewValue ist nie null!
         if( fOldValue == null ){
-            if( ((Double)fNewValue).doubleValue() == 0.0 ){
+            if( fNewValue.doubleValue() == 0.0 ){
                 return true;
             }
         }
@@ -111,8 +118,33 @@ public class TBLModel_Participation extends DefaultTableModel
 
     public Double getHours( final int aIdx )
     {
-        final Double aHoursValue = (Double) getValueAt( aIdx, getColIdx_Hours() );
+        final Object aValue = getValueAt( aIdx, getColIdx_Hours() );
+        final Double aHoursValue = UIUtils.getDoubleValue(aValue);
         return aHoursValue;
+    }
+
+    private Double adjustHoursValue( final Double fDoubleValue )
+    {
+        final double aMaxValue = getMaxHoursValue();
+        if( fDoubleValue.doubleValue() > aMaxValue ){
+            return Double.valueOf( aMaxValue );
+        }
+        if( fDoubleValue.doubleValue() <= 0.0 ){
+            return Double.valueOf( 0.0 );
+        }
+
+        final int aNurVorkomma  = 100*fDoubleValue.intValue();
+        final int aMitNachKomma = (int) Math.round(100.0*fDoubleValue.doubleValue());
+        final int aNurNachKomma = aMitNachKomma - aNurVorkomma;
+        final int aViertel = (aNurNachKomma +12) / 25;
+        final int aAdjusted = aNurVorkomma + aViertel*25;
+        return Double.valueOf( aAdjusted / 100.0  );
+    }
+
+    public double getMaxHoursValue()
+    {
+        final double aMaxValue = 10.0;
+        return aMaxValue;
     }
 
 }

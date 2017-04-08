@@ -28,9 +28,9 @@ public class HoursSpinnerEditor extends AbstractCellEditor implements TableCellE
 
     public HoursSpinnerEditor()
     {
-       spinner = new JSpinner(new SpinnerNumberModel(Double.valueOf( 0.0 ), Double.valueOf( 0.0 ), Double.valueOf( 10.0 ), Double.valueOf( 0.25 )));
-       final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.##");
-       spinner.setEditor(editor);
+        spinner = new JSpinner(new SpinnerNumberModel(Double.valueOf( 0.0 ), Double.valueOf( 0.0 ), Double.valueOf( 10.0 ), Double.valueOf( 0.25 )));
+        final JSpinner.NumberEditor editor = new JSpinner.NumberEditor(spinner, "0.##");
+        spinner.setEditor(editor);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class HoursSpinnerEditor extends AbstractCellEditor implements TableCellE
 
     @Override
     public Object getCellEditorValue() {
-       final Object aValue = spinner.getValue();
-       return aValue;
+        final Object aValue = spinner.getValue();
+        return aValue;
     }
 }
 // ############################################################################

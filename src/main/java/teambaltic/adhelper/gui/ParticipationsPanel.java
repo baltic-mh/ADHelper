@@ -85,7 +85,7 @@ public class ParticipationsPanel extends JPanel
     {
         super();
 
-        m_table = new JTable();
+        m_table = new ParticipationsTable();
         m_sorter = new TableRowSorter<>();
         m_table.setRowSorter( m_sorter  );
 
@@ -186,7 +186,10 @@ public class ParticipationsPanel extends JPanel
         m_table.getColumnModel().getColumn(fModel.getColIdx_Name()).setCellRenderer( CENTERRENDERER );
         m_table.getColumnModel().getColumn(fModel.getColIdx_Hours()).setMaxWidth(150);
         final String aColName_Hours = fModel.getColumnName( fModel.getColIdx_Hours() );
-        m_table.getColumn(aColName_Hours).setCellEditor(new HoursSpinnerEditor());
+        final HoursCellEditor   aCellEditor = new HoursCellEditor();
+        m_table.getColumn(aColName_Hours).setCellEditor(aCellEditor);
+        final HoursCellRenderer aCellRender = new HoursCellRenderer();
+        m_table.getColumn(aColName_Hours).setCellRenderer(aCellRender);
 
         configureButtons( fModel.isReadOnly() );
     }

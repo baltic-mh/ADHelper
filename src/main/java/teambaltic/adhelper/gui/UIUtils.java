@@ -51,6 +51,35 @@ public final class UIUtils
             } } );
     }
 
+    public static Double getDoubleValue( final Object fValue )
+    {
+        if( fValue == null ){
+            return null;
+        }
+        if( fValue instanceof Double ){
+            return (Double) fValue;
+        }
+        if( fValue instanceof Float ){
+            final float  aFloatValue = ((Float)fValue).floatValue();
+            final double aDoubleValue = aFloatValue;
+            return Double.valueOf(aDoubleValue);
+        }
+        if( fValue instanceof String ){
+            final String aStringValue = (String) fValue;
+            if( "".equals(aStringValue) ){
+                return Double.valueOf( 0.0 );
+            }
+            final String aNormalizedString = aStringValue.replaceAll( ",", "." );
+            try{
+                double aParsedDouble;
+                aParsedDouble = Double.parseDouble( aNormalizedString );
+                return aParsedDouble;
+            }catch( final NumberFormatException fEx ){
+                return Double.valueOf( 0.0 );
+            }
+        }
+        throw new IllegalArgumentException("Unbekannter Wertetyp: "+fValue.getClass() );
+    }
 
 }
 
