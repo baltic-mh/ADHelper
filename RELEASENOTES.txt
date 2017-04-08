@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1007000	Version: 1.7.0	Datum: 2017-04-08
+[ÄNDERUNG] Eingabe der Arbeitsdienststunden rigoros überarbeitet.
+================================================================================
 Release: 1006002	Version: 1.6.2	Datum: 2017-03-30
 [BUGFIX] Prüfung auf Update läuft nun im Hintergrund. Beseitig Deadlock bei Problemen mit Serverzugang.
 ================================================================================
