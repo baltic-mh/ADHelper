@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,6 +76,32 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     private final ChargeManager m_ChargeManager;
     private ChargeManager getChargeManager(){ return m_ChargeManager; }
     // ------------------------------------------------------------------------
+
+    /**
+     * Sucht aus der Gesamtmenge aller Daten nur die heraus, die über den
+     * kompletten Zeitraum der angegebenen Periode noch Mitglied sind.
+     * @param fPeriod
+     * @return
+     */
+    public List<InfoForSingleMember> getAllWithEffectiveMemberShip(final IPeriod fPeriod)
+    {
+        final List<InfoForSingleMember> aAllWithinPeriod = new ArrayList<>();
+        for( final InfoForSingleMember aInfoForSingleMember : getAll() ){
+            final IClubMember aThisMember = aInfoForSingleMember.getMember();
+            final boolean aIsMembershipEffective = isMembershipEffective( aThisMember, fPeriod );
+            if( aIsMembershipEffective ){
+                aAllWithinPeriod.add( aInfoForSingleMember );
+            }
+        }
+        return aAllWithinPeriod;
+    }
+
+    static boolean isMembershipEffective( final IClubMember fMember, final IPeriod fPeriod )
+    {
+        final LocalDate aMemberUntil = fMember.getMemberUntil();
+        final boolean aIsMembershipEffective = aMemberUntil == null || fPeriod.isAfterMyStart( aMemberUntil );
+        return aIsMembershipEffective;
+    }
 
     public ADH_DataProvider( final IPeriodDataController fPDC, final IAllSettings fSettings ) throws Exception
     {
