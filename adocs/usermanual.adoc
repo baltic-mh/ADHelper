@@ -15,6 +15,7 @@ v1.6, 17. März 2017
 // Deutsche Überschriften:
 :figure-caption: Abbildung
 :table-caption: Tabelle
+:chapter-label: Kapitel
 //:example-caption!:
 // Jeder Abschnitt bekommt automatisch einen Anker:
 :sectanchors:

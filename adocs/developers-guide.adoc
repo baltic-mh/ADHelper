@@ -6,15 +6,16 @@ v1.0, 17. November 2016
 :lang: de
 :toc: left
 :toclevels: 4
-:toc-title: Inhaltsverzeichnis
 :last-update-label: Erstellt mit Asciidoctor v{asciidoctor-version} : Zuletzt geändert:
 // Ohne dem haben die "Admonition"-Blocks keine Icons!
 :icons: font
 :numbered:
 :source-highlighter: highlightjs
 // Deutsche Überschriften:
+:toc-title: Inhaltsverzeichnis
 :figure-caption: Abbildung
 :table-caption: Tabelle
+:chapter-label: Kapitel
 //:example-caption!:
 // Jeder Abschnitt bekommt automatisch einen Anker:
 :sectanchors:

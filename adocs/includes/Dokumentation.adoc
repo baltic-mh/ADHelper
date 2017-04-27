@@ -12,3 +12,68 @@ installiert --- damit funktioniert es genau so gut.
 
 Als Hilfsmittel zum Editieren der +.adoc+-Dateien habe ich mir noch 
 http://asciidocfx.com/[AsciiDocFX] herunter geladen.
+
+=== Installation
+
+
+==== JRuby installieren:
+
+====
+link:http://jruby.org/download[]
+
+(System-Pfad anpassen lassen)
+====
+
+==== Asciidoctor installieren
+
+Shell aufmachen (als Administrator)
+
+[source,cmd]
+----
+>SET HTTP_PROXY=http://iproxy:8080
+>gem install asciidoctor
+----
+
+Update:
+
+[source,cmd]
+----
+>gem update asciidoctor
+----
+
+
+==== Syntax-Highlighter installieren
+
+[source,cmd]
+----
+>gem install coderay
+----
+
+Wenn _highlightjs_ als Syntax-Highlighter verwendet wird, muss 
+für die +highlighjs-styles+ in der Datei
+
+----
+c:\Program Files\jruby-9.1.8.0\lib\ruby\gems\shared\gems\asciidoctor-1.5.5\lib\asciidoctor\converter\html5.rb
+----
+
+die Version von _highlight.js_ auf +9.10.0+ geändert werden.
+
+==== AsciiDoctor-PDF installieren
+
+[source,cmd]
+----
+>gem install --pre asciidoctor-pdf
+----
+
+==== Asciidoctor Links
+
+
+- link:http://asciidoctor.org/[Asciidoctor]
+- link:http://asciidoctor.org/docs/user-manual/[User-Manual]
+- link:http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[Syntax-Quick-Referenz]
+- link:http://powerman.name/doc/asciidoc[Cheat-Sheets]
+- link:http://asciidoctor.org/docs/asciidoc-writers-guide/[Writer's Guide]
+- link:https://leanpub.com/awesomeasciidoctornotebook/read[Awesome Asciidoctor Notebook]
+- link:http://asciidoctor.org/docs/asciidoctor-diagram/[Asciidoctor-Diagram]
+- link:http://asciidoctor.org/docs/asciidoctor-gradle-plugin/[Getting Started with the Asciidoctor Gradle Plugin]
+- link:https://github.com/asciidoctor/asciidoctor-pdf/blob/master/docs/theming-guide.adoc#keys-title-page[Asciidoctor PDF Theming Guide]
