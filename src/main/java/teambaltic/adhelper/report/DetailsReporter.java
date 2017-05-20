@@ -9,7 +9,7 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.inout;
+package teambaltic.adhelper.report;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -35,8 +35,10 @@ import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.utils.DateUtils;
 
 // ############################################################################
-public class DetailsReporter
+public final class DetailsReporter
 {
+    private DetailsReporter(){/**/}
+
     private static final String LF = "\r\n";
     private static final String LINE1 = "###################################################################################"+LF;
     private static final String LINE3 = "-----------------------------------------------------------------------------------"+LF;

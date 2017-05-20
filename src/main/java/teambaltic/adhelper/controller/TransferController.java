@@ -343,6 +343,7 @@ public class TransferController implements ITransferController
             sm_Log.info( "Alle lokalen Daten sind aktuell!");
         } else {
             for( final String aZipToDownload : aZipsToDownLoad ){
+                sm_Log.info( "Download von Server: "+aZipToDownload);
                 downloadDecryptAndUnzip(aZipToDownload);
             }
         }
@@ -365,9 +366,10 @@ public class TransferController implements ITransferController
         final CheckSumInfo aCSILocal  = CheckSumInfo.readFromFile( aCheckSumFileLocal );
         final boolean aEqualCheckSums = areCheckSumsEqual( aCSILocal, aCheckSumFileFromServer );
         if( aEqualCheckSums ){
-            sm_Log.info( "Lokales Verzeichnis ist identisch mit Server-Version: "+ aLocalFolderPath);
+            sm_Log.info( "Lokales Verzeichnis identisch mit Server-Version: "+ aLocalFolderPath);
             return true;
         }
+        sm_Log.info( "Lokales Verzeichnis nicht identisch mit Server-Version: "+ aLocalFolderPath);
         return false;
     }
 

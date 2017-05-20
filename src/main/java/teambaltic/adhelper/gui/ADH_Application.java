@@ -59,6 +59,7 @@ import teambaltic.adhelper.controller.InitHelper;
 import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.listeners.FinishListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
+import teambaltic.adhelper.gui.listeners.GeneratePDFReportListener;
 import teambaltic.adhelper.gui.listeners.ManageCreditHoursListener;
 import teambaltic.adhelper.gui.listeners.ManageWorkEventsListener;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
@@ -114,6 +115,12 @@ public class ADH_Application
     private UserSettingsListener m_UserSettingsListener;
     private UserSettingsListener getUserSettingsListener(){ return m_UserSettingsListener; }
     void setUserSettingsListener( final UserSettingsListener fNewVal ){ m_UserSettingsListener = fNewVal; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private GeneratePDFReportListener m_GeneratePDFReportListener;
+    private GeneratePDFReportListener getGeneratePDFReportListener(){ return m_GeneratePDFReportListener; }
+    void setGeneratePDFReportListener( final GeneratePDFReportListener fNewVal ){ m_GeneratePDFReportListener = fNewVal; }
     // ------------------------------------------------------------------------
 
     private GUIUpdater m_GUIUpdater;
@@ -264,7 +271,11 @@ public class ADH_Application
         setPDC( fPDC );
         setTransferController( fTransferController );
         m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC, fTransferController );
+
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
+
+        final GeneratePDFReportListener aGeneratePDFReportListener = getGeneratePDFReportListener();
+        aGeneratePDFReportListener.setDataProvider( fDataProvider );
 
         final PeriodDataChangedListener aPDCL = initComboBox_PeriodData( fDataProvider, fPDC );
 
@@ -355,6 +366,11 @@ public class ADH_Application
         m_mnit_UserSettings.addActionListener( getUserSettingsListener() );
         mnAktionen.add(m_mnit_UserSettings);
 
+        final JMenuItem m_mnit_GeneratePDFReport = new JMenuItem("Erzeuge PDF-Report");
+        m_mnit_GeneratePDFReport.setActionCommand( "PDFReport" );
+        m_mnit_GeneratePDFReport.addActionListener( getGeneratePDFReportListener());
+        mnAktionen.add(m_mnit_GeneratePDFReport);
+
         final JMenuItem mntmShowLogWindow = new JMenuItem("Zeige Log-Ausgaben");
         mntmShowLogWindow.addActionListener( new ActionListener(){
             @Override
@@ -397,6 +413,10 @@ public class ADH_Application
         AllSettings.INSTANCE.init();
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         fAppWindow.setUserSettingsListener( populateUserSettings( aUserSettings, fAppWindow ) );
+        final IAppSettings aAppSettings = AllSettings.INSTANCE.getAppSettings();
+        final Path aFolder_Data = aAppSettings.getFolder_Data();
+        final Path aPDFReportsPath = aFolder_Data.resolve( "PDFReports" );
+        fAppWindow.setGeneratePDFReportListener( new GeneratePDFReportListener(aPDFReportsPath) );
     }
 
     private static UserSettingsListener populateUserSettings(

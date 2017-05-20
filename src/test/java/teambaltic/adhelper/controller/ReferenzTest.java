@@ -87,7 +87,7 @@ public class ReferenzTest
         // bearbeitet werden oder nur für ein einzelnes Mitglied.
         // Wenn aOnlyID == 0 ist, werden alle Daten eingelesen, sonst nur
         // das durch die ID angegebene Mitglied.
-        final int aOnlyID = 0;//10197;
+        final int aOnlyID = 0;//10131;
         try{
             DATAPROVIDER.init( ACTIVEPERIOD, aOnlyID );
         }catch( final Exception fEx ){
@@ -103,12 +103,15 @@ public class ReferenzTest
         final List<InfoForSingleMember> aAll = DATAPROVIDER.getAll();
         sm_Log.info( String.format( "Überprüfe %d Datensätze...", aAll.size()) );
         for( final InfoForSingleMember aInfoForSingleMember : aAll ){
+            sm_Log.info( String.format( "Überprüfe Mitglied '%s'...", aInfoForSingleMember) );
             compareCharges ( aInfoForSingleMember, aCharges_Ref );
             compareBalances( aInfoForSingleMember, aBalances_Ref, ACTIVEPERIOD.getPeriod() );
             // Da die Guthaben-III-Werte (belastet und ausgeglichen) verglichen werden
             // müssen auch die Guthaben der Folgeperiode passen:
             compareBalances( aInfoForSingleMember, aBalances_Ref, ACTIVEPERIOD.getPeriod().createSuccessor() );
+
         }
+
     }
 
     // ########################################################################

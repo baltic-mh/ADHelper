@@ -1,41 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/java">
-		<attributes>
-			<attribute name="FROM_GRADLE_MODEL" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="src/main/resources">
-		<attributes>
-			<attribute name="FROM_GRADLE_MODEL" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="src/test/java">
-		<attributes>
-			<attribute name="FROM_GRADLE_MODEL" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
-	<classpathentry path="bin" kind="output"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/677abe279b68c5e7490d6d50c6951376238d7d3e/log4j-1.2.17-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.2/bf130903d7351f700b9514ad6958ba5a9c6c2773/commons-lang-2.2-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.2/ef6449b62937bbd10e29ba9ed9a852754b861d26/commons-lang-2.2.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/f2d8698c46d1167ff24b06a840a87d91a02db891/commons-io-2.4-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.4/b1b6ea3b7e4aa4f492509a4952029cd8e48019ad/commons-io-2.4.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.10/11fb3d88ae7e3b757d70237064210ceb954a5a04/commons-codec-1.10-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.10/4b95f4897fa13f2cd904aee711aeafc0c5295cd8/commons-codec-1.10.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-net/commons-net/3.4/8439b8f20d7bdec502423732798a639501732c8/commons-net-3.4-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-net/commons-net/3.4/5e984db9554728564d58e90da5d90eff8ae8cf2d/commons-net-3.4.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-vfs2/2.0/c29b15a44ebae8501f0e5a892736b27857a4f968/commons-vfs2-2.0-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-vfs2/2.0/b5af3b9c96b060d77c68fa5ac9384b402dd58013/commons-vfs2-2.0.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-forms/1.9.0/2e8e3ff4fe65dc5a2b4fa6bfb2522e69ac644fc5/jgoodies-forms-1.9.0-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-forms/1.9.0/eda960be2f88d47d14a81b742772b07684abc7d0/jgoodies-forms-1.9.0.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.jdatepicker/jdatepicker/1.3.4/fd3e898e436262f7bc7ec51052d1971e659c3b8a/jdatepicker-1.3.4-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.jdatepicker/jdatepicker/1.3.4/5f0112ef368fda2c493e674e3059cbe4ac1b6965/jdatepicker-1.3.4.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.1.1/f3f156cbff0e0fb0d64bfce31a352cce4a33bc19/commons-logging-1.1.1-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.1.1/5043bfebc3db072ed80fbd362e7caf00e885d8ae/commons-logging-1.1.1.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.maven.scm/maven-scm-api/1.4/d6d12c73b996ffb43fa57d40fc5ebb48d237304d/maven-scm-api-1.4-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.maven.scm/maven-scm-api/1.4/e294693ce217bd6f470b728127854e6ca787fd29/maven-scm-api-1.4.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.maven.scm/maven-scm-provider-svnexe/1.4/15a971532cb654117767b4285c6d0ad8d7006ca5/maven-scm-provider-svnexe-1.4-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.maven.scm/maven-scm-provider-svnexe/1.4/b3213b40157b701ba079b738baac391e41418c18/maven-scm-provider-svnexe-1.4.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-common/1.8.1/74c73390e5726fe851066a6667d3727f66b42ca5/jgoodies-common-1.8.1-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/com.jgoodies/jgoodies-common/1.8.1/dffc159cf71bde5dcbb65916305684f6b43d45b1/jgoodies-common-1.8.1.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-utils/1.5.6/f73353c888b7c6f938ddc17423087aba4f50d33e/plexus-utils-1.5.6-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-utils/1.5.6/8fb6b798a4036048b3005e058553bf21a87802ed/plexus-utils-1.5.6.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.maven.scm/maven-scm-provider-svn-commons/1.4/bc76e700d77e94f55bbb2fa90c5ba8718d6652dc/maven-scm-provider-svn-commons-1.4-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.apache.maven.scm/maven-scm-provider-svn-commons/1.4/54bc1dc24c5d205b4d251a83f4ea63808c21a628/maven-scm-provider-svn-commons-1.4.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/regexp/regexp/1.3/51ba0f7629a69bf12d31177f409a78672069f632/regexp-1.3-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/regexp/regexp/1.3/973df2b78b67bcd3144c3dbbb88da691065a3f8d/regexp-1.3.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch/0.1.53/791359d94d6edcace686a56d0727ee093a2f7c33/jsch-0.1.53-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/com.jcraft/jsch/0.1.53/658b682d5c817b27ae795637dfec047c63d29935/jsch-0.1.53.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/a6c32b40bf3d76eca54e3c601e5d1470c86fcdfa/junit-4.12-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/2973d150c0dc1fefe998f834810d68f278ea58ec/junit-4.12.jar"/>
-	<classpathentry sourcepath="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/1dc37250fbc78e23a65a67fbbaf71d2e9cbc3c0b/hamcrest-core-1.3-sources.jar" kind="lib" path="C:/Users/Mathias/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="D:/Mathias/Entwicklung/Projekte/ADHelper/libs/jupidator.jar"/>
-	<classpathentry kind="lib" path="D:/Mathias/Entwicklung/Projekte/ADHelper/build/gen/buildconfig/classes/main" exported="true"/>
+	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
