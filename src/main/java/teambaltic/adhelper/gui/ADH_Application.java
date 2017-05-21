@@ -275,7 +275,7 @@ public class ADH_Application
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
 
         final GeneratePDFReportListener aGeneratePDFReportListener = getGeneratePDFReportListener();
-        aGeneratePDFReportListener.setDataProvider( fDataProvider );
+        aGeneratePDFReportListener.init( fDataProvider, m_MainPanel );
 
         final PeriodDataChangedListener aPDCL = initComboBox_PeriodData( fDataProvider, fPDC );
 
@@ -366,10 +366,18 @@ public class ADH_Application
         m_mnit_UserSettings.addActionListener( getUserSettingsListener() );
         mnAktionen.add(m_mnit_UserSettings);
 
-        final JMenuItem m_mnit_GeneratePDFReport = new JMenuItem("Erzeuge PDF-Report");
-        m_mnit_GeneratePDFReport.setActionCommand( "PDFReport" );
-        m_mnit_GeneratePDFReport.addActionListener( getGeneratePDFReportListener());
-        mnAktionen.add(m_mnit_GeneratePDFReport);
+        final JMenu mnPDFReport = new JMenu("Erzeuge PDF-Report");
+        mnAktionen.add( mnPDFReport );
+
+        final JMenuItem mnit_PDFReport_Single = new JMenuItem("für selektiertes Mitglied");
+        mnit_PDFReport_Single.setActionCommand( "PDFReport-Single" );
+        mnit_PDFReport_Single.addActionListener( getGeneratePDFReportListener());
+        mnPDFReport.add(mnit_PDFReport_Single);
+
+        final JMenuItem mnit_PDFReport_All = new JMenuItem("für alle Mitglieder");
+        mnit_PDFReport_All.setActionCommand( "PDFReport-All" );
+        mnit_PDFReport_All.addActionListener( getGeneratePDFReportListener());
+        mnPDFReport.add(mnit_PDFReport_All);
 
         final JMenuItem mntmShowLogWindow = new JMenuItem("Zeige Log-Ausgaben");
         mntmShowLogWindow.addActionListener( new ActionListener(){

@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.report.PDFReporter;
 
 // ############################################################################
@@ -27,19 +28,34 @@ public class GeneratePDFReportListener implements ActionListener
     private static final Logger sm_Log = Logger.getLogger(GeneratePDFReportListener.class);
 
     // ------------------------------------------------------------------------
-    private ADH_DataProvider  m_DataProvider;
-    private ADH_DataProvider getDataProvider(){ return m_DataProvider; }
-    public void setDataProvider( final ADH_DataProvider fDataProvider ){ m_DataProvider = fDataProvider; }
+    private final Path m_OutputFolder;
+    private Path getOutputFolder(){ return m_OutputFolder;}
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private final Path m_OutputFolder;
-    private Path getOutputFolder(){ return m_OutputFolder;}
+    private ADH_DataProvider  m_DataProvider;
+    private ADH_DataProvider getDataProvider(){ return m_DataProvider; }
+    private void setDataProvider( final ADH_DataProvider fDataProvider ){ m_DataProvider = fDataProvider; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private MainPanel m_MainPanel;
+    private MainPanel getMainPanel(){ return m_MainPanel; }
+    private void setMainPanel( final MainPanel fMainPanel ){ m_MainPanel = fMainPanel; }
     // ------------------------------------------------------------------------
 
     public GeneratePDFReportListener(final Path fOutputFolder)
     {
         m_OutputFolder = fOutputFolder;
+    }
+
+    public GeneratePDFReportListener init(
+            final ADH_DataProvider fDataProvider,
+            final MainPanel fMainPanel )
+    {
+        setDataProvider( fDataProvider );
+        setMainPanel( fMainPanel );
+        return this;
     }
 
     @Override
@@ -49,15 +65,20 @@ public class GeneratePDFReportListener implements ActionListener
             // Noch nicht initialisiert!
             return;
         }
-        if( !Files.exists( m_OutputFolder )){
+        if( !Files.exists( getOutputFolder() )){
             try{
-                Files.createDirectories( m_OutputFolder );
+                Files.createDirectories( getOutputFolder() );
             }catch( final Throwable fEx ){
                 sm_Log.warn("Probleme beim Erzeugen des PDF-Reports: ", fEx );
                 return;
             }
         }
-        PDFReporter.report( m_DataProvider, m_OutputFolder );
+
+        if( "PDFReport-All".equals( fE.getActionCommand() )){
+            PDFReporter.report( m_DataProvider, m_OutputFolder );
+        } else {
+            PDFReporter.report( getDataProvider(), getMainPanel().getSelectedMemberID() );
+        }
     }
 
 }

@@ -21,7 +21,9 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.log4j.Logger;
 
 import net.sf.dynamicreports.jasper.builder.JasperConcatenatedReportBuilder;
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
+import net.sf.dynamicreports.report.exception.DRException;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
@@ -35,6 +37,19 @@ public final class PDFReporter
 
     private static final String FILENAME = "Details";
 
+    public static void report(final ADH_DataProvider fDataProvider, final int fMemberID)
+    {
+        final IPeriod aInvoicingPeriod = fDataProvider.getPeriod();
+        final InfoForSingleMember aInfoForSingleMember = fDataProvider.get( fMemberID );
+        final JasperReportBuilder aReport = buildReport( aInvoicingPeriod, aInfoForSingleMember );
+        try{
+            aReport.show( false );
+        }catch( final DRException fEx ){
+            // TODO Auto-generated catch block
+            sm_Log.warn("Exception: ", fEx );
+        }
+    }
+
     public static void report(final ADH_DataProvider fDataProvider, final Path fOutputFolder)
     {
         final JasperConcatenatedReportBuilder aReportBuilder = concatenatedReport().continuousPageNumbering();
@@ -43,8 +58,7 @@ public final class PDFReporter
 
         final List<InfoForSingleMember> aAll = fDataProvider.getAll();
         for( final InfoForSingleMember aInfoForSingleMember : aAll ){
-            aReportBuilder.concatenate(
-                    (new PersonalReport(aInvoicingPeriod, aInfoForSingleMember)).build())
+            aReportBuilder.concatenate( buildReport( aInvoicingPeriod, aInfoForSingleMember ) )
             ;
         }
 
@@ -68,6 +82,12 @@ public final class PDFReporter
             sm_Log.error("Problem bei der PDF-Erzeugung: ", e);
         }
 
+    }
+
+    private static JasperReportBuilder buildReport( final IPeriod fInvoicingPeriod,
+            final InfoForSingleMember fInfoForSingleMember )
+    {
+        return (new PersonalReport(fInvoicingPeriod, fInfoForSingleMember)).build();
     }
 }
 

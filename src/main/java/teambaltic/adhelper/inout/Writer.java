@@ -38,7 +38,6 @@ import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.report.DetailsReporter;
-import teambaltic.adhelper.report.PDFReporter;
 import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
@@ -70,7 +69,6 @@ public class Writer
         writeToFile_Balances    ( getDataProvider(), fOutputFolder );
         writeToFile_BalanceHistories( getDataProvider(), fOutputFolder );
         DetailsReporter.report  ( getDataProvider(), fOutputFolder );
-        PDFReporter.report      ( getDataProvider(), fOutputFolder );
     }
 
     public static void writeToFile_WorkEvents(
