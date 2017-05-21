@@ -56,6 +56,9 @@ repositories {
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
     //mavenCentral()
+    maven {
+        url 'http://jasperreports.sourceforge.net/maven2'
+    }
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -72,8 +75,6 @@ dependencies {
     compile 'net.sourceforge.dynamicreports:dynamicreports-core:5.0.0'
 
     // Die Library jupidator.jar ist leider nicht in einem Repository verfügbar.
-    // ... und itext*.jar, das innerhalb von DynamicReports benötigt wird,
-    //     weigert sich, über das Repository gefunden zu werden!
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     runtime 'com.jcraft:jsch:0.1.53'
@@ -88,7 +89,7 @@ dependencies {
 
 // ############################################################################
 // Allgemeine Definitionen
-String  copyRight   = '(C) 2016 TeamBaltic'
+String  copyRight   = '(C) 2017 TeamBaltic'
 String mainClass = 'teambaltic.adhelper.gui.ADH_Application'
 String TASKGROUP_JUPIDATOR = "Jupidator"
 def (pv) = project.version.split('-')
