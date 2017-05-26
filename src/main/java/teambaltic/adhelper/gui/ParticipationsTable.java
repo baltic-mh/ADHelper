@@ -38,8 +38,8 @@ public class ParticipationsTable extends JTable
     public void changeSelection(final int row, final int column, final boolean toggle, final boolean extend)
     {
         stopEditing();
-        super.changeSelection(row, 3, false, false);
-        editCellAt(row, 3);
+        super.changeSelection(row, column, false, false);
+        editCellAt(row, column);
         transferFocus();
     }
 
