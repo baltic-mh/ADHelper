@@ -369,12 +369,12 @@ public class ADH_Application
         final JMenu mnPDFReport = new JMenu("Erzeuge PDF-Report");
         mnAktionen.add( mnPDFReport );
 
-        final JMenuItem mnit_PDFReport_Single = new JMenuItem("für selektiertes Mitglied");
+        final JMenuItem mnit_PDFReport_Single = new JMenuItem("selektiertes Mitglied");
         mnit_PDFReport_Single.setActionCommand( "PDFReport-Single" );
         mnit_PDFReport_Single.addActionListener( getGeneratePDFReportListener());
         mnPDFReport.add(mnit_PDFReport_Single);
 
-        final JMenuItem mnit_PDFReport_All = new JMenuItem("für alle Mitglieder");
+        final JMenuItem mnit_PDFReport_All = new JMenuItem("alle Mitglieder");
         mnit_PDFReport_All.setActionCommand( "PDFReport-All" );
         mnit_PDFReport_All.addActionListener( getGeneratePDFReportListener());
         mnPDFReport.add(mnit_PDFReport_All);

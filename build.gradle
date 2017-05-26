@@ -29,6 +29,7 @@ plugins {
     // output jar without incurring the I/O overhead of expanding the jars to
     // disk.
     // http://imperceptiblethoughts.com/shadow/
+//    id 'com.github.johnrengelman.shadow' version '2.0.0'
     id "com.github.johnrengelman.shadow" version "1.2.4"
 
     // The gradle-launch4j plugin uses launch4j to create windows .exe files
@@ -173,7 +174,7 @@ jar {
     }
 }
 
-launch4j {
+createExe {
     outfile = "${project.name}.exe"
     mainClassName = mainClass
     headerType = "gui"
@@ -301,7 +302,7 @@ configure(ssh_release) {
 release {
     failOnUnversionedFiles = true
     failOnCommitNeeded = true
-    buildTasks = ['launch4j']
+    buildTasks = ['createExe']
     tagTemplate = '$name-$version'
     preTagCommitMessage = 'Neues Release: '
     newVersionCommitMessage = 'Vorbereitung für nächste Version: '
