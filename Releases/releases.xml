@@ -2,6 +2,26 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1008002" version="1.8.2">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;PDF-Report-Erzeugung funktioniert jetzt!&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;BUGFIX&lt;/b&gt;
+    &lt;dd&gt;Kommentarfeld bei Gutschriften ist nun editierbar&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22960039" sourcedir="1008002"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="48938" sourcedir="1008002"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1008002"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="8751" sourcedir="1008002"/>
+    </arch>
+  </version>
   <version release="1008001" version="1.8.1">
     <description>
     &lt;dl&gt;

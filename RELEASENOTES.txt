@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1008002	Version: 1.8.2	Datum: 2017-05-26
+[NEU] PDF-Report-Erzeugung funktioniert jetzt!
+[BUGFIX] Kommentarfeld bei Gutschriften ist nun editierbar
+================================================================================
 Release: 1008001	Version: 1.8.1	Datum: 2017-05-21
 [NEU] PDF-Reports können auch für einzelne Mitglieder erzeugt werden
 ================================================================================
