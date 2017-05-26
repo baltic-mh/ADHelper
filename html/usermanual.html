@@ -782,8 +782,9 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 <li><a href="#_abschluss_eines_abrechnungszeitraumes">5.3.3. Abschluss eines Abrechnungszeitraumes</a></li>
 </ul>
 </li>
-<li><a href="#_log_ausgaben">5.4. Log-Ausgaben</a></li>
-<li><a href="#_automatisches_update">5.5. Automatisches Update</a></li>
+<li><a href="#_pdf_reports">5.4. PDF-Reports</a></li>
+<li><a href="#_log_ausgaben">5.5. Log-Ausgaben</a></li>
+<li><a href="#_automatisches_update">5.6. Automatisches Update</a></li>
 </ul>
 </li>
 <li><a href="#_mögliche_probleme">6. Mögliche Probleme</a>
@@ -1469,7 +1470,76 @@ Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten
 </div>
 </div>
 <div class="sect2">
-<h3 id="_log_ausgaben"><a class="anchor" href="#_log_ausgaben"></a>5.4. Log-Ausgaben</h3>
+<h3 id="_pdf_reports"><a class="anchor" href="#_pdf_reports"></a>5.4. PDF-Reports</h3>
+<div class="paragraph">
+<p>Seit der Version 1.8.2 ist es möglich, anprechende PDF-Reports für jedes einzelne Mitglied auszugeben.
+Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports</kbd> zugänglich:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/PDFReports1.png" alt="PDFReports1">
+</div>
+</div>
+<div class="paragraph">
+<p>Man kann auswählen, ob man einen Bericht nur für das gerade selektierte Mitglied erstellen möchte oder für alle Mitglieder.</p>
+</div>
+<div class="paragraph">
+<p>Wird ein Bericht nur für das gerade selektierte Mitglied erstellt, erscheint die Ausgabe in einem separaten Fenster:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/PDFReports2.png" alt="PDFReports2">
+</div>
+</div>
+<div class="paragraph">
+<p>Man kann in diesem Fenster entscheiden, ob man den Bericht auf Festplatte speichern oder ihn direkt auf einem Drucker ausgeben möchte.</p>
+</div>
+<div class="paragraph">
+<p>Wird die Ausgabe für alle Mitglieder gewünscht, erscheint kein weiteres Fenster. Stattdessen wird eine PDF-Datei erstellt, die unter</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre>Arbeitsdienstabrechnungen\Daten\PDFReports\</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>zu finden ist.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Erzeugung von PDF-Reports für alle Mitglieder dauert ein Weilchen (bis zu einer Minute). Also nicht die Geduld verlieren!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die ausgegebenen PDF-Reports beziehen sich immer auf den gerade selektierten Abrechnungszeitraum.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_log_ausgaben"><a class="anchor" href="#_log_ausgaben"></a>5.5. Log-Ausgaben</h3>
 <div class="paragraph">
 <p>Das Programm erzeugt während des Laufes einige Log-Ausgaben. Diese gehen einerseits in eine Datei und können andererseits auch in einem Fenster sichtbar gemacht werden. Das Fenster ist bei Programmstart aktiviert und kann gefahrlos geschlossen werden. Es kann jederzeit über das Menu
  <kbd>Aktionen/Zeige Logausgaben</kbd> wiederhergestellt werden.</p>
@@ -1480,7 +1550,7 @@ Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten
 </div>
 </div>
 <div class="sect2">
-<h3 id="_automatisches_update"><a class="anchor" href="#_automatisches_update"></a>5.5. Automatisches Update</h3>
+<h3 id="_automatisches_update"><a class="anchor" href="#_automatisches_update"></a>5.6. Automatisches Update</h3>
 <div class="paragraph">
 <p>Das Programm überprüft, ob auf dem Server eine neuere als die installierte Version bereitsteht. Ist das der Fall, öffnet sich ein Fenster, in dem die neue Version angekündigt und vorgestellt wird:</p>
 </div>
@@ -1548,7 +1618,7 @@ In so einem Fall einfach das Programm nach ca. 10 Sekunden Wartezeit erneut star
 <div id="footer">
 <div id="footer-text">
 Version 1.6<br>
-Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2017-03-17 23:00:15 +01:00
+Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2017-03-18 00:00:15 +01:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

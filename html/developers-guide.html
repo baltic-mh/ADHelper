@@ -764,7 +764,19 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 <li><a href="#_erzeugen_eines_neuen_releases">2.1. Erzeugen eines neuen Releases</a></li>
 </ul>
 </li>
-<li><a href="#_dokumentation">3. Dokumentation</a></li>
+<li><a href="#_dokumentation">3. Dokumentation</a>
+<ul class="sectlevel2">
+<li><a href="#_installation">3.1. Installation</a>
+<ul class="sectlevel3">
+<li><a href="#_jruby_installieren">3.1.1. JRuby installieren:</a></li>
+<li><a href="#_asciidoctor_installieren">3.1.2. Asciidoctor installieren</a></li>
+<li><a href="#_syntax_highlighter_installieren">3.1.3. Syntax-Highlighter installieren</a></li>
+<li><a href="#_asciidoctor_pdf_installieren">3.1.4. AsciiDoctor-PDF installieren</a></li>
+<li><a href="#_asciidoctor_links">3.1.5. Asciidoctor Links</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_anhang">Anhang</a>
@@ -906,6 +918,104 @@ installiert --- damit funktioniert es genau so gut.</p>
 <p>Als Hilfsmittel zum Editieren der .adoc-Dateien habe ich mir noch
 <a href="http://asciidocfx.com/">AsciiDocFX</a> herunter geladen.</p>
 </div>
+<div class="sect2">
+<h3 id="_installation"><a class="anchor" href="#_installation"></a>3.1. Installation</h3>
+<div class="sect3">
+<h4 id="_jruby_installieren"><a class="anchor" href="#_jruby_installieren"></a>3.1.1. JRuby installieren:</h4>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><a href="http://jruby.org/download" class="bare">http://jruby.org/download</a></p>
+</div>
+<div class="paragraph">
+<p>(System-Pfad anpassen lassen)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_asciidoctor_installieren"><a class="anchor" href="#_asciidoctor_installieren"></a>3.1.2. Asciidoctor installieren</h4>
+<div class="paragraph">
+<p>Shell aufmachen (als Administrator)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cmd" data-lang="cmd">&gt;SET HTTP_PROXY=http://iproxy:8080
+&gt;gem install asciidoctor</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Update:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cmd" data-lang="cmd">&gt;gem update asciidoctor</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_syntax_highlighter_installieren"><a class="anchor" href="#_syntax_highlighter_installieren"></a>3.1.3. Syntax-Highlighter installieren</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cmd" data-lang="cmd">&gt;gem install coderay</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wenn <em>highlightjs</em> als Syntax-Highlighter verwendet wird, muss
+für die highlighjs-styles in der Datei</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>c:\Program Files\jruby-9.1.8.0\lib\ruby\gems\shared\gems\asciidoctor-1.5.5\lib\asciidoctor\converter\html5.rb</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>die Version von <em>highlight.js</em> auf 9.10.0 geändert werden.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_asciidoctor_pdf_installieren"><a class="anchor" href="#_asciidoctor_pdf_installieren"></a>3.1.4. AsciiDoctor-PDF installieren</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-cmd" data-lang="cmd">&gt;gem install --pre asciidoctor-pdf</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_asciidoctor_links"><a class="anchor" href="#_asciidoctor_links"></a>3.1.5. Asciidoctor Links</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://asciidoctor.org/">Asciidoctor</a></p>
+</li>
+<li>
+<p><a href="http://asciidoctor.org/docs/user-manual/">User-Manual</a></p>
+</li>
+<li>
+<p><a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">Syntax-Quick-Referenz</a></p>
+</li>
+<li>
+<p><a href="http://powerman.name/doc/asciidoc">Cheat-Sheets</a></p>
+</li>
+<li>
+<p><a href="http://asciidoctor.org/docs/asciidoc-writers-guide/">Writer&#8217;s Guide</a></p>
+</li>
+<li>
+<p><a href="https://leanpub.com/awesomeasciidoctornotebook/read">Awesome Asciidoctor Notebook</a></p>
+</li>
+<li>
+<p><a href="http://asciidoctor.org/docs/asciidoctor-diagram/">Asciidoctor-Diagram</a></p>
+</li>
+<li>
+<p><a href="http://asciidoctor.org/docs/asciidoctor-gradle-plugin/">Getting Started with the Asciidoctor Gradle Plugin</a></p>
+</li>
+<li>
+<p><a href="https://github.com/asciidoctor/asciidoctor-pdf/blob/master/docs/theming-guide.adoc#keys-title-page">Asciidoctor PDF Theming Guide</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 <h1 id="_anhang" class="sect0"><a class="anchor" href="#_anhang"></a>Anhang</h1>
@@ -1023,7 +1133,7 @@ Die Datei muss nach ISO-8859-1 encodiert sein! (Weil in einer Spaltenüberschrif
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2017-03-17 23:16:34 +01:00
+Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2017-04-14 10:41:05 +02:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

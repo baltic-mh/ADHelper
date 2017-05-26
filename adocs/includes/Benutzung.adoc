@@ -33,6 +33,7 @@ Die *Titelleiste* gibt die aktuelle Version der benutzten Software an (hier: #_1
 .Titelleiste
 image::App-Titelleiste.png[align="center"]
 
+
 ===== Selektionsbereich
 
 Im *Selektionsbereich* werden die betrachtete Periode und das Mitglied ausgewählt. Die aktive Periode ist immer mit einem #*# am Ende markiert.
@@ -218,6 +219,39 @@ NOTE: Auch hier gilt, dass die Information über den "Abschließen"-Vorgang vore
 Beim nächste Start des Programmes nach dem Abschluss einer Periode wird eine neue Periode angelegt und als _aktiv_ markiert. 
 
 NOTE: Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten erkannt, und bei Beenden des Programmes erscheint wiederum ein Dialog zur Bestätigung für das Hochladen der veränderten Daten.
+
+=== PDF-Reports
+
+Seit der Version 1.8.2 ist es möglich, anprechende PDF-Reports für jedes einzelne Mitglied auszugeben.
+Diese Funktionalität ist über den Menu-Punkt kbd:[Aktionen/Erzeuge PDF-Reports] zugänglich:
+
+image::PDFReports1.png[]
+
+Man kann auswählen, ob man einen Bericht nur für das gerade selektierte Mitglied erstellen möchte oder für alle Mitglieder. 
+
+Wird ein Bericht nur für das gerade selektierte Mitglied erstellt, erscheint die Ausgabe in einem separaten Fenster:
+
+image::PDFReports2.png[]
+
+Man kann in diesem Fenster entscheiden, ob man den Bericht auf Festplatte speichern oder ihn direkt auf einem Drucker ausgeben möchte.
+
+Wird die Ausgabe für alle Mitglieder gewünscht, erscheint kein weiteres Fenster. Stattdessen wird eine PDF-Datei erstellt, die unter 
+
+====
+    Arbeitsdienstabrechnungen\Daten\PDFReports\
+====
+
+zu finden ist.
+
+[WARNING]
+====
+Die Erzeugung von PDF-Reports für alle Mitglieder dauert ein Weilchen (bis zu einer Minute). Also nicht die Geduld verlieren!
+====
+
+[NOTE]
+====
+Die ausgegebenen PDF-Reports beziehen sich immer auf den gerade selektierten Abrechnungszeitraum.
+====
 
 === Log-Ausgaben
 
