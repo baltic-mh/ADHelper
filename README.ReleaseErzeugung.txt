@@ -10,6 +10,7 @@ Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:
 
 2. Eventuell Anpassung der Datei
     => misc/Dokumentation/Dokumentation.txt
+    UNBEDINGT die Release-Nummer anpassen!
 
 3. Alle geänderten Dateien müssen in GIT committed und gepusht sein.
 

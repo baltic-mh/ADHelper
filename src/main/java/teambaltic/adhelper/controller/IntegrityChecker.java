@@ -103,7 +103,11 @@ public final class IntegrityChecker
             final String aRefIDString = aAttributes.get( IKnownColumns.LINKID );
             if( aRefIDString != null && !"".equals( aRefIDString ) ){
                 final Integer aRefID = Integer.parseInt( aRefIDString );
-                aSeen_RefIDs.add( aRefID );
+                // "Neuerdings" gibt es einige Einträge, bei denen lauter Nullen
+                // in der Spalte "LINKID" stehen! Das wird als "nicht vorhanden" behandelt!
+                if( aRefID != 0 ){
+                    aSeen_RefIDs.add( aRefID );
+                }
             }
 
             final String aBirthdayString = aAttributes.get( IKnownColumns.BIRTHDAY );
