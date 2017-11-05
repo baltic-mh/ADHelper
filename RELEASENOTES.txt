@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1008003	Version: 1.8.3	Datum: 2017-11-05
+[BUGFIX] RefID==0 wird als "Keine RefID angegeben" behandelt
+================================================================================
 Release: 1008002	Version: 1.8.2	Datum: 2017-05-26
 [NEU] PDF-Report-Erzeugung funktioniert jetzt!
 [BUGFIX] Kommentarfeld bei Gutschriften ist nun editierbar
