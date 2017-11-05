@@ -58,7 +58,8 @@ public class BalanceReader
             final int aMemberID = Integer.parseInt( aIDString );
             final InfoForSingleMember aInfo = fListProvider.get( aMemberID );
             if( aInfo == null ){
-                sm_Log.error( String.format( "Mitglied mit der ID %d nicht gefunden!", aMemberID ) );
+                sm_Log.warn( String.format( "Mitglied mit der ID %d nicht gefunden! "
+                                            +"Es wird angenommen, dass ein Austritt erfolgt ist", aMemberID ) );
                 continue;
             }
             final Balance aItem = new Balance( aMemberID );

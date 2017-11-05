@@ -62,7 +62,8 @@ public abstract class ParticipationReader<ParticipationType extends Participatio
             final int aID = Integer.parseInt( aIDString );
             final InfoForSingleMember aInfo = fListProvider.get( aID );
             if( aInfo == null ){
-                sm_Log.error( String.format( "Mitglied mit der ID %d nicht gefunden!", aID ) );
+                sm_Log.warn( String.format( "Mitglied mit der ID %d nicht gefunden! "
+                        +"Es wird angenommen, dass ein Austritt erfolgt ist", aID ) );
                 continue;
             }
 

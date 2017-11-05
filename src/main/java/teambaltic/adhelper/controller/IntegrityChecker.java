@@ -15,8 +15,10 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import teambaltic.adhelper.controller.IPeriodDataController.EPeriodDataSelector;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -86,16 +88,16 @@ public final class IntegrityChecker
         final List<String>aColumnNames = FileUtils.readColumnNames( fBaseDataFile );
         assertRequiredColumnNames( fBaseDataFile, aColumnNames );
 
-        final List<String> aProblems    = new ArrayList<>();
-        final List<Integer>aSeen_IDs    = new ArrayList<>();
-        final List<Integer>aSeen_RefIDs = new ArrayList<>();
+        final Map<Integer, String> aProblems    = new LinkedHashMap<>();
+        final List<Integer>aSeen_IDs            = new ArrayList<>();
+        final Map<Integer, Integer>aSeen_RefIDs = new LinkedHashMap<>();
         final List<String> aAllLines = FileUtils.readAllLines( fBaseDataFile, 1 );
         for( final String aSingleLine : aAllLines ){
             final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
             final Integer aID = Integer.parseInt( aIDString );
             if( aSeen_IDs.contains( aID ) ){
-                aProblems.add( String.format( "Die ID %d tritt mehrfach auf!", aID.intValue() ));
+                aProblems.put( aID, String.format( "Die ID %d tritt mehrfach auf!", aID.intValue() ));
                 continue;
             }
             aSeen_IDs.add( aID );
@@ -106,31 +108,34 @@ public final class IntegrityChecker
                 // "Neuerdings" gibt es einige Einträge, bei denen lauter Nullen
                 // in der Spalte "LINKID" stehen! Das wird als "nicht vorhanden" behandelt!
                 if( aRefID != 0 ){
-                    aSeen_RefIDs.add( aRefID );
+                    aSeen_RefIDs.put( aID, aRefID );
                 }
             }
 
             final String aBirthdayString = aAttributes.get( IKnownColumns.BIRTHDAY );
             if( aBirthdayString == null ){
-                aProblems.add( String.format( "Kein Geburtsdatum bei ID %d!", aID.intValue() ));
+                aProblems.put( aID, "Kein Geburtsdatum");
             }
 
             final String aEintrittString = aAttributes.get( IKnownColumns.EINTRITT );
             if( aEintrittString == null ){
-                aProblems.add( String.format( "Kein Eintrittsdatum bei ID %d!", aID.intValue() ));
+                aProblems.put( aID, "Kein Eintrittsdatum!" );
             }
 
         }
-        for( final Integer aRefID : aSeen_RefIDs ){
+        for( final Entry<Integer, Integer> aEntry : aSeen_RefIDs.entrySet() ){
+            final Integer aRefID = aEntry.getValue();
             if( !aSeen_IDs.contains( aRefID ) ){
-                aProblems.add( String.format( "Für die RefID %d gibt es kein Mitglied mit dieser ID!", aRefID.intValue() ));
+                aProblems.put( aEntry.getKey(), String.format( "Für die RefID %d gibt es kein Mitglied mit dieser ID!", aRefID.intValue() ));
             }
         }
         if( aProblems.size() > 0 ){
             final StringBuffer aSB = new StringBuffer("Folgende Inkonsistenzen bestehen in der Datei der Basis-Daten: ");
             aSB.append( fBaseDataFile.toString()).append( "\n" );
-            for( final String aProblem : aProblems ){
-                aSB.append( "\t" ).append( aProblem ).append( "\n" );
+            for( final Entry<Integer, String> aEntry : aProblems.entrySet() ){
+                final Integer aID = aEntry.getKey();
+                final String aProblem = aEntry.getValue();
+                aSB.append( "\tID " ).append(aID).append(": ").append( aProblem ).append( "\n" );
             }
             throw new Exception( aSB.toString() );
         }

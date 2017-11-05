@@ -84,6 +84,9 @@ public class Writer
             for( final WorkEvent aWorkEvent : aAllWorkEvents ){
                 final LocalDate aWorkEventDate = aWorkEvent.getDate();
                 final int aMemberID = aWorkEvent.getMemberID();
+                if( !fDataProvider.isMemberInCurrentPeriod( aMemberID ) ){
+                    continue;
+                }
                 final String aMemberName = fDataProvider.getMemberName( aMemberID );
                 final String aLine = String.format( "%s;%s;%s;%.2f"+LF,
                         aMemberID, aMemberName,
@@ -126,6 +129,9 @@ public class Writer
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/ZuZahlendeStunden.csv", CHARSET_ISO_8859_1);
             aFileWriter.write( String.format("%s;%s;%s"+LF, IKnownColumns.MEMBERID, IKnownColumns.NAME, IKnownColumns.HOURSTOPAY ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
+                if( !fDataProvider.isMemberInCurrentPeriod( aSingleInfo.getID() ) ){
+                    continue;
+                }
                 final DutyCharge aCharge = aSingleInfo.getDutyCharge();
                 final IClubMember aMember = aSingleInfo.getMember();
                 if( aMember.getLinkID() != 0 ){
@@ -161,7 +167,11 @@ public class Writer
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT_ALT, IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
-                final String aMemberName = fDataProvider.getMemberName( aSingleInfo.getID() );
+                final int aMemberID = aSingleInfo.getID();
+                if( !fDataProvider.isMemberInCurrentPeriod( aMemberID ) ){
+                    continue;
+                }
+                final String aMemberName = fDataProvider.getMemberName( aMemberID );
                 final Balance aBalance = aSingleInfo.getBalance( aPeriod );
                 writeSingleBalanceLine( aFileWriter, aMemberName, aBalance, aBalanceAt, false );
             }
@@ -184,7 +194,11 @@ public class Writer
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
-                final String aMemberName = fDataProvider.getMemberName( aSingleInfo.getID() );
+                final int aMemberID = aSingleInfo.getID();
+                if( !fDataProvider.isMemberInCurrentPeriod( aMemberID ) ){
+                    continue;
+                }
+                final String aMemberName = fDataProvider.getMemberName( aMemberID );
                 final BalanceHistory aBalanceHistory = aSingleInfo.getBalanceHistory();
                 for(final LocalDate aValidFrom : aBalanceHistory.getValidFromList() ){
                     final Balance aBalance = aBalanceHistory.getValue( aValidFrom );
@@ -240,7 +254,11 @@ public class Writer
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.CREDITHOURS, IKnownColumns.DATE, IKnownColumns.COMMENT ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
-                final String aMemberName = fDataProvider.getMemberName( aSingleInfo.getID() );
+                final int aMemberID = aSingleInfo.getID();
+                if( !fDataProvider.isMemberInCurrentPeriod( aMemberID ) ){
+                    continue;
+                }
+                final String aMemberName = fDataProvider.getMemberName( aMemberID );
                 final CreditHoursGranted aCreditHoursGranted = aSingleInfo.getCreditHoursGranted();
                 if( aCreditHoursGranted == null ){
                     continue;

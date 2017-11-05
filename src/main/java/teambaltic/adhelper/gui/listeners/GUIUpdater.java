@@ -104,7 +104,12 @@ public class GUIUpdater
             aCB_Members.setModel( aMemberCBModel );
             if( aSelectedMember != null ){
                 // Ehemals selektiertes Mitglied wird wieder selektiert:
-                aMemberCBModel.setSelectedItem( m_DataProvider.getMember( aSelectedMember.getID() ) );
+                final IClubMember aPreviouslySelectedMember = m_DataProvider.getMember( aSelectedMember.getID() );
+                // null? Das passiert, wenn das Mitglied in der nun selektieren
+                // Periode noch nicht in der Mitgliederdatei enthalten war.
+                if( aPreviouslySelectedMember != null ){
+                    aMemberCBModel.setSelectedItem( aPreviouslySelectedMember );
+                }
             }
         }
         final int aMemberID = m_Panel.getSelectedMemberID();

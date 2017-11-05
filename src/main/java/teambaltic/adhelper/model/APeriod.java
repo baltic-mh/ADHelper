@@ -40,6 +40,17 @@ public abstract class APeriod implements IPeriod
     }
 
     @Override
+    public boolean isBeforeMyStart(  final LocalDate fDate )
+    {
+        final LocalDate aMyStart = getStart();
+        if( aMyStart == null ){
+            return true;
+        }
+        final int aComparedTo = aMyStart.compareTo( fDate );
+        return aComparedTo > 0;
+    }
+
+    @Override
     public boolean isWithinMyPeriod( final LocalDate fDate )
     {
         return isAfterMyStart( fDate ) && isBeforeMyEnd( fDate );

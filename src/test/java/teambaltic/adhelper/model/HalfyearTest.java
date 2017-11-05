@@ -95,6 +95,19 @@ public class HalfyearTest
     }
 
     @Test
+    public void testIsBeforeMyStart()
+    {
+        final boolean aBeforeMyStart1 = HY.isBeforeMyStart( sm_RefDate1 );
+        assertFalse("BeforeMyStart1", aBeforeMyStart1 );
+        final boolean aBeforeMyStart2 = HY.isBeforeMyStart( sm_RefDate2 );
+        assertFalse("BeforeMyStart2", aBeforeMyStart2 );
+        final boolean aBeforeMyStart3 = HY.isBeforeMyStart( sm_RefDate1_PreviousDay );
+        assertTrue("BeforeMyStart3", aBeforeMyStart3 );
+        final boolean aBeforeMyStart4 = HY.isBeforeMyStart( sm_RefDate2_NextDay );
+        assertFalse("BeforeMyStart4", aBeforeMyStart4 );
+    }
+
+    @Test
     public void testIsWithinMyBounds()
     {
         final boolean aWithinMyBounds1 = HY.isWithinMyPeriod( sm_RefDate1 );

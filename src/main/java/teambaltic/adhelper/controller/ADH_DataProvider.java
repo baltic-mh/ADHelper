@@ -248,7 +248,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public IClubMember getMember( final int fMemberID )
     {
         final InfoForSingleMember aInfo = get( fMemberID );
-        return aInfo.getMember();
+        return aInfo == null ? null : aInfo.getMember();
     }
 
     public BalanceHistory getBalanceHistory( final int fMemberID )
@@ -285,6 +285,18 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void writeToFile_CreditHours()
     {
         Writer.writeToFile_CreditHours( this, getPeriodData().getFolder() );
+    }
+
+    public boolean isMemberInCurrentPeriod( final int fMemberID )
+    {
+        final IPeriod aCurrentPeriod = getPeriod();
+        final InfoForSingleMember aInfoForSingleMember = get( fMemberID );
+        final IClubMember aMember = aInfoForSingleMember.getMember();
+        final LocalDate aMemberUntil = aMember.getMemberUntil();
+        if( aMemberUntil != null && aCurrentPeriod.isBeforeMyStart( aMemberUntil ) ){
+            return false;
+        }
+        return true;
     }
 
 }
