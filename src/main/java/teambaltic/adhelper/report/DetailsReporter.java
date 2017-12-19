@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.DutyCalculator;
+import teambaltic.adhelper.model.Adjustment;
 import teambaltic.adhelper.model.Balance;
-import teambaltic.adhelper.model.CreditHours;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.IClubMember;
@@ -118,31 +118,31 @@ public final class DetailsReporter
         }
         aSB.append( LF );
 
-        final CreditHours aCreditHours = fMemberInfo.getCreditHours( fInvoicingPeriod );
-        if( aCreditHours != null){
+        final Adjustment aAdjustment = fMemberInfo.getAdjustment( fInvoicingPeriod );
+        if( aAdjustment != null){
             aSB.append( LINE3 );
-            aSB.append( "Gutschrift:"+LF );
+            aSB.append( "Korrektur:"+LF );
             aSB.append( String.format( "\t%6.2fh: %s"+LF,
-                    aCreditHours.getHours()/100.0, aCreditHours.getComment() ) );
+                    aAdjustment.getHours()/100.0, aAdjustment.getComment() ) );
         }
 
         aSB.append( LINE2 );
         aSB.append( String.format("%-27s  %6s %6s %6s %6s %6s %6s %6s"+LF,
-                "Name", "Guth.", "Gutschr.", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
+                "Name", "Guth.", "Korrektur", "Gearb.", "Pflicht", "Guth.II", "Zu zahl", "Gut.III" ));
         aSB.append( LINE3 );
         final List<InfoForSingleMember> aAllRelatives = fMemberInfo.getAllRelatives();
         for( final InfoForSingleMember aInfoOfThisMember : aAllRelatives ){
             final IClubMember aRelatedMember = aInfoOfThisMember.getMember();
             final Balance aBalance = aInfoOfThisMember.getBalance( fInvoicingPeriod );
             final DutyCharge aC = aInfoOfThisMember.getDutyCharge();
-            final CreditHours aCH = aInfoOfThisMember.getCreditHours( fInvoicingPeriod );
-            final int aCreditHoursValue = aCH == null ? 0 : aCH.getHours();
+            final Adjustment aAdj = aInfoOfThisMember.getAdjustment( fInvoicingPeriod );
+            final int aAdjustmentValue = aAdj == null ? 0 : aAdj.getHours();
             final int aHoursDue = aC.getHoursDue();
             aTotalDue += aHoursDue;
             aSB.append( String.format("%-27s %6.2f   %6.2f %6.2f   %6.2f  %6.2f  %6.2f  %6.2f"+LF,
                     aRelatedMember.getName(),
                     aBalance.getValue_Original()/100.0,
-                    aCreditHoursValue/100.0,
+                    aAdjustmentValue/100.0,
                     aC.getHoursWorked()/100.0,
                     aHoursDue/100.0,
                     aBalance.getValue_Charged()/100.0,

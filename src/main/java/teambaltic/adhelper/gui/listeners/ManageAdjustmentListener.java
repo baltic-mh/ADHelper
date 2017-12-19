@@ -1,5 +1,5 @@
 /**
- * ManageCreditHoursListener.java
+ * ManageAdjustmentListener.java
  *
  * Created on 06.03.2017
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -21,23 +21,23 @@ import javax.swing.JComboBox;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.IPeriodDataController;
-import teambaltic.adhelper.gui.CreditHoursDialog;
+import teambaltic.adhelper.gui.AdjustmentsDialog;
 import teambaltic.adhelper.gui.ParticipationsDialog;
 import teambaltic.adhelper.gui.model.CBModel_Dates;
-import teambaltic.adhelper.gui.model.TBLModel_CreditHours;
+import teambaltic.adhelper.gui.model.TBLModel_Adjustments;
 import teambaltic.adhelper.gui.model.TBLModel_Participation;
-import teambaltic.adhelper.model.CreditHours;
-import teambaltic.adhelper.model.CreditHoursGranted;
+import teambaltic.adhelper.model.Adjustment;
+import teambaltic.adhelper.model.AdjustmentsTaken;
 import teambaltic.adhelper.model.IParticipationItemContainer;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 
 // ############################################################################
-public class ManageCreditHoursListener extends ManageParticipationsListener<CreditHours>
+public class ManageAdjustmentListener extends ManageParticipationsListener<Adjustment>
 {
 //    private static final Logger sm_Log = Logger.getLogger(ManageAdjustmentsListener.class);
 
-    public ManageCreditHoursListener(
+    public ManageAdjustmentListener(
             final ADH_DataProvider fDataProvider,
             final IPeriodDataController fPDC,
             final GUIUpdater fGUIUpdater,
@@ -49,59 +49,59 @@ public class ManageCreditHoursListener extends ManageParticipationsListener<Cred
     @Override
     protected ParticipationsDialog createDialog()
     {
-        return new CreditHoursDialog();
+        return new AdjustmentsDialog();
     }
 
     @Override
     protected TBLModel_Participation createTableModel( final Object[][] fData, final boolean fReadOnly )
     {
-        final TBLModel_CreditHours aModel = new TBLModel_CreditHours( fData, fReadOnly );
+        final TBLModel_Adjustments aModel = new TBLModel_Adjustments( fData, fReadOnly );
         return aModel;
     }
 
     @Override
-    protected void fillSpecificColumnData( final Object[] fDataRow, final CreditHours fParticipation )
+    protected void fillSpecificColumnData( final Object[] fDataRow, final Adjustment fParticipation )
     {
-        final int aColIdx_Comment = ((TBLModel_CreditHours)getTableModel()).getColIdx_Comment();
+        final int aColIdx_Comment = ((TBLModel_Adjustments)getTableModel()).getColIdx_Comment();
         final String aComment = fParticipation.getComment();
         fDataRow[aColIdx_Comment] = aComment;
     }
 
     @Override
-    protected IParticipationItemContainer<CreditHours> getParticipationItemContainer( final InfoForSingleMember aInfoForSingleMember )
+    protected IParticipationItemContainer<Adjustment> getParticipationItemContainer( final InfoForSingleMember aInfoForSingleMember )
     {
-        return aInfoForSingleMember.getCreditHoursGranted();
+        return aInfoForSingleMember.getAdjustmentsTaken();
     }
     @Override
-    protected IParticipationItemContainer<CreditHours> createParticipationItemContainer( final int fMemberID )
+    protected IParticipationItemContainer<Adjustment> createParticipationItemContainer( final int fMemberID )
     {
-        return new CreditHoursGranted( fMemberID );
+        return new AdjustmentsTaken( fMemberID );
     }
     @Override
     protected void setParticipationItemContainer( final InfoForSingleMember fInfoForSingleMember,
-            final IParticipationItemContainer<CreditHours> fParticipationItemContainer )
+            final IParticipationItemContainer<Adjustment> fParticipationItemContainer )
     {
-        fInfoForSingleMember.setCreditHoursGranted( (CreditHoursGranted) fParticipationItemContainer );
+        fInfoForSingleMember.setAdjustmentsTaken( (AdjustmentsTaken) fParticipationItemContainer );
     }
 
     @Override
-    protected CreditHours createParticipation( final LocalDate fSelectedDate, final Vector<Object> fRowValues )
+    protected Adjustment createParticipation( final LocalDate fSelectedDate, final Vector<Object> fRowValues )
     {
         final Integer fMemberID = (Integer) fRowValues.get( getColIdx_ID() );
-        final CreditHours aCreditHours = new CreditHours( fMemberID );
-        aCreditHours.setDate( fSelectedDate );
+        final Adjustment aAdjustment = new Adjustment( fMemberID );
+        aAdjustment.setDate( fSelectedDate );
         final Double aHoursValue = (Double) fRowValues.get( getColIdx_Hours() );
         final int aHoursWorked = Double.valueOf(100.0*aHoursValue).intValue();
-        aCreditHours.setHours( aHoursWorked );
-        final String aComment = (String) fRowValues.get( ((TBLModel_CreditHours)getTableModel()).getColIdx_Comment() );
-        aCreditHours.setComment( aComment );
-        return aCreditHours;
+        aAdjustment.setHours( aHoursWorked );
+        final String aComment = (String) fRowValues.get( ((TBLModel_Adjustments)getTableModel()).getColIdx_Comment() );
+        aAdjustment.setComment( aComment );
+        return aAdjustment;
     }
 
     @Override
     protected void writeToFile(final ADH_DataProvider fDataProvider)
     {
-        fDataProvider.writeToFile_CreditHours();
+        fDataProvider.writeToFile_Adjustments();
     }
 
     @Override
@@ -109,28 +109,31 @@ public class ManageCreditHoursListener extends ManageParticipationsListener<Cred
     {
         final List<InfoForSingleMember> aAll = fDataProvider.getAll();
 
-        final List<LocalDate> aCreditHoursDates = new ArrayList<>();
+        final List<LocalDate> aAdjustmentDates = new ArrayList<>();
         for( final InfoForSingleMember aInfoForSingleMember : aAll ){
-            final CreditHoursGranted aCreditHoursGranted = aInfoForSingleMember.getCreditHoursGranted();
-            if( aCreditHoursGranted == null ){
+            final AdjustmentsTaken aAdjustmentsTaken = aInfoForSingleMember.getAdjustmentsTaken();
+            if( aAdjustmentsTaken == null ){
                 continue;
             }
-            final List<CreditHours> aCreditHoursList = aCreditHoursGranted.getCreditHoursList();
-            for( final CreditHours aCreditHours : aCreditHoursList ){
-                final LocalDate aDate = aCreditHours.getDate();
-                if( aCreditHoursDates.contains( aDate ) ){
+            final List<Adjustment> aAdjustmentList = aAdjustmentsTaken.getAdjustmentList();
+            for( final Adjustment aAdjustment : aAdjustmentList ){
+                final LocalDate aDate = aAdjustment.getDate();
+                if( aAdjustmentDates.contains( aDate ) ){
                     continue;
                 }
-                aCreditHoursDates.add( aDate );
+                aAdjustmentDates.add( aDate );
             }
         }
-        Collections.sort( aCreditHoursDates );
-        return aCreditHoursDates;
+        Collections.sort( aAdjustmentDates );
+        return aAdjustmentDates;
     }
 
     @Override
     protected void populateCmbDates( final JComboBox<LocalDate> fCmb_Date, final IPeriod fSelectedPeriod )
     {
+        if( fSelectedPeriod == null ){
+            return;
+        }
         final LocalDate[] aLDArray = new LocalDate[1];
         aLDArray[0] = fSelectedPeriod.getStart();
         fCmb_Date.setModel( new CBModel_Dates( aLDArray ) );

@@ -30,7 +30,7 @@ public class HoursCellRenderer extends DefaultTableCellRenderer
         String aStringValue = "";
         if( fRawValue != null ){
             final Double aDoubleValue = UIUtils.getDoubleValue( fRawValue );
-            if( aDoubleValue > 0.0 ){
+            if( aDoubleValue != 0.0 ){
                 aStringValue = String.format("%.2f",aDoubleValue);
             }
         }

@@ -1,5 +1,5 @@
 /**
- * CreditHoursFactory.java
+ * AdjustmentFactory.java
  *
  * Created on 11.03.2017
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -13,36 +13,36 @@ package teambaltic.adhelper.factories;
 
 import java.util.Map;
 
-import teambaltic.adhelper.model.CreditHours;
+import teambaltic.adhelper.model.Adjustment;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.Participation;
 
 // ############################################################################
-public class CreditHoursFactory extends ParticipationFactory<CreditHours>
+public class AdjustmentFactory extends ParticipationFactory<Adjustment>
 {
 
-    public CreditHoursFactory()
+    public AdjustmentFactory()
     {
-        super( IKnownColumns.CREDITHOURS );
+        super( IKnownColumns.ADJUSTMENTS );
     }
 
     @Override
-    protected CreditHours cast( final Participation fParticipation )
+    protected Adjustment cast( final Participation fParticipation )
     {
-        return (CreditHours) fParticipation;
+        return (Adjustment) fParticipation;
     }
 
     @Override
-    public CreditHours createItem( final int fID )
+    public Adjustment createItem( final int fID )
     {
-        return new CreditHours(fID);
+        return new Adjustment(fID);
     }
 
     @Override
-    public void populateSpecificAttributes(final CreditHours fCreditHours, final Map<String, String> fAttributes)
+    public void populateSpecificAttributes(final Adjustment fAdjustment, final Map<String, String> fAttributes)
     {
         final String aComment = fAttributes.get( IKnownColumns.COMMENT );
-        fCreditHours.setComment( aComment );
+        fAdjustment.setComment( aComment );
     }
 }
 

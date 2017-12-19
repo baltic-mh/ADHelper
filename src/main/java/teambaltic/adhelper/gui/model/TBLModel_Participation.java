@@ -20,6 +20,9 @@ public class TBLModel_Participation extends DefaultTableModel
 {
     private static final long serialVersionUID = 3040033628089631180L;
 
+    private static final double HOURVALUE_MIN_DEFAULT =  0.0;
+    private static final double HOURVALUE_MAX_DEFAULT = 10.0;
+
     // Solange die abgeleiteten Klassen dieselbe Reihenfolge der Spalten haben,
     // können diese Konstanten verwendet werden. Sonst müssen die Methoden
     // überschrieben werden.
@@ -129,8 +132,9 @@ public class TBLModel_Participation extends DefaultTableModel
         if( fDoubleValue.doubleValue() > aMaxValue ){
             return Double.valueOf( aMaxValue );
         }
-        if( fDoubleValue.doubleValue() <= 0.0 ){
-            return Double.valueOf( 0.0 );
+        final double aMinValue = getMinHoursValue();
+        if( fDoubleValue.doubleValue() <= aMinValue ){
+            return Double.valueOf( aMinValue );
         }
 
         final int aNurVorkomma  = 100*fDoubleValue.intValue();
@@ -143,8 +147,12 @@ public class TBLModel_Participation extends DefaultTableModel
 
     public double getMaxHoursValue()
     {
-        final double aMaxValue = 10.0;
-        return aMaxValue;
+        return HOURVALUE_MAX_DEFAULT;
+    }
+
+    public double getMinHoursValue()
+    {
+        return HOURVALUE_MIN_DEFAULT;
     }
 
 }

@@ -46,9 +46,10 @@ public interface IKnownColumns
     // Tabelle der ZuZahlendenStunden:
     String HOURSTOPAY = "Zu zahl. Stunden";
 
-    // Tabelle der gutgeschriebenen Stunden
+    // Tabelle der Korrektur-Stunden
+    // (Zuerst gab es nur gutgeschriebene Stunden, dann kam das negative in die Welt...
     String COMMENT = "Kommentar";
-    String CREDITHOURS = "Gut-Stunden";
+    String ADJUSTMENTS = "Gut-Stunden";
 
 }
 

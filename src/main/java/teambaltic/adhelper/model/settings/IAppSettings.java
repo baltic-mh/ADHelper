@@ -28,7 +28,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
 
        ,FILENAME_BASEINFO
        ,FILENAME_WORKEVENTS
-       ,FILENAME_CREDITHOURS
+       ,FILENAME_ADJUSTMENTS
        ,FILENAME_BALANCES
        ,FILENAME_BALANCEHISTORY
        ,FILENAME_USERDATA
@@ -76,7 +76,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     String getFileName_BaseData();
     Path getFile_RootBaseData();
     String getFileName_WorkEvents();
-    String getFileName_CreditHours();
+    String getFileName_Adjustments();
     String getFileName_Balances();
     String getFileName_BalanceHistory();
     String getFileName_UserSettings();

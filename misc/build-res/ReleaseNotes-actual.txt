@@ -15,6 +15,7 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1008004
+//RELEASE: 1009000
 ###############################################################################
-[BUGFIX] Umgang mit ausgetretenen Mitgliedern verbessert
+[ÄNDERUNG] Gutschriften können nun auch negativ sein. Damit sind nun auch
+           nachträgliche Korrekturen in beide Richtungen möglich.

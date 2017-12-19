@@ -1,5 +1,5 @@
 /**
- * ParticipationReport.java
+ * AdjustmentReport.java
  *
  * Created on 01.05.2017
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -20,20 +20,20 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
-import teambaltic.adhelper.model.CreditHours;
+import teambaltic.adhelper.model.Adjustment;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 
 // ############################################################################
-public class CreditHoursReport extends AReportBuilderWithDataSource
+public class AdjustmentReport extends AReportBuilderWithDataSource
 {
     private static final long serialVersionUID = 1195311505418150048L;
 
-    private static final String REPORTTITLE     = "Gutschriften";
+    private static final String REPORTTITLE     = "Korrekturen";
     private static final String[] COL_TITLES    = new String[]{ "Kommentar", "Stunden" };
     private static final String[] COL_NAMES     = new String[]{ "comment",  "hours"   };
 
-    public CreditHoursReport(final IPeriod fPeriod, final InfoForSingleMember fInfoForSingleMember)
+    public AdjustmentReport(final IPeriod fPeriod, final InfoForSingleMember fInfoForSingleMember)
     {
         super( fPeriod, fInfoForSingleMember );
         init();
@@ -55,9 +55,9 @@ public class CreditHoursReport extends AReportBuilderWithDataSource
     {
         final DRDataSource dataSource = new DRDataSource(COL_NAMES);
         final InfoForSingleMember aInfoForSingleMember = getInfoForSingleMember();
-        final CreditHours aCreditHours = aInfoForSingleMember.getCreditHours( getPeriod() );
-        final int aHours = aCreditHours.getHours();
-        final Object[] aValues = new Object[]{ aCreditHours.getComment(), aHours/100.0};
+        final Adjustment aAdjustment = aInfoForSingleMember.getAdjustment( getPeriod() );
+        final int aHours = aAdjustment.getHours();
+        final Object[] aValues = new Object[]{ aAdjustment.getComment(), aHours/100.0};
         dataSource.add(aValues);
         return dataSource;
     }

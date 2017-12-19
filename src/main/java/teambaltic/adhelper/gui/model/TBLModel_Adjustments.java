@@ -12,9 +12,12 @@
 package teambaltic.adhelper.gui.model;
 
 // ############################################################################
-public class TBLModel_CreditHours extends TBLModel_Participation
+public class TBLModel_Adjustments extends TBLModel_Participation
 {
     private static final long serialVersionUID = 3040033628089631180L;
+
+    private static final double HOURVALUE_MIN = -100.0;
+    private static final double HOURVALUE_MAX =  100.0;
 
     public  static final String[]   COLUMNHEADERS   = new String[] { "Auswahl", "ID", "Name", "Stunden", "Kommentar" };
     private static final Class<?>[] COLUMNCLASSES   = new Class<?>[] { Boolean.class, Integer.class, String.class, Float.class, String.class };
@@ -22,7 +25,7 @@ public class TBLModel_CreditHours extends TBLModel_Participation
 
     public int getColIdx_Comment(){ return 4; }
 
-    public TBLModel_CreditHours(final Object[][] fData, final boolean fReadOnly)
+    public TBLModel_Adjustments(final Object[][] fData, final boolean fReadOnly)
     {
         super( COLUMNHEADERS, COLUMNCLASSES, EDITABLECOLUMNS, fData, fReadOnly );
     }
@@ -30,7 +33,13 @@ public class TBLModel_CreditHours extends TBLModel_Participation
     @Override
     public double getMaxHoursValue()
     {
-        return 100.0;
+        return HOURVALUE_MAX;
+    }
+
+    @Override
+    public double getMinHoursValue()
+    {
+        return HOURVALUE_MIN;
     }
 }
 

@@ -26,8 +26,8 @@ import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
+import teambaltic.adhelper.model.Adjustment;
 import teambaltic.adhelper.model.Balance;
-import teambaltic.adhelper.model.CreditHours;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
@@ -39,8 +39,8 @@ public class AccountingReport extends AReportBuilderWithDataSource
     private static final long serialVersionUID  = 384924463701935583L;
 
     private static final String REPORTTITLE     = "Abrechnung";
-    private static final String[] COL_TITLES    = new String[]{"Name", "Guthaben", "Gutschrift", "Gearbeitet", "Pflicht", "Guthaben II", "Zu zahlen", "Guthaben III" };
-    private static final String[] COL_NAMES     = new String[]{"name", "balance",  "credit",     "worked",     "duty",    "balance2",    "topay",     "balance3"     };
+    private static final String[] COL_TITLES    = new String[]{"Name", "Guthaben", "Korrektur",  "Gearbeitet", "Pflicht", "Guthaben II", "Zu zahlen", "Guthaben III" };
+    private static final String[] COL_NAMES     = new String[]{"name", "balance",  "adjustment", "worked",     "duty",    "balance2",    "topay",     "balance3"     };
 
     public AccountingReport(final IPeriod fPeriod, final InfoForSingleMember fInfoForSingleMember)
     {
@@ -91,13 +91,13 @@ public class AccountingReport extends AReportBuilderWithDataSource
             final double aGuthaben = aBalance.getValue_Original()/100.0;
             final double aGuthabenII = aBalance.getValue_Charged()/100.0;
             final double aGuthabenIII = aBalance.getValue_ChargedAndAdjusted()/100.0;
-            final CreditHours aCreditHours = aInfoForThisMember.getCreditHours( getPeriod() );
-            final double aGutSchrift = aCreditHours == null ? 0.0 : aCreditHours.getHours()/100.0;
+            final Adjustment aAdjustment = aInfoForThisMember.getAdjustment( getPeriod() );
+            final double aAdjustmentValue = aAdjustment == null ? 0.0 : aAdjustment.getHours()/100.0;
             final DutyCharge aDutyCharge = aInfoForThisMember.getDutyCharge();
             final double aGearbeitet = aDutyCharge.getHoursWorked()/100.0;
             final double aDuty = aDutyCharge.getHoursDue()/100.0;
             final double aToPay = aDutyCharge.getHoursToPay()/100.0;
-            dataSource.add(aName, aGuthaben, aGutSchrift, aGearbeitet, aDuty, aGuthabenII, aToPay, aGuthabenIII);
+            dataSource.add(aName, aGuthaben, aAdjustmentValue, aGearbeitet, aDuty, aGuthabenII, aToPay, aGuthabenIII);
         }
 
         return dataSource;

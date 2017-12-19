@@ -67,8 +67,8 @@ public class MainPanel extends JPanel
     private final JButton m_btn_ManageWorkEvents;
     public JButton getBtn_ManageWorkEvents(){ return m_btn_ManageWorkEvents; }
     // ------------------------------------------------------------------------
-    private final JButton m_btn_ManageCreditHours;
-    public JButton getBtn_ManageCreditHours(){ return m_btn_ManageCreditHours; }
+    private final JButton m_btn_ManageAdjustment;
+    public JButton getBtn_ManageAdjustment(){ return m_btn_ManageAdjustment; }
     // ------------------------------------------------------------------------
 
 
@@ -271,9 +271,9 @@ public class MainPanel extends JPanel
                 m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
                 add(m_btn_ManageWorkEvents, "12, 14");
 
-                m_btn_ManageCreditHours = new JButton("Gutschriften...");
-                m_btn_ManageCreditHours.setActionCommand( "OPEN" );
-                add(m_btn_ManageCreditHours, "14, 14");
+                m_btn_ManageAdjustment = new JButton("Korrekturen...");
+                m_btn_ManageAdjustment.setActionCommand( "OPEN" );
+                add(m_btn_ManageAdjustment, "14, 14");
 
         m_btnFinish = new JButton("Zeitraum abschlie\u00DFen");
         m_btnFinish.setActionCommand( "Zeitraum abschlie\u00DFen" );

@@ -1,5 +1,5 @@
 /**
- * CreditHours.java
+ * Adjustment.java
  *
  * Created on 06.03.2017
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -12,7 +12,7 @@
 package teambaltic.adhelper.model;
 
 // ############################################################################
-public class CreditHours extends Participation
+public class Adjustment extends Participation
 {
     // ------------------------------------------------------------------------
     private String m_Comment;
@@ -20,7 +20,7 @@ public class CreditHours extends Participation
     public void setComment( final String fComment ) { m_Comment = fComment; }
     // ------------------------------------------------------------------------
 
-    public CreditHours( final int fMemberID )
+    public Adjustment( final int fMemberID )
     {
         super( fMemberID );
     }
@@ -43,7 +43,7 @@ public class CreditHours extends Participation
             return false;
         if( getClass() != obj.getClass() )
             return false;
-        final CreditHours other = (CreditHours) obj;
+        final Adjustment other = (Adjustment) obj;
         if( m_Comment == null ){
             if( other.m_Comment != null )
                 return false;

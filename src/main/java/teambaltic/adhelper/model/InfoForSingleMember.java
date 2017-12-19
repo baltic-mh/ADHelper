@@ -59,19 +59,19 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private CreditHoursGranted m_CreditHoursGranted;
-    public CreditHoursGranted getCreditHoursGranted(){ return m_CreditHoursGranted; }
-    public void setCreditHoursGranted( final CreditHoursGranted fNewVal ){ m_CreditHoursGranted = fNewVal; }
-    public CreditHours getCreditHours(final IPeriod fPeriod){
-        final CreditHoursGranted aCreditHoursGranted = getCreditHoursGranted();
-        if( aCreditHoursGranted == null ){
+    private AdjustmentsTaken m_AdjustmentsTaken;
+    public AdjustmentsTaken getAdjustmentsTaken(){ return m_AdjustmentsTaken; }
+    public void setAdjustmentsTaken( final AdjustmentsTaken fNewVal ){ m_AdjustmentsTaken = fNewVal; }
+    public Adjustment getAdjustment(final IPeriod fPeriod){
+        final AdjustmentsTaken aAdjustmentsTaken = getAdjustmentsTaken();
+        if( aAdjustmentsTaken == null ){
             return null;
         }
-        final List<CreditHours> aCreditHoursList = aCreditHoursGranted.getCreditHoursList( fPeriod );
-        if( aCreditHoursList == null || aCreditHoursList.size() == 0 ){
+        final List<Adjustment> aAdjustmentList = aAdjustmentsTaken.getAdjustmentList( fPeriod );
+        if( aAdjustmentList == null || aAdjustmentList.size() == 0 ){
             return null;
         }
-        return aCreditHoursList.get( 0 );
+        return aAdjustmentList.get( 0 );
     }
     // ------------------------------------------------------------------------
 

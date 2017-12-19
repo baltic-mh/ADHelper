@@ -1,5 +1,5 @@
 /**
- * WorkEventsDialog.java
+ * AdjustmentDialogs.java
  *
  * Created on 12.04.2016
  * by <a href="mailto:mhw@teambaltic.de">Mathias-H.&nbsp;Weber&nbsp;(MW)</a>
@@ -13,10 +13,10 @@ package teambaltic.adhelper.gui;
 
 import javax.swing.JDialog;
 
-import teambaltic.adhelper.gui.model.TBLModel_CreditHours;
+import teambaltic.adhelper.gui.model.TBLModel_Adjustments;
 
 // ############################################################################
-public class CreditHoursDialog extends ParticipationsDialog
+public class AdjustmentsDialog extends ParticipationsDialog
 {
     private static final long serialVersionUID = -7487662229096717267L;
 
@@ -35,7 +35,7 @@ public class CreditHoursDialog extends ParticipationsDialog
     public static void main( final String[] args )
     {
         try{
-            final CreditHoursDialog dialog = new CreditHoursDialog();
+            final AdjustmentsDialog dialog = new AdjustmentsDialog();
             dialog.populate();
             dialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
             dialog.setVisible( true );
@@ -46,22 +46,22 @@ public class CreditHoursDialog extends ParticipationsDialog
 
     private void populate()
     {
-        final TBLModel_CreditHours aModel = new TBLModel_CreditHours( DATA, false );
+        final TBLModel_Adjustments aModel = new TBLModel_Adjustments( DATA, false );
         getContentPanel().populate( aModel );
     }
 
     /**
      * Create the dialog.
      */
-    public CreditHoursDialog()
+    public AdjustmentsDialog()
     {
-        super("Gutschriften");
+        super("Gutschriften/Abzüge");
     }
 
     @Override
     protected ParticipationsPanel createContentPanel()
     {
-        return new CreditHoursPanel();
+        return new AdjustmentsPanel();
     }
 
 }

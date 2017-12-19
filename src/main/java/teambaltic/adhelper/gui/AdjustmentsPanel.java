@@ -14,14 +14,14 @@ package teambaltic.adhelper.gui;
 import javax.swing.JButton;
 
 // ############################################################################
-public class CreditHoursPanel extends ParticipationsPanel
+public class AdjustmentsPanel extends ParticipationsPanel
 {
     private static final long serialVersionUID = 157096461352369629L;
 
     /**
      * Create the panel.
      */
-    public CreditHoursPanel()
+    public AdjustmentsPanel()
     {
         super();
     }

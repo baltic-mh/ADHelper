@@ -102,9 +102,9 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getStringValue( EKey.FILENAME_WORKEVENTS );
     }
     @Override
-    public String getFileName_CreditHours()
+    public String getFileName_Adjustments()
     {
-        return getStringValue( EKey.FILENAME_CREDITHOURS );
+        return getStringValue( EKey.FILENAME_ADJUSTMENTS );
     }
     @Override
     public String getFileName_Balances()

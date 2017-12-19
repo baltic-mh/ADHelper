@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.inout.AdjustmentReader;
 import teambaltic.adhelper.inout.BalanceReader;
 import teambaltic.adhelper.inout.BaseDataReader;
-import teambaltic.adhelper.inout.CreditHoursReader;
 import teambaltic.adhelper.inout.WorkEventReader;
 import teambaltic.adhelper.inout.Writer;
 import teambaltic.adhelper.model.Balance;
@@ -129,7 +129,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen
         readBaseData   ( getPDC().getFile_BaseData( fPeriodData ), fOnlyID );
         readWorkEvents ( getPDC().getFile_WorkEvents ( fPeriodData ) );
-        readCreditHours( getPDC().getFile_CreditHours( fPeriodData ) );
+        readAdjustments( getPDC().getFile_Adjustments( fPeriodData ) );
         readBalances( fPeriodData );
 
         populateFreeFromDutySets( aPeriod );
@@ -168,12 +168,12 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         aReader.read( this );
     }
 
-    public void readCreditHours( final Path fFileToReadFrom ) throws Exception
+    public void readAdjustments( final Path fFileToReadFrom ) throws Exception
     {
         if( !Files.exists( fFileToReadFrom )){
             return;
         }
-        final CreditHoursReader aReader = new CreditHoursReader( fFileToReadFrom.toFile() );
+        final AdjustmentReader aReader = new AdjustmentReader( fFileToReadFrom.toFile() );
         aReader.read( this );
     }
 
@@ -282,9 +282,9 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         Writer.writeToFile_WorkEvents( this, getPeriodData().getFolder() );
     }
 
-    public void writeToFile_CreditHours()
+    public void writeToFile_Adjustments()
     {
-        Writer.writeToFile_CreditHours( this, getPeriodData().getFolder() );
+        Writer.writeToFile_Adjustments( this, getPeriodData().getFolder() );
     }
 
     public boolean isMemberInCurrentPeriod( final int fMemberID )

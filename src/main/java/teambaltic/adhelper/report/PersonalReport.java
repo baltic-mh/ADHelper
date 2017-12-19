@@ -92,7 +92,7 @@ public class PersonalReport
                         aReport = new DutyReport(aPeriod, aInfoForSingleMember);
                         break;
                     case 2:
-                        aReport = new CreditHoursReport(aPeriod, aInfoForSingleMember);
+                        aReport = new AdjustmentReport(aPeriod, aInfoForSingleMember);
                         break;
                     case 3:
                         aReport = new ParticipationReport(aPeriod, aInfoForSingleMember);

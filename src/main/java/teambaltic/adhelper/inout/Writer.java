@@ -26,10 +26,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.model.Adjustment;
+import teambaltic.adhelper.model.AdjustmentsTaken;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.BalanceHistory;
-import teambaltic.adhelper.model.CreditHours;
-import teambaltic.adhelper.model.CreditHoursGranted;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
@@ -48,7 +48,7 @@ public class Writer
     private static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
     private static final String BALANCEFORMAT_OLD = "%s;%s;%.2f;%.2f;%s"+LF;
     private static final String BALANCEFORMAT = "%s;%s;%.2f;%s"+LF;
-    private static final String CREDITFORMAT = "%s;%s;%.2f;%s;%s"+LF;
+    private static final String ADJUSTMENTFORMAT = "%s;%s;%.2f;%s;%s"+LF;
 
     // ------------------------------------------------------------------------
     private final ADH_DataProvider m_DataProvider;
@@ -64,7 +64,7 @@ public class Writer
             throws IOException
     {
         writeToFile_WorkEvents  ( getDataProvider(), fOutputFolder );
-        writeToFile_CreditHours ( getDataProvider(), fOutputFolder );
+        writeToFile_Adjustments ( getDataProvider(), fOutputFolder );
         writeToFile_Obligations ( getDataProvider(), fOutputFolder );
         writeToFile_Balances    ( getDataProvider(), fOutputFolder );
         writeToFile_BalanceHistories( getDataProvider(), fOutputFolder );
@@ -243,7 +243,7 @@ public class Writer
         fFileWriter.write( aLine );
     }
 
-    public static Path writeToFile_CreditHours(
+    public static Path writeToFile_Adjustments(
             final ADH_DataProvider fDataProvider,
             final Path fOutputFolder)
     {
@@ -252,23 +252,23 @@ public class Writer
             final PrintWriter aFileWriter = new PrintWriter(aPath.toFile(), CHARSET_ISO_8859_1);
             aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
-                    IKnownColumns.CREDITHOURS, IKnownColumns.DATE, IKnownColumns.COMMENT ) );
+                    IKnownColumns.ADJUSTMENTS, IKnownColumns.DATE, IKnownColumns.COMMENT ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
                 final int aMemberID = aSingleInfo.getID();
                 if( !fDataProvider.isMemberInCurrentPeriod( aMemberID ) ){
                     continue;
                 }
                 final String aMemberName = fDataProvider.getMemberName( aMemberID );
-                final CreditHoursGranted aCreditHoursGranted = aSingleInfo.getCreditHoursGranted();
-                if( aCreditHoursGranted == null ){
+                final AdjustmentsTaken aAdjustmentsTaken = aSingleInfo.getAdjustmentsTaken();
+                if( aAdjustmentsTaken == null ){
                     continue;
                 }
-                for(final CreditHours aCreditHours : aCreditHoursGranted.getCreditHoursList(null) ){
-                    final int aHours = aCreditHours.getHours();
+                for(final Adjustment aAdjustment : aAdjustmentsTaken.getAdjustmentList(null) ){
+                    final int aHours = aAdjustment.getHours();
                     if( aHours == 0 ){
                         continue;
                     }
-                    writeSingleCreditHoursLine( aFileWriter, aMemberName, aCreditHours, toStringWithDots(aCreditHours.getDate()) );
+                    writeSingleAdjustmentLine( aFileWriter, aMemberName, aAdjustment, toStringWithDots(aAdjustment.getDate()) );
                 }
             }
             aFileWriter.close();
@@ -279,16 +279,16 @@ public class Writer
         }
     }
 
-    private static void writeSingleCreditHoursLine(
+    private static void writeSingleAdjustmentLine(
             final PrintWriter   fFileWriter,
             final String        fMemberName,
-            final CreditHours   fCreditHours,
+            final Adjustment    fAdjustment,
             final String        fGrantedAt )
     {
-        final int aHours = fCreditHours.getHours();
-        final String aLine = String.format( CREDITFORMAT,
-                fCreditHours.getMemberID(), fMemberName,
-                aHours/100.0f, fGrantedAt, fCreditHours.getComment() );
+        final int aHours = fAdjustment.getHours();
+        final String aLine = String.format( ADJUSTMENTFORMAT,
+                fAdjustment.getMemberID(), fMemberName,
+                aHours/100.0f, fGrantedAt, fAdjustment.getComment() );
 
 //                sm_Log.info( aLine );
         fFileWriter.write( aLine );

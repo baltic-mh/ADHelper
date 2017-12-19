@@ -29,8 +29,8 @@ import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
 import teambaltic.adhelper.gui.model.TBLModel_DutyCharge;
 import teambaltic.adhelper.gui.model.TBLModel_DutyFree;
 import teambaltic.adhelper.gui.renderer.RNDR_CB_Member;
+import teambaltic.adhelper.model.Adjustment;
 import teambaltic.adhelper.model.Balance;
-import teambaltic.adhelper.model.CreditHours;
 import teambaltic.adhelper.model.DutyCharge;
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDutySet;
@@ -66,6 +66,12 @@ public class GUIUpdater
     private ITransferController getTransferController(){ return m_TransferController; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private boolean m_Updating;
+    private boolean isUpdating(){ return m_Updating; }
+    private void setUpdating( final boolean fUpdating ){ m_Updating = fUpdating; }
+    // ------------------------------------------------------------------------
+
     private final RNDR_CB_Member m_Renderer_Member;
 
     public GUIUpdater(
@@ -88,29 +94,21 @@ public class GUIUpdater
 
     public void updateGUI( final PeriodData fPeriodData)
     {
-        final boolean aPeriodChanged = isPeriodChanged( fPeriodData );
-        if( aPeriodChanged ){
-            if( fPeriodData != null ){
-                m_PeriodData = fPeriodData;
-                assertExistsInComboBoxAndIsSelected( fPeriodData );
+        synchronized( this ){
+            if( isUpdating() ){
+                return;
             }
-            // Erhalten des ehemals selektierten Mitglieds:
-            final IClubMember aSelectedMember = m_Panel.getSelectedMember();
-            final JComboBox<IClubMember> aCB_Members = m_Panel.getCB_Members();
-            final List<IClubMember> aAllMembers = m_DataProvider.getMembers();
-            final IClubMember[] aMemberArray = new IClubMember[ aAllMembers.size() ];
-            final CBModel_Member aMemberCBModel = new CBModel_Member( aAllMembers.toArray( aMemberArray ) );
-            aCB_Members.setRenderer( m_Renderer_Member );
-            aCB_Members.setModel( aMemberCBModel );
-            if( aSelectedMember != null ){
-                // Ehemals selektiertes Mitglied wird wieder selektiert:
-                final IClubMember aPreviouslySelectedMember = m_DataProvider.getMember( aSelectedMember.getID() );
-                // null? Das passiert, wenn das Mitglied in der nun selektieren
-                // Periode noch nicht in der Mitgliederdatei enthalten war.
-                if( aPreviouslySelectedMember != null ){
-                    aMemberCBModel.setSelectedItem( aPreviouslySelectedMember );
+            setUpdating( true );
+            final boolean aPeriodChanged = isPeriodChanged( fPeriodData );
+            if( aPeriodChanged ){
+                if( fPeriodData != null ){
+                    m_PeriodData = fPeriodData;
+                    assertExistsInComboBoxAndIsSelected( fPeriodData );
                 }
+                // Erhalten des ehemals selektierten Mitglieds:
+                reselectPreviouslySelectedMember();
             }
+            setUpdating( false );
         }
         final int aMemberID = m_Panel.getSelectedMemberID();
         final InfoForSingleMember aInfoForSingleMember = m_DataProvider.get( aMemberID );
@@ -124,6 +122,27 @@ public class GUIUpdater
 
         if( fPeriodData != null ){
             configureButtons( m_Panel, getTransferController(), getPDC(), fPeriodData );
+        }
+    }
+
+    private void reselectPreviouslySelectedMember()
+    {
+        // Erhalten des ehemals selektierten Mitglieds:
+        final List<IClubMember> aAllMembers = m_DataProvider.getMembers();
+        final IClubMember[] aMemberArray = new IClubMember[ aAllMembers.size() ];
+        final CBModel_Member aMemberCBModel = new CBModel_Member( aAllMembers.toArray( aMemberArray ) );
+        final JComboBox<IClubMember> aCB_Members = m_Panel.getCB_Members();
+        aCB_Members.setRenderer( m_Renderer_Member );
+        aCB_Members.setModel( aMemberCBModel );
+        final IClubMember aSelectedMember = m_Panel.getSelectedMember();
+        if( aSelectedMember != null ){
+            // Ehemals selektiertes Mitglied wird wieder selektiert:
+            final IClubMember aPreviouslySelectedMember = m_DataProvider.getMember( aSelectedMember.getID() );
+            // null? Das passiert, wenn das Mitglied in der nun selektieren
+            // Periode noch nicht in der Mitgliederdatei enthalten war.
+            if( aPreviouslySelectedMember != null ){
+                aMemberCBModel.setSelectedItem( aPreviouslySelectedMember );
+            }
         }
     }
 
@@ -244,8 +263,8 @@ public class GUIUpdater
             final String aMemberName = fDataProvider.getMemberName( aInfoForThisRelative.getID() );
             final DutyCharge aDutyCharge = aInfoForThisRelative.getDutyCharge();
             final Balance aBalance = aInfoForThisRelative.getBalance( fPeriod );
-            final CreditHours aCreditsHours = aInfoForThisRelative.getCreditHours( fPeriod );
-            addRow_DutyChargeAndBalance( fDataModel, aMemberName, aDutyCharge, aBalance, aCreditsHours );
+            final Adjustment aAdjustment = aInfoForThisRelative.getAdjustment( fPeriod );
+            addRow_DutyChargeAndBalance( fDataModel, aMemberName, aDutyCharge, aBalance, aAdjustment );
         }
         final DutyCharge aDutyChargeOfThisMember = fInfoForSingleMember.getDutyCharge();
         fPanel.setTotalHoursToPay( aDutyChargeOfThisMember.getHoursToPayTotal() / 100.0f );
@@ -256,16 +275,16 @@ public class GUIUpdater
             final String                fMemberName,
             final DutyCharge            fDutyCharge,
             final Balance               fBalance,
-            final CreditHours           fCreditsHours )
+            final Adjustment            fAdjustment )
     {
         final Vector<Object> rowData = new Vector<>();
         rowData.addElement( fMemberName );
         rowData.addElement( fBalance.getValue_Original()/100.0f );
-        float aCreditHours = 0.0f;
-        if( fCreditsHours != null ){
-            aCreditHours = fCreditsHours.getHours()/100.0f;
+        float aAdjustmentValue = 0.0f;
+        if( fAdjustment != null ){
+            aAdjustmentValue = fAdjustment.getHours()/100.0f;
         }
-        rowData.addElement( aCreditHours );
+        rowData.addElement( aAdjustmentValue );
         rowData.addElement( fDutyCharge.getHoursWorked()/100.0f );
         rowData.addElement( fDutyCharge.getHoursDue()/100.0f );
         rowData.addElement( fBalance.getValue_Charged()/100.0f );
