@@ -2,6 +2,23 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1009000" version="1.9.0">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;ÄNDERUNG&lt;/b&gt;
+    &lt;dd&gt;Gutschriften können nun auch negativ sein. Damit sind nun auch
+           nachträgliche Korrekturen in beide Richtungen möglich.&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22961680" sourcedir="1009000"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="51199" sourcedir="1009000"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1009000"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="9416" sourcedir="1009000"/>
+    </arch>
+  </version>
   <version release="1008004" version="1.8.4">
     <description>
     &lt;dl&gt;

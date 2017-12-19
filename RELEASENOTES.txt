@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1009000	Version: 1.9.0	Datum: 2017-12-19
+[ÄNDERUNG] Gutschriften können nun auch negativ sein. Damit sind nun auch
+           nachträgliche Korrekturen in beide Richtungen möglich.
+================================================================================
 Release: 1008004	Version: 1.8.4	Datum: 2017-11-05
 [BUGFIX] Umgang mit ausgetretenen Mitgliedern verbessert
 ================================================================================
