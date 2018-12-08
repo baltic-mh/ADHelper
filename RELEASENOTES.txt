@@ -1,4 +1,10 @@
 ================================================================================
+Release: 1010000	Version: 1.10.0	Datum: 2018-12-08
+[NEU] Beim Programmstart wird die Java-Version ausgegeben.
+[NEU] Die Einstellung "Nur Teilnehmer" bei den Arbeitsdiensten wird erhalten
+[BUGFIX] Selektiertes Mitglied bleibt erhalten bei Umschalten des Zeitraumes
+[BUGFIX] Monat des Austritts wird bei Arbeitsdienstpflicht mit berücksichtigt 
+================================================================================
 Release: 1009000	Version: 1.9.0	Datum: 2017-12-19
 [ÄNDERUNG] Gutschriften können nun auch negativ sein. Damit sind nun auch
            nachträgliche Korrekturen in beide Richtungen möglich.

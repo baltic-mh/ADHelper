@@ -2,6 +2,34 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1010000" version="1.10.0">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Beim Programmstart wird die Java-Version ausgegeben.&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Die Einstellung "Nur Teilnehmer" bei den Arbeitsdiensten wird erhalten&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;BUGFIX&lt;/b&gt;
+    &lt;dd&gt;Selektiertes Mitglied bleibt erhalten bei Umschalten des Zeitraumes&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;BUGFIX&lt;/b&gt;
+    &lt;dd&gt;Monat des Austritts wird bei Arbeitsdienstpflicht mit berücksichtigt &lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22964621" sourcedir="1010000"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="52057" sourcedir="1010000"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1010000"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="9847" sourcedir="1010000"/>
+    </arch>
+  </version>
   <version release="1009000" version="1.9.0">
     <description>
     &lt;dl&gt;
