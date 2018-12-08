@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.IIdentifiedItem;
+import teambaltic.adhelper.model.IItemFilter;
 
 // ############################################################################
 public class ListProvider<ItemType extends IIdentifiedItem<ItemType>> implements IListProvider<ItemType>
@@ -76,6 +77,17 @@ public class ListProvider<ItemType extends IIdentifiedItem<ItemType>> implements
     {
         synchronized( m_Items ){
             final List<ItemType> aArrayList = new ArrayList<>(m_Items.values());
+            Collections.sort( aArrayList );
+            return aArrayList;
+        }
+    }
+
+    @Override
+    public List<ItemType> getAll(final IItemFilter<ItemType> fFilter)
+    {
+        synchronized( m_Items ){
+            final Collection<ItemType> aFilteredItems = fFilter.filter( m_Items.values() );
+            final List<ItemType> aArrayList = new ArrayList<>(aFilteredItems);
             Collections.sort( aArrayList );
             return aArrayList;
         }

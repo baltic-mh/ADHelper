@@ -47,7 +47,7 @@ public class AdjustmentsDialog extends ParticipationsDialog
     private void populate()
     {
         final TBLModel_Adjustments aModel = new TBLModel_Adjustments( DATA, false );
-        getContentPanel().populate( aModel );
+        getContentPanel().populate( aModel, null );
     }
 
     /**

@@ -131,6 +131,7 @@ public class ADH_Application
     public static void main( final String[] args )
     {
         sm_Log.info("==========================================================");
+        sm_Log.info( "Java version: "+System.getProperty( "java.version" ));
         migratePropertyFiles(BuildConfig.NAME);
         readAndSetSystemProperties(BuildConfig.NAME);
 

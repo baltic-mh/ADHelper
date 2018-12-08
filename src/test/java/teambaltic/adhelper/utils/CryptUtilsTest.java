@@ -25,7 +25,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 // ############################################################################
 public class CryptUtilsTest
@@ -35,6 +37,9 @@ public class CryptUtilsTest
     private static final String sm_TestFolderName = "misc/TestResources/CryptUtils";
     private static final File   sm_PrivateKeyFile = new File( sm_TestFolderName, "private_key.der" );
     private static final File   sm_PublicKeyFile  = new File( sm_TestFolderName, "public_key.der" );
+
+    @Rule
+    public TemporaryFolder testFolder = new TemporaryFolder();
 
     private static CryptUtils   CRYPTUTILS;
 
@@ -91,17 +96,70 @@ public class CryptUtilsTest
     public void testEncryptDecrypt_File()
     {
         try{
-            final Path aFileToEncrypt = Paths.get( sm_TestFolderName, "BasisDaten.csv" );
-            final Path aFileOrig = Paths.get( sm_TestFolderName, "BasisDaten-orig.csv" );
-            ;
-            Files.copy( aFileToEncrypt, aFileOrig, StandardCopyOption.REPLACE_EXISTING );
+            final Path aMyTestFolder = testFolder.newFolder().toPath();
+            final String FileToEncrypt_Name = "BasisDaten.csv";
+            final Path aFileOrig = Paths.get( sm_TestFolderName, FileToEncrypt_Name );
+            final Path aFileToEncrypt = aMyTestFolder.resolve( FileToEncrypt_Name );
+
+            Files.copy( aFileOrig, aFileToEncrypt, StandardCopyOption.REPLACE_EXISTING );
             final Path aFileEncrypted = CRYPTUTILS.encrypt( aFileToEncrypt );
+
             final Path aFileDecrypted = CRYPTUTILS.decrypt( aFileEncrypted );
             final byte[] aBytesToEncrypt = Files.readAllBytes( aFileToEncrypt );
             final byte[] aBytesDecrypted = Files.readAllBytes( aFileDecrypted );
             assertEquals("Encrypted-Decrypted length", aBytesToEncrypt.length, aBytesDecrypted.length);
             for( int aIdx = 0; aIdx < aBytesDecrypted.length; aIdx++ ){
                 assertEquals("Encrypted-Decrypted IDX "+aIdx, aBytesToEncrypt[aIdx], aBytesDecrypted[aIdx]);
+            }
+        }catch( final Exception fEx ){
+            sm_Log.error( "Exception: ", fEx );
+            fail( fEx.getMessage() );
+        }
+    }
+
+    @Test
+    public void testEncrypt_File_2017_II()
+    {
+        try{
+            final Path aMyTestFolder = testFolder.newFolder().toPath();
+            final String FileToEncrypt_Name = "2017-07-01 - 2017-12-31.zip";
+            final Path aFileOrig = Paths.get( sm_TestFolderName, FileToEncrypt_Name );
+            final Path aFileToEncrypt = aMyTestFolder.resolve( FileToEncrypt_Name );
+
+            Files.copy( aFileOrig, aFileToEncrypt, StandardCopyOption.REPLACE_EXISTING );
+            final Path aFileEncrypted = CRYPTUTILS.encrypt( aFileToEncrypt );
+            final Path aFileDecrypted = CRYPTUTILS.decrypt( aFileEncrypted );
+
+            final byte[] aBytesToEncrypt = Files.readAllBytes( aFileToEncrypt );
+            final byte[] aBytesDecrypted = Files.readAllBytes( aFileDecrypted );
+            assertEquals("Encrypted-Decrypted length", aBytesToEncrypt.length, aBytesDecrypted.length);
+            for( int aIdx = 0; aIdx < aBytesDecrypted.length; aIdx++ ){
+                assertEquals("Encrypted-Decrypted IDX "+aIdx, aBytesToEncrypt[aIdx], aBytesDecrypted[aIdx]);
+            }
+        }catch( final Exception fEx ){
+            sm_Log.error( "Exception: ", fEx );
+            fail( fEx.getMessage() );
+        }
+    }
+
+    @Test
+    public void testDencrypt_File_2017_II()
+    {
+        try{
+            final Path aMyTestFolder = testFolder.newFolder().toPath();
+            final String FileToDecrypt_Name = "2017-07-01 - 2017-12-31.zip.cry";
+            final Path aFileOrig = Paths.get( sm_TestFolderName, FileToDecrypt_Name );
+            final Path aFileToDecrypt = aMyTestFolder.resolve( FileToDecrypt_Name );
+            Files.copy( aFileOrig, aFileToDecrypt, StandardCopyOption.REPLACE_EXISTING );
+
+            final Path aFileDecrypted = CRYPTUTILS.decrypt( aFileToDecrypt );
+            final Path aFileEncrypted = CRYPTUTILS.encrypt( aFileDecrypted );
+
+            final byte[] aBytesToDecrypt = Files.readAllBytes( aFileToDecrypt );
+            final byte[] aBytesEncrypted = Files.readAllBytes( aFileEncrypted );
+            assertEquals("Decrypted-Encrypted length", aBytesToDecrypt.length, aBytesEncrypted.length);
+            for( int aIdx = 0; aIdx < aBytesEncrypted.length; aIdx++ ){
+                assertEquals("Decrypted-Encrypted IDX "+aIdx, aBytesToDecrypt[aIdx], aBytesEncrypted[aIdx]);
             }
         }catch( final Exception fEx ){
             sm_Log.error( "Exception: ", fEx );

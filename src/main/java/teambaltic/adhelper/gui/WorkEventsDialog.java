@@ -46,7 +46,7 @@ public class WorkEventsDialog extends ParticipationsDialog
     private void populate()
     {
         final TBLModel_WorkEvents aModel = new TBLModel_WorkEvents( DATA, false );
-        getContentPanel().populate( aModel );
+        getContentPanel().populate( aModel, null );
     }
 
     /**

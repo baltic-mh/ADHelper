@@ -27,9 +27,9 @@ public class AdjustmentsPanel extends ParticipationsPanel
     }
 
     @Override
-    protected void configureButtons( final boolean fReadOnly )
+    protected void configureButtons( final boolean fReadOnly, final boolean fActivePeriod )
     {
-        super.configureButtons( fReadOnly );
+        super.configureButtons( fReadOnly, fActivePeriod );
         final JButton aBtn_Neu = getBtn_Neu();
         aBtn_Neu.setEnabled( false );
     }

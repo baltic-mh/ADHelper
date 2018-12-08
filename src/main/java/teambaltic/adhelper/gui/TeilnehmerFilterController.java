@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.event.DocumentEvent;
@@ -54,11 +55,17 @@ public class TeilnehmerFilterController
     private JTextField getTf_Filter(){ return m_tf_Filter; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private final JLabel m_LblNumSichtbar;
+    private JLabel getLblNumSichtbar(){ return m_LblNumSichtbar; }
+    // ------------------------------------------------------------------------
+
     @SuppressWarnings("unchecked")
     public TeilnehmerFilterController(
             final TableRowSorter<TBLModel_Participation> fSorter,
             final JButton fBtn_ToggleDabeiFilter,
-            final JTextField fTF_Filter)
+            final JTextField fTF_Filter,
+            final JLabel fLblNumSichtbar)
     {
         m_Sorter = fSorter;
         m_btn_ToggleDabeiFilter = fBtn_ToggleDabeiFilter;
@@ -75,6 +82,7 @@ public class TeilnehmerFilterController
         @SuppressWarnings("rawtypes")
         final RowFilter aCombinedFilter = RowFilter.andFilter( filters );
         getSorter().setRowFilter( aCombinedFilter );
+        m_LblNumSichtbar = fLblNumSichtbar;
     }
 
     @Override
@@ -113,7 +121,7 @@ public class TeilnehmerFilterController
     public void setTextFilterRegExp( final String fRegexp )
     {
         getRowFilter_Text().setRegExp( fRegexp );
-        getSorter().sort();
+        applySettings();
     }
 
     private void toggleNurTeilnehmerFilter()
@@ -130,14 +138,20 @@ public class TeilnehmerFilterController
             // sein:
             getBtn_ToggleDabeiFilter().setText( "Alle" );
             aFilter_NurTeilnehmer.setEnabled( true );
-            getSorter().sort();
+            applySettings();
             return;
         }
         // Bisher ist "Nur Dabei" ausgewählt, also soll nun "Alle"
         // ausgewählt sein:
         aFilter_NurTeilnehmer.setEnabled( false );
         getBtn_ToggleDabeiFilter().setText( "Nur Teilnehmer" );
+        applySettings();
+    }
+
+    private void applySettings()
+    {
         getSorter().sort();
+        getLblNumSichtbar().setText( String.valueOf( getSorter().getViewRowCount() ) );
     }
 }
 

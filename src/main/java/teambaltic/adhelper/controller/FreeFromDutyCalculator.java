@@ -12,6 +12,7 @@
 package teambaltic.adhelper.controller;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 
 import teambaltic.adhelper.model.FreeFromDuty;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
@@ -93,7 +94,7 @@ public class FreeFromDutyCalculator
         }
         final int aMemberID = fMember.getID();
         final FreeFromDuty aFreeFromDuty = new FreeFromDuty( aMemberID, REASON.NO_LONGER_MEMBER );
-        aFreeFromDuty.setFrom( aMemberUntil );
+        aFreeFromDuty.setFrom( aMemberUntil.with( TemporalAdjusters.firstDayOfNextMonth() ) );
         return aFreeFromDuty;
     }
 

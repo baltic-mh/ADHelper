@@ -125,16 +125,22 @@ public class GUIUpdater
         }
     }
 
+    public IClubMember getSelectedMember()
+    {
+        final IClubMember aSelectedMember = m_Panel.getSelectedMember();
+        return aSelectedMember;
+    }
+
     private void reselectPreviouslySelectedMember()
     {
         // Erhalten des ehemals selektierten Mitglieds:
+        final IClubMember aSelectedMember = getSelectedMember();
         final List<IClubMember> aAllMembers = m_DataProvider.getMembers();
         final IClubMember[] aMemberArray = new IClubMember[ aAllMembers.size() ];
         final CBModel_Member aMemberCBModel = new CBModel_Member( aAllMembers.toArray( aMemberArray ) );
         final JComboBox<IClubMember> aCB_Members = m_Panel.getCB_Members();
         aCB_Members.setRenderer( m_Renderer_Member );
         aCB_Members.setModel( aMemberCBModel );
-        final IClubMember aSelectedMember = m_Panel.getSelectedMember();
         if( aSelectedMember != null ){
             // Ehemals selektiertes Mitglied wird wieder selektiert:
             final IClubMember aPreviouslySelectedMember = m_DataProvider.getMember( aSelectedMember.getID() );

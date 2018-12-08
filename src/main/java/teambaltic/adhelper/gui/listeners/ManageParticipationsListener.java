@@ -36,6 +36,7 @@ import teambaltic.adhelper.gui.ParticipationsPanel;
 import teambaltic.adhelper.gui.model.CBModel_Dates;
 import teambaltic.adhelper.gui.model.CBModel_PeriodData;
 import teambaltic.adhelper.gui.model.TBLModel_Participation;
+import teambaltic.adhelper.model.ActiveMemberFilter;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IParticipationItemContainer;
 import teambaltic.adhelper.model.IPeriod;
@@ -227,11 +228,11 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
 
             case "DATESELECTED":
                 final LocalDate aSelectedDate = (LocalDate) aCmb_Date.getSelectedItem();
-                final Object[][] aData = getData( aSelectedDate, getDataProvider() );
+                final Object[][] aData = getData( aSelectedDate, getDataProvider(), aSelectedPeriod );
                 final boolean aReadOnly = !isBauausschuss() || isReadOnly( aSelectedPeriod, aSelectedDate );
                 final TBLModel_Participation aModel = createTableModel( aData, aReadOnly );
                 aModel.addTableModelListener( this );
-                getPanel().populate( aModel );
+                getPanel().populate( aModel, aSelectedPeriod );
                 break;
 
             case "PERIODSELECTED":
@@ -325,7 +326,7 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
     }
     // ------------------------------------------------------------------------
 
-    protected Object[][] getData( final LocalDate fDate, final ADH_DataProvider fDataProvider )
+    protected Object[][] getData( final LocalDate fDate, final ADH_DataProvider fDataProvider, final PeriodData fSelectedPeriod )
     {
         if( fDate == null ){
             return null;
@@ -334,7 +335,8 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
         final int aColIdx_ID                = getColIdx_ID();
         final int aColIdx_Name              = getColIdx_Name();
         final int aColumnIdxHours           = getColIdx_Hours();
-        final List<InfoForSingleMember> aAll = fDataProvider.getAll();
+        final ActiveMemberFilter aFilter    = new ActiveMemberFilter( fSelectedPeriod );
+        final List<InfoForSingleMember> aAll = fDataProvider.getAll( aFilter );
         final int aNumColumns = getNumColumns();
         final Object[][] aData = new Object[aAll.size()][aNumColumns];
         for( int aIdx = 0; aIdx < aAll.size(); aIdx++ ){

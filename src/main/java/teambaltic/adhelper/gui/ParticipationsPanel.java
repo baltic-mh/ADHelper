@@ -77,6 +77,7 @@ public class ParticipationsPanel extends JPanel
     private final JButton m_btn_Abbrechen;
     public JButton getBtn_Abbrechen(){ return m_btn_Abbrechen; }
     // ------------------------------------------------------------------------
+    private final JLabel m_lblNumSichtbar;
 
     /**
      * Create the panel.
@@ -114,6 +115,8 @@ public class ParticipationsPanel extends JPanel
                 FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,
                 FormSpecs.DEFAULT_ROWSPEC,
+                FormSpecs.RELATED_GAP_ROWSPEC,
+                FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,}));
 
         final JLabel lblZeitraum = new JLabel("Zeitraum");
@@ -140,30 +143,37 @@ public class ParticipationsPanel extends JPanel
         scrollPane.setViewportView(m_table);
         m_table.setFillsViewportHeight(true);
 
+        final JLabel aLabel = new JLabel("# sichtbar");
+        add(aLabel, "2, 8");
+
+        m_lblNumSichtbar = new JLabel("0");
+        add(m_lblNumSichtbar, "4, 8");
+
         final JButton btnResetTextFilter = new JButton("Reset Textfilter");
         btnResetTextFilter.setActionCommand( "ResetTextfilter" );
-        add(btnResetTextFilter, "10, 8");
+        add(btnResetTextFilter, "10, 10");
 
         m_btn_ToggleTeilnehmerFilter = new JButton("Nur Teilnehmer");
         m_btn_ToggleTeilnehmerFilter.setActionCommand( "ToggleNurTeilnehmer" );
-        add(m_btn_ToggleTeilnehmerFilter, "12, 8");
+        add(m_btn_ToggleTeilnehmerFilter, "12, 10");
 
         final JLabel lblFilter = new JLabel("Filter");
-        add(lblFilter, "2, 8, right, default");
+        add(lblFilter, "2, 10, right, default");
 
         m_tf_Filter = new JTextField();
-        add(m_tf_Filter, "4, 8, 5, 1, fill, default");
+        add(m_tf_Filter, "4, 10, 5, 1, fill, default");
         m_tf_Filter.setColumns(10);
 
-        m_FilterController = new TeilnehmerFilterController( m_sorter, m_btn_ToggleTeilnehmerFilter, m_tf_Filter );
+        m_FilterController = new TeilnehmerFilterController( m_sorter, m_btn_ToggleTeilnehmerFilter, m_tf_Filter, m_lblNumSichtbar );
+        m_FilterController.setFilter_NurTeilnehmer( false );
 
         m_btn_Ok = new JButton("Ok");
         m_btn_Ok.setActionCommand( "OK" );
-        add(m_btn_Ok, "10, 10");
+        add(m_btn_Ok, "10, 12");
 
         m_btn_Abbrechen = new JButton("Abbrechen");
         m_btn_Abbrechen.setActionCommand( "CANCEL" );
-        add(m_btn_Abbrechen, "12, 10");
+        add(m_btn_Abbrechen, "12, 12");
 
         m_tf_Filter.getDocument().addDocumentListener( m_FilterController );
         m_btn_ToggleTeilnehmerFilter.addActionListener( m_FilterController );
@@ -171,7 +181,7 @@ public class ParticipationsPanel extends JPanel
 
     }
 
-    public void populate(final TBLModel_Participation fModel)
+    public void populate(final TBLModel_Participation fModel, final PeriodData fSelectedPeriod)
     {
         // Das kurzzeitige Entkoppeln der Table vom Sorter war notwendig,
         // um eine Exception zu verhindern, deren Ursache ich nicht komplett
@@ -191,13 +201,16 @@ public class ParticipationsPanel extends JPanel
         final HoursCellRenderer aCellRender = new HoursCellRenderer();
         m_table.getColumn(aColName_Hours).setCellRenderer(aCellRender);
 
-        configureButtons( fModel.isReadOnly() );
+        m_lblNumSichtbar.setText( String.valueOf(m_sorter.getViewRowCount()) );
+        configureButtons( fModel.isReadOnly(), fSelectedPeriod == null ? false : fSelectedPeriod.isActive() );
     }
 
-    protected void configureButtons( final boolean fReadOnly )
+    protected void configureButtons( final boolean fReadOnly, final boolean fActivePeriod )
     {
         final JButton aBtn_ToggleTeilnehmerFilter = getBtn_ToggleTeilnehmerFilter();
-        m_FilterController.setFilter_NurTeilnehmer( fReadOnly );
+        if( !fActivePeriod ){
+            m_FilterController.setFilter_NurTeilnehmer( fReadOnly );
+        }
         aBtn_ToggleTeilnehmerFilter.setEnabled( !fReadOnly );
 
         final JButton aBtn_Neu = getBtn_Neu();

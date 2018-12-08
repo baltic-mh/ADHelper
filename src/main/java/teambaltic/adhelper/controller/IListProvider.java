@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import teambaltic.adhelper.model.IIdentifiedItem;
+import teambaltic.adhelper.model.IItemFilter;
 
 // ############################################################################
 public interface IListProvider<ItemType extends IIdentifiedItem<ItemType>>
@@ -24,6 +25,7 @@ public interface IListProvider<ItemType extends IIdentifiedItem<ItemType>>
     List<ItemType> getAll();
     void addAll( Collection<ItemType> fItems );
     void clear();
+    List<ItemType> getAll( IItemFilter<ItemType> fFilter );
 }
 
 // ############################################################################
