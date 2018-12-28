@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1010001	Version: 1.10.1	Datum: 2018-12-28
+[BUGFIX] Neuer Versuch für die Sache mit den Umläuten :-/
+[BUGFIX] Austrittsdatum wird nun korrekt angezeigt 
+================================================================================
 Release: 1010000	Version: 1.10.0	Datum: 2018-12-08
 [NEU] Beim Programmstart wird die Java-Version ausgegeben.
 [NEU] Die Einstellung "Nur Teilnehmer" bei den Arbeitsdiensten wird erhalten
