@@ -188,9 +188,8 @@ public class GUIUpdater
         aTF_Eintritt.setText( aMember.getMemberFrom().toString() );
         final JTextField aTF_Austritt = m_Panel.getTf_Austritt();
         final LocalDate aMemberUntil = aMember.getMemberUntil();
-        if( aMemberUntil != null ){
-            aTF_Austritt.setText( aMemberUntil.toString() );
-        }
+        final String aMemberUntilTxt = aMemberUntil == null ? "" : aMemberUntil.toString();
+        aTF_Austritt.setText(aMemberUntilTxt);
     }
 
     private static void fillPanel_WorkEventsAttended(
