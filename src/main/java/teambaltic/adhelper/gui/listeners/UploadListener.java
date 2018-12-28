@@ -82,7 +82,7 @@ public class UploadListener implements ActionListener
         try{
             ERole aRole = m_UserSettingsListener.getUserSettings().getRole();
             while( aRole == null ) {
-                final String aMsg = "Esikmos d\u00FCrfen hier schon mal gar nichts! Bitte Rolle angeben!";
+                final String aMsg = "Esikmos dürfen hier schon mal gar nichts! Bitte Rolle angeben!";
                 JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
                         JOptionPane.ERROR_MESSAGE);
                 m_UserSettingsListener.getDialog().setVisible( true );

@@ -275,8 +275,8 @@ public class MainPanel extends JPanel
                 m_btn_ManageAdjustment.setActionCommand( "OPEN" );
                 add(m_btn_ManageAdjustment, "14, 14");
 
-        m_btnFinish = new JButton("Zeitraum abschlie\u00DFen");
-        m_btnFinish.setActionCommand( "Zeitraum abschlie\u00DFen" );
+        m_btnFinish = new JButton("Zeitraum abschließen");
+        m_btnFinish.setActionCommand( "Zeitraum abschließen" );
         add(m_btnFinish, "16, 14");
 
         m_btnUpload = new JButton("Daten hochladen...");

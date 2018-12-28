@@ -47,9 +47,9 @@ public class FinishListener implements ActionListener
     public void actionPerformed( final ActionEvent fEvent )
     {
         if( m_PDC.isFinished( m_DataProvider.getPeriodData() ) ){
-            final Object[] options = {"Ich wei\u00DF, was ich tue!", "Nein, das war ein Versehen!"};
+            final Object[] options = {"Ich weiß, was ich tue!", "Nein, das war ein Versehen!"};
             final int n = JOptionPane.showOptionDialog(null,
-                "Dieser Abrechnungszeitraum ist bereits abgeschlossen! Sollen die Daten \u00FCberschrieben werden??",
+                "Dieser Abrechnungszeitraum ist bereits abgeschlossen! Sollen die Daten überschrieben werden??",
                 "Sind Sie ganz sicher?",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE,

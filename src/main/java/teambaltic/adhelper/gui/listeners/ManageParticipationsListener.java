@@ -188,7 +188,7 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
             case "CANCEL":
                 stopTableEditing();
                 if( isDirty() ){
-                    final Object[] options = {"Ich wei\u00DF, was ich tue!", "Nein, das war ein Versehen!"};
+                    final Object[] options = {"Ich weiß, was ich tue!", "Nein, das war ein Versehen!"};
                     final int n = JOptionPane.showOptionDialog(null,
                         "Es wurden Daten eingegeben! Sollen diese Daten verworfen werden??",
                         "Sind Sie ganz sicher?",
