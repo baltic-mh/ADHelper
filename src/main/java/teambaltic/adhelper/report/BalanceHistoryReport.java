@@ -16,13 +16,21 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
 import static net.sf.dynamicreports.report.builder.DynamicReports.col;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
+import java.awt.Color;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
+
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.renderer.category.BarRenderer;
 
 import net.sf.dynamicreports.report.builder.chart.BarChartBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.dynamicreports.report.definition.chart.DRIChartCustomizer;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.BalanceHistory;
 import teambaltic.adhelper.model.IPeriod;
@@ -48,6 +56,7 @@ public class BalanceHistoryReport extends AReportBuilderWithDataSource
         final TextColumnBuilder<String> dateColumn = col.column(COL_TITLES[0], COL_NAMES[0], type.stringType());
         final TextColumnBuilder<Double> hourColumn = Utils.col_Hours( COL_TITLES[1], COL_NAMES[1] ) ;
         final BarChartBuilder itemChart = cht.barChart()
+                .customizers(new ChartCustomizer())
                 .setCategory(dateColumn)
                 .setShowValues(true)
                 .setShowLegend( false )
@@ -76,6 +85,19 @@ public class BalanceHistoryReport extends AReportBuilderWithDataSource
         }
 
         return dataSource;
+    }
+
+    private class ChartCustomizer implements DRIChartCustomizer, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void customize(final JFreeChart chart, final ReportParameters reportParameters) {
+            final BarRenderer renderer = (BarRenderer) chart.getCategoryPlot().getRenderer();
+            renderer.setShadowPaint(Color.LIGHT_GRAY);
+            renderer.setShadowVisible(true);
+            final CategoryAxis domainAxis = chart.getCategoryPlot().getDomainAxis();
+            domainAxis.setCategoryLabelPositions(CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 2.0));
+        }
     }
 
 }
