@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1011000	Version: 1.11.0	Datum: 2019-02-21
+[NEU] Es werden pro Periode nur noch "aktive" Mitglieder geladen
+================================================================================
 Release: 1010002	Version: 1.10.2	Datum: 2019-01-27
 [NEU] Im PDF-Report steht die Achsenbeschriftung bei der Historie nun senkrecht
 ================================================================================
