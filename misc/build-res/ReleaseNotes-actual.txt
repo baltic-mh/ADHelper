@@ -15,6 +15,6 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1010002
+//RELEASE: 1011000
 ###############################################################################
-[NEU] Im PDF-Report steht die Achsenbeschriftung bei der Historie nun senkrecht
+[NEU] Es werden pro Periode nur noch "aktive" Mitglieder geladen

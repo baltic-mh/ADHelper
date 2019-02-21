@@ -127,7 +127,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
 
         // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen
-        readBaseData   ( getPDC().getFile_BaseData( fPeriodData ), fOnlyID );
+        readBaseData   ( getPDC().getFile_BaseData( fPeriodData ), aPeriod, fOnlyID );
         readWorkEvents ( getPDC().getFile_WorkEvents ( fPeriodData ) );
         readAdjustments( getPDC().getFile_Adjustments( fPeriodData ) );
         readBalances( fPeriodData );
@@ -153,12 +153,12 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
             aFile_BalanceHistories.toFile().setLastModified( aFileToReadFrom.toFile().lastModified() );
         }
     }
-    public void readBaseData( final Path fFileToReadFrom, final int fOnlyID ) throws Exception
+    public void readBaseData( final Path fFileToReadFrom, final IPeriod fPeriod, final int fOnlyID ) throws Exception
     {
         clear();
         setBaseDataFile( fFileToReadFrom.toFile() );
         final BaseDataReader aReader = new BaseDataReader( getBaseDataFile() );
-        m_Members = aReader.read( this, fOnlyID );
+        m_Members = aReader.read( this, fPeriod, fOnlyID );
         Collections.sort( m_Members );
     }
 

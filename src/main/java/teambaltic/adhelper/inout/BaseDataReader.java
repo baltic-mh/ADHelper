@@ -12,6 +12,7 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -25,6 +26,7 @@ import teambaltic.adhelper.model.ClubMember;
 import teambaltic.adhelper.model.FreeFromDutySet;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IKnownColumns;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.FileUtils;
 
@@ -59,7 +61,8 @@ public class BaseDataReader
         m_FFDSetFactory = new FreeFromDutySetFactory();
     }
 
-    public List<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider, final int fOnlyID) throws Exception
+    public List<IClubMember> read(final ListProvider<InfoForSingleMember> fListProvider,
+            final IPeriod fPeriod, final int fOnlyID) throws Exception
     {
         final File aFile = getFile();
         FileUtils.checkFile( aFile );
@@ -89,7 +92,11 @@ public class BaseDataReader
                 fListProvider.add( aInfo );
             }
             populateInfoForSingleMember( aInfo, aAttributes );
-            aAllMembers.add( aInfo.getMember() );
+            final IClubMember aMember = aInfo.getMember();
+            if( isNoLongerMemberWithinPeriod( aMember, fPeriod )){
+                continue;
+            }
+            aAllMembers.add( aMember );
         }
 
         aAllMembers.sort( COMPARATOR );
@@ -108,6 +115,20 @@ public class BaseDataReader
         final FreeFromDutySet aFFDSet = new FreeFromDutySet( aID );
         m_FFDSetFactory.populateItem( aFFDSet, fAttributes);
         fInfo.setFreeFromDutySet( aFFDSet );
+    }
+
+    private static boolean isNoLongerMemberWithinPeriod(
+            final IClubMember fMember, final IPeriod fPeriod )
+    {
+        if( fPeriod == null ) {
+            return false;
+        }
+        final LocalDate aMemberUntil = fMember.getMemberUntil();
+        if( aMemberUntil == null ){
+            return false;
+        }
+        final boolean aBeforeMyStart = fPeriod.isBeforeMyStart( aMemberUntil );
+        return aBeforeMyStart;
     }
 
 }
