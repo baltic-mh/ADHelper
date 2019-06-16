@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1012000	Version: 1.12.0	Datum: 2019-06-16
+[ÄNDERUNG] Es wird überpüft, ob ID und RefID unterschiedlich sind
+[ÄNDERUNG] URL für das automatische Update von http zu https geändert
+================================================================================
 Release: 1011000	Version: 1.11.0	Datum: 2019-02-21
 [NEU] Es werden pro Periode nur noch "aktive" Mitglieder geladen
 ================================================================================
