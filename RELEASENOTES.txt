@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1013000	Version: 1.13.0	Datum: 2019-06-18
+[ÄNDERUNG] PDF-Report: Name des Arbeiters wird bei den Arbeitdiensten ausgegeben 
+[ÄNDERUNG] PDF-Report: Kein Report für ausgeschiedene Mitglieder mehr
+================================================================================
 Release: 1012000	Version: 1.12.0	Datum: 2019-06-16
 [ÄNDERUNG] Es wird überpüft, ob ID und RefID unterschiedlich sind
 [ÄNDERUNG] URL für das automatische Update von http zu https geändert
