@@ -15,7 +15,7 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1012000
+//RELEASE: 1013000
 ###############################################################################
-[ÄNDERUNG] Es wird überpüft, ob ID und RefID unterschiedlich sind
-[ÄNDERUNG] URL für das automatische Update von http zu https geändert
+[ÄNDERUNG] PDF-Report: Name des Arbeiters wird bei den Arbeitdiensten ausgegeben 
+
