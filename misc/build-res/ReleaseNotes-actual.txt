@@ -18,4 +18,4 @@
 //RELEASE: 1013000
 ###############################################################################
 [ÄNDERUNG] PDF-Report: Name des Arbeiters wird bei den Arbeitdiensten ausgegeben 
-
+[ÄNDERUNG] PDF-Report: Kein Report für ausgeschiedene Mitglieder mehr

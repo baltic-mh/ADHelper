@@ -15,6 +15,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.concatenatedRe
 
 import java.io.File;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -25,6 +26,7 @@ import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
 import net.sf.dynamicreports.report.exception.DRException;
 import teambaltic.adhelper.controller.ADH_DataProvider;
+import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 
@@ -58,6 +60,9 @@ public final class PDFReporter
 
         final List<InfoForSingleMember> aAll = fDataProvider.getAll();
         for( final InfoForSingleMember aInfoForSingleMember : aAll ){
+            if( !isMemberDuringPeriod( aInfoForSingleMember.getMember(), aInvoicingPeriod ) ) {
+                continue;
+            }
             aReportBuilder.concatenate( buildReport( aInvoicingPeriod, aInfoForSingleMember ) )
             ;
         }
@@ -78,10 +83,24 @@ public final class PDFReporter
             final long aTimeLapsed = System.currentTimeMillis() - aStartTime;
             final String aFormatDurationWords = DurationFormatUtils.formatDurationWords( aTimeLapsed, true, true );
             sm_Log.info( String.format( "PDF-Erzeugung hat %s gedauert", aFormatDurationWords ) );
+            sm_Log.info( "PDF-Datei: "+aPDFFile );
         } catch (final Throwable e) {
             sm_Log.error("Problem bei der PDF-Erzeugung: ", e);
         }
 
+    }
+
+    private static boolean isMemberDuringPeriod( final IClubMember fMember, final IPeriod fPeriod )
+    {
+        final LocalDate aMemberUntil = fMember.getMemberUntil();
+        if( aMemberUntil != null && fPeriod.isBeforeMyStart( aMemberUntil ) ) {
+            return false;
+        }
+        final LocalDate aMemberFrom = fMember.getMemberFrom();
+        if( !fPeriod.isBeforeMyEnd( aMemberFrom ) ) {
+            return false;
+        }
+        return true;
     }
 
     private static JasperReportBuilder buildReport( final IPeriod fInvoicingPeriod,
