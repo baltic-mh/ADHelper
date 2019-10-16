@@ -17,7 +17,7 @@ ADHelper ist ein Werkzeug, um die Verwaltung und Abrechnung von Arbeitsdienststu
 
 == Arbeitsdienste in der Kanu-Vereinigung Kiel
 
-Warum es überhaupt Arbeitsdienst gibt und wie er abgerechnte wird, ist hier in der link:html/Arbeitsdienste.html[Dokumentation der Gundlagen] beschrieben.
+Warum es überhaupt Arbeitsdienst gibt und wie er abgerechnet wird, ist in der link:html/Arbeitsdienste.html[Dokumentation der Gundlagen] beschrieben.
 
 == Benutzerhandbuch
 
