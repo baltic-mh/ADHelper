@@ -1,0 +1,142 @@
+= Arbeitsdienste in der Kanu-Vereinigung Kiel
+Mathias-H. Weber <mhw@teambaltic.de>
+v1.6, 14. Juni 2019
+:doctype: article
+:encoding: utf-8
+:lang: de
+:toc: left
+:toclevels: 4
+:toc-title: Inhaltsverzeichnis
+:last-update-label: Erstellt mit Asciidoctor v{asciidoctor-version} : Zuletzt geändert:
+// Ohne dem haben die "Admonition"-Blocks keine Icons!
+:icons: font
+:numbered:
+:source-highlighter: highlightjs
+// Deutsche Überschriften:
+:figure-caption: Abbildung
+:table-caption: Tabelle
+//:chapter-label: Kapitel
+//:example-caption!:
+// Jeder Abschnitt bekommt automatisch einen Anker:
+:sectanchors:
+// Makro "kbd:" aktivieren:
+:experimental:
+:imagesdir: images
+
+== Grundlagen
+
+In unserer Satzung ist die Pflicht zum Arbeitsdienst für Vereinsmitglieder festgelegt:
+
+[NOTE]
+====
+*§ 5 Beiträge*
+
+(1) Der monatliche Mitgliedsbeitrag sowie außerordentliche Beiträge werden von der 
+Mitgliederversammlung festgelegt. 
+
+(2) Die Mitglieder erhalten keine Gewinnanteile und in ihrer Eigenschaft als Mitglieder auch 
+keine sonstigen Zuwendungen aus Mitteln des Vereins. 
+
+(3) Der Vorstand ist berechtigt, auf schriftlichen Antrag für Beitragsrückstände Stundungen – in 
+begründeten Ausnahmefällen - Ermäßigungen zu gewähren und nicht einbringbare Beiträge 
+zu erlassen. 
+
+_#(4) Alle Mitglieder vom vollendeten 16. Lebensjahr bis zum vollendeten 60. Lebensjahr haben 
+einen jährlichen Arbeitsdienst abzuleisten. Die notwendigen Arbeiten legt der Vorstand fest. 
+Ersatzweise wird ein Ausgleichsbetrag gezahlt. Die Zahl der Arbeitsstunden und die Höhe der 
+Ausgleichszahlung legt die Jahreshauptversammlung fest. Der Vorstand kann einzelne 
+Mitglieder in Härtefällen vom Arbeitsdienst und der Zahlung des Ausgleichsbetrages 
+befreien.#_
+====
+
+Die Anzahl der Stunden beträgt sechs im Jahr, genauer gesagt: drei pro Halbjahr.
+Leistet ein Mitglied in einem Halbjahr nicht die für es festgelegte Anzahl an Pflichtstunden,
+wird ein entsprechender Ersatzbeitrag fällig. Der Ersatzbeitrag beträgt aktuell 9 Euro/Stunde.
+
+== Gründe für die Befreiung vom Arbeitsdienst
+
+Neben dieser grundsätzlichen Pflicht gibt es eine Reihe von Ausnahmen, die ein
+Mitglied von der Ableistung von Arbeitsdienst bzw. der Zahlung eines 
+Ersatzbeitrages befreien.
+
+Die möglichen Ausnahmen sind entweder explizit in der Mitgliederdatenbank angegeben, oder sie
+ergeben sich implizit aus den anderen Daten des Mitgliedes.
+
+. In Mitgliederdatei angegebene Gründe für eine Arbeitsdienstbefreiung
+
+    .. Ehrenmitglied
+    .. Fördermitglied
+    .. Wohnort mehr als 50km vom Klub entfernt
+    .. Vorstandsmitglied
+    .. Ein individueller Grund (vom Vorstand beschlossen)
+
+
+. Gründe, die sich indirekt aus den Daten des Mitglieds selbst ergeben
+.. Das "Mitglied" ist noch nicht eingetreten ;-)
+.. Das Mitglied ist zu jung ( jünger als 16 Jahre )
+.. Das Mitglied ist zu alt  ( älter  als 60 Jahre )
+.. Nach Eintritt ist man 6 Monate lang von der Pflicht zum Arbeitsdienst befreit
+.. Das Mitglied ist ausgetreten ;-)
+
+== Details zur Berechnung
+
+Jede Art der Befreiung nach einem der oben genannte Gründe hat (potentiell) ein
+Anfangs- und ein Ende-Datum. Nehmen wir als Beispiel, dass jemand am 3. März eines
+Jahres zum Festwart gewählt wird und dieses Amt bis zum 5. März eines viel 
+späteren Jahres bekleidet.
+Dann umfasst die Befreiung vom Arbeitsdienst den kompletten März des
+Jahres des Amtsantritts bis inklusive den März des Jahres der Amtsaufgabe. Eine
+Arbeitsdienstbefreiung wird also monatsweise gerechnet, und angefangene Monate 
+sind immer voll befreit.
+
+.Befreiung wegen Vorstandsamt und Überschreiten der Altersgrenze
+image::VorstandUndZuAlt.png[align="center"]
+
+
+So beginnt die Arbeitsdienstpflicht auch erst in dem Monat, der auf den Monat
+folgt, in dem ein Mitglied 16 Jahre alt wird. Sie endet aber bereits einen
+Monat, bevor man 60 Jahre alt wird - auch wenn man erst am 31. eines Monats 
+Geburtstag hat.
+
+Die Arbeitsdienstbefreiung, die neue Mitglieder die ersten sechs Monate nach 
+ihrem Eintritt genießen, der sogenannte "Welpenschutz" beginnt mit dem Monat
+ihres Eintritts zu laufen und dauert ein halbes Jahr.
+Wenn also jemand am 12. Mai eines Jahres eintritt, so 
+besteht für das erste Halbjahr (Januar - Juni) noch keine Arbeitsdienstpflicht.
+Die Monate Mai und Juni waren ja die ersten beiden der Befreiung nach Neueintritt.
+Im zweiten Halbjahr (Juli - Dezember) sind die erste vier Monate noch befreit
+(Juli, August, September, Oktober) und es besteht nur für die Monate November 
+und Dezember Arbeitsdienstplicht - bei 6 Stunden Pflicht pro Jahr entspricht das
+einer Stunde.
+
+.Welpenschutz
+image::Welpenschutz.png[align="center"]
+
+Zwar endet die Pflicht zum Arbeitsdienst mit dem Austritt eines Mitgliedes, 
+aber die Ersatzzahlungen für die letzten Monate der Mitgliedschaft werden in 
+aller Regel erst nach dem Austrittstermin berechnet und dann vom Konto abgebucht
+(wie auch die Mitgliedsbeiträge). Das sollte man bedenken, wenn man nach dem 
+Austritt noch Abbuchungen durch den Verein auf seinem Konto entdeckt.
+Nach Satzung sind Austritte grundsätzlich nur zum Ende eines Monats möglich.
+Für diesen Monat besteht Arbeitsdienstpflicht.
+
+== Praxis
+
+Wir erfassen die geleisteten Arbeitsdienststunden und die sich ergebenden 
+Ersatzzahlungen mit einem eigens dafür entwickelten Programm. Schon wenn man 
+sich die oben genannten Befreiungsmöglichkeiten ansieht und alle denkbaren 
+Kombinationen und Überlappungen durchdenkt, ergeben sich bereits erstaunlich 
+komplexe Situationen. Die Tatsache, das bei Familien in der Regel die 
+Leistungen und Verpflichtungen der einzelnen Personen kombiniert berechnet werden
+müssen, erhöht die Komplexität der Berechnung noch einmal beträchtlich. Neben 
+dem fest programmierten Algorithmus ist ebenso unerlässlich eine verlässliche 
+Pflege, Aktualisierung und fehlerfreie Eingabe der Daten. Da kann es schon mal 
+eine Verwechselung zwischen "Sven Petersen" und "Sven Petersen" - oder zwischen 
+"Simon" und "Simone" geben!
+
+Es gibt also eine Fülle von Fehlermöglichkeiten und wir sind keinesfalls davor 
+gefeit, in die eine oder andere Falle zu tappen. Daher möchten wir darum bitten,
+dass Ihr auch immer selbst ein kritisches Auge auf Eure Abrechnungen werft und 
+ggfs. nachfragt, wenn Unklarheiten auftauchen. Auf Nachfrage kann Euch der 
+Bauausschuss auch eine Aufstellung Eurer Abrechnung für ein bestimmtes Halbjahr
+per EMail zuschicken.
