@@ -15,10 +15,13 @@ v1.0, 17. November 2016
 
 ADHelper ist ein Werkzeug, um die Verwaltung und Abrechnung von Arbeitsdienststunden im Verein komfortabel und sicher durchführen zu können.
 
+== Arbeitsdienste in der Kanu-Vereinigung Kiel
+
+Warum es überhaupt Arbeitsdienst gibt und wie er abgerechnte wird, ist hier in der link:html/Arbeitsdienste.html[Dokumentation der Gundlagen] beschrieben.
 
 == Benutzerhandbuch
 
-Für diejenigen, die das Programm lediglich nutzen und damit umgehen wollen, ist link:html/usermanual.html[diese Dokumentation] gedacht.
+Für diejenigen, die das Programm *ADHelper* lediglich nutzen und damit umgehen wollen, ist link:html/usermanual.html[diese Dokumentation] gedacht.
 
 == Entwicklerhandbuch
 
