@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1014000	Version: 1.14.0	Datum: 2019-12-14
+[BUGFIX] IntegrityChecker: Check auf Gleichheit von ID und RefID
+================================================================================
 Release: 1013000	Version: 1.13.0	Datum: 2019-06-18
 [ÄNDERUNG] PDF-Report: Name des Arbeiters wird bei den Arbeitdiensten ausgegeben 
 [ÄNDERUNG] PDF-Report: Kein Report für ausgeschiedene Mitglieder mehr
