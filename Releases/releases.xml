@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><updatelist application="ADHelper" baseurl="http://syniphos.i234.me/~kvk/Download/ADHelper">
+<?xml version="1.0" encoding="UTF-8"?><updatelist application="ADHelper" baseurl="https://syniphos.i234.me/~kvk/Download/ADHelper">
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
