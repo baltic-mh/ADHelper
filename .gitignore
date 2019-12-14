@@ -93,3 +93,4 @@ $RECYCLE.BIN/
 *.lnk
 /gradle-app.setting
 /RELEASENOTES-previous.txt
+/.classpath
