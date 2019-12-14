@@ -90,7 +90,7 @@ dependencies {
 
 // ############################################################################
 // Allgemeine Definitionen
-String  copyRight   = '(C) 2017 TeamBaltic'
+String  copyRight   = '(C) 2014-2020 TeamBaltic'
 String mainClass = 'teambaltic.adhelper.gui.ADH_Application'
 String TASKGROUP_JUPIDATOR = "Jupidator"
 def (pv) = project.version.split('-')

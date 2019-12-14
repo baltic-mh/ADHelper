@@ -122,7 +122,7 @@ public class CryptUtils implements ICryptUtils
     }
 
     /** Entschluesseln (Streams werden mit close() geschlossen) */
-    public void decrypt(
+    public static void decrypt(
             final InputStream encryptedInpStream,
             final OutputStream decryptedOutStream)
           throws Exception

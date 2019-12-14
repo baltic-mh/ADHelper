@@ -99,10 +99,11 @@ public class UploadListener implements ActionListener
             }
 
         }catch( final Exception fEx ){
-            final String aMsg = "Probleme beim Hochladen der Daten: "+fEx.getMessage();
+            final String aMsg = String.format( "Probleme beim Hochladen der Daten:\n%s\nDatei wird nicht hochgeladen!",
+                    fEx.getMessage());
             JOptionPane.showMessageDialog(m_Panel, aMsg, "Schwerwiegender Fehler!",
                     JOptionPane.ERROR_MESSAGE);
-            sm_Log.warn("Exception: ", fEx );
+            sm_Log.warn("Exception: "+ fEx.getMessage() );
         }
     }
 

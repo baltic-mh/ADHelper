@@ -108,7 +108,7 @@ public final class IntegrityChecker
                 // "Neuerdings" gibt es einige Einträge, bei denen lauter Nullen
                 // in der Spalte "LINKID" stehen! Das wird als "nicht vorhanden" behandelt!
                 if( aRefID != 0 ){
-                    if( aID == aRefID ) {
+                    if( aID.equals( aRefID ) ) {
                         aProblems.put( aID, "ID und RefID sind identisch!");
                     }
                     aSeen_RefIDs.put( aID, aRefID );
