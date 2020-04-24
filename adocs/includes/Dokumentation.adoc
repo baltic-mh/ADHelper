@@ -4,68 +4,42 @@ Die Dokumentation des Projektes ist mit
 http://asciidoctor.org/[AsciiDoctor]
 erstellt worden.
 
-Bei der Installation von 
-https://www.ruby-lang.org/de/downloads/[Ruby]
-bin ich auf ein bisher ungelöstes Problem mit dem Umgang mit Zertifikaten gestoßen. Ich habe stattdessen einfach 
-http://jruby.org/[JRuby]
-installiert --- damit funktioniert es genau so gut.
+Als Hilfsmittel zum Editieren der +.adoc+-Dateien empfehle ich 
+http://asciidocfx.com/[AsciiDocFX].
 
-Als Hilfsmittel zum Editieren der +.adoc+-Dateien habe ich mir noch 
-http://asciidocfx.com/[AsciiDocFX] herunter geladen.
+Die Dokumentation ist wie das Projekt selbst auf GitHub gehostet.
+Die Adresse des Repositories ist `https://github.com/baltic-mh/ADHelper.git`.
 
-=== Installation
+Die Dokumenation ist schlicht auf den dedizierten Branch `gh-pages` des Projektes abgelegt.
 
+=== Erstellen einer neuen Version
 
-==== JRuby installieren:
+Nachdem der Inhalt in den zugehörigen +.adoc+-Dateien modifiziert worden ist, muss im Wurzelverzeichnis die Gradle-Task aufgerufen werden:
 
-====
-link:http://jruby.org/download[]
+``` 
+./gradlew.bat asciidoctor
+``` 
 
-(System-Pfad anpassen lassen)
-====
+Die durch diesen Build-Lauf erzeugten HTML-Dateien landen im Verzeichis `ADHelper-Pages\build\docs\html5\`.
 
-==== Asciidoctor installieren
+Wenn man mit dem Ergebnis zufrieden ist, kann man die HTML-Dateien an den endgültigen Ort (ADHelper-Pages\html) kopieren, indem man die folgende Gradle-Task aufruft:
 
-Shell aufmachen (als Administrator)
+``` 
+./gradlew.bat copyArtifacts
+``` 
 
-[source,cmd]
-----
->SET HTTP_PROXY=http://iproxy:8080
->gem install asciidoctor
-----
+Natürlich kann man auch gleich die letztgenannte Task aufrufen - dann werden beide Schritte auf einmal erledigt. Oder man ruft ganz einfach
 
-Update:
+``` 
+./gradlew.bat
+``` 
 
-[source,cmd]
-----
->gem update asciidoctor
-----
+auf - denn mittlerweile habe ich rausgefunden, wie man eine Default-Task definiert!
+
+Wenn dann alles zur Zufriedenheit ist, kann man die geänderten Dateien mit Git ins Repository hochladen - und von dort werden sie dann automatisch aufgerufen, wenn man über den Menüpunkt kbd:[Hilfe] die Dokumentation aufruft.
 
 
-==== Syntax-Highlighter installieren
-
-[source,cmd]
-----
->gem install coderay
-----
-
-Wenn _highlightjs_ als Syntax-Highlighter verwendet wird, muss 
-für die +highlighjs-styles+ in der Datei
-
-----
-c:\Program Files\jruby-9.1.8.0\lib\ruby\gems\shared\gems\asciidoctor-1.5.5\lib\asciidoctor\converter\html5.rb
-----
-
-die Version von _highlight.js_ auf +9.10.0+ geändert werden.
-
-==== AsciiDoctor-PDF installieren
-
-[source,cmd]
-----
->gem install --pre asciidoctor-pdf
-----
-
-==== Asciidoctor Links
+=== Asciidoctor Links
 
 
 - link:http://asciidoctor.org/[Asciidoctor]

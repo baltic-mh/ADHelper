@@ -28,12 +28,12 @@ Das Projekt ist mit ORACLE JAVA 8 kompilierbar. Ob spätere Versionen oder ander
 
 == Git
 
-Das Projekt ist auf GitHub gehostet: https://github.com/baltic-mh/ADHelper.git
+Das Projekt ist auf GitHub gehostet.
+Die Adresse des Repositories ist `https://github.com/baltic-mh/ADHelper.git`.
 
 Es gibt aktuell zwei Branches `master` und `gh-pages`.
 Der Branch `master` wird für die Software-Entwicklung benutzt und der Branch `gh-pages` für die Entwicklung der Dokumentation.
 
-Die Adresse des Repositories ist `https://github.com/baltic-mh/ADHelper.git`.
 
 Es empfiehlt sich, dasselbe Repository zweimal in unterschiedliche Verzeichnis zu klonen (z.B. in die Verzeichnisse `ADHelper` und `ADHelper-Pages`), wobei pro Verzeichnis nur jeweils ein Branch geclont wird.
 Auf diese Weise kann man ungestört an Dokumentation und Projekt gleichzeitig entwickeln kann, ohne die Branches wechseln zu müssen. 
@@ -85,36 +85,45 @@ Die Klasse mit der `main`-Methode ist `ADH_Application` im Paket `teambaltic.adh
 
 Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:
 
-. Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release +
+=== Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release +
 
 ****
 Editieren der Datei => misc/build-res/ReleaseNotes-actual.txt
 ****
 
-[start=2]
-. Eventuell Anpassung der Datei +
+=== Eventuell Anpassung der Datei
 ****
 Editieren der Datei => misc/Dokumentation/Dokumentation.txt
 ****
 
-[start=3]
-. Alle geänderten Dateien müssen in GIT committed und gepusht sein.
+=== Alle geänderten Dateien müssen in GIT committed und gepusht sein.
 
-[start=4]
-. Aufruf der Gradle-Task
+=== Aufruf der Gradle-Task
 ****
 gradlew release -Prelease.useAutomaticVersion=true
 ****
 
-[start=5]
-. Überprüfen, ob alles chicko ist!
+=== Überprüfen, ob alles chicko ist!
 
 
-[start=6]
-. Release zum Download freigeben durch Aufruf der Gradle-Task +
+=== Release zum Download freigeben durch Aufruf der Gradle-Task
 ****
 gradlew ssh_release
 ****
+
+====
+WARNING: Damit das Erzeugen eines Release problemlos funktioniert, müssen
+folgende Voraussetzungen erfüllt sein:
+====
+
+====
+WARNING: 1. Die SSH-Konfiguration muss korrekt aufgesetzt sein. Aufzuführen, was das in Einzelnen bedeutet, führt an dieser Stelle zu weit. Der Hinweis mag vorerst genügen.
+====
+
+====
+WARNING: 2. Die beiden SSH-Schlüsseldateien `id_rsa.kvk@syniphos` und `id_rsa.kvk@syniphos.pub` müssen im Verzeichnis `.\ADHelper\misc\build-res\` vorliegen. 
+Da es sich bei diesen Dateien um Schlüssel handelt, die Zugriff auf den Server gewähren, sind sie nicht im Repository gespeichert! Die Dateien werden auf Anfrage bereit gestellt.
+====
 
 == Bugtracking
 
