@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1015000	Version: 1.15.0	Datum: 2020-04-24
+[NEU] Pflichtstunden nun spezifisch je Halbjahr angebbar
+[BUGFIX] Auslesen der Update-URL aus Online-Datei wiederbelebt
+================================================================================
 Release: 1014002	Version: 1.14.2	Datum: 2019-12-14
 [BUGFIX] Versionsnummer intern korrigiert
 ================================================================================

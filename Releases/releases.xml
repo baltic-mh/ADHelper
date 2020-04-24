@@ -2,6 +2,26 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1015000" version="1.15.0">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Pflichtstunden nun spezifisch je Halbjahr angebbar&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;BUGFIX&lt;/b&gt;
+    &lt;dd&gt;Auslesen der Update-URL aus Online-Datei wiederbelebt&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22954635" sourcedir="1015000"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="59557" sourcedir="1015000"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1015000"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="11889" sourcedir="1015000"/>
+    </arch>
+  </version>
   <version release="1014002" version="1.14.2">
     <description>
     &lt;dl&gt;
