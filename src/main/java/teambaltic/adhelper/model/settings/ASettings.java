@@ -121,17 +121,18 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         }
         return m_HourValues.get( fKey );
     }
-    
+
     @Override
-    public int getHourValue( KeyType fKey, IPeriod fPeriod) {
+    public int getHourValue( final KeyType fKey, final IPeriod fPeriod) {
         if( !EPropType.HOURVALUE.equals( fKey.getPropType() )){
             throw new UnsupportedOperationException("Schlüssel ist nicht vom Typ HOURVALUE: "+fKey);
         }
-		Map<IPeriod, Integer> aHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
+		final Map<IPeriod, Integer> aHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
 		if( fPeriod == null || aHourValuesForThisKey == null ) {
 			return getHourValue(fKey);
 		}
-		return aHourValuesForThisKey.get(fPeriod);
+		final Integer aHourValuesForThisPeriod = aHourValuesForThisKey.get(fPeriod);
+		return aHourValuesForThisPeriod == null ? getHourValue(fKey) : aHourValuesForThisPeriod;
 	}
 
 
@@ -170,19 +171,19 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     private void transferToHourValueMap( final KeyType fKey, final Properties fProps )
     {
     	// Direct value:
-        String aRootKeyAsString = fKey.toString();
+        final String aRootKeyAsString = fKey.toString();
 		final int aHoursInt = Integer.parseInt( fProps.getProperty( aRootKeyAsString ) );
         m_HourValues.put( fKey, Integer.valueOf( aHoursInt*100 ) );
         // Find period specific values
-        for(String aThisPropKey : fProps.stringPropertyNames() ) {
+        for(final String aThisPropKey : fProps.stringPropertyNames() ) {
 			if( aThisPropKey.startsWith(aRootKeyAsString+".") ) {
-				Halfyear aHY = halfyearFromPropKey( aThisPropKey );
+				final Halfyear aHY = halfyearFromPropKey( aThisPropKey );
 				Map<IPeriod, Integer> aSpecificHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
 				if( aSpecificHourValuesForThisKey == null ){
 					aSpecificHourValuesForThisKey = new HashMap<>();
 					m_HourValuesPeriodSpecific.put( fKey, aSpecificHourValuesForThisKey);
 				}
-				int aSpecificHoursInt = Integer.parseInt( fProps.getProperty( aThisPropKey ) );
+				final int aSpecificHoursInt = Integer.parseInt( fProps.getProperty( aThisPropKey ) );
 				aSpecificHourValuesForThisKey.put(aHY, Integer.valueOf( aSpecificHoursInt*100 ) );
 			}
 		}
@@ -214,19 +215,19 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         return aIS;
     }
 
-	private static Halfyear halfyearFromPropKey(String fPropKey) {
-		String[] aParts = fPropKey.split("\\.", 2);
+	private static Halfyear halfyearFromPropKey(final String fPropKey) {
+		final String[] aParts = fPropKey.split("\\.", 2);
 		if(aParts.length != 2) {
 			throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
     	}
-		String aHalfyearString = aParts[1];
-		String[] aYearAndPart = aHalfyearString.split("_", 2);
+		final String aHalfyearString = aParts[1];
+		final String[] aYearAndPart = aHalfyearString.split("_", 2);
 		if(aYearAndPart.length != 2) {
 			throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
 		}
 		return new Halfyear(Integer.parseInt( aYearAndPart[0] ), aYearAndPart[1].equals("1") ? EPart.FIRST : EPart.SECOND);
 	}
-    
+
 }
 
 // ############################################################################
