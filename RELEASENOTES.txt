@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1015001	Version: 1.15.1	Datum: 2020-04-24
+[BUGFIX] NPE behoben für Pflichtstunden spezifisch je Halbjahr
+================================================================================
 Release: 1015000	Version: 1.15.0	Datum: 2020-04-24
 [NEU] Pflichtstunden nun spezifisch je Halbjahr angebbar
 [BUGFIX] Auslesen der Update-URL aus Online-Datei wiederbelebt
