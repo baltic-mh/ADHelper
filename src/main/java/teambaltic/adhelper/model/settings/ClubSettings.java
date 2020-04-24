@@ -13,6 +13,8 @@ package teambaltic.adhelper.model.settings;
 
 import java.nio.file.Path;
 
+import teambaltic.adhelper.model.IPeriod;
+
 // ############################################################################
 public class ClubSettings extends ASettings<IClubSettings.EKey>
     implements IClubSettings
@@ -44,17 +46,9 @@ public class ClubSettings extends ASettings<IClubSettings.EKey>
         return getIntValue( EKey.PROTECTION_TIME );
     }
 
-    @Override
-    public int getMonthsPerPeriod()
-    {
-        return getIntValue( EKey.MONTHS_PER_PERIOD );
-    }
-
-    @Override
-    public int getDutyHoursPerPeriod()
-    {
-        return getHourValue( EKey.DUTYHOURS_PER_PERIOD );
-    }
+ 	public int getDutyHoursPerPeriod(IPeriod fPeriod) {
+		return getHourValue( EKey.DUTYHOURS_PER_PERIOD, fPeriod );
+	}
 
 }
 

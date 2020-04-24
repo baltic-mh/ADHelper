@@ -46,8 +46,9 @@ public class DutyCalculator
 
     public int calculateHoursToWork( final Collection<FreeFromDuty> fFFDItems, final IPeriod fPeriod )
     {
-        if( fFFDItems == null ){
-            return getClubSettings().getDutyHoursPerPeriod();
+        int aDutyHoursForThisPeriod = getClubSettings().getDutyHoursPerPeriod(fPeriod);
+		if( aDutyHoursForThisPeriod == 0 || fFFDItems == null ){
+            return aDutyHoursForThisPeriod;
         }
         final List<Month> aMonthsDue = getMonthsDue( fPeriod, fFFDItems );
         final int aNumMonthsDue = aMonthsDue.size();
@@ -57,8 +58,7 @@ public class DutyCalculator
 
         final Period aPeriod = Period.between( fPeriod.getStart(), fPeriod.getEnd() );
         final int aMonthsInInvoicingPeriod = aPeriod.getMonths()+1;
-        final int aHoursToWork = getClubSettings().getDutyHoursPerPeriod() *
-                aNumMonthsDue / aMonthsInInvoicingPeriod;
+        final int aHoursToWork = aDutyHoursForThisPeriod * aNumMonthsDue / aMonthsInInvoicingPeriod;
         return aHoursToWork;
     }
 

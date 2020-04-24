@@ -14,6 +14,7 @@ package teambaltic.adhelper.model.settings;
 import java.io.IOException;
 
 import teambaltic.adhelper.model.IKey;
+import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
 public interface ISettings<KeyType extends IKey>
@@ -22,6 +23,7 @@ public interface ISettings<KeyType extends IKey>
     void setIntValue( KeyType fKey, int fNewVal );
 
     int getHourValue( KeyType fKey );
+    int getHourValue(KeyType fKey, IPeriod fPeriod);
     void setHourValue( KeyType fKey, int fNewVal );
 
     String getStringValue( KeyType fKey );

@@ -13,6 +13,7 @@ package teambaltic.adhelper.model.settings;
 
 import teambaltic.adhelper.model.EPropType;
 import teambaltic.adhelper.model.IKey;
+import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
 public interface IClubSettings extends ISettings<IClubSettings.EKey>
@@ -22,8 +23,7 @@ public interface IClubSettings extends ISettings<IClubSettings.EKey>
         ,MAX_AGE_FOR_DUTY(EPropType.INTVALUE)
         // Anzahl der Monate, die man nach Vereinseintritt vom AD befreit ist:
         ,PROTECTION_TIME(EPropType.INTVALUE)
-        // Anzahl der Monate eines Abrechnungszeitraumes
-        ,MONTHS_PER_PERIOD(EPropType.INTVALUE)
+        // Anzahl Pflichtarbeitsstunden pro Abrechnungszeitraum
         ,DUTYHOURS_PER_PERIOD(EPropType.HOURVALUE)
         ;
 
@@ -43,8 +43,7 @@ public interface IClubSettings extends ISettings<IClubSettings.EKey>
     int getMinAgeForDuty();
     int getMaxAgeForDuty();
     int getProtectionTime();
-    int getMonthsPerPeriod();
-    int getDutyHoursPerPeriod();
+    int getDutyHoursPerPeriod(IPeriod fPeriod);
 }
 
 // ############################################################################

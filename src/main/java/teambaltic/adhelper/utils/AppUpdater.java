@@ -121,6 +121,10 @@ public class AppUpdater implements UpdatedApplication
         String aContentFromURL;
         try{
             aContentFromURL = NetworkUtils.getContentFromURL( aURLStr );
+            if( aContentFromURL.isEmpty() ) {
+            	LOG.warn(String.format( "Konnte Inhalt nicht lesen von URL: %s", aURLStr));
+            	return null;
+            }
         }catch( final Exception fEx ){
             LOG.warn(String.format( "Konnte Inhalt nicht lesen von URL: %s", aURLStr), fEx );
             return null;

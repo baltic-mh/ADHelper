@@ -11,11 +11,10 @@
 // ############################################################################
 package teambaltic.adhelper.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 
 // ############################################################################
 public final class NetworkUtils
@@ -31,21 +30,18 @@ public final class NetworkUtils
 
     //====================================================================
     public static String getContentFromURL(final URL fURL) throws IOException
-    {
-        final URLConnection aConnection = fURL.openConnection();
-        final InputStream aContent = aConnection.getInputStream();
-        final InputStreamReader aInput = new InputStreamReader(aContent);
-        final StringBuffer aSB = new StringBuffer();
-        while( aInput.ready() ) {
-            final char[] aCharBuf = new char[1024];
-            // char[] cbuf, int offset, int length
-            final int aNumCharsRead = aInput.read(aCharBuf, 0, aCharBuf.length);
-            if(aNumCharsRead > 0) {
-                aSB.append(aCharBuf, 0, aNumCharsRead);
-            }
-        }
-        return aSB.toString();
-    }
+	{
+		final BufferedReader in = new BufferedReader(new InputStreamReader(fURL.openStream()));
+
+		final StringBuffer aSB = new StringBuffer();
+		String inputLine;
+		while ((inputLine = in.readLine()) != null) {
+			aSB.append(inputLine).append( System.lineSeparator() );
+		}
+		in.close();
+
+		return aSB.toString();
+	}
 
 }
 

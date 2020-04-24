@@ -26,7 +26,10 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import teambaltic.adhelper.model.EPropType;
+import teambaltic.adhelper.model.Halfyear;
+import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IKey;
+import teambaltic.adhelper.model.IPeriod;
 
 // ############################################################################
 public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyType>
@@ -34,6 +37,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     private final Map<KeyType, Integer> m_IntegerValues;
     // Alle Stundenwerte werden in 100stel Stunden angegeben!
     private final Map<KeyType, Integer> m_HourValues;
+    private final Map<KeyType, Map<IPeriod, Integer>> m_HourValuesPeriodSpecific;
     private final Properties m_Props;
 
     // ------------------------------------------------------------------------
@@ -46,6 +50,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     {
         m_IntegerValues = new HashMap<>();
         m_HourValues    = new HashMap<>();
+        m_HourValuesPeriodSpecific = new HashMap<>();
         m_Props         = new Properties();
     }
 
@@ -116,6 +121,19 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         }
         return m_HourValues.get( fKey );
     }
+    
+    @Override
+    public int getHourValue( KeyType fKey, IPeriod fPeriod) {
+        if( !EPropType.HOURVALUE.equals( fKey.getPropType() )){
+            throw new UnsupportedOperationException("Schlüssel ist nicht vom Typ HOURVALUE: "+fKey);
+        }
+		Map<IPeriod, Integer> aHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
+		if( fPeriod == null || aHourValuesForThisKey == null ) {
+			return getHourValue(fKey);
+		}
+		return aHourValuesForThisKey.get(fPeriod);
+	}
+
 
     @Override
     public void setHourValue( final KeyType fKey, final int fNewVal )
@@ -151,11 +169,26 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
 
     private void transferToHourValueMap( final KeyType fKey, final Properties fProps )
     {
-        final int aHoursInt = Integer.parseInt( fProps.getProperty( fKey.toString() ) );
+    	// Direct value:
+        String aRootKeyAsString = fKey.toString();
+		final int aHoursInt = Integer.parseInt( fProps.getProperty( aRootKeyAsString ) );
         m_HourValues.put( fKey, Integer.valueOf( aHoursInt*100 ) );
+        // Find period specific values
+        for(String aThisPropKey : fProps.stringPropertyNames() ) {
+			if( aThisPropKey.startsWith(aRootKeyAsString+".") ) {
+				Halfyear aHY = halfyearFromPropKey( aThisPropKey );
+				Map<IPeriod, Integer> aSpecificHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
+				if( aSpecificHourValuesForThisKey == null ){
+					aSpecificHourValuesForThisKey = new HashMap<>();
+					m_HourValuesPeriodSpecific.put( fKey, aSpecificHourValuesForThisKey);
+				}
+				int aSpecificHoursInt = Integer.parseInt( fProps.getProperty( aThisPropKey ) );
+				aSpecificHourValuesForThisKey.put(aHY, Integer.valueOf( aSpecificHoursInt*100 ) );
+			}
+		}
     }
 
-    @Override
+	@Override
     public void writeToFile() throws IOException
     {
         final File aPropertyFile = getPropertyFile();
@@ -180,6 +213,20 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         }
         return aIS;
     }
+
+	private static Halfyear halfyearFromPropKey(String fPropKey) {
+		String[] aParts = fPropKey.split("\\.", 2);
+		if(aParts.length != 2) {
+			throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
+    	}
+		String aHalfyearString = aParts[1];
+		String[] aYearAndPart = aHalfyearString.split("_", 2);
+		if(aYearAndPart.length != 2) {
+			throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
+		}
+		return new Halfyear(Integer.parseInt( aYearAndPart[0] ), aYearAndPart[1].equals("1") ? EPart.FIRST : EPart.SECOND);
+	}
+    
 }
 
 // ############################################################################
