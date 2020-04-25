@@ -2,6 +2,26 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1016000" version="1.16.0">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Verzeichnis "Obsolete" behält nur noch die 5 neuesten Elemente&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Es werden nur noch die 4 neuesten Abrechnungszeiträume dargestellt&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22958968" sourcedir="1016000"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="61886" sourcedir="1016000"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1016000"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="12368" sourcedir="1016000"/>
+    </arch>
+  </version>
   <version release="1015001" version="1.15.1">
     <description>
     &lt;dl&gt;
