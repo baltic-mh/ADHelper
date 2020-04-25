@@ -248,6 +248,17 @@ ssh.settings {
     knownHosts = allowAnyHosts
 }
 
+task setUserHome {
+    doFirst {
+        def homeEnvSet = System.getenv('HOME') 
+        if(homeEnvSet) {
+            System.setProperty("user.home", homeEnvSet )
+            println( "System property user.home set to: "+ System.getProperty("user.home") )
+        } 
+        
+    }
+}
+
 remotes {
     web01 {
         host = 'syniphos.i234.me'
@@ -316,17 +327,6 @@ task printProps {
     doLast {
         println( "HOME                  = " + System.getenv('HOME' ) ) 
         println( "user.home             = " + System.getProperty("user.home") )
-    }
-}
-
-task setUserHome {
-    doFirst {
-        def homeEnvSet = System.getenv('HOME') 
-        if(homeEnvSet) {
-            System.setProperty("user.home", homeEnvSet )
-            println( "System property user.home set to: "+ System.getProperty("user.home") )
-        } 
-        
     }
 }
 
