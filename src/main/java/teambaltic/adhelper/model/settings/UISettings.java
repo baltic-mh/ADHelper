@@ -19,7 +19,7 @@ public class UISettings extends ASettings<IUISettings.EKey>
 {
     public UISettings(final Path fSettingsFile) throws Exception
     {
-        super();
+        super(true);
         init(fSettingsFile);
     }
 

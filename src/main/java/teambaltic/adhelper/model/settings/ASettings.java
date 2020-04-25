@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import teambaltic.adhelper.model.EPropType;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
@@ -34,11 +36,13 @@ import teambaltic.adhelper.model.IPeriod;
 // ############################################################################
 public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyType>
 {
+    private static final Logger sm_Log = Logger.getLogger(ASettings.class);
+
     private final Map<KeyType, Integer> m_IntegerValues;
     // Alle Stundenwerte werden in 100stel Stunden angegeben!
     private final Map<KeyType, Integer> m_HourValues;
     private final Map<KeyType, Map<IPeriod, Integer>> m_HourValuesPeriodSpecific;
-    private final Properties m_Props;
+    private Properties m_Props;
 
     // ------------------------------------------------------------------------
     private File m_PropertyFile;
@@ -46,34 +50,58 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     private void setPropertyFile( final File fNewVal ){ m_PropertyFile = fNewVal;}
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private final boolean m_Local;
+    public boolean isLocal() {return m_Local; }
+    // ------------------------------------------------------------------------
+
     public ASettings()
     {
+        this( false );
+    }
+    public ASettings(final boolean fLocal)
+    {
+        m_Local         = fLocal;
         m_IntegerValues = new HashMap<>();
         m_HourValues    = new HashMap<>();
         m_HourValuesPeriodSpecific = new HashMap<>();
-        m_Props         = new Properties();
     }
 
     protected abstract KeyType[] getKeyValues();
 
     public void init(final Path fPropertyFile) throws FileNotFoundException, IOException
     {
-        InputStream aInputStream;
         final File aPropFile = fPropertyFile.toFile();
         setPropertyFile( aPropFile );
+        final InputStream aResourceStream = getResourceAsStream( aPropFile.getName() );
+        InputStream aFileStream = null;
         if( Files.exists( fPropertyFile ) ){
-            aInputStream = new FileInputStream( aPropFile );
-        } else {
-            aInputStream = getResourceAsStream( String.format("%s", aPropFile.getName() ) );
+            aFileStream = new FileInputStream( aPropFile );
         }
-        if( aInputStream == null ){
+        if( aFileStream == null && aResourceStream == null ){
             throw new FileNotFoundException( fPropertyFile.toString() );
         }
-        init( aInputStream );
+        init(aResourceStream, aFileStream, aPropFile );
     }
-    public void init(final InputStream fPropertyStream) throws FileNotFoundException, IOException
+    private void init(
+            final InputStream fResourceStream,
+            final InputStream fFileStream,
+            final File fPropFile) throws FileNotFoundException, IOException
     {
-        m_Props.load( fPropertyStream );
+        final Properties aDefaultProps = new Properties();
+        if( fResourceStream != null ) {
+            aDefaultProps.load(fResourceStream);
+        }
+        m_Props = new Properties(aDefaultProps);
+        if( fFileStream != null ) {
+            m_Props.load( fFileStream );
+            if( !isLocal() ) {
+                for ( final Entry<Object, Object> aEntry : m_Props.entrySet() ) {
+                    sm_Log.warn( String.format("Lokal überschriebener Wert in Datei %s: %s => %s",
+                            fPropFile, aEntry.getKey(), aEntry.getValue() ));
+                }
+            }
+        }
 
         for( final KeyType aKey : getKeyValues() ){
             final EPropType aPropType = aKey.getPropType();
@@ -127,13 +155,13 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         if( !EPropType.HOURVALUE.equals( fKey.getPropType() )){
             throw new UnsupportedOperationException("Schlüssel ist nicht vom Typ HOURVALUE: "+fKey);
         }
-		final Map<IPeriod, Integer> aHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
-		if( fPeriod == null || aHourValuesForThisKey == null ) {
-			return getHourValue(fKey);
-		}
-		final Integer aHourValuesForThisPeriod = aHourValuesForThisKey.get(fPeriod);
-		return aHourValuesForThisPeriod == null ? getHourValue(fKey) : aHourValuesForThisPeriod;
-	}
+        final Map<IPeriod, Integer> aHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
+        if( fPeriod == null || aHourValuesForThisKey == null ) {
+            return getHourValue(fKey);
+        }
+        final Integer aHourValuesForThisPeriod = aHourValuesForThisKey.get(fPeriod);
+        return aHourValuesForThisPeriod == null ? getHourValue(fKey) : aHourValuesForThisPeriod;
+    }
 
 
     @Override
@@ -167,33 +195,33 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     {
         final String aProperty = fProps.getProperty( fKey.toString() );
         if( aProperty == null ) {
-        	throw new UnsupportedOperationException("Kein Wert angegeben für Schlüssel: "+fKey);
+            throw new UnsupportedOperationException("Kein Wert angegeben für Schlüssel: "+fKey);
         }
         m_IntegerValues.put( fKey, Integer.valueOf( aProperty ) );
     }
 
     private void transferToHourValueMap( final KeyType fKey, final Properties fProps )
     {
-    	// Direct value:
+        // Direct value:
         final String aRootKeyAsString = fKey.toString();
-		final int aHoursInt = Integer.parseInt( fProps.getProperty( aRootKeyAsString ) );
+        final int aHoursInt = Integer.parseInt( fProps.getProperty( aRootKeyAsString ) );
         m_HourValues.put( fKey, Integer.valueOf( aHoursInt*100 ) );
         // Find period specific values
         for(final String aThisPropKey : fProps.stringPropertyNames() ) {
-			if( aThisPropKey.startsWith(aRootKeyAsString+".") ) {
-				final Halfyear aHY = halfyearFromPropKey( aThisPropKey );
-				Map<IPeriod, Integer> aSpecificHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
-				if( aSpecificHourValuesForThisKey == null ){
-					aSpecificHourValuesForThisKey = new HashMap<>();
-					m_HourValuesPeriodSpecific.put( fKey, aSpecificHourValuesForThisKey);
-				}
-				final int aSpecificHoursInt = Integer.parseInt( fProps.getProperty( aThisPropKey ) );
-				aSpecificHourValuesForThisKey.put(aHY, Integer.valueOf( aSpecificHoursInt*100 ) );
-			}
-		}
+            if( aThisPropKey.startsWith(aRootKeyAsString+".") ) {
+                final Halfyear aHY = halfyearFromPropKey( aThisPropKey );
+                Map<IPeriod, Integer> aSpecificHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
+                if( aSpecificHourValuesForThisKey == null ){
+                    aSpecificHourValuesForThisKey = new HashMap<>();
+                    m_HourValuesPeriodSpecific.put( fKey, aSpecificHourValuesForThisKey);
+                }
+                final int aSpecificHoursInt = Integer.parseInt( fProps.getProperty( aThisPropKey ) );
+                aSpecificHourValuesForThisKey.put(aHY, Integer.valueOf( aSpecificHoursInt*100 ) );
+            }
+        }
     }
 
-	@Override
+    @Override
     public void writeToFile() throws IOException
     {
         final File aPropertyFile = getPropertyFile();
@@ -219,18 +247,18 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         return aIS;
     }
 
-	private static Halfyear halfyearFromPropKey(final String fPropKey) {
-		final String[] aParts = fPropKey.split("\\.", 2);
-		if(aParts.length != 2) {
-			throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
-    	}
-		final String aHalfyearString = aParts[1];
-		final String[] aYearAndPart = aHalfyearString.split("_", 2);
-		if(aYearAndPart.length != 2) {
-			throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
-		}
-		return new Halfyear(Integer.parseInt( aYearAndPart[0] ), aYearAndPart[1].equals("1") ? EPart.FIRST : EPart.SECOND);
-	}
+    private static Halfyear halfyearFromPropKey(final String fPropKey) {
+        final String[] aParts = fPropKey.split("\\.", 2);
+        if(aParts.length != 2) {
+            throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
+        }
+        final String aHalfyearString = aParts[1];
+        final String[] aYearAndPart = aHalfyearString.split("_", 2);
+        if(aYearAndPart.length != 2) {
+            throw  new UnsupportedOperationException("Kein korrektes Format für Halbjahres-spezifischen Schlüssel (<Schluessel>.<YYYY>_[1|2]): "+fPropKey);
+        }
+        return new Halfyear(Integer.parseInt( aYearAndPart[0] ), aYearAndPart[1].equals("1") ? EPart.FIRST : EPart.SECOND);
+    }
 
 }
 

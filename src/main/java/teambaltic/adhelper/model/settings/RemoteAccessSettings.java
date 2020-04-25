@@ -19,9 +19,9 @@ public class RemoteAccessSettings extends ASettings<IRemoteAccessSettings.EKey>
 {
     public RemoteAccessSettings(final Path fSettingsFile) throws Exception
     {
-        super();
-        setStringValue( EKey.PROTOCOL, "sftp" );
+        super(true);
         init(fSettingsFile);
+        setStringValue( EKey.PROTOCOL, "sftp" );
     }
 
     @Override

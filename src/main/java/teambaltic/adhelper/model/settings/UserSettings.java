@@ -22,7 +22,7 @@ public class UserSettings extends ASettings<IUserSettings.EKey>
 {
     public UserSettings(final Path fSettingsFile) throws Exception
     {
-        super();
+        super(true);
         if( !Files.exists( fSettingsFile )){
             Files.createFile( fSettingsFile );
         }
