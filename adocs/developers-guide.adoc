@@ -87,29 +87,29 @@ Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:
 
 === Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release +
 
-****
+```
 Editieren der Datei => misc/build-res/ReleaseNotes-actual.txt
-****
+```
 
 === Eventuell Anpassung der Datei
-****
+```
 Editieren der Datei => misc/Dokumentation/Dokumentation.txt
-****
+```
 
 === Alle geänderten Dateien müssen in GIT committed und gepusht sein.
 
 === Aufruf der Gradle-Task
-****
+```
 gradlew release -Prelease.useAutomaticVersion=true
-****
+```
 
 === Überprüfen, ob alles chicko ist!
 
 
 === Release zum Download freigeben durch Aufruf der Gradle-Task
-****
+```
 gradlew ssh_release
-****
+```
 
 [WARNING]
 ====
