@@ -269,6 +269,11 @@ remotes {
 
 task ssh_upload << {
     ssh.run {
+        def homeEnvSet = System.getenv('HOME') 
+        if(homeEnvSet) {
+            System.setProperty("user.home", homeEnvSet )
+            println( "System property user.home set to: "+ System.getProperty("user.home") )
+        } 
         session( remotes.web01 ) {
             put from: "${distributionFolderRoot}/${jupidatorProps.filename}",
                 into: "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
