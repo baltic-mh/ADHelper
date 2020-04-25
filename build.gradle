@@ -281,7 +281,7 @@ task ssh_upload << {
 configure(ssh_upload) {
     group = TASKGROUP_JUPIDATOR
     description = 'Dateien per SSH auf den Server laden'
-    dependsOn updateJupidator
+    dependsOn updateJupidator, setUserHome
 }
 
 task ssh_release << {
@@ -294,11 +294,11 @@ task ssh_release << {
         }
     }
 }
-task ssh_release.dependsOn( setUserHome )
 
 configure(ssh_release) {
     group = TASKGROUP_JUPIDATOR
     description = 'Projekt auf dem Server zum Download freigeben'
+    dependsOn setUserHome
 }
 // ############################################################################
 
