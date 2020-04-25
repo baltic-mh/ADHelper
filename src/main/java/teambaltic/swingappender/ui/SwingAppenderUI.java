@@ -125,12 +125,13 @@ public class SwingAppenderUI {
                 }
             }
             if( log.contains( "ERROR" )) {
-                sDoc.insertString(0, log, sDoc.getStyle(STYLE_ERROR));
+                sDoc.insertString(sDoc.getLength(), log, sDoc.getStyle(STYLE_ERROR));
             } else if( log.contains( "WARN" )) {
-                sDoc.insertString(0, log, sDoc.getStyle(STYLE_WARN));
+                sDoc.insertString(sDoc.getLength(), log, sDoc.getStyle(STYLE_WARN));
             } else {
-                sDoc.insertString(0, log, sDoc.getStyle(STYLE_REGULAR));
+                sDoc.insertString(sDoc.getLength(), log, sDoc.getStyle(STYLE_REGULAR));
             }
+            logMessagesDisp.setCaretPosition(sDoc.getLength());
             } catch(final BadLocationException ble) {
                 System.out.println("Bad Location Exception : " + ble.getMessage());
             }

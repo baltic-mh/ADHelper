@@ -245,7 +245,6 @@ updateJupidator.dependsOn copyArtifacts
 // ############################################################################
 ssh.settings {
     dryRun = project.hasProperty('dryRun')
-    knownHosts = allowAnyHosts
 }
 
 task setUserHome {
