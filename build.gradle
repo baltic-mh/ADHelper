@@ -245,6 +245,7 @@ updateJupidator.dependsOn copyArtifacts
 // ############################################################################
 ssh.settings {
     dryRun = project.hasProperty('dryRun')
+    knownHosts = allowAnyHosts
 }
 
 remotes {
@@ -257,6 +258,14 @@ remotes {
 }
 
 task ssh_upload << {
+    doFirst {
+        def homeEnvSet = System.getenv('HOME') 
+        if(homeEnvSet) {
+            System.setProperty("user.home", home )
+            println( "System property 'user.home' set to: "+ System.getProperty("user.home")) )
+        } 
+        
+    }
     ssh.run {
         session( remotes.web01 ) {
             put from: "${distributionFolderRoot}/${jupidatorProps.filename}",
@@ -309,4 +318,20 @@ release {
 }
 afterReleaseBuild.dependsOn ssh_upload
 // ############################################################################
+
+
+
+task printProps {
+    doLast {
+        println( "HOME                  = " + System.getenv('HOME' ) ) 
+        println( "user.home             = " + System.getProperty("user.home") )
+        def home = System.getenv('HOME') 
+        System.setProperty("user.home", home )
+        println( "user.home after set   = " + System.getProperty("user.home") ) 
+        
+        def set = System.getenv('HOME')
+        if( set ) println ( "Set!" ) else  println ( "NotSet!" ) 
+        
+    }
+}
 
