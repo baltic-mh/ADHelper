@@ -2,6 +2,31 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1017000" version="1.17.0">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;ÄNDERUNG&lt;/b&gt;
+    &lt;dd&gt;Im Log-Fenster laufen die Meldungen nun von oben nach unten!&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Lokale Konfigurationsdateien können nun auch nur einzelne Werte enthalten&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Warnung, wenn lokale Konfigurationsdatei Daten überschreibt
+&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22959883" sourcedir="1017000"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="64026" sourcedir="1017000"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1017000"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="12728" sourcedir="1017000"/>
+    </arch>
+  </version>
   <version release="1016000" version="1.16.0">
     <description>
     &lt;dl&gt;
