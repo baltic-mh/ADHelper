@@ -245,7 +245,7 @@ updateJupidator.dependsOn copyArtifacts
 // ############################################################################
 ssh.settings {
     dryRun = project.hasProperty('dryRun')
-    knownHosts = File("${System.getenv('HOME')}/.ssh/known_hosts")
+    knownHosts = file("${System.getenv('HOME')}/.ssh/known_hosts")
 }
 
 task setUserHome {
