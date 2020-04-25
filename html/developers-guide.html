@@ -741,8 +741,8 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 <div class="details">
 <span id="author" class="author">Mathias-H. Weber</span><br>
 <span id="email" class="email"><a href="mailto:mhw@teambaltic.de">mhw@teambaltic.de</a></span><br>
-<span id="revnumber">version 1.0,</span>
-<span id="revdate">17. November 2016</span>
+<span id="revnumber">version 2.0,</span>
+<span id="revdate">26. April 2020</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -767,9 +767,14 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 </ul>
 </li>
 <li><a href="#_bugtracking">6. Bugtracking</a></li>
-<li><a href="#_spezielle_themen">7. Spezielle Themen</a>
+<li><a href="#_konfiguration">7. Konfiguration</a>
 <ul class="sectlevel2">
-<li><a href="#_pflichtstunden_spezifisch_für_ein_halbjahr_angeben">7.1. Pflichtstunden spezifisch für ein Halbjahr angeben</a></li>
+<li><a href="#_applikationseinstellungen">7.1. Applikationseinstellungen</a></li>
+<li><a href="#_vereinsdaten">7.2. Vereinsdaten</a>
+<ul class="sectlevel3">
+<li><a href="#_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume">7.2.1. Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_dokumentation">8. Dokumentation</a>
@@ -931,8 +936,6 @@ Da Daten aber immer unter dem Datenschutz stehen, sind sie <em>nicht</em> im Rep
 </div>
 </div>
 </div>
-<div class="exampleblock">
-<div class="content">
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -940,46 +943,27 @@ Da Daten aber immer unter dem Datenschutz stehen, sind sie <em>nicht</em> im Rep
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Damit das Erzeugen eines Release problemlos funktioniert, müssen
-folgende Voraussetzungen erfüllt sein:
+<div class="paragraph">
+<p>Damit das Erzeugen eines Release problemlos funktioniert, müssen
+folgende Voraussetzungen erfüllt sein:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Die SSH-Konfiguration muss korrekt aufgesetzt sein.
+Aufzuführen, was das in Einzelnen bedeutet, führt an dieser Stelle zu weit.
+Der Hinweis mag vorerst genügen.</p>
+</li>
+<li>
+<p>Die beiden SSH-Schlüsseldateien <code>id_rsa.kvk@syniphos</code> und <code>id_rsa.kvk@syniphos.pub</code> müssen im Verzeichnis <code>.\ADHelper\misc\build-res\</code> vorliegen.
+Da es sich bei diesen Dateien um Schlüssel handelt, die Zugriff auf den Server gewähren, sind sie nicht im Repository gespeichert!
+Die Dateien werden auf Anfrage bereit gestellt.</p>
+</li>
+</ol>
+</div>
 </td>
 </tr>
 </table>
-</div>
-</div>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-1. Die SSH-Konfiguration muss korrekt aufgesetzt sein. Aufzuführen, was das in Einzelnen bedeutet, führt an dieser Stelle zu weit. Der Hinweis mag vorerst genügen.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-2. Die beiden SSH-Schlüsseldateien <code>id_rsa.kvk@syniphos</code> und <code>id_rsa.kvk@syniphos.pub</code> müssen im Verzeichnis <code>.\ADHelper\misc\build-res\</code> vorliegen.
-Da es sich bei diesen Dateien um Schlüssel handelt, die Zugriff auf den Server gewähren, sind sie nicht im Repository gespeichert! Die Dateien werden auf Anfrage bereit gestellt.
-</td>
-</tr>
-</table>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -989,7 +973,7 @@ Da es sich bei diesen Dateien um Schlüssel handelt, die Zugriff auf den Server 
 <div class="sectionbody">
 <div class="paragraph">
 <p>Zur Fehlerverfolgung wird
-<a href="http://www.mantisbt.org/index.php">Mantis</a>
+<a href="https://syniphos.i234.me/mantisbt/login_page.php">Mantis</a>
 eingesetzt.</p>
 </div>
 <div class="paragraph">
@@ -997,42 +981,275 @@ eingesetzt.</p>
 <a href="https://marketplace.eclipse.org/content/mylyn-mantis-connector">Mylyn-Connector</a>,
 den man direkt aus dem MarketPlace von Eclipse installieren kann.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Leider ist dieses Plugin nicht mehr mit der Eclipse-Version 2020-03 kompatibel :-|
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_spezielle_themen"><a class="anchor" href="#_spezielle_themen"></a>7. Spezielle Themen</h2>
+<h2 id="_konfiguration"><a class="anchor" href="#_konfiguration"></a>7. Konfiguration</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_pflichtstunden_spezifisch_für_ein_halbjahr_angeben"><a class="anchor" href="#_pflichtstunden_spezifisch_für_ein_halbjahr_angeben"></a>7.1. Pflichtstunden spezifisch für ein Halbjahr angeben</h3>
 <div class="paragraph">
-<p>Nach unserer Satzung besteht die Pflicht zum Arbeitsdienst.
-Der Vorstand hat die Anzahl der Pflichtstunden auf drei pro Halbjahr festgelegt.
-Wegen der Schwierigkeit im Rahmen der Corona-Krise im Jahr 2020 die üblichen gemeinsamen Arbeitsdienste anzusetzen, wurde beschlossen, die Aufteilung der jährlichen sechs Pflichtstunden auf die Halbjahre aufzuheben. Im Jahr 2020 müssen also weiterhin insgesamt sechs Stunden Arbeitsdienst geleistet werden, aber diese können über das gesamte Jahr verteilt werden, es müssen also im ersten Halbjahr nicht zwingend drei Stunden abgeleistet werden.</p>
+<p>Alle Konfigurationsdateien, die das Programm einliest, werden als Property-Dateien interpretiert und müssen eine entsprechende Syntax aufweisen.</p>
 </div>
 <div class="paragraph">
-<p>Im Programm ist das berücksichtigt worden, indem die Pflichtstunden pro Halbjahr nun nicht mehr konstant mit drei angenommen werden, sondern man sie für jedes Halbjahr spezifisch definieren kann.</p>
-</div>
-<div class="paragraph">
-<p>Das geschieht durch Eintragen entsprechender Werte in die Datei <code>\src\main\resources\VereinsDaten.properties</code>. Hier die Angaben ihres aktuellen Inhaltes (Stand April 2020):</p>
+<p>Die erste Konfigurationsdatei, die eingelesen wird, ist <code>&lt;Installationsverzeichnis&gt;\ADHelper.properties</code>.
+Hier ist das Wurzelverzeichnis angegeben, in dem nach weiteren Daten gesucht wird. Der Inhalt sieht beispielhaft so aus:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code># Mindestalter ab dem Arbeitsdienstpflicht besteht
-MIN_AGE_FOR_DUTY=16
-# Höchstalter bis zu dem Arbeitsdienstpflicht besteht
-MAX_AGE_FOR_DUTY=60
-# Anzahl der Monate, die man nach Vereinseintritt vom AD befreit ist:
-PROTECTION_TIME=6
-# Anzahl Pflichtarbeitsstunden pro Abrechnungszeitraum
-DUTYHOURS_PER_PERIOD=3
-# Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 1. Halbjahr 2020 (Corona)
-DUTYHOURS_PER_PERIOD.2020_1=0
-# Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 2. Halbjahr 2020 (Corona)
-DUTYHOURS_PER_PERIOD.2020_2=6</code></pre>
+<pre class="highlightjs highlight"><code># Dies sind Properties, die zum Start der Applikation ADHelper eingelesen werden
+FOLDERNAME_ROOT=Arbeitsdienstabrechnungen-Test</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Sollte erneut eine Situation eintreten, in der vom Standard abgewichen werden soll, ist diese Datei entsprechend zu ändern und eine neue Version des Programmes zu erzeugen. Es ist bewusst darauf verzichtet worden, eine interaktive Eingabe der Pflichtstunden über das Programm zu implementieren.</p>
+<p>Durch Angabe unterschiedlicher Werte für <code>FOLDERNAME_ROOT</code> kann man unterschiedliche Testszenarien realisieren und die <em>echten</em> Daten unberührt lassen.</p>
+</div>
+<div class="paragraph">
+<p>Für alle weiteren Einstellungen sind Default-Werte fest in das Programm einkompiliert.
+Die Werte stehen im Entwicklungssystem in <code>.properties</code>-Dateien im Verzeichnis <code>ADHelper\src\main\resources\</code>.</p>
+</div>
+<div class="paragraph">
+<p>Die darin enthaltenen Werte können zur Laufzeit überschrieben werden, indem man eine gleichnamige Datei im Ordner <code>&lt;Installationsverzeichnis&gt;\&lt;FOLDERNAME_ROOT&gt;\Einstellungen</code> platziert.
+In den jeweiligen Dateien müssen nur die Werte enthalten sein, die von den Default-Werten abweichen sollen - für alle anderen Parameter werden die eingebauten Werte verwendet.
+Dadurch ist es leicht möglich, einige Konfigurationsparameter temporär an spezielle Bedürfnisse anzupassen.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Wenn ein Datei im oben genannten Verzeichnis existiert, überschreibt sie die ins Programm eingebrannten Werte!
+Daher sollte dies ausdrücklich nur in Ausnahmefällen und temporär erfolgen!
+Zur Erinnerung wird im Log-Fenster eine Warnung ausgegeben, wenn eine lokale Datei einen Wert überschreibt.
+Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_applikationseinstellungen"><a class="anchor" href="#_applikationseinstellungen"></a>7.1. Applikationseinstellungen</h3>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Tabelle 1. Applikationseinstellungen</caption>
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">PARAMETER</th>
+<th class="tableblock halign-left valign-top">Default-Wert</th>
+<th class="tableblock halign-left valign-top">Bemerkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FOLDERNAME_ROOT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FOLDERNAME_DATA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Daten</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FOLDERNAME_SETTINGS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Einstellungen</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FOLDERNAME_SANDBOX</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sandkiste</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FOLDERNAME_SECRETS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ssh</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_BASEINFO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BasisDaten.csv</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_WORKEVENTS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Arbeitsdienste.csv</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_ADJUSTMENTS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gutschriften.csv</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_BALANCES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Guthaben.csv</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_BALANCEHISTORY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GuthabenVerlauf.csv</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_USERDATA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BenutzerDaten.properties</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_CLUBDATA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VereinsDaten.properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Wichtige Konfigurationdatei</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_FINISHED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Abgeschlossen.txt</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_UPLOADED</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hochgeladen.txt</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_UISETTINGS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UISettings.properties</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_REMOTEACCESSDATA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ServerZugangsDaten.properties</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_CRYPT_PRIV</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">private.key</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_CRYPT_PUBL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">public.key</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CYCLETIME_SINGLETONWATCHER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MAXNUM_KEEPOBSOLETEFOLDERS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximale Zahl von Backups im Verzeichnis <code>Obsolete</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MAXNUM_PERIODSTOCONSIDER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximale Zahl der im Programm dargestellten Abrechnungszeiträumen</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_vereinsdaten"><a class="anchor" href="#_vereinsdaten"></a>7.2. Vereinsdaten</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Vereinsdaten geben die Randbedingungen wieder, die in unserem Verein für die Ableistung von Arbeitsdiensten bestehen.
+Sie sind in aller Regel durch Vorstandsbeschlüsse festgelegt.</p>
+</div>
+<div class="paragraph">
+<p>Eine nicht authorisierte Änderung hieran bedeutet also, dass das Programm die Berechnung anders vornimmt, als vom Vorstand beschlossen!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Ort der Datei: <code>\src\main\resources\VereinsDaten.properties</code>.</p>
+</div>
+<div class="paragraph">
+<p>Aktueller Inhalt (Stand April 2020):</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Tabelle 2. Vereinsdaten</caption>
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 80%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">PARAMETER</th>
+<th class="tableblock halign-left valign-top">Default-Wert</th>
+<th class="tableblock halign-left valign-top">Bemerkung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIN_AGE_FOR_DUTY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mindestalter, ab dem Arbeitsdienstpflicht besteht</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MAX_AGE_FOR_DUTY</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Höchstalter, bis zu dem Arbeitsdienstpflicht besteht</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PROTECTION_TIME</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzahl der Monate, die man nach Vereinseintritt vom AD befreit ist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DUTYHOURS_PER_PERIOD</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzahl Pflichtarbeitsstunden pro Abrechnungszeitraum</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DUTYHOURS_PER_PERIOD.2020_1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 1. Halbjahr 2020 (wg. Corona)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DUTYHOURS_PER_PERIOD.2020_2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 2. Halbjahr 2020 (wg. Corona)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume"><a class="anchor" href="#_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume"></a>7.2.1. Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume</h4>
+<div class="paragraph">
+<p>Nach unserer Satzung besteht die Pflicht zum Arbeitsdienst.
+Der Vorstand hat die Anzahl der Pflichtstunden auf drei pro Halbjahr festgelegt.
+Wegen der Schwierigkeit im Rahmen der Corona-Krise im Jahr 2020 die üblichen gemeinsamen Arbeitsdienste anzusetzen, wurde beschlossen, die Aufteilung der jährlichen sechs Pflichtstunden auf die Halbjahre für 2020 aufzuheben.
+In diesem Jahr müssen also weiterhin insgesamt sechs Stunden Arbeitsdienst geleistet werden, aber sie können über das gesamte Jahr verteilt werden, es müssen also im ersten Halbjahr nicht zwingend drei Stunden abgeleistet werden.</p>
+</div>
+<div class="paragraph">
+<p>Es können nun Stundenwerte spezifisch für einen bestimmten Abrechnungszeitraum eingegeben werden.
+Die Syntax ist so, dass hinter dem Parameternamen ein Punkt folgen muss, dann das Jahr des Abrechnungszeitraumes, ein Unterstrich und schießlich eine "1" oder "2" für das entsprechende Halbjahr. Wird für einen bestimmten Abrechnungszeitraum kein spezifischer Wert gefunden, wird der Wert ohne Angabe eines Abrechnungszeitraumes genommen.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1156,7 +1373,7 @@ Die Datei muss nach ISO-8859-1 encodiert sein! (Weil in einer Spaltenüberschrif
 <p>Alle Datumswerte in der Datei müssen im Format DD.MM.YYYY aufgeführt werden (z.B. 09.04.1958). Ein Datumswert von 00.00.000 wird behandelt wie ein nicht vorhandener Wert.</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Tabelle 1. Spalten der Datei BasisDaten.csv</caption>
+<caption class="title">Tabelle 3. Spalten der Datei BasisDaten.csv</caption>
 <colgroup>
 <col style="width: 10%;">
 <col style="width: 10%;">
@@ -1242,8 +1459,8 @@ Die Datei muss nach ISO-8859-1 encodiert sein! (Weil in einer Spaltenüberschrif
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0<br>
-Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-24 19:51:00 +02:00
+Version 2.0<br>
+Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-25 22:38:58 +02:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

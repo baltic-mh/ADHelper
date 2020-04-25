@@ -1,3 +1,7 @@
+# =========================
+# Ascii-Doc-Cheatsheet
+adocs/cheat*
+# =========================
 # Binary folder:
 bin/
 build/

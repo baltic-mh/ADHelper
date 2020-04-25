@@ -1,6 +1,6 @@
 = ADHelper - Entwicklerhandbuch
 Mathias-H. Weber <mhw@teambaltic.de>
-v1.0, 17. November 2016
+v2.0, 26. April 2020
 :doctype: book
 :encoding: utf-8
 :lang: de
@@ -111,62 +111,131 @@ gradlew release -Prelease.useAutomaticVersion=true
 gradlew ssh_release
 ****
 
+[WARNING]
 ====
-WARNING: Damit das Erzeugen eines Release problemlos funktioniert, müssen
+Damit das Erzeugen eines Release problemlos funktioniert, müssen
 folgende Voraussetzungen erfüllt sein:
-====
 
-====
-WARNING: 1. Die SSH-Konfiguration muss korrekt aufgesetzt sein. Aufzuführen, was das in Einzelnen bedeutet, führt an dieser Stelle zu weit. Der Hinweis mag vorerst genügen.
-====
+. Die SSH-Konfiguration muss korrekt aufgesetzt sein.
+Aufzuführen, was das in Einzelnen bedeutet, führt an dieser Stelle zu weit.
+Der Hinweis mag vorerst genügen.
 
-====
-WARNING: 2. Die beiden SSH-Schlüsseldateien `id_rsa.kvk@syniphos` und `id_rsa.kvk@syniphos.pub` müssen im Verzeichnis `.\ADHelper\misc\build-res\` vorliegen. 
-Da es sich bei diesen Dateien um Schlüssel handelt, die Zugriff auf den Server gewähren, sind sie nicht im Repository gespeichert! Die Dateien werden auf Anfrage bereit gestellt.
+. Die beiden SSH-Schlüsseldateien `id_rsa.kvk@syniphos` und `id_rsa.kvk@syniphos.pub` müssen im Verzeichnis `.\ADHelper\misc\build-res\` vorliegen. 
+Da es sich bei diesen Dateien um Schlüssel handelt, die Zugriff auf den Server gewähren, sind sie nicht im Repository gespeichert!
+Die Dateien werden auf Anfrage bereit gestellt.
 ====
 
 == Bugtracking
 
 Zur Fehlerverfolgung wird
-http://www.mantisbt.org/index.php[Mantis]
+https://syniphos.i234.me/mantisbt/login_page.php[Mantis]
 eingesetzt.
 
 Für den direkten Zugang aus Eclipse heraus gibt es einen 
 https://marketplace.eclipse.org/content/mylyn-mantis-connector[Mylyn-Connector], 
-den man direkt aus dem MarketPlace von Eclipse installieren kann.
+den man direkt aus dem MarketPlace von Eclipse installieren kann. 
+
+IMPORTANT: Leider ist dieses Plugin nicht mehr mit der Eclipse-Version 2020-03 kompatibel :-|
 
 ////
 ==========================================================================
 ////
 
-== Spezielle Themen
+== Konfiguration
 
-=== Pflichtstunden spezifisch für ein Halbjahr angeben
+Alle Konfigurationsdateien, die das Programm einliest, werden als Property-Dateien interpretiert und müssen eine entsprechende Syntax aufweisen.
+
+Die erste Konfigurationsdatei, die eingelesen wird, ist `<Installationsverzeichnis>\ADHelper.properties`.
+Hier ist das Wurzelverzeichnis angegeben, in dem nach weiteren Daten gesucht wird. Der Inhalt sieht beispielhaft so aus:
+
+```
+# Dies sind Properties, die zum Start der Applikation ADHelper eingelesen werden
+FOLDERNAME_ROOT=Arbeitsdienstabrechnungen-Test
+```
+
+Durch Angabe unterschiedlicher Werte für `FOLDERNAME_ROOT` kann man unterschiedliche Testszenarien realisieren und die _echten_ Daten unberührt lassen.
+
+Für alle weiteren Einstellungen sind Default-Werte fest in das Programm einkompiliert.
+Die Werte stehen im Entwicklungssystem in `.properties`-Dateien im Verzeichnis `ADHelper\src\main\resources\`.
+
+Die darin enthaltenen Werte können zur Laufzeit überschrieben werden, indem man eine gleichnamige Datei im Ordner `<Installationsverzeichnis>\<FOLDERNAME_ROOT>\Einstellungen` platziert.
+In den jeweiligen Dateien müssen nur die Werte enthalten sein, die von den Default-Werten abweichen sollen - für alle anderen Parameter werden die eingebauten Werte verwendet.
+Dadurch ist es leicht möglich, einige Konfigurationsparameter temporär an spezielle Bedürfnisse anzupassen.
+
+[WARNING]
+====
+Wenn ein Datei im oben genannten Verzeichnis existiert, überschreibt sie die ins Programm eingebrannten Werte! 
+Daher sollte dies ausdrücklich nur in Ausnahmefällen und temporär erfolgen!
+Zur Erinnerung wird im Log-Fenster eine Warnung ausgegeben, wenn eine lokale Datei einen Wert überschreibt.
+Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!
+====
+
+=== Applikationseinstellungen
+
+.Applikationseinstellungen
+[cols="10,10,80",options="header"]
+|=======================
+| PARAMETER                     | Default-Wert              | Bemerkung
+| FOLDERNAME_ROOT               | .                         |
+| FOLDERNAME_DATA               | Daten                     |
+| FOLDERNAME_SETTINGS           | Einstellungen             | 
+| FOLDERNAME_SANDBOX            | Sandkiste                 | 
+| FOLDERNAME_SECRETS            | ssh                       | 
+| FILENAME_BASEINFO             | BasisDaten.csv            |
+| FILENAME_WORKEVENTS           | Arbeitsdienste.csv        | 
+| FILENAME_ADJUSTMENTS          | Gutschriften.csv          | 
+| FILENAME_BALANCES             | Guthaben.csv              | 
+| FILENAME_BALANCEHISTORY       | GuthabenVerlauf.csv       | 
+| FILENAME_USERDATA             | BenutzerDaten.properties  | 
+| FILENAME_CLUBDATA             | VereinsDaten.properties   | *Wichtige Konfigurationdatei*
+| FILENAME_FINISHED             | Abgeschlossen.txt         | 
+| FILENAME_UPLOADED             | Hochgeladen.txt           |
+| FILENAME_UISETTINGS           | UISettings.properties     |
+| FILENAME_REMOTEACCESSDATA     | ServerZugangsDaten.properties | 
+| FILENAME_CRYPT_PRIV           | private.key               | 
+| FILENAME_CRYPT_PUBL           | public.key                |
+| CYCLETIME_SINGLETONWATCHER    | 5000                      |
+| MAXNUM_KEEPOBSOLETEFOLDERS    | 5                         | Maximale Zahl von Backups im Verzeichnis `Obsolete`
+| MAXNUM_PERIODSTOCONSIDER      | 4                         | Maximale Zahl der im Programm dargestellten Abrechnungszeiträumen
+|=======================
+
+
+=== Vereinsdaten
+
+[IMPORTANT]
+====
+Die Vereinsdaten geben die Randbedingungen wieder, die in unserem Verein für die Ableistung von Arbeitsdiensten bestehen.
+Sie sind in aller Regel durch Vorstandsbeschlüsse festgelegt.
+
+Eine nicht authorisierte Änderung hieran bedeutet also, dass das Programm die Berechnung anders vornimmt, als vom Vorstand beschlossen!
+====
+
+Ort der Datei: `\src\main\resources\VereinsDaten.properties`.
+
+Aktueller Inhalt (Stand April 2020):
+
+.Vereinsdaten
+[cols="10,10,80",options="header"]
+|=======================
+| PARAMETER                     | Default-Wert  | Bemerkung
+| MIN_AGE_FOR_DUTY              | 16            | Mindestalter, ab dem Arbeitsdienstpflicht besteht
+| MAX_AGE_FOR_DUTY              | 60            | Höchstalter, bis zu dem Arbeitsdienstpflicht besteht
+| PROTECTION_TIME               | 6             | Anzahl der Monate, die man nach Vereinseintritt vom AD befreit ist
+| DUTYHOURS_PER_PERIOD          | 3             | Anzahl Pflichtarbeitsstunden pro Abrechnungszeitraum
+| DUTYHOURS_PER_PERIOD.2020_1   | 0             | Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 1. Halbjahr 2020 (wg. Corona)
+| DUTYHOURS_PER_PERIOD.2020_2   | 6             | Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 2. Halbjahr 2020 (wg. Corona)
+|=======================
+
+
+==== Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume
 
 Nach unserer Satzung besteht die Pflicht zum Arbeitsdienst.
 Der Vorstand hat die Anzahl der Pflichtstunden auf drei pro Halbjahr festgelegt. 
-Wegen der Schwierigkeit im Rahmen der Corona-Krise im Jahr 2020 die üblichen gemeinsamen Arbeitsdienste anzusetzen, wurde beschlossen, die Aufteilung der jährlichen sechs Pflichtstunden auf die Halbjahre aufzuheben. Im Jahr 2020 müssen also weiterhin insgesamt sechs Stunden Arbeitsdienst geleistet werden, aber diese können über das gesamte Jahr verteilt werden, es müssen also im ersten Halbjahr nicht zwingend drei Stunden abgeleistet werden.
+Wegen der Schwierigkeit im Rahmen der Corona-Krise im Jahr 2020 die üblichen gemeinsamen Arbeitsdienste anzusetzen, wurde beschlossen, die Aufteilung der jährlichen sechs Pflichtstunden auf die Halbjahre für 2020 aufzuheben.
+In diesem Jahr müssen also weiterhin insgesamt sechs Stunden Arbeitsdienst geleistet werden, aber sie können über das gesamte Jahr verteilt werden, es müssen also im ersten Halbjahr nicht zwingend drei Stunden abgeleistet werden.
 
-Im Programm ist das berücksichtigt worden, indem die Pflichtstunden pro Halbjahr nun nicht mehr konstant mit drei angenommen werden, sondern man sie für jedes Halbjahr spezifisch definieren kann.
-
-Das geschieht durch Eintragen entsprechender Werte in die Datei `\src\main\resources\VereinsDaten.properties`. Hier die Angaben ihres aktuellen Inhaltes (Stand April 2020):
-
-```
-# Mindestalter ab dem Arbeitsdienstpflicht besteht
-MIN_AGE_FOR_DUTY=16
-# Höchstalter bis zu dem Arbeitsdienstpflicht besteht
-MAX_AGE_FOR_DUTY=60
-# Anzahl der Monate, die man nach Vereinseintritt vom AD befreit ist:
-PROTECTION_TIME=6
-# Anzahl Pflichtarbeitsstunden pro Abrechnungszeitraum
-DUTYHOURS_PER_PERIOD=3
-# Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 1. Halbjahr 2020 (Corona)
-DUTYHOURS_PER_PERIOD.2020_1=0
-# Anzahl Pflichtarbeitsstunden im Abrechnungszeitraum 2. Halbjahr 2020 (Corona)
-DUTYHOURS_PER_PERIOD.2020_2=6
-``` 
-
-Sollte erneut eine Situation eintreten, in der vom Standard abgewichen werden soll, ist diese Datei entsprechend zu ändern und eine neue Version des Programmes zu erzeugen. Es ist bewusst darauf verzichtet worden, eine interaktive Eingabe der Pflichtstunden über das Programm zu implementieren.
+Es können nun Stundenwerte spezifisch für einen bestimmten Abrechnungszeitraum eingegeben werden. 
+Die Syntax ist so, dass hinter dem Parameternamen ein Punkt folgen muss, dann das Jahr des Abrechnungszeitraumes, ein Unterstrich und schießlich eine "1" oder "2" für das entsprechende Halbjahr. Wird für einen bestimmten Abrechnungszeitraum kein spezifischer Wert gefunden, wird der Wert ohne Angabe eines Abrechnungszeitraumes genommen.
 
 ////
 ==========================================================================
@@ -181,4 +250,5 @@ include::includes/Dokumentation.adoc[]
 = Anhang
 
 include::includes/Dateiformate.adoc[]
+
 
