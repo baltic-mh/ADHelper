@@ -28,18 +28,23 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.CheckSumInfo;
 
 // ############################################################################
 public final class FileUtils
 {
+    private static final Logger sm_Log = Logger.getLogger(FileUtils.class);
+
     private static final DateTimeFormatter TIMEFORMAT = DateTimeFormatter.ofPattern("HH-mm-ss");
 
     private FileUtils(){/**/}
@@ -297,6 +302,26 @@ public final class FileUtils
         return aTimeStampOfUpload;
     }
 
+    public static void cleanupFolder( final Path fFolderToCleanup, final int fKeepAtMostNumChildren )
+    {
+        final List<File> aFiles = new ArrayList<>(Arrays.asList(fFolderToCleanup.toFile().listFiles()));
+        final Comparator<File> aComparator = new Comparator<File>() {
+            @Override
+            public int compare(final File fFile1, final File fFile2) {
+                return fFile1.lastModified() < fFile2.lastModified() ? 1 : -1;
+            }
+        };
+        Collections.sort( aFiles, aComparator );
+        int aKept = 0;
+        for (final File aFile : aFiles) {
+            if( aKept < fKeepAtMostNumChildren ) {
+                aKept++;
+                continue;
+            }
+            sm_Log.info("Lösche Element: "+aFile);
+            org.apache.commons.io.FileUtils.deleteQuietly(aFile);
+        }
+    }
 }
 
 // ############################################################################

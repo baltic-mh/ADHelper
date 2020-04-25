@@ -42,6 +42,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
        ,FILENAME_CRYPT_PUBL
 
        ,CYCLETIME_SINGLETONWATCHER(EPropType.INTVALUE)
+       ,MAXNUM_KEEPOBSOLETEFOLDERS(EPropType.INTVALUE)
 
        ;
 
@@ -94,6 +95,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     Path getFile_Crypt( EKey fPrivOrPub );
 
     int getCycleTime_SingletonWatcher();
+    int getMaxNum_ObsoleteFolders();
 
     void saveSettings();
 

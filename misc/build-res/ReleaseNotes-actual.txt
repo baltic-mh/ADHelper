@@ -15,6 +15,6 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1015001
+//RELEASE: 1016000
 ###############################################################################
-[BUGFIX] NPE behoben für Pflichtstunden spezifisch je Halbjahr
+[NEU] Verzeichnis "Obsolete" behält nur noch die 5 neuesten Element

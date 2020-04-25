@@ -148,12 +148,12 @@ public class ADH_Application
 
         try{
             initSettings( aApplication );
-        }catch( final Exception fEx ){
+        }catch( final Throwable fEx ){
             sm_Log.error( "Unerwartete Exception: ", fEx );
             final String aMsg = ExceptionUtils.getStackTrace(fEx);
             JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
                         JOptionPane.ERROR_MESSAGE );
-            aApplication.shutdown("Beenden wegen fataler Exception", 1);
+            aApplication.shutdown("Beenden wegen fataler Exception", 1, false);
         }
 
         EventQueue.invokeLater( new Runnable() {
@@ -174,7 +174,7 @@ public class ADH_Application
                     final String aMsg = ExceptionUtils.getStackTrace(fEx);
                     JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
                                 JOptionPane.ERROR_MESSAGE );
-                    aApplication.shutdown("Beenden wegen fataler Exception", 1);
+                    aApplication.shutdown("Beenden wegen fataler Exception", 1, false);
                 }
             }
 
@@ -193,7 +193,7 @@ public class ADH_Application
                     final String aMsg = ExceptionUtils.getStackTrace(fEx);
                     JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
                                 JOptionPane.ERROR_MESSAGE );
-                    aApplication.shutdown("Beenden wegen fataler Exception", 1);
+                    aApplication.shutdown("Beenden wegen fataler Exception", 1, false);
                 }
             }
         }.start();
@@ -448,14 +448,19 @@ public class ADH_Application
         return l;
     }
 
-    public void shutdown(final String fInfo, final int fExitCode)
+    public void shutdown(final String fInfo, final int fExitCode) {
+    	shutdown(fInfo, fExitCode, true);
+    }
+
+    public void shutdown(final String fInfo, final int fExitCode, final boolean fUploadModifiedData)
     {
         sm_Log.info(fInfo);
-        final ERole aRole = getRole();
-        if( ERole.BAUAUSSCHUSS.equals( aRole )){
-            doConfirmedUpload();
+        if( fUploadModifiedData ) {
+	        final ERole aRole = getRole();
+	        if( ERole.BAUAUSSCHUSS.equals( aRole )){
+	            doConfirmedUpload();
+	        }
         }
-        sm_Log.info("==========================================================");
         System.exit( fExitCode );
     }
 
@@ -465,7 +470,9 @@ public class ADH_Application
     private void prepareShutdown()
     {
         synchronized( m_ShutdownListeners ){
-            saveUISettings( m_Frame );
+            try {
+            	saveUISettings( m_Frame );
+            } catch( final Throwable fEx ){/**/ }
             for( final IShutdownListener aShutdownListener : m_ShutdownListeners ){
                 try{
                     aShutdownListener.shutdown();
@@ -675,7 +682,7 @@ public class ADH_Application
     }
     private static void saveUISettings( final JFrame fFrame )
     {
-        final IUISettings aUISettings = AllSettings.INSTANCE.getUISettings();
+		final IUISettings aUISettings = AllSettings.INSTANCE.getUISettings();
         if( aUISettings == null ){
             return;
         }

@@ -445,6 +445,9 @@ public class PeriodDataController implements IPeriodDataController
         final Path aFolder_Obsolete = aFolder_Data.resolve( "Obsolete" );
         if( !Files.exists( aFolder_Obsolete )){
             Files.createDirectories( aFolder_Obsolete );
+        } else {
+        	final int aMaxNum_ObsoleteFolders = getAppSettings().getMaxNum_ObsoleteFolders();
+        	FileUtils.cleanupFolder(aFolder_Obsolete, aMaxNum_ObsoleteFolders);
         }
         Path aTargetFolder = aFolder_Obsolete.resolve( fPeriodFolderToRemove.getFileName().toString() );
         aTargetFolder = assertNewName(aTargetFolder);

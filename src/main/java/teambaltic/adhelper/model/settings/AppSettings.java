@@ -179,6 +179,11 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getIntValue( EKey.CYCLETIME_SINGLETONWATCHER );
     }
     @Override
+    public int getMaxNum_ObsoleteFolders()
+    {
+        return getIntValue( EKey.MAXNUM_KEEPOBSOLETEFOLDERS );
+    }
+    @Override
     public String getFileName_Crypt( final EKey fPrivOrPub )
     {
         if(    !EKey.FILENAME_CRYPT_PRIV.equals( fPrivOrPub )

@@ -165,7 +165,11 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
 
     private void transferToIntegerMap( final KeyType fKey, final Properties fProps )
     {
-        m_IntegerValues.put( fKey, Integer.valueOf( fProps.getProperty( fKey.toString() ) ) );
+        final String aProperty = fProps.getProperty( fKey.toString() );
+        if( aProperty == null ) {
+        	throw new UnsupportedOperationException("Kein Wert angegeben für Schlüssel: "+fKey);
+        }
+        m_IntegerValues.put( fKey, Integer.valueOf( aProperty ) );
     }
 
     private void transferToHourValueMap( final KeyType fKey, final Properties fProps )
