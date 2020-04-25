@@ -176,12 +176,24 @@ public class PeriodDataController implements IPeriodDataController
     {
         m_PeriodDataList.clear();
         setActivePeriod( null );
+        final List<PeriodData> aPeriodDataList = new ArrayList<>();
         final File[] aDataFolders = findDataFolders( getRootFolder() );
         for( final File aDataFolder : aDataFolders ){
             final PeriodData aPeriodData = new PeriodData( aDataFolder.toPath() );
-            m_PeriodDataList.add( aPeriodData );
+            aPeriodDataList.add( aPeriodData );
         }
-        Collections.sort( m_PeriodDataList, PERIOD_COMPARATOR );
+        Collections.sort( aPeriodDataList, PERIOD_COMPARATOR );
+        Collections.reverse(aPeriodDataList);
+        int aNumPeriodsConsidered = 0;
+        final int aMaxNumPeriodsToConsider = getAppSettings().getMaxNum_PeriodsToConsider();
+        for ( final PeriodData aThisPeriod : aPeriodDataList ) {
+            m_PeriodDataList.add(aThisPeriod);
+            aNumPeriodsConsidered++;
+            if( aNumPeriodsConsidered >= aMaxNumPeriodsToConsider ) {
+                break;
+            }
+        }
+        Collections.reverse(m_PeriodDataList);
         final PeriodData aNewestPeriodData = getNewestPeriodData();
         if( !isFinished( aNewestPeriodData ) ){
             setActivePeriod( aNewestPeriodData );
@@ -274,8 +286,7 @@ public class PeriodDataController implements IPeriodDataController
     public PeriodData getNewestPeriodData()
     {
         final List<PeriodData> aList = getPeriodDataList( EPeriodDataSelector.ALL );
-        final PeriodData aNewest = aList.get( aList.size()-1 );
-        return aNewest;
+        return aList.get( aList.size()-1 );
     }
 
     @Override

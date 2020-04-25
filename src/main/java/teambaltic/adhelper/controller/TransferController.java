@@ -32,6 +32,7 @@ import teambaltic.adhelper.remoteaccess.IRemoteAccess;
 import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
 import teambaltic.adhelper.utils.CheckSumCreator;
 import teambaltic.adhelper.utils.CheckSumCreator.Type;
+import teambaltic.adhelper.utils.CompareUtils;
 import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.ICryptUtils;
 import teambaltic.adhelper.utils.ZipUtils;
@@ -327,15 +328,26 @@ public class TransferController implements ITransferController
     {
         final Path aDataFolder = getAppSettings().getFolder_Data();
         final List<String> aRemoteZipFiles_Crypted = m_RemoteAccess.list( aDataFolder, "zip.cry" );
+        CompareUtils.sortPeriodFolderList(aRemoteZipFiles_Crypted);
         final List<String> aZipsToDownLoad = new ArrayList<>();
         final CheckSumCreator aCSC  = getCheckSumCreator();
 
+        int aNumPeriodsConsidered = 0;
+        final int aMaxNumPeriodsToConsider = getAppSettings().getMaxNum_PeriodsToConsider();
+        final int aNumPeriodsOnServer = aRemoteZipFiles_Crypted.size();
+        if( aNumPeriodsOnServer > aMaxNumPeriodsToConsider) {
+            sm_Log.info(String.format("Es liegen %d Abrechnungszeiträume auf dem Server - es werden aber nur die neuesten %d betrachtet.", aNumPeriodsOnServer, aMaxNumPeriodsToConsider));
+        }
         final List<Path> aFoldersKnownOnServer = new ArrayList<>();
         for( final String aRemoteZipFile_Crypted : aRemoteZipFiles_Crypted ){
-            final Path aRemoteZipFile = getRemoteZipFile( aRemoteZipFile_Crypted );
-            final Path aLocalFolderPath = getLocalFolderPath( aRemoteZipFile );
+            final Path aRemoteZipFilePath = getRemoteZipFilePath( aRemoteZipFile_Crypted );
+            final Path aLocalFolderPath   = getLocalFolderPath( aRemoteZipFilePath );
             aFoldersKnownOnServer.add( aLocalFolderPath );
-            if( !isLocallyUptodate( aCSC, aRemoteZipFile, aLocalFolderPath ) ){
+            aNumPeriodsConsidered++;
+            if( aNumPeriodsConsidered > aMaxNumPeriodsToConsider ) {
+            	continue;
+            }
+            if( !isLocallyUptodate( aCSC, aRemoteZipFilePath, aLocalFolderPath ) ){
                 aZipsToDownLoad.add( aRemoteZipFile_Crypted );
             }
         }
@@ -350,7 +362,7 @@ public class TransferController implements ITransferController
         return aFoldersKnownOnServer;
     }
 
-    private boolean isLocallyUptodate(
+	private boolean isLocallyUptodate(
             final CheckSumCreator fCSC,
             final Path aRemoteZipFile,
             final Path aLocalFolderPath ) throws Exception
@@ -373,7 +385,7 @@ public class TransferController implements ITransferController
         return false;
     }
 
-    private static Path getRemoteZipFile( final String fRemoteZipFile_Crypted )
+    private static Path getRemoteZipFilePath( final String fRemoteZipFile_Crypted )
     {
         final Path aZipFileToDownload = Paths.get( fRemoteZipFile_Crypted.replaceFirst( "\\.cry$", "" ) );
         return aZipFileToDownload;

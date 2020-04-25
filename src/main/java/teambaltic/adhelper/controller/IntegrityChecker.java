@@ -64,7 +64,7 @@ public final class IntegrityChecker
         }
     }
 
-    public static void checkAfterUpdateFromServer(
+    public static PeriodDataController checkAfterUpdateFromServer(
             final AllSettings fAllSettings
             ) throws Exception
     {
@@ -81,6 +81,7 @@ public final class IntegrityChecker
             throw new Exception(
                     "Keine Unterverzeichnisse mit Abrechnungsdaten gefunden in: " + aDataFolder.toString() );
         }
+        return aIPCtrlr;
     }
 
     public static void checkBaseDataFile(final File fBaseDataFile) throws Exception

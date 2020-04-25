@@ -184,6 +184,12 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getIntValue( EKey.MAXNUM_KEEPOBSOLETEFOLDERS );
     }
     @Override
+    public int getMaxNum_PeriodsToConsider()
+    {
+        return getIntValue( EKey.MAXNUM_PERIODSTOCONSIDER );
+    }
+
+    @Override
     public String getFileName_Crypt( final EKey fPrivOrPub )
     {
         if(    !EKey.FILENAME_CRYPT_PRIV.equals( fPrivOrPub )

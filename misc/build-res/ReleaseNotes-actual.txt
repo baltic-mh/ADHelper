@@ -17,4 +17,5 @@
 ###############################################################################
 //RELEASE: 1016000
 ###############################################################################
-[NEU] Verzeichnis "Obsolete" behält nur noch die 5 neuesten Element
+[NEU] Verzeichnis "Obsolete" behält nur noch die 5 neuesten Elemente
+[NEU] Es werden nur noch die 4 neuesten Abrechnungszeiträume dargestellt

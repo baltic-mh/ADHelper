@@ -43,6 +43,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
 
        ,CYCLETIME_SINGLETONWATCHER(EPropType.INTVALUE)
        ,MAXNUM_KEEPOBSOLETEFOLDERS(EPropType.INTVALUE)
+       ,MAXNUM_PERIODSTOCONSIDER(EPropType.INTVALUE)
 
        ;
 
@@ -96,6 +97,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
 
     int getCycleTime_SingletonWatcher();
     int getMaxNum_ObsoleteFolders();
+    int getMaxNum_PeriodsToConsider();
 
     void saveSettings();
 

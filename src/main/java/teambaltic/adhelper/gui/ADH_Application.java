@@ -236,28 +236,20 @@ public class ADH_Application
         sm_Log.info( "Im Einsatz: "+aUserSettings);
         final boolean aIsBauausschuss = aUserSettings.isBauausschuss();
         final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE );
-        ITransferController aTC = null;
-        List<Path >aPeriodFoldersKnownOnServer = null;
-        boolean aOffline = true;
-        if( !stayLocal() ){
-            aTC = aInitHelper.initTransferController();
-            aTC.start();
-            if( aTC.isConnected() ){
-                aOffline = false;
-                aPeriodFoldersKnownOnServer = updateDataFromServer( aTC );
-                IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
-            } else {
-                throw new Exception( "Keine Verbindung zum Server (für Details siehe log-Datei)!" );
-            }
+        final ITransferController aTC = aInitHelper.initTransferController();
+        aTC.start();
+        if( !aTC.isConnected() ){
+            throw new Exception( "Keine Verbindung zum Server (für Details siehe log-Datei)!" );
+        }
 
-        }
-        final IPeriodDataController aPDC = aInitHelper.initPeriodDataController();
-        if( !aOffline ){
-            aTC.setPeriodDataController( aPDC );
-            aPDC.removeDataFolderOrphans( aPeriodFoldersKnownOnServer );
-            // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
-            aPDC.createNewPeriod();
-        }
+        final List<Path >aPeriodFoldersKnownOnServer = updateDataFromServer( aTC );
+        final IPeriodDataController aPDC = IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
+
+        aTC.setPeriodDataController( aPDC );
+        aPDC.removeDataFolderOrphans( aPeriodFoldersKnownOnServer );
+        // Das darf erst und nur geschehen, nachdem alle Daten vom Server heruntergladen worden sind!
+        aPDC.createNewPeriod();
+
         addShutdownListener( aTC );
         final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
 

@@ -60,7 +60,6 @@ public class Halfyear extends APeriod
     }
     public Halfyear(final int fYear, final EPart fPart)
     {
-
         m_Year = fYear;
         m_Part = fPart;
         m_Start = calcStart( fYear, fPart );
@@ -139,14 +138,14 @@ public class Halfyear extends APeriod
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Halfyear other = (Halfyear) obj;
+		final Halfyear other = (Halfyear) obj;
 		if (m_End == null) {
 			if (other.m_End != null)
 				return false;
