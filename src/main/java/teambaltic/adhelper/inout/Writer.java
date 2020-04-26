@@ -37,6 +37,7 @@ import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.model.WorkEvent;
 import teambaltic.adhelper.model.WorkEventsAttended;
+import teambaltic.adhelper.model.settings.IClubSettings;
 import teambaltic.adhelper.report.DetailsReporter;
 import teambaltic.adhelper.utils.FileUtils;
 
@@ -55,9 +56,16 @@ public class Writer
     private ADH_DataProvider getDataProvider(){ return m_DataProvider; }
     // ------------------------------------------------------------------------
 
-    public Writer( final ADH_DataProvider fDataProvider )
+    // ------------------------------------------------------------------------
+    private final IClubSettings m_ClubSettings;
+    public IClubSettings getClubSettings() { return m_ClubSettings; }
+    // ------------------------------------------------------------------------
+
+
+    public Writer( final ADH_DataProvider fDataProvider, final IClubSettings fClubSettings )
     {
         m_DataProvider = fDataProvider;
+        m_ClubSettings = fClubSettings;
     }
 
     public void writeFiles( final Path fOutputFolder )
@@ -69,6 +77,8 @@ public class Writer
         writeToFile_Balances    ( getDataProvider(), fOutputFolder );
         writeToFile_BalanceHistories( getDataProvider(), fOutputFolder );
         DetailsReporter.report  ( getDataProvider(), fOutputFolder );
+        getClubSettings().writeToFile(fOutputFolder.resolve("VereinsDaten.properties").toFile(), "Parameter, mit denen die Berechnung durchgeführt wurde");
+
     }
 
     public static void writeToFile_WorkEvents(

@@ -74,7 +74,7 @@ public final class IntegrityChecker
         if( !Files.exists( aFile_BaseData ) ){
             throw new Exception( "Benötigte Datei nicht gefunden: " + aFile_BaseData.toString() );
         }
-        final PeriodDataController aIPCtrlr = new PeriodDataController( aAppSettings, null );
+        final PeriodDataController aIPCtrlr = new PeriodDataController( aAppSettings, fAllSettings.getUserSettings() );
         aIPCtrlr.init();
         final List<PeriodData> aPeriods = aIPCtrlr.getPeriodDataList( ALL );
         if(  aPeriods.size() == 0 ){

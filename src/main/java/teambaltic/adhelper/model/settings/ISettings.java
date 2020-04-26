@@ -11,6 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.model.settings;
 
+import java.io.File;
 import java.io.IOException;
 
 import teambaltic.adhelper.model.IKey;
@@ -30,6 +31,7 @@ public interface ISettings<KeyType extends IKey>
     void setStringValue( KeyType fKey, String fNewVal );
 
     void writeToFile() throws IOException;
+    void writeToFile( File fOutputFile, String fComment ) throws IOException;
 }
 
 // ############################################################################

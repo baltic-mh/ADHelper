@@ -41,7 +41,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     private final Map<KeyType, Integer> m_IntegerValues;
     // Alle Stundenwerte werden in 100stel Stunden angegeben!
     private final Map<KeyType, Integer> m_HourValues;
-    private final Map<KeyType, Map<IPeriod, Integer>> m_HourValuesPeriodSpecific;
+    private final Map<KeyType, Map<Halfyear, Integer>> m_HourValuesPeriodSpecific;
     private Properties m_Props;
 
     // ------------------------------------------------------------------------
@@ -155,7 +155,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         if( !EPropType.HOURVALUE.equals( fKey.getPropType() )){
             throw new UnsupportedOperationException("Schlüssel ist nicht vom Typ HOURVALUE: "+fKey);
         }
-        final Map<IPeriod, Integer> aHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
+        final Map<Halfyear, Integer> aHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
         if( fPeriod == null || aHourValuesForThisKey == null ) {
             return getHourValue(fKey);
         }
@@ -210,7 +210,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         for(final String aThisPropKey : fProps.stringPropertyNames() ) {
             if( aThisPropKey.startsWith(aRootKeyAsString+".") ) {
                 final Halfyear aHY = halfyearFromPropKey( aThisPropKey );
-                Map<IPeriod, Integer> aSpecificHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
+                Map<Halfyear, Integer> aSpecificHourValuesForThisKey = m_HourValuesPeriodSpecific.get(fKey);
                 if( aSpecificHourValuesForThisKey == null ){
                     aSpecificHourValuesForThisKey = new HashMap<>();
                     m_HourValuesPeriodSpecific.put( fKey, aSpecificHourValuesForThisKey);
@@ -222,20 +222,35 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     }
 
     @Override
-    public void writeToFile() throws IOException
+    public void writeToFile() throws IOException {
+        writeToFile( getPropertyFile(), "This is an optional header comment string" );
+    }
+
+    @Override
+    public void writeToFile(final File fOutputFile, final String fComment ) throws IOException
     {
-        final File aPropertyFile = getPropertyFile();
-        if( aPropertyFile == null ){
+        if( fOutputFile == null ){
             return;
         }
         for( final Entry<KeyType, Integer> aEntry : m_IntegerValues.entrySet() ){
             m_Props.put( aEntry.getKey().toString(), aEntry.getValue().toString() );
         }
         for( final Entry<KeyType, Integer> aEntry : m_HourValues.entrySet() ){
-            m_Props.put( aEntry.getKey().toString(), aEntry.getValue().toString() );
+            final Integer aValue = aEntry.getValue()/100;
+            m_Props.put( aEntry.getKey().toString(), aValue.toString() );
         }
-        final OutputStream out = new FileOutputStream( aPropertyFile );
-        m_Props.store(out, "This is an optional header comment string");
+        for ( final Entry<KeyType, Map<Halfyear, Integer>> aEntryForKey : m_HourValuesPeriodSpecific.entrySet() ) {
+            final KeyType aKey = aEntryForKey.getKey();
+            final Map<Halfyear, Integer> aMapForKey = aEntryForKey.getValue();
+            for ( final Entry<Halfyear, Integer> aEntryForPeriod : aMapForKey.entrySet() ) {
+                final Halfyear aPeriod = aEntryForPeriod.getKey();
+                final Integer aValue  = aEntryForPeriod.getValue()/100;
+                m_Props.put( String.format("%s.%d_%d", aKey.toString(), aPeriod.getYear(), aPeriod.getPart().equals(EPart.FIRST) ? 1 : 2 ), aValue.toString());
+            }
+        }
+        final OutputStream out = new FileOutputStream( fOutputFile );
+        m_Props.store(out, fComment);
+        out.close();
     }
 
     private static InputStream getResourceAsStream( final String aResourceName )

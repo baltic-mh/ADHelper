@@ -245,18 +245,7 @@ updateJupidator.dependsOn copyArtifacts
 // ############################################################################
 ssh.settings {
     dryRun = project.hasProperty('dryRun')
-    knownHosts = file("${System.getenv('HOME')}/.ssh/known_hosts")
-}
-
-task setUserHome {
-    doFirst {
-        def homeEnvSet = System.getenv('HOME') 
-        if(homeEnvSet) {
-            System.setProperty("user.home", homeEnvSet )
-            println( "System property user.home set to: "+ System.getProperty("user.home") )
-        } 
-        
-    }
+    knownHosts = addHostKey(file("$buildDir/known_hosts"))
 }
 
 remotes {
@@ -270,11 +259,6 @@ remotes {
 
 task ssh_upload << {
     ssh.run {
-        def homeEnvSet = System.getenv('HOME') 
-        if(homeEnvSet) {
-            System.setProperty("user.home", homeEnvSet )
-            println( "System property user.home set to: "+ System.getProperty("user.home") )
-        } 
         session( remotes.web01 ) {
             put from: "${distributionFolderRoot}/${jupidatorProps.filename}",
                 into: "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
@@ -287,7 +271,7 @@ task ssh_upload << {
 configure(ssh_upload) {
     group = TASKGROUP_JUPIDATOR
     description = 'Dateien per SSH auf den Server laden'
-    dependsOn updateJupidator, setUserHome
+    dependsOn updateJupidator
 }
 
 task ssh_release << {
@@ -304,7 +288,6 @@ task ssh_release << {
 configure(ssh_release) {
     group = TASKGROUP_JUPIDATOR
     description = 'Projekt auf dem Server zum Download freigeben'
-    dependsOn setUserHome
 }
 // ############################################################################
 
@@ -327,12 +310,3 @@ release {
 }
 afterReleaseBuild.dependsOn ssh_upload
 // ############################################################################
-
-task printProps {
-    doLast {
-        println( "HOME                  = " + System.getenv('HOME' ) ) 
-        println( "user.home             = " + System.getProperty("user.home") )
-    }
-}
-
-task printProps.dependsOn( setUserHome )

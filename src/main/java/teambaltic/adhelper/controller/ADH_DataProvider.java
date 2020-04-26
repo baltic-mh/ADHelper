@@ -273,7 +273,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     public void writeToFiles() throws IOException
     {
         final Path fOutputFolder = getPeriodData().getFolder();
-        final Writer aWriter = new Writer( this );
+        final Writer aWriter = new Writer( this, getClubSettings() );
         aWriter.writeFiles( fOutputFolder );
     }
 
