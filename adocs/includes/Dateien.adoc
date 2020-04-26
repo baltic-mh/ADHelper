@@ -66,16 +66,10 @@ Quelldateien:
 //[horizontal]
 
 Basisdaten.csv::
-    Diese Datei ist eine Kopie aus dem Elternverzeichnis, die bei dann
+    Diese Datei ist eine Kopie aus dem Elternverzeichnis, die dann
     angelegt wird, wenn damit begonnen wird, den Abrechnungszeitraum zu
     bearbeiten.
-
-(#veraltet#)Guthaben.csv (bzw. Guthaben_old.csv) ::
-    Beide Dateien sind eine Kopie der Datei "Guthaben.csv" aus dem
-    Ordner der vorangegangenen Abrechnungsperiode. 
-    Bei der Erzeugung der Kopie ohne das Suffix "_old" wird dafür Sorge
-    getragen, dass das in der vorherigen Periode errechnete Endguthaben
-    für die neue Periode als Anfangsguthaben markiert wird.
+    Wenn bei Programmstart im Elternverzeichnis eine neuere Version dieser Datei vorliegt, als im Abrechnungsverzeichnis des aktuellen Halbjahres, wird diese Datei dorthin kopiert.
 
 GuthabenVerlauf.csv::
     Diese Datei enthält die gesamte Geschichte des Guthabenverlaufes aller Mitglieder.
@@ -125,3 +119,13 @@ Details.txt::
     -verpflichtung bzw. -befreiung im vorliegenden Abrechnungszeitraum
     aussieht. Sie kann bei Nachfragen zur Klärung herangezogen werden.  
 
+==== Veraltete Dateien
+
+In früheren Programm-Versionen wurden Dateien verwendet, die heute obsolet sind:
+
+(#veraltet#)Guthaben.csv (bzw. Guthaben_old.csv) ::
+    Beide Dateien sind eine Kopie der Datei "Guthaben.csv" aus dem
+    Ordner der vorangegangenen Abrechnungsperiode. 
+    Bei der Erzeugung der Kopie ohne das Suffix "_old" wird dafür Sorge
+    getragen, dass das in der vorherigen Periode errechnete Endguthaben
+    für die neue Periode als Anfangsguthaben markiert wird.

@@ -1,0 +1,59 @@
+== Hosting
+
+=== Repository-Server
+
+Die Quell-Dateien zur Entwicklung des Programmes sind größtenteils auf GitHub gehostet.
+
+=== Download-Server
+
+Beim Release-Erstellungsprozess wird auf dem lokalen Rechner des jeweiligen Entwicklers ein Executable erzeugt, das automatisch auf einen Server geladen wird. Beim Start überprüft das Programm, ob ein neues Release auf dem Server zur Verfügung steht und lädt dieses automatisch runter.
+
+Die Adresse, wo nach einem neuen Release gesucht wird, ist in einer Datei im GitHub-Repository des Projektes hinterlegt. Die Adresse der Datei ist:
+
+`https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url`
+
+und ihr (aktueller) Inhalt:
+
+```
+# Diese Datei beinhaltet die Adresse, an der die freigegebenen Releases
+# zum Download bereitstehen. 
+# Alle Zeilen in dieser Datei, die mit # beginnen, werden ignoriert.
+# Die Adresse dieser Datei selbst ist:
+# https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url
+# Die folgende Adresse wird vom Programm ADHelper ausgelesen und für die
+# automatische Aktualisierung benutzt:
+https://syniphos.i234.me/~kvk/Download/ADHelper/releases.xml
+```
+
+Der Rechner `syniphos.i234.me` ist also (aktuell) der Download-Server.
+
+=== Daten-Server
+
+Beim Starten wendet sich das Programm an den zentralen Datenserver um die aktuellen Abrechnungsdaten auf den lokalen Rechner zu laden.
+Alle Eingaben werden dann in lokalen Dateien gespeichert, die auf Knopfdruck wieder auf den Server hochgeladen werden.
+
+Der Zugriff auf den Datenserver wird über die Konfigurationsdatei `ServerZugangsDaten.properties` im Unterverzeichnis `Einstellungen` auf dem Client-Rechner beschrieben.
+Diese Datei ist zusammen mit den zugehörigen SSH-Schlüsseln _nicht_ im Repository abgelegt, sondern wird nur auf Anfrage verteilt.
+
+Die in der Konfigurationsdatei angegebenen Parameter sind:
+
+```
+#This is an optional header comment string
+#Sat Mar 05 10:11:35 CET 2016
+SERVERNAME=syniphos.i234.me
+PORT=***
+USERNAME=***
+KEYFILE=***
+```
+
+Der Rechner `syniphos.i234.me` fungiert aktuell als Datenserver.
+
+=== Server `syniphos.i234.me`
+
+Der Recher `syniphos.i234.me` dient als Download- und als Datenserver und hat damit für das Programm eine essentielle Bedeutung.
+Es handelt sich um den privaten Server eines Vereinsmitglieds.
+Das ist für den Verein grundsätzlich keine gute Situation und seine Verfügbarkeit kann nicht auf Dauer sichergestellt sein.
+Das strukturelle Konzept des Programmes ist aber nicht auf das Vorhandensein dieses Servers angewiesen.
+Es sollte mit einem vertretbaren Aufwand möglich sein, jeden anderen Server stattdessen einzusetzen.
+
+Der Einsatz von `syniphos.i234.me` als Server für das Bug-Tracking ist ohne essentielle Bedeutung.

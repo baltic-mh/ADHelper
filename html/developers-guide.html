@@ -755,39 +755,46 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 <li><a href="#_ausführen_des_programmes">3.2. Ausführen des Programmes</a></li>
 </ul>
 </li>
-<li><a href="#_build_prozess_mit_gradle">4. Build-Prozess mit Gradle</a></li>
-<li><a href="#_erzeugen_eines_neuen_releases">5. Erzeugen eines neuen Releases</a>
+<li><a href="#_build_prozess_mit_gradle">4. Build-Prozess mit Gradle</a>
 <ul class="sectlevel2">
-<li><a href="#_eingabe_der_Änderungen_erweiterungen_bugfixes_seit_dem_letzten_release_br">5.1. Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release<br></a></li>
-<li><a href="#_eventuell_anpassung_der_datei">5.2. Eventuell Anpassung der Datei</a></li>
-<li><a href="#_alle_geänderten_dateien_müssen_in_git_committed_und_gepusht_sein">5.3. Alle geänderten Dateien müssen in GIT committed und gepusht sein.</a></li>
-<li><a href="#_aufruf_der_gradle_task">5.4. Aufruf der Gradle-Task</a></li>
-<li><a href="#_Überprüfen_ob_alles_chicko_ist">5.5. Überprüfen, ob alles chicko ist!</a></li>
-<li><a href="#_release_zum_download_freigeben_durch_aufruf_der_gradle_task">5.6. Release zum Download freigeben durch Aufruf der Gradle-Task</a></li>
+<li><a href="#_anpassen_der_versionsnummer">4.1. Anpassen der Versionsnummer</a></li>
+<li><a href="#_beschreibung_der_Änderungen_erweiterungen_bugfixes_seit_dem_letzten_release">4.2. Beschreibung der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release</a></li>
+<li><a href="#_git_push">4.3. Git-Push</a></li>
+<li><a href="#_erzeugen_des_releases">4.4. Erzeugen des Releases</a></li>
+<li><a href="#_Überprüfen_ob_alles_chicko_ist">4.5. Überprüfen, ob alles chicko ist!</a></li>
+<li><a href="#_release_zum_download_freigeben">4.6. Release zum Download freigeben</a></li>
 </ul>
 </li>
-<li><a href="#_bugtracking">6. Bugtracking</a></li>
-<li><a href="#_konfiguration">7. Konfiguration</a>
+<li><a href="#_bugtracking">5. Bugtracking</a></li>
+<li><a href="#_konfiguration">6. Konfiguration</a>
 <ul class="sectlevel2">
-<li><a href="#_applikationseinstellungen">7.1. Applikationseinstellungen</a></li>
-<li><a href="#_vereinsdaten">7.2. Vereinsdaten</a>
+<li><a href="#_applikationseinstellungen">6.1. Applikationseinstellungen</a></li>
+<li><a href="#_vereinsdaten">6.2. Vereinsdaten</a>
 <ul class="sectlevel3">
-<li><a href="#_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume">7.2.1. Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume</a></li>
+<li><a href="#_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume">6.2.1. Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#_dokumentation">8. Dokumentation</a>
+<li><a href="#_dokumentation">7. Dokumentation</a>
 <ul class="sectlevel2">
-<li><a href="#_erstellen_einer_neuen_version">8.1. Erstellen einer neuen Version</a></li>
-<li><a href="#_asciidoctor_links">8.2. Asciidoctor Links</a></li>
+<li><a href="#_erstellen_einer_neuen_version">7.1. Erstellen einer neuen Version</a></li>
+<li><a href="#_asciidoctor_links">7.2. Asciidoctor Links</a></li>
 </ul>
 </li>
 <li><a href="#_anhang">Anhang</a>
 <ul class="sectlevel1">
-<li><a href="#_dateiformate">9. Dateiformate</a>
+<li><a href="#_dateiformate">Anhang A: Dateiformate</a>
 <ul class="sectlevel2">
-<li><a href="#_basisdaten">9.1. Basisdaten</a></li>
+<li><a href="#_basisdaten">A.1. Basisdaten</a></li>
+</ul>
+</li>
+<li><a href="#_hosting">Anhang B: Hosting</a>
+<ul class="sectlevel2">
+<li><a href="#_repository_server">B.1. Repository-Server</a></li>
+<li><a href="#_download_server">B.2. Download-Server</a></li>
+<li><a href="#_daten_server">B.3. Daten-Server</a></li>
+<li><a href="#_server_code_syniphos_i234_me_code">B.4. Server <code>syniphos.i234.me</code></a></li>
 </ul>
 </li>
 </ul>
@@ -796,6 +803,16 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 </div>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In dieser Dokumentation sind alle Entwicklungsaspekte zum Programm <code>ADHelper</code> festgehalten. Sie soll sicherstellen, dass es auch nicht eingeweihten Personen möglich ist, das Programm zu pflegen und ggfs. weiterzuentwickeln.</p>
+</div>
+<div class="paragraph">
+<p>Eine gute erste Quelle für einen Überblick ist die Datei <a href="https://raw.githubusercontent.com/baltic-mh/ADHelper/master/misc/Dokumentation/Dokumentation.txt">Dokumentation.txt</a> im Repository des Projektes.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_java"><a class="anchor" href="#_java"></a>1. Java</h2>
 <div class="sectionbody">
@@ -880,49 +897,144 @@ Da Daten aber immer unter dem Datenschutz stehen, sind sie <em>nicht</em> im Rep
 <div class="sect1">
 <h2 id="_build_prozess_mit_gradle"><a class="anchor" href="#_build_prozess_mit_gradle"></a>4. Build-Prozess mit Gradle</h2>
 <div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_erzeugen_eines_neuen_releases"><a class="anchor" href="#_erzeugen_eines_neuen_releases"></a>5. Erzeugen eines neuen Releases</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:</p>
+<p>Der gesamte Build-Prozess wird über
+<a href="https://gradle.org/guides/">Gradle</a>
+bewerkstelligt. Gradle selbst muss nicht installiert sein, im Repository ist ein sogenannter Wrapper, der das Notwendige bei Bedarf runterlädt.</p>
+</div>
+<div class="paragraph">
+<p>Wenn ein neues Release erzeugt werden soll, ist der im folgenden beschriebene Prozess notwendig. Als Spickzettel dient die Datei <code>README.ReleaseErzeugung</code>, in der das Vorgehen in kurzer und prägnater Form beschrieben ist.</p>
 </div>
 <div class="sect2">
-<h3 id="_eingabe_der_Änderungen_erweiterungen_bugfixes_seit_dem_letzten_release_br"><a class="anchor" href="#_eingabe_der_Änderungen_erweiterungen_bugfixes_seit_dem_letzten_release_br"></a>5.1. Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release<br></h3>
+<h3 id="_anpassen_der_versionsnummer"><a class="anchor" href="#_anpassen_der_versionsnummer"></a>4.1. Anpassen der Versionsnummer</h3>
+<div class="paragraph">
+<p>Die aktuelle Versionsnummer ist in der Datei <code>gradle.properties</code> hinterlegt. Die sieht in etwa so aus:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>Editieren der Datei =&gt; misc/build-res/ReleaseNotes-actual.txt</code></pre>
+<pre class="highlightjs highlight"><code>version = 1.17.1-SNAPSHOT</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Wenn man nur eine Kleinigkeit am Programm geändert (ein kleiner Bugfix oder eine sonst nicht weiter auffällige Änderung), braucht man an der Versionsnummer gar nichts zu machen - die letzte Stelle ist bereits gegenüber der vorhergehenden Release-Erstellung um eins erhöht worden (im konkreten Fall wäre die neue Versionsnummer also 1.17.1 - der Zusatz <code>SNAPSHOT</code> wird bei einem Release entfernt).</p>
 </div>
-<div class="sect2">
-<h3 id="_eventuell_anpassung_der_datei"><a class="anchor" href="#_eventuell_anpassung_der_datei"></a>5.2. Eventuell Anpassung der Datei</h3>
+<div class="paragraph">
+<p>Hat man spürbare Änderungen vorgenommen, sollte die mittlere Stelle um eins erhöht - und die letzte wieder auf Null gesetzt werden. Das sieht dann konkret so aus:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code>Editieren der Datei =&gt; misc/Dokumentation/Dokumentation.txt</code></pre>
+<pre class="highlightjs highlight"><code>version = 1.18.0-SNAPSHOT</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_alle_geänderten_dateien_müssen_in_git_committed_und_gepusht_sein"><a class="anchor" href="#_alle_geänderten_dateien_müssen_in_git_committed_und_gepusht_sein"></a>5.3. Alle geänderten Dateien müssen in GIT committed und gepusht sein.</h3>
+<h3 id="_beschreibung_der_Änderungen_erweiterungen_bugfixes_seit_dem_letzten_release"><a class="anchor" href="#_beschreibung_der_Änderungen_erweiterungen_bugfixes_seit_dem_letzten_release"></a>4.2. Beschreibung der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release</h3>
+<div class="paragraph">
+<p>Bei der Release-Erstellung wird eine Datei <code>ReleaseNotes.txt</code> automatisch erzeugt, die die forlaufende Änderungshistorie beinhaltet.
+Damit das funktioniert, müssen die Modifikationen, die für dieses Release gemacht wurden, in der Datei <code>misc/build-res/ReleaseNotes-actual.txt</code> beschrieben werden.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>###############################################################################
+# ReleaseNotes der aktuellen Version
+# Die einzelnen Änderungen/Neuerungen müssen mit einer Kategorie beginnen.
+# Die Kategorie muss in eckigen Klammern stehen.
+# Danach muss in derselben Zeile noch Text stehen
+# Übliche Kategorien sind:
+#[NEU]      Für ein neues Feature
+#[BUGFIX]   Für einen behobenen Fehler
+#[ÄNDERUNG] Für ein geändertes Verhalten
+#
+# Zeilen, die mit # oder // anfangen, werden ignoriert.
+# Es muss eine Zeile geben, die mit "//RELEASE:" anfängt gefolgt von der
+# Release-Nummer des anstehenden Releases.
+# Die Release-Nummer wird aus der Versionsnummer gebildet:
+#   Versionsnummer 1.2.3 =&gt; Release-Nummer: 1002003
+#   Versionsnummer 2.0.0 =&gt; Release-Nummer: 2000000
+###############################################################################
+//RELEASE: 1018000
+###############################################################################
+[NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hier ist die Zeile, die mit `//RELEASE: ` beginnt, entscheidend.
+Die darauf folgende Nummer ist die Release-Nummer, die an die Versionsnummer  (siehe vorhieriger Schritt) anzupassen ist.
+Wie man von der Versionsnummer auf die zugehörige Release-Nummer kommt, ist im Kommentar in der Datei exemplarisch beschrieben.</p>
+</div>
+<div class="paragraph">
+<p>Nach der letzten Zeile mit den vielen Lattenzäunen stehen eventuell noch die Informationen aus der letzten Release-Erstellung.
+Die werden gelöscht und dafür die Neuerungen für dieses Release beschrieben.
+Die Syntax dazu ist ebenfalls im Kommentar beschrieben.</p>
+</div>
+<div class="paragraph">
+<p>Der obere Teil der automatisch erzeugte ReleaseNotes-Datei sieht dann später so aus:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>================================================================================
+Release: 1018000	Version: 1.18.0	Datum: 2020-04-26
+[NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert
+================================================================================
+Release: 1017000	Version: 1.17.0	Datum: 2020-04-25
+[ÄNDERUNG] Im Log-Fenster laufen die Meldungen nun von oben nach unten!
+[NEU] Lokale Konfigurationsdateien können nun auch nur einzelne Werte enthalten
+[NEU] Warnung, wenn lokale Konfigurationsdatei Daten überschreibt
 
+================================================================================
+Release: 1016000	Version: 1.16.0	Datum: 2020-04-25
+[NEU] Verzeichnis "Obsolete" behält nur noch die 5 neuesten Elemente
+[NEU] Es werden nur noch die 4 neuesten Abrechnungszeiträume dargestellt
+================================================================================
+Release: 1015001	Version: 1.15.1	Datum: 2020-04-24
+[BUGFIX] NPE behoben für Pflichtstunden spezifisch je Halbjahr
+================================================================================
+Release: 1015000	Version: 1.15.0	Datum: 2020-04-24
+[NEU] Pflichtstunden nun spezifisch je Halbjahr angebbar
+[BUGFIX] Auslesen der Update-URL aus Online-Datei wiederbelebt
+
+...</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_aufruf_der_gradle_task"><a class="anchor" href="#_aufruf_der_gradle_task"></a>5.4. Aufruf der Gradle-Task</h3>
+<h3 id="_git_push"><a class="anchor" href="#_git_push"></a>4.3. Git-Push</h3>
+<div class="paragraph">
+<p>Alle geänderten Dateien müssen in GIT committed und gepusht sein.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_erzeugen_des_releases"><a class="anchor" href="#_erzeugen_des_releases"></a>4.4. Erzeugen des Releases</h3>
+<div class="paragraph">
+<p>Durch Aufruf der Gradle-Task</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code>gradlew release -Prelease.useAutomaticVersion=true</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>gerät eine Maschinerie in Gange, die einem den Atem verschlägt!
+Hier muss man kräftig die Daumen drücken, dass alles gut geht - oder sonst eben Ursachenforschung betreiben ;-)
+Danach hat man ein neues Executable erstellt, es auf den Download-Server übertragen, die Versionsnummer erhöht und noch vieles mehr.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_Überprüfen_ob_alles_chicko_ist"><a class="anchor" href="#_Überprüfen_ob_alles_chicko_ist"></a>5.5. Überprüfen, ob alles chicko ist!</h3>
-
+<h3 id="_Überprüfen_ob_alles_chicko_ist"><a class="anchor" href="#_Überprüfen_ob_alles_chicko_ist"></a>4.5. Überprüfen, ob alles chicko ist!</h3>
+<div class="paragraph">
+<p>Hier sollte man sich das Executable mal manuell vom Download-Server kopieren und auf Herz und Nieren prüfen. Wenn es schwächelt, muss man eben noch mal ran!</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_release_zum_download_freigeben_durch_aufruf_der_gradle_task"><a class="anchor" href="#_release_zum_download_freigeben_durch_aufruf_der_gradle_task"></a>5.6. Release zum Download freigeben durch Aufruf der Gradle-Task</h3>
+<h3 id="_release_zum_download_freigeben"><a class="anchor" href="#_release_zum_download_freigeben"></a>4.6. Release zum Download freigeben</h3>
+<div class="paragraph">
+<p>Das Erzeugen und Hochladen des Releases auf den Download-Server führt noch nicht dazu, dass das ein älteres Programm, dass auf einem beliebigen Client-Rechner läuft, das neue Release runterlädt.
+Dazu ist noch eine letzte Freigabe notwendig.
+Erst wenn man sich davon überzeugt hat, dass das neu erzeugte Executable auch einwandfrei tut, sollte man diese Freigabe erteilen.</p>
+</div>
+<div class="paragraph">
+<p>Die Freigabe erfolgt durch den Aufruf der Gradle-Task</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code>gradlew ssh_release</code></pre>
@@ -961,7 +1073,7 @@ Die Dateien werden auf Anfrage bereit gestellt.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_bugtracking"><a class="anchor" href="#_bugtracking"></a>6. Bugtracking</h2>
+<h2 id="_bugtracking"><a class="anchor" href="#_bugtracking"></a>5. Bugtracking</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Zur Fehlerverfolgung wird
@@ -988,7 +1100,7 @@ Leider ist dieses Plugin nicht mehr mit der Eclipse-Version 2020-03 kompatibel :
 </div>
 </div>
 <div class="sect1">
-<h2 id="_konfiguration"><a class="anchor" href="#_konfiguration"></a>7. Konfiguration</h2>
+<h2 id="_konfiguration"><a class="anchor" href="#_konfiguration"></a>6. Konfiguration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Alle Konfigurationsdateien, die das Programm einliest, werden als Property-Dateien interpretiert und müssen eine entsprechende Syntax aufweisen.</p>
@@ -1033,7 +1145,7 @@ Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_applikationseinstellungen"><a class="anchor" href="#_applikationseinstellungen"></a>7.1. Applikationseinstellungen</h3>
+<h3 id="_applikationseinstellungen"><a class="anchor" href="#_applikationseinstellungen"></a>6.1. Applikationseinstellungen</h3>
 <table class="tableblock frame-all grid-all spread">
 <caption class="title">Tabelle 1. Applikationseinstellungen</caption>
 <colgroup>
@@ -1158,7 +1270,7 @@ Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_vereinsdaten"><a class="anchor" href="#_vereinsdaten"></a>7.2. Vereinsdaten</h3>
+<h3 id="_vereinsdaten"><a class="anchor" href="#_vereinsdaten"></a>6.2. Vereinsdaten</h3>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -1231,7 +1343,7 @@ Sie sind in aller Regel durch Vorstandsbeschlüsse festgelegt.</p>
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume"><a class="anchor" href="#_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume"></a>7.2.1. Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume</h4>
+<h4 id="_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume"><a class="anchor" href="#_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume"></a>6.2.1. Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume</h4>
 <div class="paragraph">
 <p>Nach unserer Satzung besteht die Pflicht zum Arbeitsdienst.
 Der Vorstand hat die Anzahl der Pflichtstunden auf drei pro Halbjahr festgelegt.
@@ -1247,7 +1359,7 @@ Die Syntax ist so, dass hinter dem Parameternamen ein Punkt folgen muss, dann da
 </div>
 </div>
 <div class="sect1">
-<h2 id="_dokumentation"><a class="anchor" href="#_dokumentation"></a>8. Dokumentation</h2>
+<h2 id="_dokumentation"><a class="anchor" href="#_dokumentation"></a>7. Dokumentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Die Dokumentation des Projektes ist mit
@@ -1266,7 +1378,7 @@ Die Adresse des Repositories ist <code><a href="https://github.com/baltic-mh/ADH
 <p>Die Dokumenation ist schlicht auf den dedizierten Branch <code>gh-pages</code> des Projektes abgelegt.</p>
 </div>
 <div class="sect2">
-<h3 id="_erstellen_einer_neuen_version"><a class="anchor" href="#_erstellen_einer_neuen_version"></a>8.1. Erstellen einer neuen Version</h3>
+<h3 id="_erstellen_einer_neuen_version"><a class="anchor" href="#_erstellen_einer_neuen_version"></a>7.1. Erstellen einer neuen Version</h3>
 <div class="paragraph">
 <p>Nachdem der Inhalt in den zugehörigen .adoc-Dateien modifiziert worden ist, muss im Wurzelverzeichnis die Gradle-Task aufgerufen werden:</p>
 </div>
@@ -1302,7 +1414,7 @@ Die Adresse des Repositories ist <code><a href="https://github.com/baltic-mh/ADH
 </div>
 </div>
 <div class="sect2">
-<h3 id="_asciidoctor_links"><a class="anchor" href="#_asciidoctor_links"></a>8.2. Asciidoctor Links</h3>
+<h3 id="_asciidoctor_links"><a class="anchor" href="#_asciidoctor_links"></a>7.2. Asciidoctor Links</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -1339,13 +1451,13 @@ Die Adresse des Repositories ist <code><a href="https://github.com/baltic-mh/ADH
 </div>
 <h1 id="_anhang" class="sect0"><a class="anchor" href="#_anhang"></a>Anhang</h1>
 <div class="sect1">
-<h2 id="_dateiformate"><a class="anchor" href="#_dateiformate"></a>9. Dateiformate</h2>
+<h2 id="_dateiformate"><a class="anchor" href="#_dateiformate"></a>Anhang A: Dateiformate</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Das grundlegende Dateiformat für den Austausch zwischen Vereinsverwaltungsprogramm und ADHelper ist ".csv". Daneben werden einige Text-, Checksummen- und ZIP-Dateien verwendet.</p>
 </div>
 <div class="sect2">
-<h3 id="_basisdaten"><a class="anchor" href="#_basisdaten"></a>9.1. Basisdaten</h3>
+<h3 id="_basisdaten"><a class="anchor" href="#_basisdaten"></a>A.1. Basisdaten</h3>
 <div class="paragraph">
 <p>Die Datei der Basisdaten ist als '.csv'-Datei aufgebaut.</p>
 </div>
@@ -1448,11 +1560,92 @@ Die Datei muss nach ISO-8859-1 encodiert sein! (Weil in einer Spaltenüberschrif
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_hosting"><a class="anchor" href="#_hosting"></a>Anhang B: Hosting</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_repository_server"><a class="anchor" href="#_repository_server"></a>B.1. Repository-Server</h3>
+<div class="paragraph">
+<p>Die Quell-Dateien zur Entwicklung des Programmes sind größtenteils auf GitHub gehostet.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_download_server"><a class="anchor" href="#_download_server"></a>B.2. Download-Server</h3>
+<div class="paragraph">
+<p>Beim Release-Erstellungsprozess wird auf dem lokalen Rechner des jeweiligen Entwicklers ein Executable erzeugt, das automatisch auf einen Server geladen wird. Beim Start überprüft das Programm, ob ein neues Release auf dem Server zur Verfügung steht und lädt dieses automatisch runter.</p>
+</div>
+<div class="paragraph">
+<p>Die Adresse, wo nach einem neuen Release gesucht wird, ist in einer Datei im GitHub-Repository des Projektes hinterlegt. Die Adresse der Datei ist:</p>
+</div>
+<div class="paragraph">
+<p><code><a href="https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url" class="bare">https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url</a></code></p>
+</div>
+<div class="paragraph">
+<p>und ihr (aktueller) Inhalt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code># Diese Datei beinhaltet die Adresse, an der die freigegebenen Releases
+# zum Download bereitstehen.
+# Alle Zeilen in dieser Datei, die mit # beginnen, werden ignoriert.
+# Die Adresse dieser Datei selbst ist:
+# https://raw.githubusercontent.com/baltic-mh/ADHelper/master/Update.url
+# Die folgende Adresse wird vom Programm ADHelper ausgelesen und für die
+# automatische Aktualisierung benutzt:
+https://syniphos.i234.me/~kvk/Download/ADHelper/releases.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der Rechner <code>syniphos.i234.me</code> ist also (aktuell) der Download-Server.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_daten_server"><a class="anchor" href="#_daten_server"></a>B.3. Daten-Server</h3>
+<div class="paragraph">
+<p>Beim Starten wendet sich das Programm an den zentralen Datenserver um die aktuellen Abrechnungsdaten auf den lokalen Rechner zu laden.
+Alle Eingaben werden dann in lokalen Dateien gespeichert, die auf Knopfdruck wieder auf den Server hochgeladen werden.</p>
+</div>
+<div class="paragraph">
+<p>Der Zugriff auf den Datenserver wird über die Konfigurationsdatei <code>ServerZugangsDaten.properties</code> im Unterverzeichnis <code>Einstellungen</code> auf dem Client-Rechner beschrieben.
+Diese Datei ist zusammen mit den zugehörigen SSH-Schlüsseln <em>nicht</em> im Repository abgelegt, sondern wird nur auf Anfrage verteilt.</p>
+</div>
+<div class="paragraph">
+<p>Die in der Konfigurationsdatei angegebenen Parameter sind:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>#This is an optional header comment string
+#Sat Mar 05 10:11:35 CET 2016
+SERVERNAME=syniphos.i234.me
+PORT=***
+USERNAME=***
+KEYFILE=***</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Der Rechner <code>syniphos.i234.me</code> fungiert aktuell als Datenserver.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_server_code_syniphos_i234_me_code"><a class="anchor" href="#_server_code_syniphos_i234_me_code"></a>B.4. Server <code>syniphos.i234.me</code></h3>
+<div class="paragraph">
+<p>Der Recher <code>syniphos.i234.me</code> dient als Download- und als Datenserver und hat damit für das Programm eine essentielle Bedeutung.
+Es handelt sich um den privaten Server eines Vereinsmitglieds.
+Das ist für den Verein grundsätzlich keine gute Situation und seine Verfügbarkeit kann nicht auf Dauer sichergestellt sein.
+Das strukturelle Konzept des Programmes ist aber nicht auf das Vorhandensein dieses Servers angewiesen.
+Es sollte mit einem vertretbaren Aufwand möglich sein, jeden anderen Server stattdessen einzusetzen.</p>
+</div>
+<div class="paragraph">
+<p>Der Einsatz von <code>syniphos.i234.me</code> als Server für das Bug-Tracking ist ohne essentielle Bedeutung.</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-25 22:52:37 +02:00
+Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-26 17:53:46 +02:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

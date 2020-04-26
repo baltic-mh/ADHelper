@@ -16,11 +16,16 @@ v2.0, 26. April 2020
 :figure-caption: Abbildung
 :table-caption: Tabelle
 :chapter-label: Kapitel
+:appendix-caption: Anhang
 //:example-caption!:
 // Jeder Abschnitt bekommt automatisch einen Anker:
 :sectanchors:
 // Makro "kbd:" aktivieren:
 :experimental:
+
+In dieser Dokumentation sind alle Entwicklungsaspekte zum Programm `ADHelper` festgehalten. Sie soll sicherstellen, dass es auch nicht eingeweihten Personen möglich ist, das Programm zu pflegen und ggfs. weiterzuentwickeln.
+
+Eine gute erste Quelle für einen Überblick ist die Datei https://raw.githubusercontent.com/baltic-mh/ADHelper/master/misc/Dokumentation/Dokumentation.txt[Dokumentation.txt] im Repository des Projektes.
 
 == Java
 
@@ -80,36 +85,122 @@ Die Klasse mit der `main`-Methode ist `ADH_Application` im Paket `teambaltic.adh
 
 == Build-Prozess mit Gradle
 
+Der gesamte Build-Prozess wird über 
+https://gradle.org/guides/[Gradle]
+bewerkstelligt. Gradle selbst muss nicht installiert sein, im Repository ist ein sogenannter Wrapper, der das Notwendige bei Bedarf runterlädt.
 
-== Erzeugen eines neuen Releases
+Wenn ein neues Release erzeugt werden soll, ist der im folgenden beschriebene Prozess notwendig. Als Spickzettel dient die Datei `README.ReleaseErzeugung`, in der das Vorgehen in kurzer und prägnater Form beschrieben ist.
 
-Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:
+=== Anpassen der Versionsnummer
 
-=== Eingabe der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release +
+Die aktuelle Versionsnummer ist in der Datei `gradle.properties` hinterlegt. Die sieht in etwa so aus:
 
 ```
-Editieren der Datei => misc/build-res/ReleaseNotes-actual.txt
+version = 1.17.1-SNAPSHOT
 ```
 
-=== Eventuell Anpassung der Datei
+Wenn man nur eine Kleinigkeit am Programm geändert (ein kleiner Bugfix oder eine sonst nicht weiter auffällige Änderung), braucht man an der Versionsnummer gar nichts zu machen - die letzte Stelle ist bereits gegenüber der vorhergehenden Release-Erstellung um eins erhöht worden (im konkreten Fall wäre die neue Versionsnummer also 1.17.1 - der Zusatz `SNAPSHOT` wird bei einem Release entfernt).
+
+Hat man spürbare Änderungen vorgenommen, sollte die mittlere Stelle um eins erhöht - und die letzte wieder auf Null gesetzt werden. Das sieht dann konkret so aus:
+
 ```
-Editieren der Datei => misc/Dokumentation/Dokumentation.txt
+version = 1.18.0-SNAPSHOT
 ```
 
-=== Alle geänderten Dateien müssen in GIT committed und gepusht sein.
+=== Beschreibung der Änderungen/Erweiterungen/Bugfixes seit dem letzten Release
 
-=== Aufruf der Gradle-Task
+Bei der Release-Erstellung wird eine Datei `ReleaseNotes.txt` automatisch erzeugt, die die forlaufende Änderungshistorie beinhaltet.
+Damit das funktioniert, müssen die Modifikationen, die für dieses Release gemacht wurden, in der Datei `misc/build-res/ReleaseNotes-actual.txt` beschrieben werden.
+
+```
+###############################################################################
+# ReleaseNotes der aktuellen Version
+# Die einzelnen Änderungen/Neuerungen müssen mit einer Kategorie beginnen.
+# Die Kategorie muss in eckigen Klammern stehen.
+# Danach muss in derselben Zeile noch Text stehen
+# Übliche Kategorien sind:
+#[NEU]      Für ein neues Feature
+#[BUGFIX]   Für einen behobenen Fehler
+#[ÄNDERUNG] Für ein geändertes Verhalten
+#
+# Zeilen, die mit # oder // anfangen, werden ignoriert.
+# Es muss eine Zeile geben, die mit "//RELEASE:" anfängt gefolgt von der
+# Release-Nummer des anstehenden Releases.
+# Die Release-Nummer wird aus der Versionsnummer gebildet:
+#   Versionsnummer 1.2.3 => Release-Nummer: 1002003
+#   Versionsnummer 2.0.0 => Release-Nummer: 2000000
+###############################################################################
+//RELEASE: 1018000
+###############################################################################
+[NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert
+```
+
+Hier ist die Zeile, die mit `//RELEASE: ` beginnt, entscheidend.
+Die darauf folgende Nummer ist die Release-Nummer, die an die Versionsnummer  (siehe vorhieriger Schritt) anzupassen ist.
+Wie man von der Versionsnummer auf die zugehörige Release-Nummer kommt, ist im Kommentar in der Datei exemplarisch beschrieben.
+
+Nach der letzten Zeile mit den vielen Lattenzäunen stehen eventuell noch die Informationen aus der letzten Release-Erstellung.
+Die werden gelöscht und dafür die Neuerungen für dieses Release beschrieben.
+Die Syntax dazu ist ebenfalls im Kommentar beschrieben.
+
+Der obere Teil der automatisch erzeugte ReleaseNotes-Datei sieht dann später so aus:
+
+```
+================================================================================
+Release: 1018000	Version: 1.18.0	Datum: 2020-04-26
+[NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert
+================================================================================
+Release: 1017000	Version: 1.17.0	Datum: 2020-04-25
+[ÄNDERUNG] Im Log-Fenster laufen die Meldungen nun von oben nach unten!
+[NEU] Lokale Konfigurationsdateien können nun auch nur einzelne Werte enthalten
+[NEU] Warnung, wenn lokale Konfigurationsdatei Daten überschreibt
+
+================================================================================
+Release: 1016000	Version: 1.16.0	Datum: 2020-04-25
+[NEU] Verzeichnis "Obsolete" behält nur noch die 5 neuesten Elemente
+[NEU] Es werden nur noch die 4 neuesten Abrechnungszeiträume dargestellt
+================================================================================
+Release: 1015001	Version: 1.15.1	Datum: 2020-04-24
+[BUGFIX] NPE behoben für Pflichtstunden spezifisch je Halbjahr
+================================================================================
+Release: 1015000	Version: 1.15.0	Datum: 2020-04-24
+[NEU] Pflichtstunden nun spezifisch je Halbjahr angebbar
+[BUGFIX] Auslesen der Update-URL aus Online-Datei wiederbelebt
+
+...
+```
+
+=== Git-Push
+
+Alle geänderten Dateien müssen in GIT committed und gepusht sein.
+
+=== Erzeugen des Releases
+
+Durch Aufruf der Gradle-Task
 ```
 gradlew release -Prelease.useAutomaticVersion=true
 ```
 
+gerät eine Maschinerie in Gange, die einem den Atem verschlägt!
+Hier muss man kräftig die Daumen drücken, dass alles gut geht - oder sonst eben Ursachenforschung betreiben ;-)
+Danach hat man ein neues Executable erstellt, es auf den Download-Server übertragen, die Versionsnummer erhöht und noch vieles mehr.
+
 === Überprüfen, ob alles chicko ist!
 
+Hier sollte man sich das Executable mal manuell vom Download-Server kopieren und auf Herz und Nieren prüfen. Wenn es schwächelt, muss man eben noch mal ran!
 
-=== Release zum Download freigeben durch Aufruf der Gradle-Task
+=== Release zum Download freigeben 
+
+Das Erzeugen und Hochladen des Releases auf den Download-Server führt noch nicht dazu, dass das ein älteres Programm, dass auf einem beliebigen Client-Rechner läuft, das neue Release runterlädt.
+Dazu ist noch eine letzte Freigabe notwendig.
+Erst wenn man sich davon überzeugt hat, dass das neu erzeugte Executable auch einwandfrei tut, sollte man diese Freigabe erteilen.
+
+Die Freigabe erfolgt durch den Aufruf der Gradle-Task
 ```
 gradlew ssh_release
 ```
+
+
 
 [WARNING]
 ====
@@ -248,7 +339,8 @@ include::includes/Dokumentation.adoc[]
 ////
 
 = Anhang
-
+[appendix]
 include::includes/Dateiformate.adoc[]
-
+[appendix]
+include::includes/Hosting.adoc[]
 
