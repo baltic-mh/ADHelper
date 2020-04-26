@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1018003" version="1.18.3">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;INTERN&lt;/b&gt;
+    &lt;dd&gt;Interne Änderung für Changelog-Plugin&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22961133" sourcedir="1018003"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="67164" sourcedir="1018003"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1018003"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="13575" sourcedir="1018003"/>
+    </arch>
+  </version>
   <version release="1018002" version="1.18.2">
     <description>
     &lt;dl&gt;
