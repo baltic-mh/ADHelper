@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1018001	Version: 1.18.1	Datum: 2020-04-26
+[ÄNDERUNG] Link zur Dokumentation geändert: Gesamt-Doku statt UserManual
+================================================================================
 Release: 1018000	Version: 1.18.0	Datum: 2020-04-26
 [NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert
 ================================================================================
