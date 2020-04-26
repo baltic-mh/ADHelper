@@ -43,7 +43,7 @@ plugins {
 
     // Gradle plugin for generating a changelog based on a Git commit history.
     // https://github.com/tomasbjerre/git-changelog-gradle-plugin
-    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.40"
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.64"
     
     // SSH
     // https://gradle-ssh-plugin.github.io/
@@ -116,7 +116,7 @@ def jupidatorProps = [
 
 // ############################################################################
 task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
-    filePath = changeLog.toString();
+    file = changeLog
     templateContent = project.file('misc/build-res/changelog.html.template').getText('UTF-8');
 }
 
