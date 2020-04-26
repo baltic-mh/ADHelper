@@ -187,16 +187,17 @@ createExe {
 
 // ############################################################################
 // ReleaseNotes aktualisieren
-task updateReleaseNotes << {
-    
-    def aRNU = new ReleaseNotesUpdater(
-        version             : project.version,
-        releaseNum          : releaseNum,
-        releaseNotes        : releaseNotes,
-        releaseNotesActual  : releaseNotesActual
-    )
-    if( aRNU.process() != 0 ){
-        throw new GradleException('ReleaseNotesUpdater.process ging schief!')
+task updateReleaseNotes {
+    doLast {
+        def aRNU = new ReleaseNotesUpdater(
+            version             : project.version,
+            releaseNum          : releaseNum,
+            releaseNotes        : releaseNotes,
+            releaseNotesActual  : releaseNotesActual
+        )
+        if( aRNU.process() != 0 ){
+            throw new GradleException('ReleaseNotesUpdater.process ging schief!')
+        }
     }
 }
 configure(updateReleaseNotes) {
@@ -225,11 +226,13 @@ configure(copyArtifacts) {
 
 // ############################################################################
 // Jupidator
-task updateJupidator << {
-    def aJ = new Jupidator( jupidatorProps )
-    def returnCode = aJ.process()
-    if( aJ.process() != 0 ){
-        throw new GradleException('Jupidator.process ging schief! ReturnCode = '+returnCode)
+task updateJupidator {
+    doLast {
+        def aJ = new Jupidator( jupidatorProps )
+        def returnCode = aJ.process()
+        if( aJ.process() != 0 ){
+            throw new GradleException('Jupidator.process ging schief! ReturnCode = '+returnCode)
+        }
     }
 }
 configure(updateJupidator) {
@@ -257,14 +260,16 @@ remotes {
     }
 }
 
-task ssh_upload << {
-    ssh.run {
-        session( remotes.web01 ) {
-            put from: "${distributionFolderRoot}/${jupidatorProps.filename}",
-                into: "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
-            put from: "${distributionFolder}",
-                into: "www/Download/${project.name}"
-
+task ssh_upload {
+    doLast {
+        ssh.run {
+            session( remotes.web01 ) {
+                put from: "${distributionFolderRoot}/${jupidatorProps.filename}",
+                    into: "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
+                put from: "${distributionFolder}",
+                    into: "www/Download/${project.name}"
+    
+            }
         }
     }
 }
@@ -274,13 +279,14 @@ configure(ssh_upload) {
     dependsOn updateJupidator
 }
 
-task ssh_release << {
-    ssh.run {
-        session( remotes.web01 ) {
-            def source = "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
-            def target = "www/Download/${project.name}/${jupidatorProps.filename}"
-            def result = execute "mv $source $target"
-//            println "Result = "+result
+task ssh_release  {
+    doLast {
+        ssh.run {
+            session( remotes.web01 ) {
+                def source = "www/Download/${project.name}/${jupidatorProps.basename}-new.xml"
+                def target = "www/Download/${project.name}/${jupidatorProps.filename}"
+                def result = execute "mv $source $target"
+            }
         }
     }
 }
