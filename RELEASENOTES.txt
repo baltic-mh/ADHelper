@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1018002	Version: 1.18.2	Datum: 2020-04-26
+[INTERN] Task.leftShift(Closure) aus build.gradle eliminiert
+================================================================================
 Release: 1018001	Version: 1.18.1	Datum: 2020-04-26
 [ÄNDERUNG] Link zur Dokumentation geändert: Gesamt-Doku statt UserManual
 ================================================================================
