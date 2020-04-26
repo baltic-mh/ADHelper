@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1018000	Version: 1.18.0	Datum: 2020-04-26
+[NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert
+================================================================================
 Release: 1017000	Version: 1.17.0	Datum: 2020-04-25
 [ÄNDERUNG] Im Log-Fenster laufen die Meldungen nun von oben nach unten!
 [NEU] Lokale Konfigurationsdateien können nun auch nur einzelne Werte enthalten
