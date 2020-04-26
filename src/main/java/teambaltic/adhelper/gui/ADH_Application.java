@@ -396,7 +396,7 @@ public class ADH_Application
             {
                 if (Desktop.isDesktopSupported()) {
                     try{
-                        Desktop.getDesktop().browse(new URI("http://baltic-mh.github.io/ADHelper/html/usermanual.html"));
+                        Desktop.getDesktop().browse(new URI("http://baltic-mh.github.io/ADHelper/"));
                     }catch( IOException | URISyntaxException fEx ){
                         sm_Log.warn("Exception: ", fEx );
                     }

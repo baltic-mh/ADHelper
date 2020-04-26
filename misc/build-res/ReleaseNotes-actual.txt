@@ -15,6 +15,6 @@
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
 ###############################################################################
-//RELEASE: 1018000
+//RELEASE: 1018001
 ###############################################################################
-[NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert
+[ÄNDERUNG] Link zur Dokumentation geändert: Gesamt-Doku statt UserManual

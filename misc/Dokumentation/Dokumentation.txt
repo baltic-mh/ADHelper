@@ -1,3 +1,13 @@
+*******************************************************************************
+* ACHTUNG: DIESE DATEI WIRD NICHT MEHR GEPFLEGT! DIE DOKUMENTATION WIRD       *
+* KÜNFTIG ALLEIN ÜBER DAS ZU DIESEM PROJEKT GEHÖRENDE "PAGES"-PROJEKT         *
+* ABGEDECKT: http://baltic-mh.github.io/ADHelper/                             *
+*                                                                             *
+* LEIDER BRAUCHT ES EINE WEILE, BIS ALLE HIERIN STEHENDEN INFORMATIONEN DURCH *
+* DAS DOKUMENTATIONSPROJEKT ABGEDECKT SIND. SOLANGE MUSS MAN SICH DIESE DATEI *
+* LEIDER NOCH DURCHLESEN :-|                                                  *
+*******************************************************************************
+
 ###############################################################################
 # README.FIRST
 ###############################################################################
