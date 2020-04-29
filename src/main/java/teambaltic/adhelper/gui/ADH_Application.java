@@ -522,11 +522,6 @@ public class ADH_Application
                 return false;
         }
     }
-    private static boolean stayLocal()
-    {
-        final boolean aSysPropStayLocal = Boolean.getBoolean( "staylocal" );
-        return aSysPropStayLocal;
-    }
 
     private static List<Path> updateDataFromServer( final ITransferController fTC ) throws Exception
     {
