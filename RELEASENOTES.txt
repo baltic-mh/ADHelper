@@ -1,4 +1,8 @@
 ================================================================================
+Release: 1019000	Version: 1.19.0	Datum: 2020-05-01
+[ÄNDERUNG] Die Überprüfung, ob schon eine Applikation läuft, erfolgt nun auf individuell für das Datenwurzelverzeichnis
+[NEU] Wenn schon eine Applikation läuft, kann man immer noch lesend arbeiten
+================================================================================
 Release: 1018004	Version: 1.18.4	Datum: 2020-04-29
 [INTERN] Interne Änderung, um neue Version zu erzeugen
 ================================================================================

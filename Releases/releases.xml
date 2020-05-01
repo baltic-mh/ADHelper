@@ -2,6 +2,26 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1019000" version="1.19.0">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;ÄNDERUNG&lt;/b&gt;
+    &lt;dd&gt;Die Überprüfung, ob schon eine Applikation läuft, erfolgt nun auf individuell für das Datenwurzelverzeichnis&lt;/dd&gt;
+  &lt;/dt&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Wenn schon eine Applikation läuft, kann man immer noch lesend arbeiten&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22962181" sourcedir="1019000"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="68447" sourcedir="1019000"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1019000"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="14105" sourcedir="1019000"/>
+    </arch>
+  </version>
   <version release="1018004" version="1.18.4">
     <description>
     &lt;dl&gt;
