@@ -37,11 +37,15 @@ public class SingletonWatcher implements ISingletonWatcher
     private static final String sm_BusyFileBaseName = "BusyFile";
     private static final String sm_BusyFileExt = ".txt";
     private static final String sm_BusyFileName = sm_BusyFileBaseName+sm_BusyFileExt;
-    private static final Path   sm_RemoteBusyFilePath = Paths.get( sm_BusyFileName );
 
     // ------------------------------------------------------------------------
     private final String m_Info;
     private String getInfo(){ return m_Info; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final String m_RootFolderName;
+    private String getRootFolderName(){ return m_RootFolderName; }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -61,15 +65,23 @@ public class SingletonWatcher implements ISingletonWatcher
     private void setConnected( final boolean fConnected ){ m_Connected = fConnected; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private boolean m_FremderMannAmWerk;
+    private boolean isFremderMannAmWerk() { return m_FremderMannAmWerk; }
+    private void setFremderMannAmWerk( final boolean fNewVal ) { m_FremderMannAmWerk = fNewVal; }
+    // ------------------------------------------------------------------------
+
     private final Object m_BusyBlocker;
 
-    private Thread m_Thread;
+    private Thread m_BusyControllerThread;
 
     public SingletonWatcher(
+            final String fRootFolderName,
             final String fInfo,
             final long fCycleTime,
             final IRemoteAccess fRemoteAccess )
     {
+        m_RootFolderName= fRootFolderName;
         m_Info          = fInfo;
         m_CycleTime     = fCycleTime;
         m_RemoteAccess  = fRemoteAccess;
@@ -94,43 +106,57 @@ public class SingletonWatcher implements ISingletonWatcher
             final List<String> aLines = FileUtils.readAllLines( aLocalFile, 1 );
             return aLines.get( 0 );
         }catch( final Exception fEx ){
-            sm_Log.warn( "Unexpected exception: ", fEx );
+            sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
             return null;
         } finally {
             if( aLocalFile != null ){
                 try{
                     Files.delete( aLocalFile );
                 }catch( final IOException fEx ){
-                    sm_Log.warn("Exception: ", fEx );
+                    sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
                 }
             }
         }
     }
 
-    private static LocalRemotePathPair createLocalRemotePathPair( final Path fLocalFile )
+    private LocalRemotePathPair createLocalRemotePathPair( final Path fLocalFile )
     {
-        return new LocalRemotePathPair( fLocalFile, sm_RemoteBusyFilePath );
+        return new LocalRemotePathPair( fLocalFile, getRemoteBusyFilePath() );
+    }
+
+    private Path getRemoteBusyFilePath() {
+        return Paths.get( getRootFolderName(), sm_BusyFileName );
     }
 
     @Override
-    public void start() throws Exception
+    public String start()
     {
         final IRemoteAccess aRemoteAccess = getRemoteAccess();
         if( aRemoteAccess == null ){
             sm_Log.warn("No remote access object!");
-            return;
+            return null;
         }
 
+        // Hier gibt es eine kleine Lücke!
+        // Wenn auf Rechner1 das Programm gestartet und hier festgestellt wird,
+        // dass noch keine andere Applikation läuft, dauert es ein paar Milli-
+        // sekunden, bis die Busy-Datei von Rechner1 auf dem Server erzeugt
+        // worden ist. Wenn in dieser Zeit das Programm, das auf Rechner2
+        // gestartet worden ist, nachfragt, ob schon eine andere Applikation
+        // läuft, bekommt es fälschlich freie Fahrt signalisiert!
+        // Das Risiko lasse ich mal so stehen.
+        setFremderMannAmWerk(false);
         final String aRemoteInfo = getRemoteInfo();
         if( aRemoteInfo != null ){
-            throw new Exception("Es läuft schon eine andere Applikation: "+aRemoteInfo);
+            sm_Log.warn( "Es läuft schon eine andere Applikation: "+aRemoteInfo );
+            setFremderMannAmWerk(true);
         }
-        if( m_Thread != null ){
-            return;
+        if( m_BusyControllerThread != null ){
+            return aRemoteInfo;
         }
         // Damit es schon einmal gemacht ist, bevor die Methode beendet ist:
-        uploadBusyFlag();
-        m_Thread = new Thread("BusyController"){
+        checkConnection();
+        m_BusyControllerThread = new Thread("BusyController"){
             @Override
             public void run(){
                 while( true ){
@@ -140,7 +166,7 @@ public class SingletonWatcher implements ISingletonWatcher
                                 break;
                             }
                             m_BusyBlocker.wait( getCycleTime() );
-                            uploadBusyFlag();
+                            checkConnection();
                         }
                     }catch( final InterruptedException fEx ){
                         break;
@@ -148,42 +174,55 @@ public class SingletonWatcher implements ISingletonWatcher
                 }
             }
         };
-        m_Thread.setDaemon( true );
-        m_Thread.start();
+        m_BusyControllerThread.setDaemon( true );
+        m_BusyControllerThread.start();
+        return aRemoteInfo;
     }
-
     @Override
     public void stop()
     {
-        if( m_Thread == null ){
+        if( m_BusyControllerThread == null ){
             return;
         }
         synchronized( m_BusyBlocker ){
-            m_Thread.interrupt();
-            m_Thread = null;
+            m_BusyControllerThread.interrupt();
+            m_BusyControllerThread = null;
             removeBusyFlag();
         }
     }
 
-    private void uploadBusyFlag()
-    {
+    private void checkConnection() {
         final Path aBusyFile = createBusyFile();
-        uploadBusyFile( aBusyFile );
+        if( isFremderMannAmWerk() ) {
+            try {
+                getRemoteAccess().exists( Paths.get(getRootFolderName()));
+                setConnected(true);
+            } catch ( final Exception fEx ) {
+                setConnected(false);
+                sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
+
+            }
+        } else {
+            uploadBusyFlag( aBusyFile );
+        }
+    }
+
+    private void uploadBusyFlag(final Path fBusyFile)
+    {
+        uploadBusyFile( fBusyFile );
         try{
-            Files.delete( aBusyFile );
+            Files.delete( fBusyFile );
         }catch( final IOException fEx ){
-            // TODO Auto-generated catch block
-            sm_Log.warn("Exception: ", fEx );
+            sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
         }
     }
 
     private void removeBusyFlag()
     {
         try{
-            getRemoteAccess().delete( sm_RemoteBusyFilePath );
+            getRemoteAccess().delete( getRemoteBusyFilePath() );
         }catch( final Exception fEx ){
-            // TODO Auto-generated catch block
-            sm_Log.warn("Exception: ", fEx );
+            sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
         }
     }
 
@@ -197,7 +236,7 @@ public class SingletonWatcher implements ISingletonWatcher
             Files.write( aLocalFile, aString.getBytes(), StandardOpenOption.APPEND );
             return aLocalFile;
         }catch( final IOException fEx ){
-            sm_Log.warn("Exception: ", fEx );
+            sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
             return null;
         }
     }
@@ -214,7 +253,7 @@ public class SingletonWatcher implements ISingletonWatcher
             setConnected(true);
         }catch( final Exception fEx ){
             setConnected(false);
-            sm_Log.warn("Exception: ", fEx );
+            sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
         }
 
     }

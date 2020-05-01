@@ -74,7 +74,7 @@ public class SingletonWatcherTest
     public void test()
     {
         final MyRemoteAccess aRemoteAccess = new MyRemoteAccess();
-        final SingletonWatcher aSW = new SingletonWatcher( "Ich war's!", 1000L, aRemoteAccess );
+        final SingletonWatcher aSW = new SingletonWatcher(sm_FremderMann.getParent().toString(), "Ich war's!", 1000L, aRemoteAccess );
 
         // Zuerst ist keiner da:
         String aRemoteInfo = aSW.getRemoteInfo();
@@ -84,39 +84,35 @@ public class SingletonWatcherTest
 
         // Dann kommt ein fremder Mann;
         try{
+            Files.createDirectories(sm_LocalPath.getParent());
             Files.copy( sm_FremderMann, sm_LocalPath, StandardCopyOption.REPLACE_EXISTING );
             aRemoteInfo = aSW.getRemoteInfo();
             aCnt_Download   = aRemoteAccess.getCnt_Download();
             assertEquals("DownloadCnt", 2, aCnt_Download);
             assertNotNull("RemoteInfo2", aRemoteInfo);
         }catch( final IOException fEx ){
-            fail( "Tut mir leid: "+fEx.getMessage());
+            fail( String.format( "Tut mir leid: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
         }
 
         // Und nun sind wir selbst da:
-        try{
-            aSW.start();
-            fail( "Start - obwohl eine andere Instanz läuft!");
-        }catch( final Exception fEx1 ){
-            // Alles chicko!
-            aCnt_Download   = aRemoteAccess.getCnt_Download();
-            assertEquals("DownloadCnt", 3, aCnt_Download);
-        }
+        String aInfo = aSW.start();
+        assertNotNull( "Start - obwohl eine andere Instanz läuft!", aInfo);
+        assertTrue(aSW.isConnected());
+        // Alles chicko!
+        aCnt_Download   = aRemoteAccess.getCnt_Download();
+        assertEquals("DownloadCnt", 3, aCnt_Download);
+
         // Jetzt machen wir die Bahn wieder frei:
         try{
             Files.delete( sm_LocalPath );
         }catch( final IOException fEx ){
-            fail( "Tut mir leid: "+fEx.getMessage() );
+            fail( String.format( "Tut mir leid: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
         }
         // ... und legen erneut los:
-        try{
-            aSW.start();
-            aCnt_Download   = aRemoteAccess.getCnt_Download();
-            assertEquals("DownloadCnt", 4, aCnt_Download);
-            // Alles chicko!
-        }catch( final Exception fEx1 ){
-            fail( "Start geht nicht - obwohl KEINE andere Instanz läuft!");
-        }
+        aInfo = aSW.start();
+        assertNull( "Start geht nicht - obwohl KEINE andere Instanz läuft!", aInfo);
+        aCnt_Download   = aRemoteAccess.getCnt_Download();
+        assertEquals("DownloadCnt", 4, aCnt_Download);
 
         try{ Thread.sleep( 5000L ); }catch( final InterruptedException fEx ){/**/}
         final int aCnt_Upload     = aRemoteAccess.getCnt_Upload();

@@ -62,17 +62,17 @@ public class InitHelper
         final Path aFile_Crypt_Priv = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PRIV );
         final Path aFile_Crypt_Publ = aAppSettings.getFile_Crypt( IAppSettings.EKey.FILENAME_CRYPT_PUBL );
         final ICryptUtils aCryptUtils = new CryptUtils( aFile_Crypt_Priv.toFile(), aFile_Crypt_Publ.toFile() );
-        final ISingletonWatcher aSW = initSingletonWatcher( aRA);
+        final ISingletonWatcher aSW = initSingletonWatcher( aFolderName_Root, aRA );
         final ITransferController aTC = new TransferController(
                 getAllSettings(), aCryptUtils, aRA, aSW);
         return aTC;
     }
 
-    private ISingletonWatcher initSingletonWatcher( final IRemoteAccess fRemoteAccess )
+    private ISingletonWatcher initSingletonWatcher(final String fRootFolderName, final IRemoteAccess fRemoteAccess )
     {
         final String aInfo = getUserSettings().getDecoratedEMail();
         final int aCycleTime = getAppSettings().getCycleTime_SingletonWatcher();
-        final SingletonWatcher aSW = new SingletonWatcher(aInfo, aCycleTime, fRemoteAccess);
+        final SingletonWatcher aSW = new SingletonWatcher(fRootFolderName, aInfo, aCycleTime, fRemoteAccess);
         return aSW;
     }
 

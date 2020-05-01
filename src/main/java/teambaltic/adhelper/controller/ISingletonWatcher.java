@@ -16,7 +16,7 @@ public interface ISingletonWatcher
 {
     boolean isConnected();
     String getRemoteInfo();
-    void start() throws Exception;
+    String start() throws Exception;
     void stop();
 }
 

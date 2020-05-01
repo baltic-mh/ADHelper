@@ -19,7 +19,7 @@ import teambaltic.adhelper.model.ERole;
 // ############################################################################
 public interface ITransferController extends IShutdownListener
 {
-    void start() throws Exception;
+    String start() throws Exception;
     boolean isConnected();
     /**
      * @param fFileToUpload

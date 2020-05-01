@@ -123,6 +123,12 @@ public class ADH_Application
     void setGeneratePDFReportListener( final GeneratePDFReportListener fNewVal ){ m_GeneratePDFReportListener = fNewVal; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private boolean m_ReadOnly;
+    public boolean isReadOnly() { return m_ReadOnly; }
+    private void setReadOnly( final boolean fReadOnly ) { m_ReadOnly = fReadOnly; }
+    // ------------------------------------------------------------------------
+
     private GUIUpdater m_GUIUpdater;
 
     /**
@@ -237,10 +243,11 @@ public class ADH_Application
         final boolean aIsBauausschuss = aUserSettings.isBauausschuss();
         final InitHelper aInitHelper = new InitHelper( AllSettings.INSTANCE );
         final ITransferController aTC = aInitHelper.initTransferController();
-        aTC.start();
+        final String aInfo = aTC.start();
         if( !aTC.isConnected() ){
             throw new Exception( "Keine Verbindung zum Server (für Details siehe log-Datei)!" );
         }
+        setReadOnly( checkReadOnlyMode( aInfo, m_MainPanel ) );
 
         final List<Path >aPeriodFoldersKnownOnServer = updateDataFromServer( aTC );
         final IPeriodDataController aPDC = IntegrityChecker.checkAfterUpdateFromServer( AllSettings.INSTANCE );
@@ -253,17 +260,18 @@ public class ADH_Application
         addShutdownListener( aTC );
         final ADH_DataProvider aDataProvider = aInitHelper.initDataProvider( aPDC );
 
-        initObjects( aDataProvider, aPDC, aTC, aIsBauausschuss );
+        initObjects( aDataProvider, aPDC, aTC, aIsBauausschuss, isReadOnly() );
     }
 
     private void initObjects(final ADH_DataProvider fDataProvider,
             final IPeriodDataController fPDC,
             final ITransferController fTransferController,
-            final boolean fIsBauausschuss)
+            final boolean fIsBauausschuss,
+            final boolean fIsReadOnly)
     {
         setPDC( fPDC );
         setTransferController( fTransferController );
-        m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC, fTransferController );
+        m_GUIUpdater    = new GUIUpdater( m_MainPanel, fDataProvider, fPDC, fTransferController, fIsReadOnly );
 
         final ActionListener aMemberSelectedListener = new MemberSelectedListener( m_GUIUpdater );
 
@@ -450,7 +458,13 @@ public class ADH_Application
         if( fUploadModifiedData ) {
 	        final ERole aRole = getRole();
 	        if( ERole.BAUAUSSCHUSS.equals( aRole )){
-	            doConfirmedUpload();
+	            if( isDataModifiedLocally() ) {
+	                if( isReadOnly() ) {
+	                    informAboutOmittingData();
+	                } else {
+	                    doConfirmedUpload();
+	                }
+	            }
 	        }
         }
         System.exit( fExitCode );
@@ -476,29 +490,40 @@ public class ADH_Application
         }
     }
 
-    private void doConfirmedUpload()
-    {
+    private boolean isDataModifiedLocally() {
         final ITransferController aTC = getTransferController();
         if( aTC == null ){
-            return;
+            return false;
         }
-        final boolean aActivePeriodModifiedLocally = aTC.isActivePeriodModifiedLocally();
-        if( aActivePeriodModifiedLocally ){
-            final boolean aUploadConfirmed = confirmUpload( /*ActivePeriod*/ );
-            if( aUploadConfirmed ){
-                try{
-                    aTC.uploadPeriodData();
-                }catch( final Exception fEx ){
-                    sm_Log.warn("Exception: ", fEx );
-                }
-            } else {
-                sm_Log.info("Benutzer hat Upload abgelehnt.");
-                try{
-                    getPDC().removeActivePeriodFolder();
-                }catch( final Exception fEx ){
-                    // TODO Auto-generated catch block
-                    sm_Log.warn("Exception: ", fEx );
-                }
+        return aTC.isActivePeriodModifiedLocally();
+    }
+
+    private void informAboutOmittingData() {
+        final String aMsg = String.format("Die Daten der aktiven Periode sind geändert worden!\n\n"
+                +"Diese Daten werden nach 'Obsolete' verschoben!" );
+        JOptionPane.showMessageDialog( null, aMsg, "ACHTUNG!", JOptionPane.WARNING_MESSAGE );
+        try{
+            getPDC().removeActivePeriodFolder();
+        }catch( final Exception fEx ){
+            sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
+        }
+    }
+
+    private void doConfirmedUpload()
+    {
+        final boolean aUploadConfirmed = confirmUpload( /*ActivePeriod*/ );
+        if( aUploadConfirmed ){
+            try{
+                getTransferController().uploadPeriodData();
+            }catch( final Exception fEx ){
+                sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
+            }
+        } else {
+            sm_Log.info("Benutzer hat Upload abgelehnt.");
+            try{
+                getPDC().removeActivePeriodFolder();
+            }catch( final Exception fEx ){
+                sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
             }
         }
     }
@@ -699,6 +724,15 @@ public class ADH_Application
         }.start();
     }
 
+    private boolean checkReadOnlyMode(final String fInfo, final Component fMainPanel) {
+        if( fInfo == null ) {
+            return false;
+        }
+        final String aMsg = String.format("Es läuft schon eine andere Applikation:\n\t%s\n"
+                +"Hochladen der Daten wird wird nicht möglich sein!", fInfo );
+        JOptionPane.showMessageDialog( fMainPanel, aMsg, "ACHTUNG!", JOptionPane.WARNING_MESSAGE );
+        return true;
+    }
 }
 
 // ############################################################################

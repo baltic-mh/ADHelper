@@ -96,9 +96,9 @@ public class TransferController implements ITransferController
     }
 
     @Override
-    public void start() throws Exception
+    public String start() throws Exception
     {
-        getSingletonWatcher().start();
+        return getSingletonWatcher().start();
     }
 
     @Override

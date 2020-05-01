@@ -72,19 +72,26 @@ public class GUIUpdater
     private void setUpdating( final boolean fUpdating ){ m_Updating = fUpdating; }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    private final boolean m_ReadOnly;
+    private boolean isReadOnly(){ return m_ReadOnly; }
+    // ------------------------------------------------------------------------
+
     private final RNDR_CB_Member m_Renderer_Member;
 
     public GUIUpdater(
             final MainPanel             fPanel,
             final ADH_DataProvider      fDataProvider,
             final IPeriodDataController fPDC,
-            final ITransferController   fTransferController )
+            final ITransferController   fTransferController,
+            final boolean fIsReadOnly )
     {
-        m_Panel = fPanel;
-        m_DataProvider = fDataProvider;
-        m_PDC = fPDC;
-        m_TransferController = fTransferController;
-        m_Renderer_Member = new RNDR_CB_Member( m_DataProvider );
+        m_Panel             = fPanel;
+        m_DataProvider      = fDataProvider;
+        m_PDC               = fPDC;
+        m_TransferController= fTransferController;
+        m_ReadOnly          = fIsReadOnly;
+        m_Renderer_Member   = new RNDR_CB_Member( m_DataProvider );
     }
 
     public void updateGUI()
@@ -121,7 +128,7 @@ public class GUIUpdater
         fillPanel_DutyCharge( aDM_DutyChargs, aInfoForSingleMember, m_Panel, m_DataProvider, fPeriodData.getPeriod() );
 
         if( fPeriodData != null ){
-            configureButtons( m_Panel, getTransferController(), getPDC(), fPeriodData );
+            configureButtons( m_Panel, getTransferController(), getPDC(), fPeriodData, isReadOnly() );
         }
     }
 
@@ -302,12 +309,18 @@ public class GUIUpdater
             final MainPanel fPanel,
             final ITransferController fTransferController,
             final IPeriodDataController fPDC,
-            final PeriodData fPeriodData)
+            final PeriodData fPeriodData,
+            final boolean fIsReadOnly)
     {
-        final boolean aFinished = fPDC.isFinished( fPeriodData );
-        fPanel.enableBtn_Finish( !aFinished );
-        final boolean aEnable = fPeriodData.isActive() && fTransferController.isActivePeriodModifiedLocally();
-        fPanel.enableBtn_Upload( aEnable );
+        if( fIsReadOnly ) {
+            fPanel.enableBtn_Finish( false );
+            fPanel.enableBtn_Upload( false );
+        } else {
+            final boolean aFinished = fPDC.isFinished( fPeriodData );
+            fPanel.enableBtn_Finish( !aFinished );
+            final boolean aEnable = fPeriodData.isActive() && fTransferController.isActivePeriodModifiedLocally();
+            fPanel.enableBtn_Upload( aEnable );
+        }
 
         final IUserSettings aUserSettings = AllSettings.INSTANCE.getUserSettings();
         fPanel.configure( aUserSettings.getRole() );
