@@ -173,7 +173,7 @@ public class Writer
         final String aBalanceAt = getNewBalanceDateString( aPeriod.getEnd() );
         try{
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/Guthaben.csv", CHARSET_ISO_8859_1);
-            aFileWriter.write( String.format("%s;%s,%s;%s;%s"+LF,
+            aFileWriter.write( String.format("%s;%s;%s;%s;%s"+LF,
                     IKnownColumns.MEMBERID, IKnownColumns.NAME,
                     IKnownColumns.GUTHABEN_WERT_ALT, IKnownColumns.GUTHABEN_WERT, IKnownColumns.GUTHABEN_AM ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
