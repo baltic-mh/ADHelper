@@ -834,7 +834,7 @@ Der Branch <code>master</code> wird für die Software-Entwicklung benutzt und de
 </div>
 <div class="paragraph">
 <p>Es empfiehlt sich, dasselbe Repository zweimal in unterschiedliche Verzeichnis zu klonen (z.B. in die Verzeichnisse <code>ADHelper</code> und <code>ADHelper-Pages</code>), wobei pro Verzeichnis nur jeweils ein Branch geclont wird.
-Auf diese Weise kann man ungestört an Dokumentation und Projekt gleichzeitig entwickeln kann, ohne die Branches wechseln zu müssen.</p>
+Auf diese Weise kann man ungestört an Dokumentation und Projekt gleichzeitig entwickeln, ohne die Branches wechseln zu müssen.</p>
 </div>
 </div>
 </div>
@@ -951,6 +951,10 @@ Damit das funktioniert, müssen die Modifikationen, die für dieses Release gema
 # Die Release-Nummer wird aus der Versionsnummer gebildet:
 #   Versionsnummer 1.2.3 =&gt; Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 =&gt; Release-Nummer: 2000000
+# Allgemeine Bildungsregel:
+#    Versionsnummer: Major.Minor.Build
+# =&gt; Release-Nummer:
+#       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
 //RELEASE: 1018000
 ###############################################################################
@@ -958,12 +962,12 @@ Damit das funktioniert, müssen die Modifikationen, die für dieses Release gema
 </div>
 </div>
 <div class="paragraph">
-<p>Hier ist die Zeile, die mit `//RELEASE: ` beginnt, entscheidend.
+<p>Hier ist die Zeile, die mit <code>//RELEASE:</code> beginnt, entscheidend.
 Die darauf folgende Nummer ist die Release-Nummer, die an die Versionsnummer  (siehe vorhieriger Schritt) anzupassen ist.
 Wie man von der Versionsnummer auf die zugehörige Release-Nummer kommt, ist im Kommentar in der Datei exemplarisch beschrieben.</p>
 </div>
 <div class="paragraph">
-<p>Nach der letzten Zeile mit den vielen Lattenzäunen stehen eventuell noch die Informationen aus der letzten Release-Erstellung.
+<p>Nach der letzten Zeile mit den vielen Lattenzäunen (#) stehen eventuell noch die Informationen aus der letzten Release-Erstellung.
 Die werden gelöscht und dafür die Neuerungen für dieses Release beschrieben.
 Die Syntax dazu ist ebenfalls im Kommentar beschrieben.</p>
 </div>
@@ -1028,7 +1032,7 @@ Danach hat man ein neues Executable erstellt, es auf den Download-Server übertr
 <div class="sect2">
 <h3 id="_release_zum_download_freigeben"><a class="anchor" href="#_release_zum_download_freigeben"></a>4.6. Release zum Download freigeben</h3>
 <div class="paragraph">
-<p>Das Erzeugen und Hochladen des Releases auf den Download-Server führt noch nicht dazu, dass das ein älteres Programm, dass auf einem beliebigen Client-Rechner läuft, das neue Release runterlädt.
+<p>Das Erzeugen und Hochladen des Releases auf den Download-Server führt noch nicht dazu, dass das ein älteres Programm, dass auf einem beliebigen Client-Rechner gestartet wird, das neue Release runterlädt.
 Dazu ist noch eine letzte Freigabe notwendig.
 Erst wenn man sich davon überzeugt hat, dass das neu erzeugte Executable auch einwandfrei tut, sollte man diese Freigabe erteilen.</p>
 </div>
@@ -1264,7 +1268,7 @@ Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MAXNUM_PERIODSTOCONSIDER</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximale Zahl der im Programm dargestellten Abrechnungszeiträumen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximale Zahl der im Programm dargestellten Abrechnungszeiträume</p></td>
 </tr>
 </tbody>
 </table>
@@ -1362,9 +1366,9 @@ Die Syntax ist so, dass hinter dem Parameternamen ein Punkt folgen muss, dann da
 <h2 id="_dokumentation"><a class="anchor" href="#_dokumentation"></a>7. Dokumentation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Die Dokumentation des Projektes ist mit
-<a href="http://asciidoctor.org/">AsciiDoctor</a>
-erstellt worden.</p>
+<p>Die Dokumentation des Projektes ist im
+<a href="http://asciidoctor.org/">AsciiDoctor-Format</a>
+erstellt.</p>
 </div>
 <div class="paragraph">
 <p>Als Hilfsmittel zum Editieren der .adoc-Dateien empfehle ich
@@ -1375,7 +1379,7 @@ erstellt worden.</p>
 Die Adresse des Repositories ist <code><a href="https://github.com/baltic-mh/ADHelper.git" class="bare">https://github.com/baltic-mh/ADHelper.git</a></code>.</p>
 </div>
 <div class="paragraph">
-<p>Die Dokumenation ist schlicht auf den dedizierten Branch <code>gh-pages</code> des Projektes abgelegt.</p>
+<p>Die Dokumenation ist schlicht auf dem dedizierten Branch <code>gh-pages</code> des Projektes abgelegt.</p>
 </div>
 <div class="sect2">
 <h3 id="_erstellen_einer_neuen_version"><a class="anchor" href="#_erstellen_einer_neuen_version"></a>7.1. Erstellen einer neuen Version</h3>
@@ -1645,7 +1649,7 @@ Es sollte mit einem vertretbaren Aufwand möglich sein, jeden anderen Server sta
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-26 17:53:46 +02:00
+Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-27 23:15:22 +02:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

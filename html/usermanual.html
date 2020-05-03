@@ -1589,6 +1589,13 @@ Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_exception_es_läuft_schon_eine_andere_applikation"><a class="anchor" href="#_exception_es_läuft_schon_eine_andere_applikation"></a>6.1. Exception "Es läuft schon eine andere Applikation"</h3>
+<div class="paragraph">
+<p>Das Programm hinterlässt eine Spur auf dem Server, dass es läuft.
+Wenn irgendwo auf der Welt jemand gerade mit dem Programm arbeitet
+und während dieser Zeit anderswo ein zweites Programm gestartet wird,
+erscheint in diesem Programm ein Hinweis, dass schon ein Programm läuft.
+In der Meldung wird angegeben, wer gerade mit dem Programm arbeitet.</p>
+</div>
 <div class="imageblock">
 <div class="content">
 <img src="images/Exception-AppLaeuftSchon.png" alt="Exception AppLaeuftSchon">
@@ -1596,10 +1603,10 @@ Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports
 <div class="title">Abbildung 17. Es läuft schon eine andere Applikation</div>
 </div>
 <div class="paragraph">
-<p>Das Programm hinterlässt eine Spur auf dem Server, dass es läuft. Wenn also irgendwo auf der Welt jemand anderes gerade mit dem Programm arbeitet, kann kein zweites Programm gestartet werden. In der Fehlermeldung wird in der ersten Zeile angegeben, wer gerade mit dem Programm arbeitet.</p>
+<p>Die als zweites gestartete Programminstanz kann dann keine Daten auf den Server hochladen. Ansonsten ist die Funktion aber vollkommmen uneingeschränkt.</p>
 </div>
 <div class="paragraph">
-<p>Wenn das Programm beendet wird, wird die Spur auf dem Server entfernt und eine andere Instanz des Programmes kann gestartet werden.</p>
+<p>Wenn das Programm beendet wird, wird die Spur auf dem Server entfernt und eine andere Instanz des Programmes kann ohne Einschränkung auf die Daten zugreifen.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -1608,7 +1615,8 @@ Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-In seltenen Fällen kann es vorkommen, dass die Spur auf dem Server nicht gelöscht wird (z.B. wenn das Programm abstürzt oder gewaltsam beendet wird). Wird dann das Programm kurz danach erneut gestartet wird, erscheint die oben gezeigte Fehlermeldung. Als Benutzer wird dann der eigene Account angezeigt.<br>
+In seltenen Fällen kann es vorkommen, dass die Spur auf dem Server nicht gelöscht wird (z.B. wenn das Programm abstürzt oder gewaltsam beendet wird). Wird dann das Programm kurz danach erneut gestartet wird, erscheint die oben gezeigte Meldung.
+Als Benutzer wird dann der eigene Account angezeigt.
 In so einem Fall einfach das Programm nach ca. 10 Sekunden Wartezeit erneut starten.
 </td>
 </tr>
