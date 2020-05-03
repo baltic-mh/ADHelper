@@ -41,7 +41,7 @@ Der Branch `master` wird für die Software-Entwicklung benutzt und der Branch `g
 
 
 Es empfiehlt sich, dasselbe Repository zweimal in unterschiedliche Verzeichnis zu klonen (z.B. in die Verzeichnisse `ADHelper` und `ADHelper-Pages`), wobei pro Verzeichnis nur jeweils ein Branch geclont wird.
-Auf diese Weise kann man ungestört an Dokumentation und Projekt gleichzeitig entwickeln kann, ohne die Branches wechseln zu müssen. 
+Auf diese Weise kann man ungestört an Dokumentation und Projekt gleichzeitig entwickeln, ohne die Branches wechseln zu müssen. 
 
 ////
 ==========================================================================
@@ -129,17 +129,21 @@ Damit das funktioniert, müssen die Modifikationen, die für dieses Release gema
 # Die Release-Nummer wird aus der Versionsnummer gebildet:
 #   Versionsnummer 1.2.3 => Release-Nummer: 1002003
 #   Versionsnummer 2.0.0 => Release-Nummer: 2000000
+# Allgemeine Bildungsregel:
+#    Versionsnummer: Major.Minor.Build
+# => Release-Nummer:
+#       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
 //RELEASE: 1018000
 ###############################################################################
 [NEU] Die Konfigurationsdatei "VereinsDaten" wird bei Abschluss des Zeitraumes mit in das zugehörige Verzeichnis kopiert
 ```
 
-Hier ist die Zeile, die mit `//RELEASE: ` beginnt, entscheidend.
+Hier ist die Zeile, die mit `//RELEASE:` beginnt, entscheidend.
 Die darauf folgende Nummer ist die Release-Nummer, die an die Versionsnummer  (siehe vorhieriger Schritt) anzupassen ist.
 Wie man von der Versionsnummer auf die zugehörige Release-Nummer kommt, ist im Kommentar in der Datei exemplarisch beschrieben.
 
-Nach der letzten Zeile mit den vielen Lattenzäunen stehen eventuell noch die Informationen aus der letzten Release-Erstellung.
+Nach der letzten Zeile mit den vielen Lattenzäunen (#) stehen eventuell noch die Informationen aus der letzten Release-Erstellung.
 Die werden gelöscht und dafür die Neuerungen für dieses Release beschrieben.
 Die Syntax dazu ist ebenfalls im Kommentar beschrieben.
 
@@ -191,7 +195,7 @@ Hier sollte man sich das Executable mal manuell vom Download-Server kopieren und
 
 === Release zum Download freigeben 
 
-Das Erzeugen und Hochladen des Releases auf den Download-Server führt noch nicht dazu, dass das ein älteres Programm, dass auf einem beliebigen Client-Rechner läuft, das neue Release runterlädt.
+Das Erzeugen und Hochladen des Releases auf den Download-Server führt noch nicht dazu, dass das ein älteres Programm, dass auf einem beliebigen Client-Rechner gestartet wird, das neue Release runterlädt.
 Dazu ist noch eine letzte Freigabe notwendig.
 Erst wenn man sich davon überzeugt hat, dass das neu erzeugte Executable auch einwandfrei tut, sollte man diese Freigabe erteilen.
 
@@ -287,7 +291,7 @@ Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!
 | FILENAME_CRYPT_PUBL           | public.key                |
 | CYCLETIME_SINGLETONWATCHER    | 5000                      |
 | MAXNUM_KEEPOBSOLETEFOLDERS    | 5                         | Maximale Zahl von Backups im Verzeichnis `Obsolete`
-| MAXNUM_PERIODSTOCONSIDER      | 4                         | Maximale Zahl der im Programm dargestellten Abrechnungszeiträumen
+| MAXNUM_PERIODSTOCONSIDER      | 4                         | Maximale Zahl der im Programm dargestellten Abrechnungszeiträume
 |=======================
 
 

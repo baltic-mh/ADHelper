@@ -1,8 +1,8 @@
 == Dokumentation
 
-Die Dokumentation des Projektes ist mit 
-http://asciidoctor.org/[AsciiDoctor]
-erstellt worden.
+Die Dokumentation des Projektes ist im 
+http://asciidoctor.org/[AsciiDoctor-Format]
+erstellt.
 
 Als Hilfsmittel zum Editieren der +.adoc+-Dateien empfehle ich 
 http://asciidocfx.com/[AsciiDocFX].
@@ -10,7 +10,7 @@ http://asciidocfx.com/[AsciiDocFX].
 Die Dokumentation ist wie das Projekt selbst auf GitHub gehostet.
 Die Adresse des Repositories ist `https://github.com/baltic-mh/ADHelper.git`.
 
-Die Dokumenation ist schlicht auf den dedizierten Branch `gh-pages` des Projektes abgelegt.
+Die Dokumenation ist schlicht auf dem dedizierten Branch `gh-pages` des Projektes abgelegt.
 
 === Erstellen einer neuen Version
 
