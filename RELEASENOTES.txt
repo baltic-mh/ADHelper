@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1020000	Version: 1.20.0	Datum: 2020-05-06
+[NEU] Anpassung an geänderte Benennung der Spalten in SPG 4.0
+================================================================================
 Release: 1019000	Version: 1.19.0	Datum: 2020-05-01
 [ÄNDERUNG] Die Überprüfung, ob schon eine Applikation läuft, erfolgt nun auf individuell für das Datenwurzelverzeichnis
 [NEU] Wenn schon eine Applikation läuft, kann man immer noch lesend arbeiten
