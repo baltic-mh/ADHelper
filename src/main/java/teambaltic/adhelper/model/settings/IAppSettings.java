@@ -37,6 +37,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
        ,FILENAME_UPLOADED
        ,FILENAME_REMOTEACCESSDATA
        ,FILENAME_UISETTINGS
+       ,FILENAME_COLUMNNAMESMAPPING
 
        ,FILENAME_CRYPT_PRIV
        ,FILENAME_CRYPT_PUBL
@@ -91,6 +92,7 @@ public interface IAppSettings extends ISettings<IAppSettings.EKey>
     Path getFile_UISettings();
     String getFileName_Finished();
     String getFileName_Uploaded();
+    String getFileName_ColumnNamesMapping();
 
     String getFileName_Crypt( EKey fPrivOrPub);
     Path getFile_Crypt( EKey fPrivOrPub );

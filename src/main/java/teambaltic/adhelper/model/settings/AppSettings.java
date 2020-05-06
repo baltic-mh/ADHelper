@@ -184,6 +184,10 @@ public class AppSettings extends ASettings<IAppSettings.EKey>
         return getIntValue( EKey.MAXNUM_KEEPOBSOLETEFOLDERS );
     }
     @Override
+    public String getFileName_ColumnNamesMapping() {
+        return  getStringValue( EKey.FILENAME_COLUMNNAMESMAPPING );
+    }
+    @Override
     public int getMaxNum_PeriodsToConsider()
     {
         return getIntValue( EKey.MAXNUM_PERIODSTOCONSIDER );

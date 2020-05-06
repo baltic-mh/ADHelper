@@ -32,6 +32,7 @@ import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IKey;
 import teambaltic.adhelper.model.IPeriod;
+import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyType>
@@ -73,7 +74,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     {
         final File aPropFile = fPropertyFile.toFile();
         setPropertyFile( aPropFile );
-        final InputStream aResourceStream = getResourceAsStream( aPropFile.getName() );
+        final InputStream aResourceStream = FileUtils.getResourceAsStream( aPropFile.getName() );
         InputStream aFileStream = null;
         if( Files.exists( fPropertyFile ) ){
             aFileStream = new FileInputStream( aPropFile );
@@ -251,15 +252,6 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
         final OutputStream out = new FileOutputStream( fOutputFile );
         m_Props.store(out, fComment);
         out.close();
-    }
-
-    private static InputStream getResourceAsStream( final String aResourceName )
-    {
-        InputStream aIS = ASettings.class.getResourceAsStream(aResourceName);
-        if( aIS == null ){
-            aIS = ASettings.class.getResourceAsStream("/"+aResourceName);
-        }
-        return aIS;
     }
 
     private static Halfyear halfyearFromPropKey(final String fPropKey) {

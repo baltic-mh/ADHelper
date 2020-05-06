@@ -9,7 +9,7 @@
  * Copyright (C) 2016 Team Baltic. All rights reserved
  */
 // ############################################################################
-package teambaltic.adhelper.controller;
+package teambaltic.adhelper.utils;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -21,11 +21,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import teambaltic.adhelper.controller.IPeriodDataController.EPeriodDataSelector;
+import teambaltic.adhelper.controller.PeriodDataController;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
-import teambaltic.adhelper.utils.FileUtils;
 
 // ############################################################################
 public final class IntegrityChecker

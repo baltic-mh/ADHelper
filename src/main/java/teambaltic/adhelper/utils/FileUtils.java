@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +40,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import teambaltic.adhelper.model.CheckSumInfo;
+import teambaltic.adhelper.model.settings.ColumnNamesMapping;
 
 // ############################################################################
 public final class FileUtils
@@ -112,10 +114,10 @@ public final class FileUtils
 
     public static List<String> readColumnNames( final File fFile )
     {
-        final String aFirstLine = FileUtils.readFirstLine( fFile );
+        final String aFirstLine = readFirstLine( fFile );
         final String[] aColumnNames = aFirstLine.split( ";" );
         final List<String> aAsList = Arrays.asList( aColumnNames );
-        return aAsList;
+        return ColumnNamesMapping.INSTANCE.map(aAsList);
     }
 
     public static Map<String, String> makeMap(
@@ -287,7 +289,7 @@ public final class FileUtils
     {
         final Path aUploadedFile = fFolderToUpload.resolve( fFileName_Uploaded );
         if( Files.exists( aUploadedFile )){
-            final List<String> aAllLines = FileUtils.readAllLines( aUploadedFile, 1 );
+            final List<String> aAllLines = readAllLines( aUploadedFile, 1 );
             final String aLastLine = aAllLines.get( aAllLines.size()-1 );
             final String aTimeStampString = aLastLine.split( ";" )[0];
             final long aTimeStampOfUpload = Long.valueOf( aTimeStampString );
@@ -322,6 +324,16 @@ public final class FileUtils
             org.apache.commons.io.FileUtils.deleteQuietly(aFile);
         }
     }
+
+    public static InputStream getResourceAsStream( final String aResourceName )
+    {
+        InputStream aIS = FileUtils.class.getResourceAsStream(aResourceName);
+        if( aIS == null ){
+            aIS = FileUtils.class.getResourceAsStream("/"+aResourceName);
+        }
+        return aIS;
+    }
+
 }
 
 // ############################################################################

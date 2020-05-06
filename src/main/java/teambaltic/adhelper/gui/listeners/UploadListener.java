@@ -27,12 +27,12 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.controller.ITransferController;
-import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.utils.FileUtils;
+import teambaltic.adhelper.utils.IntegrityChecker;
 
 // ############################################################################
 public class UploadListener implements ActionListener

@@ -56,7 +56,6 @@ import teambaltic.adhelper.controller.IPeriodDataController.EPeriodDataSelector;
 import teambaltic.adhelper.controller.IShutdownListener;
 import teambaltic.adhelper.controller.ITransferController;
 import teambaltic.adhelper.controller.InitHelper;
-import teambaltic.adhelper.controller.IntegrityChecker;
 import teambaltic.adhelper.gui.listeners.FinishListener;
 import teambaltic.adhelper.gui.listeners.GUIUpdater;
 import teambaltic.adhelper.gui.listeners.GeneratePDFReportListener;
@@ -76,6 +75,7 @@ import teambaltic.adhelper.model.settings.IUISettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
 import teambaltic.adhelper.utils.AppUpdater;
 import teambaltic.adhelper.utils.FileUtils;
+import teambaltic.adhelper.utils.IntegrityChecker;
 import teambaltic.adhelper.utils.Log4J;
 import teambaltic.swingappender.ui.SwingAppenderUI;
 
