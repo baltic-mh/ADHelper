@@ -1,35 +1,41 @@
 == Dateiformate
 
-Das grundlegende Dateiformat für den Austausch zwischen Vereinsverwaltungsprogramm und +ADHelper+ ist ".csv". Daneben werden einige Text-, Checksummen- und ZIP-Dateien verwendet.
+Das grundlegende Dateiformat für den Austausch zwischen Vereinsverwaltungsprogramm und +ADHelper+ ist ".csv".
+Daneben werden einige Text-, Checksummen- und ZIP-Dateien verwendet.
+
+Bei den ".csv"-Dateien muss die erste Zeile die Spaltenüberschriften enthalten und die Werte müssen durch ";" getrennt sein.
 
 === Basisdaten
 
-Die Datei der Basisdaten ist als '.csv'-Datei aufgebaut. 
+Die Datei der Basisdaten ist als '.csv'-Datei aufgebaut.
 
 WARNING: Die Datei muss nach ISO-8859-1 encodiert sein! (Weil in einer Spaltenüberschrift leider ein Umlaut auftaucht: "Verkn**ü**pfung"!)
  
 Alle Datumswerte in der Datei müssen im Format DD.MM.YYYY aufgeführt werden (z.B. 09.04.1958). Ein Datumswert von +00.00.000+ wird behandelt wie ein nicht vorhandener Wert.
 
 .Spalten der Datei +BasisDaten.csv+
-[cols="10,10,80",options="header,footer"]
+[cols="10,10,10,70",options="header"]
 |====================
-| Spaltenname   | Format    |  Anmerkung/Beispiel
-| Mitglieds_Nr  | Numerisch |  Muss eindeutig sein
-| Verknüpfung   | Numerisch |  Es muss einen gleichlautenden Eintrag bei                                        +Mitglieds_Nr+ geben
-| Vorname       | Beliebig  |  
-| Nachname      | Beliebig  |  
-| Geburtsdatum  | Datum     |  Format DD.MM.YYYY z.B. *09.04.1958*
-| Eintritt      | Datum     |  Format DD.MM.YYYY z.B. *01.02.2003*
-| Austritt      | Datum     |  
-| Beitragsart_1 | Auswahl   |  berücksichtigte Werte:
-    *Fördermitglied*,
+| Spaltenname   | Alias          | Format    |  Anmerkung/Beispiel
+| Mitglieds_Nr  | MitgliedID     | Numerisch |  Muss eindeutig sein
+| Verknüpfung   |                | Numerisch |  Es muss einen gleichlautenden Eintrag bei _Mitglieds_Nr_ geben
+| Vorname       |                | Beliebig  |  
+| Nachname      |                | Beliebig  |  
+| Geburtsdatum  |                | Datum     |  Format DD.MM.YYYY z.B. *09.04.1958*
+| Eintritt      | Eintritt_Datum | Datum     |  Format DD.MM.YYYY z.B. *01.02.2003*
+| Austritt      | Austritt_Datum | Datum     |  
+| Beitragsart_1 |                | Auswahl   |  berücksichtigte Werte: +
+    *Fördermitglied* +
     *Ehrenmitglied*
-| AD-Frei.Grund | Auswahl   |  mögliche Werte:    
-    *SUSTAINING("Fördermitglied")*,
-    *HONORY("Ehrenmitglied")*,
-    *MANAGEMENT*,
-    *REMOTENESS*,
+| AD-Frei.Grund | Zusatzfeld_02  | Auswahl   |  mögliche Werte: +  
+    *SUSTAINING("Fördermitglied")* +
+    *HONORY("Ehrenmitglied")* +
+    *MANAGEMENT* +
+    *REMOTENESS* +
     *INDIVIDUALREASON*
-| AD-Frei.von   | Datum     |  
-| AD-Frei.bis   | Datum     |  
+| AD-Frei.von   | Zusatzfeld_03  | Datum     |  
+| AD-Frei.bis   | Zusatzfeld_04  | Datum     |  
 |====================
+
+Das Vereinsverwaltungsprogramm hat in seiner früheren Version die Spaltenüberschriften so ausgegeben, wie sie in der obigen Tabelle in der Spalte "Spaltenname" angegeben sind.
+In der Version 4 haben sich diese Spaltennamen leider geändert. Daher wurde ADHelper so angepasst, dass die in der Spalte "Alias" aufgeführten Werte genauso interpretiert werden, wie die Werte in der ersten Spalte.

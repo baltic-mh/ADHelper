@@ -774,6 +774,7 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 <li><a href="#_anmerkungen_zu_stundenwerten_spezifisch_für_bestimmte_abrechnungszeiträume">6.2.1. Anmerkungen zu Stundenwerten spezifisch für bestimmte Abrechnungszeiträume</a></li>
 </ul>
 </li>
+<li><a href="#_spaltenüberschriften_basisdatei">6.3. Spaltenüberschriften Basisdatei</a></li>
 </ul>
 </li>
 <li><a href="#_dokumentation">7. Dokumentation</a>
@@ -1241,6 +1242,11 @@ Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!</p>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_COLUMNNAMESMAPPING</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ColumnNamesMapping.properties</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mapping der Spaltennamen der Basisdatei</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">FILENAME_REMOTEACCESSDATA</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">ServerZugangsDaten.properties</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -1360,6 +1366,60 @@ Die Syntax ist so, dass hinter dem Parameternamen ein Punkt folgen muss, dann da
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_spaltenüberschriften_basisdatei"><a class="anchor" href="#_spaltenüberschriften_basisdatei"></a>6.3. Spaltenüberschriften Basisdatei</h3>
+<div class="paragraph">
+<p>Die Daten, die vom Vereinsverwaltungsprogramm exportiert werden, haben sich mit Übergang auf Version SPG 4 leider geändert.
+Daher musste ein Mapping eingeführt werden, das die neuen Spaltennamen auf die alten abbildet.
+Das wird in der Datei <code>ColumnNamesMapping.properties</code> konfiguriert.</p>
+</div>
+<div class="paragraph">
+<p>Ort der Datei: <code>\src\main\resources\ColumnNamesMapping.properties</code></p>
+</div>
+<div class="paragraph">
+<p>Aktueller Inhalt (Stand April 2020):</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Tabelle 3. ColumnNamesMapping</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Spaltenüberschrift</th>
+<th class="tableblock halign-left valign-top">wird abgebildet auf</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MitgliedID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mitglieds_Nr</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eintritt_Datum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eintritt</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Austritt_Datum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Austritt</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zusatzfeld_02</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.Grund</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zusatzfeld_03</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.von</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zusatzfeld_04</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.bis</p></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1458,7 +1518,11 @@ Die Adresse des Repositories ist <code><a href="https://github.com/baltic-mh/ADH
 <h2 id="_dateiformate"><a class="anchor" href="#_dateiformate"></a>Anhang A: Dateiformate</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Das grundlegende Dateiformat für den Austausch zwischen Vereinsverwaltungsprogramm und ADHelper ist ".csv". Daneben werden einige Text-, Checksummen- und ZIP-Dateien verwendet.</p>
+<p>Das grundlegende Dateiformat für den Austausch zwischen Vereinsverwaltungsprogramm und ADHelper ist ".csv".
+Daneben werden einige Text-, Checksummen- und ZIP-Dateien verwendet.</p>
+</div>
+<div class="paragraph">
+<p>Bei den ".csv"-Dateien muss die erste Zeile die Spaltenüberschriften enthalten und die Werte müssen durch ";" getrennt sein.</p>
 </div>
 <div class="sect2">
 <h3 id="_basisdaten"><a class="anchor" href="#_basisdaten"></a>A.1. Basisdaten</h3>
@@ -1481,86 +1545,101 @@ Die Datei muss nach ISO-8859-1 encodiert sein! (Weil in einer Spaltenüberschrif
 <p>Alle Datumswerte in der Datei müssen im Format DD.MM.YYYY aufgeführt werden (z.B. 09.04.1958). Ein Datumswert von 00.00.000 wird behandelt wie ein nicht vorhandener Wert.</p>
 </div>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Tabelle 3. Spalten der Datei BasisDaten.csv</caption>
+<caption class="title">Tabelle 4. Spalten der Datei BasisDaten.csv</caption>
 <colgroup>
 <col style="width: 10%;">
 <col style="width: 10%;">
-<col style="width: 80%;">
+<col style="width: 10%;">
+<col style="width: 70%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Spaltenname</th>
+<th class="tableblock halign-left valign-top">Alias</th>
 <th class="tableblock halign-left valign-top">Format</th>
 <th class="tableblock halign-left valign-top">Anmerkung/Beispiel</th>
 </tr>
 </thead>
-<tfoot>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.bis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tfoot>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Mitglieds_Nr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MitgliedID</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Numerisch</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Muss eindeutig sein</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Verknüpfung</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Numerisch</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Es muss einen gleichlautenden Eintrag bei                                        Mitglieds_Nr geben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Es muss einen gleichlautenden Eintrag bei <em>Mitglieds_Nr</em> geben</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Vorname</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Beliebig</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Nachname</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Beliebig</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Geburtsdatum</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Format DD.MM.YYYY z.B. <strong>09.04.1958</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eintritt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eintritt_Datum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Format DD.MM.YYYY z.B. <strong>01.02.2003</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Austritt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Austritt_Datum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Beitragsart_1</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Auswahl</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">berücksichtigte Werte:
-    <strong>Fördermitglied</strong>,
+<td class="tableblock halign-left valign-top"><p class="tableblock">berücksichtigte Werte:<br>
+    <strong>Fördermitglied</strong><br>
     <strong>Ehrenmitglied</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.Grund</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zusatzfeld_02</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Auswahl</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mögliche Werte:
-    <strong>SUSTAINING("Fördermitglied")</strong>,
-    <strong>HONORY("Ehrenmitglied")</strong>,
-    <strong>MANAGEMENT</strong>,
-    <strong>REMOTENESS</strong>,
+<td class="tableblock halign-left valign-top"><p class="tableblock">mögliche Werte:<br>
+    <strong>SUSTAINING("Fördermitglied")</strong><br>
+    <strong>HONORY("Ehrenmitglied")</strong><br>
+    <strong>MANAGEMENT</strong><br>
+    <strong>REMOTENESS</strong><br>
     <strong>INDIVIDUALREASON</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.von</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zusatzfeld_03</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AD-Frei.bis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Zusatzfeld_04</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Datum</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Das Vereinsverwaltungsprogramm hat in seiner früheren Version die Spaltenüberschriften so ausgegeben, wie sie in der obigen Tabelle in der Spalte "Spaltenname" angegeben sind.
+In der Version 4 haben sich diese Spaltennamen leider geändert. Daher wurde ADHelper so angepasst, dass die in der Spalte "Alias" aufgeführten Werte genauso interpretiert werden, wie die Werte in der ersten Spalte.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1649,7 +1728,7 @@ Es sollte mit einem vertretbaren Aufwand möglich sein, jeden anderen Server sta
 <div id="footer">
 <div id="footer-text">
 Version 2.0<br>
-Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-27 23:15:22 +02:00
+Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-05-07 23:47:47 +02:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

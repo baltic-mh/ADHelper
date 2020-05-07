@@ -286,6 +286,7 @@ Die lokale Datei ist bei erster Gelegenheit wieder zu löschen!
 | FILENAME_FINISHED             | Abgeschlossen.txt         | 
 | FILENAME_UPLOADED             | Hochgeladen.txt           |
 | FILENAME_UISETTINGS           | UISettings.properties     |
+| FILENAME_COLUMNNAMESMAPPING   | ColumnNamesMapping.properties | Mapping der Spaltennamen der Basisdatei
 | FILENAME_REMOTEACCESSDATA     | ServerZugangsDaten.properties | 
 | FILENAME_CRYPT_PRIV           | private.key               | 
 | FILENAME_CRYPT_PUBL           | public.key                |
@@ -331,6 +332,31 @@ In diesem Jahr müssen also weiterhin insgesamt sechs Stunden Arbeitsdienst gele
 
 Es können nun Stundenwerte spezifisch für einen bestimmten Abrechnungszeitraum eingegeben werden. 
 Die Syntax ist so, dass hinter dem Parameternamen ein Punkt folgen muss, dann das Jahr des Abrechnungszeitraumes, ein Unterstrich und schießlich eine "1" oder "2" für das entsprechende Halbjahr. Wird für einen bestimmten Abrechnungszeitraum kein spezifischer Wert gefunden, wird der Wert ohne Angabe eines Abrechnungszeitraumes genommen.
+
+=== Spaltenüberschriften Basisdatei
+
+Die Daten, die vom Vereinsverwaltungsprogramm exportiert werden, haben sich mit Übergang auf Version SPG 4 leider geändert.
+Daher musste ein Mapping eingeführt werden, das die neuen Spaltennamen auf die alten abbildet.
+Das wird in der Datei `ColumnNamesMapping.properties` konfiguriert.
+
+Ort der Datei: `\src\main\resources\ColumnNamesMapping.properties`
+
+Aktueller Inhalt (Stand April 2020):
+
+.ColumnNamesMapping
+[options="header"]
+|=======================
+| Spaltenüberschrift | wird abgebildet auf 
+| MitgliedID         |  Mitglieds_Nr
+| Eintritt_Datum     |  Eintritt
+| Austritt_Datum     |  Austritt
+| Zusatzfeld_02      |  AD-Frei.Grund
+| Zusatzfeld_03      |  AD-Frei.von
+| Zusatzfeld_04      |  AD-Frei.bis
+|=======================
+
+
+___
 
 ////
 ==========================================================================
