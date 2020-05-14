@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1021000" version="1.21.0">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;BUGFIX&lt;/b&gt;
+    &lt;dd&gt;Arbeitsdiensteinträge können nun auch wieder gelöscht werden&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22965112" sourcedir="1021000"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="70808" sourcedir="1021000"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1021000"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="14511" sourcedir="1021000"/>
+    </arch>
+  </version>
   <version release="1020000" version="1.20.0">
     <description>
     &lt;dl&gt;
