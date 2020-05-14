@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1020000
+//RELEASE: 1021000
 ###############################################################################
-[NEU] Anpassung an geänderte Benennung der Spalten in SPG 4.0
+[BUGFIX] Arbeitsdiensteinträge können nun auch wieder gelöscht werden

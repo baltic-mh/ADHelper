@@ -428,13 +428,13 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
      */
     protected boolean writeToMember( final ADH_DataProvider fDataProvider, final ParticipationType fParticipationItem )
     {
-        if( fParticipationItem.getHours() == 0 ){
-            return false;
-        }
         final int aMemberID = fParticipationItem.getMemberID();
         final InfoForSingleMember aInfoForSingleMember = fDataProvider.get( aMemberID );
         IParticipationItemContainer<ParticipationType> aParticipationItemContainer = getParticipationItemContainer( aInfoForSingleMember );
         if( aParticipationItemContainer == null ){
+            if( fParticipationItem.getHours() == 0 ){
+                return false;
+            }
             aParticipationItemContainer = createParticipationItemContainer( aMemberID );
             setParticipationItemContainer( aInfoForSingleMember, aParticipationItemContainer );
         }
@@ -448,11 +448,14 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
                     aSkip = true;
                 } else {
                     aParticipationItemContainer.remove( aKnownParticipationItem );
+                    if( aParticipationItemContainer.getParticipationList().isEmpty() ) {
+                        setParticipationItemContainer( aInfoForSingleMember, null );
+                    }
                 }
                 break;
             }
         }
-        if( !aSkip ){
+        if( !aSkip && fParticipationItem.getHours() > 0 ){
             aParticipationItemContainer.add( fParticipationItem );
         }
         return !aSkip;
