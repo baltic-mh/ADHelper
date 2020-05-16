@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1021000
+//RELEASE: 1021001
 ###############################################################################
-[BUGFIX] Arbeitsdiensteinträge können nun auch wieder gelöscht werden
+[BUGFIX] Fix gegen unnötiges Update
