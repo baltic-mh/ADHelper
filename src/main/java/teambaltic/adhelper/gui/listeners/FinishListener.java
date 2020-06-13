@@ -62,6 +62,23 @@ public class FinishListener implements ActionListener
 
                 default:
             }
+        } else {
+
+            final Object[] options = {"Ich weiß, was ich tue!", "Nein, das war ein Versehen!"};
+            final int n = JOptionPane.showOptionDialog(null,
+                "Soll der Abrechnungszeitraum wirklich abgeschlossen werden?",
+                "Sind Sie ganz sicher?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                options,
+                options[1]);
+            switch( n ){
+                case 1:
+                    return;
+
+                default:
+            }
         }
 
         try{

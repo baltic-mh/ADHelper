@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1021001
+//RELEASE: 1022000
 ###############################################################################
-[BUGFIX] Fix gegen unnötiges Update
+[NEU] Bestätigungsdialog zum Abschließen eines Abrechnungszeitraumes
