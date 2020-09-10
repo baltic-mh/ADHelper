@@ -11,11 +11,14 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -23,6 +26,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -67,57 +71,123 @@ public class HalfyearTest
     // ########################################################################
 
     @Test
+    public void testBasic()
+    {
+        assertEquals( 2016, HY.getYear() );
+        assertEquals( EPart.FIRST, HY.getPart() );
+        assertEquals( sm_RefDate1, HY.getStart() );
+        assertEquals( sm_RefDate2, HY.getEnd() );
+    }
+
+    @Test
+    public void testConstructor_LocalDate()
+    {
+        final Halfyear aHY = new Halfyear( LocalDate.of(2016, Month.FEBRUARY, 29) );
+        assertEquals( sm_RefDate1, aHY.getStart() );
+        assertEquals( sm_RefDate2, aHY.getEnd() );
+    }
+
+    @Test
+    public void testConstructor_Year_Part()
+    {
+        final Halfyear aHY = new Halfyear( Year.of(2016), EPart.FIRST );
+        assertEquals( sm_RefDate1, aHY.getStart() );
+        assertEquals( sm_RefDate2, aHY.getEnd() );
+    }
+
+    @Test
+    public void testCreate()
+    {
+        assertNull( Halfyear.create( null ) );
+        assertNull( Halfyear.create( "" ) );
+        assertNull( Halfyear.create( "Unsinn" ) );
+        assertEquals( HY, Halfyear.create("2016-01-01 - 2016-06-30") );
+        final Halfyear aSecondHY = new Halfyear( Year.of(2016), EPart.SECOND );
+        assertEquals( aSecondHY, Halfyear.create("2016-07-15 - 2016-12-15") );
+    }
+
+    @Test
+    public void testNeigbours()
+    {
+        assertEquals( new Halfyear( 2015, EPart.SECOND ), HY.createPredeccessor() );
+        assertEquals( new Halfyear( 2016, EPart.SECOND ), HY.createSuccessor() );
+        final Halfyear aSecondHY = new Halfyear( Year.of(2016), EPart.SECOND );
+        assertEquals( new Halfyear( 2016, EPart.FIRST ), aSecondHY.createPredeccessor() );
+        assertEquals( new Halfyear( 2017, EPart.FIRST ), aSecondHY.createSuccessor() );
+    }
+
+    @Test
     public void testIsBeforeMyEnd()
     {
-
-        final boolean aBeforeMyEnd1 = HY.isBeforeMyEnd( sm_RefDate1 );
-        assertTrue("BeforeMyEnd1", aBeforeMyEnd1 );
-        final boolean aBeforeMyEnd2 = HY.isBeforeMyEnd( sm_RefDate2 );
-        assertTrue("BeforeMyEnd2", aBeforeMyEnd2 );
-        final boolean aBeforeMyEnd3 = HY.isBeforeMyEnd( sm_RefDate1_PreviousDay );
-        assertTrue("BeforeMyEnd3", aBeforeMyEnd3 );
-        final boolean aBeforeMyEnd4 = HY.isBeforeMyEnd( sm_RefDate2_NextDay );
-        assertFalse("BeforeMyEnd4", aBeforeMyEnd4 );
+        assertTrue(HY.isBeforeMyEnd( sm_RefDate1 ) );
+        assertTrue(HY.isBeforeMyEnd( sm_RefDate2 ) );
+        assertTrue(HY.isBeforeMyEnd( sm_RefDate1_PreviousDay ) );
+        assertFalse(HY.isBeforeMyEnd( sm_RefDate2_NextDay ) );
 
     }
 
     @Test
     public void testIsAfterMyStart()
     {
-        final boolean aAfterMyStart1 = HY.isAfterMyStart( sm_RefDate1 );
-        assertTrue("AfterMyStart1", aAfterMyStart1 );
-        final boolean aAfterMyStart2 = HY.isAfterMyStart( sm_RefDate2 );
-        assertTrue("AfterMyStart2", aAfterMyStart2 );
-        final boolean aAfterMyStart3 = HY.isAfterMyStart( sm_RefDate1_PreviousDay );
-        assertFalse("AfterMyStart3", aAfterMyStart3 );
-        final boolean aAfterMyStart4 = HY.isAfterMyStart( sm_RefDate2_NextDay );
-        assertTrue("AfterMyStart4", aAfterMyStart4 );
+        assertTrue(HY.isAfterMyStart( null ) );
+        assertTrue(HY.isAfterMyStart( sm_RefDate1 ) );
+        assertTrue(HY.isAfterMyStart( sm_RefDate2 ) );
+        assertFalse(HY.isAfterMyStart( sm_RefDate1_PreviousDay ) );
+        assertTrue(HY.isAfterMyStart( sm_RefDate2_NextDay ) );
     }
 
     @Test
     public void testIsBeforeMyStart()
     {
-        final boolean aBeforeMyStart1 = HY.isBeforeMyStart( sm_RefDate1 );
-        assertFalse("BeforeMyStart1", aBeforeMyStart1 );
-        final boolean aBeforeMyStart2 = HY.isBeforeMyStart( sm_RefDate2 );
-        assertFalse("BeforeMyStart2", aBeforeMyStart2 );
-        final boolean aBeforeMyStart3 = HY.isBeforeMyStart( sm_RefDate1_PreviousDay );
-        assertTrue("BeforeMyStart3", aBeforeMyStart3 );
-        final boolean aBeforeMyStart4 = HY.isBeforeMyStart( sm_RefDate2_NextDay );
-        assertFalse("BeforeMyStart4", aBeforeMyStart4 );
+        assertTrue(HY.isBeforeMyStart( null ) );
+        assertFalse(HY.isBeforeMyStart( sm_RefDate1 ) );
+        assertFalse(HY.isBeforeMyStart( sm_RefDate2 ) );
+        assertTrue(HY.isBeforeMyStart( sm_RefDate1_PreviousDay ) );
+        assertFalse(HY.isBeforeMyStart( sm_RefDate2_NextDay ) );
     }
 
     @Test
     public void testIsWithinMyBounds()
     {
-        final boolean aWithinMyBounds1 = HY.isWithinMyPeriod( sm_RefDate1 );
-        assertTrue("WithinMyBounds1", aWithinMyBounds1 );
-        final boolean aWithinMyBounds2 = HY.isWithinMyPeriod( sm_RefDate2 );
-        assertTrue("WithinMyBounds2", aWithinMyBounds2 );
-        final boolean aWithinMyBounds3 = HY.isWithinMyPeriod( sm_RefDate1_PreviousDay );
-        assertFalse("WithinMyBounds3", aWithinMyBounds3 );
-        final boolean aWithinMyBounds4 = HY.isWithinMyPeriod( sm_RefDate2_NextDay );
-        assertFalse("WithinMyBounds4", aWithinMyBounds4 );
+        assertTrue(HY.isWithinMyPeriod( (LocalDate)null ) );
+        assertTrue(HY.isWithinMyPeriod( (IPeriod)null ) );
+
+        assertTrue(HY.isWithinMyPeriod( sm_RefDate1 ) );
+        assertTrue(HY.isWithinMyPeriod( sm_RefDate2 ) );
+        assertFalse(HY.isWithinMyPeriod( sm_RefDate1_PreviousDay ) );
+        assertFalse(HY.isWithinMyPeriod( sm_RefDate2_NextDay ) );
+
+        assertTrue( HY.isWithinMyPeriod( new Halfyear( 2016, EPart.FIRST)));
+
+        final FreeFromDuty aOtherPeriod = new FreeFromDuty( 0, null);
+        assertTrue( HY.isWithinMyPeriod( aOtherPeriod));
+        // Start vor Beginn der Periode - Ende == null
+        aOtherPeriod.setFrom(sm_RefDate1_PreviousDay);
+        assertFalse( HY.isWithinMyPeriod( aOtherPeriod));
+        // Start == null - Ende vor Beginn der Periode
+        aOtherPeriod.setFrom(null);
+        aOtherPeriod.setUntil(sm_RefDate1_PreviousDay);
+        assertFalse( HY.isWithinMyPeriod( aOtherPeriod));
+        // Start und Ende vor Beginn der Periode
+        aOtherPeriod.setFrom(sm_RefDate1_PreviousDay);
+        assertFalse( HY.isWithinMyPeriod( aOtherPeriod));
+        // Start == null - Ende innerhalb der Periode
+        aOtherPeriod.setFrom(null);
+        aOtherPeriod.setUntil(sm_RefDate2);
+        assertTrue( HY.isWithinMyPeriod( aOtherPeriod));
+        // Start und Ende innerhalb der Periode
+        aOtherPeriod.setFrom(sm_RefDate1);
+        aOtherPeriod.setUntil(sm_RefDate2);
+        assertTrue( HY.isWithinMyPeriod( aOtherPeriod));
+        // Start == null - Ende außerhalb der Periode
+        aOtherPeriod.setFrom(null);
+        aOtherPeriod.setUntil(sm_RefDate2_NextDay);
+        assertFalse( HY.isWithinMyPeriod( aOtherPeriod));
+    }
+
+    @Test
+    public void equalsContract() {
+        EqualsVerifier.simple().forClass(Halfyear.class).verify();
     }
 }
 

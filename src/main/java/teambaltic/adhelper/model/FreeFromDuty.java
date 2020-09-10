@@ -46,8 +46,8 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
     // ------------------------------------------------------------------------
     private final int m_MemberID;
     @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
+    public int getID() { return m_MemberID; }
+    public int getMemberID() { return getID(); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
@@ -80,7 +80,7 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
     @Override
     public String toString()
     {
-        final StringBuffer aSB = new StringBuffer( String.format( "%s ", getReason().getStringRep() ) );
+        final StringBuffer aSB = new StringBuffer( String.format( "%s", getReason().getStringRep() ) );
         final LocalDate aFrom = getFrom();
         if( aFrom != null ){
             aSB.append( " von "+aFrom );

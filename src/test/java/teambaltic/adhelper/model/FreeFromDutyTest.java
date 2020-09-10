@@ -11,8 +11,10 @@
 // ############################################################################
 package teambaltic.adhelper.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
@@ -51,6 +53,45 @@ public class FreeFromDutyTest
     // ########################################################################
     // TESTS
     // ########################################################################
+
+    @Test
+    public void testBasic()
+    {
+        final FreeFromDuty aFFD = new FreeFromDuty(42, REASON.INDIVIDUALREASON);
+        assertNotNull("FFD", aFFD);
+        assertEquals( 42, aFFD.getMemberID() );
+        assertEquals( REASON.INDIVIDUALREASON, aFFD.getReason() );
+        assertNull( aFFD.getStart() );
+        assertNull( aFFD.getEnd() );
+        assertEquals( 1, aFFD.compareTo( new FreeFromDuty(41, null)));
+        assertEquals( 0, aFFD.compareTo( new FreeFromDuty(42, null)));
+        assertEquals(-1, aFFD.compareTo( new FreeFromDuty(43, null)));
+    }
+
+    @Test
+    public void testToString()
+    {
+        final FreeFromDuty aFFD = new FreeFromDuty(42, REASON.INDIVIDUALREASON);
+        aFFD.setFrom( LocalDate.of( 2000, Month.FEBRUARY, 16 ) );
+        aFFD.setUntil( LocalDate.of( 2000, Month.FEBRUARY, 16 ) );
+        assertEquals( "INDIVIDUALREASON von 2000-02-01 bis 2000-02-29", aFFD.toString() );
+    }
+
+    @Test
+    public void testBounds()
+    {
+        final FreeFromDuty aFFD = new FreeFromDuty(42, REASON.INDIVIDUALREASON);
+        aFFD.setFrom( LocalDate.of( 2000, Month.FEBRUARY, 16 ) );
+        assertEquals(LocalDate.of( 2000, Month.FEBRUARY, 1 ), aFFD.getFrom() );
+        aFFD.setFrom( null );
+        assertNull( aFFD.getFrom() );
+        aFFD.setUntil( LocalDate.of( 2000, Month.FEBRUARY, 16 ) );
+        assertEquals(LocalDate.of( 2000, Month.FEBRUARY, 29 ), aFFD.getUntil() );
+        aFFD.setUntil( null );
+        assertNull( aFFD.getUntil() );
+        assertNull( aFFD.createPredeccessor() );
+        assertNull( aFFD.createSuccessor() );
+    }
 
     @Test
     public void test_isWithinMyPeriod()
