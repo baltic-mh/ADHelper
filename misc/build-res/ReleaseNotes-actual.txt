@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1022000
+//RELEASE: 1023000
 ###############################################################################
-[NEU] Bestätigungsdialog zum Abschließen eines Abrechnungszeitraumes
+[ÄNDERUNG] Unit-Tests überarbeitet und einige Basisklassen eingeführt
