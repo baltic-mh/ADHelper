@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1023000	Version: 1.23.0	Datum: 2020-09-10
+[ÄNDERUNG] Unit-Tests überarbeitet und einige Basisklassen eingeführt
+================================================================================
 Release: 1022000	Version: 1.22.0	Datum: 2020-06-13
 [NEU] Bestätigungsdialog zum Abschließen eines Abrechnungszeitraumes
 ================================================================================
