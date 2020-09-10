@@ -64,7 +64,10 @@ public class ZipUtils
     public static void unzip(final Path fFileToUnzip) throws Exception
     {
         final Path aRoot = fFileToUnzip.getRoot();
-        final String aPath = aRoot+FilenameUtils.getPath( fFileToUnzip.toString() );
+        String aPath = FilenameUtils.getPath( fFileToUnzip.toString() );
+        if( aRoot != null ) {
+            aPath = aRoot+aPath;
+        }
         final String aBaseName = FilenameUtils.getBaseName( fFileToUnzip.getFileName().toString() );
         final String aRootFolder = Paths.get(aPath, aBaseName).toString();
         ZipFile zipFile = null;
