@@ -14,16 +14,9 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class Balance implements IIdentifiedItem<Balance>
+public class Balance extends AIdentifiedItem<Balance>
 {
 //    private static final Logger sm_Log = Logger.getLogger(Balance.class);
-
-    // ------------------------------------------------------------------------
-    private final int m_MemberID;
-    @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private int m_Value_Original;
@@ -51,7 +44,7 @@ public class Balance implements IIdentifiedItem<Balance>
 
     public Balance( final int fMemberID )
     {
-        m_MemberID       = fMemberID;
+        super(fMemberID);
     }
 
     public Balance(final int fMemberID, final IPeriod fPeriod, final int fValue_Original)

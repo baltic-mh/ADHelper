@@ -127,6 +127,15 @@ public final class DateUtils
         return fDate;
     }
 
+    public static LocalDate readFrom( final String fDateString )
+    {
+        final String[] aParts = fDateString.split( "\\." );
+        final int aYear = Integer.parseInt( aParts[2] );
+        final int aMonth = Integer.parseInt( aParts[1] );
+        final int aDayOfMonth = Integer.parseInt( aParts[0] );
+        return LocalDate.of( aYear, aMonth, aDayOfMonth );
+    }
+
 }
 
 // ############################################################################

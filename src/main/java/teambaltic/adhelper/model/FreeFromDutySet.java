@@ -20,15 +20,8 @@ import java.util.Map;
 import teambaltic.adhelper.model.FreeFromDuty.REASON;
 
 // ############################################################################
-public class FreeFromDutySet implements IIdentifiedItem<FreeFromDutySet>
+public class FreeFromDutySet extends AIdentifiedItem<FreeFromDutySet>
 {
-    // ------------------------------------------------------------------------
-    private final int m_MemberID;
-    @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
-    // ------------------------------------------------------------------------
-
     // ------------------------------------------------------------------------
     private final Map<REASON, FreeFromDuty> m_FreeFromDutyMap;
     public Collection<FreeFromDuty> getFreeFromDutyItems(final IPeriod fPeriod){
@@ -38,8 +31,8 @@ public class FreeFromDutySet implements IIdentifiedItem<FreeFromDutySet>
 
     public FreeFromDutySet( final int fMemberID )
     {
+        super( fMemberID );
         m_FreeFromDutyMap = new HashMap<>();
-        m_MemberID = fMemberID;
     }
 
     public void addItem( final FreeFromDuty fItem )

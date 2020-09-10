@@ -14,14 +14,8 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class ClubMember implements IClubMember
+public class ClubMember extends AIdentifiedItem<IClubMember> implements IClubMember
 {
-    // ------------------------------------------------------------------------
-    private final int m_ID;
-    @Override
-    public int getID(){ return m_ID; }
-    // ------------------------------------------------------------------------
-
     // ------------------------------------------------------------------------
     private int m_LinkID;
     @Override
@@ -64,7 +58,7 @@ public class ClubMember implements IClubMember
 
     public ClubMember(final int fID)
     {
-        m_ID = fID;
+        super( fID );
     }
 
     @Override

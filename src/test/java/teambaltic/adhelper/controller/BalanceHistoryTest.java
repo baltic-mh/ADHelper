@@ -32,7 +32,7 @@ public class BalanceHistoryTest
 {
     private static final Logger sm_Log = Logger.getLogger(BalanceHistoryTest.class);
 
-    private static final String FOLDERNAME_ROOT = "misc/TestResources/TestDaten1";
+    private static final String FOLDERNAME_ROOT = "misc/TestResources/ReferenzDaten";
 
     private static ADH_DataProvider DATAPROVIDER;
     private static PeriodData ACTIVEPERIOD;

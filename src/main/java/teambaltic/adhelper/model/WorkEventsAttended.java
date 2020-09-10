@@ -19,17 +19,11 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>,
-    IParticipationItemContainer<WorkEvent>
+public class WorkEventsAttended
+    extends AIdentifiedItem<WorkEventsAttended>
+    implements IParticipationItemContainer<WorkEvent>
 {
     private static final Logger sm_Log = Logger.getLogger(WorkEventsAttended.class);
-
-    // ------------------------------------------------------------------------
-    private final int m_MemberID;
-    @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final List<WorkEvent> m_WorkEvents;
@@ -48,7 +42,7 @@ public class WorkEventsAttended implements IIdentifiedItem<WorkEventsAttended>,
 
     public WorkEventsAttended( final int fMemberID )
     {
-        m_MemberID   = fMemberID;
+        super( fMemberID );
         m_WorkEvents = new ArrayList<>();
         m_WorkEventsOfRelatives = new HashMap<>();
     }

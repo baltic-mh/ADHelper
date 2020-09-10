@@ -13,15 +13,8 @@ package teambaltic.adhelper.model;
 // ############################################################################
 
 // ############################################################################
-public class DutyCharge implements IIdentifiedItem<DutyCharge>
+public class DutyCharge extends AIdentifiedItem<DutyCharge>
 {
-    // ------------------------------------------------------------------------
-    private final int m_MemberID;
-    @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
-    // ------------------------------------------------------------------------
-
     // ------------------------------------------------------------------------
     private int m_HoursWorked;
     public int getHoursWorked(){ return m_HoursWorked; }
@@ -48,7 +41,7 @@ public class DutyCharge implements IIdentifiedItem<DutyCharge>
 
     public DutyCharge( final int fMemberID )
     {
-        m_MemberID = fMemberID;
+        super( fMemberID );
     }
 
     @Override

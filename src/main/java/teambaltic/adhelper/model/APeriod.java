@@ -88,6 +88,9 @@ public abstract class APeriod implements IPeriod
         return isAfterMyStart( fDate ) && isBeforeMyEnd( fDate );
     }
 
+    /**
+     * Liefert true, wenn die andere Periode diese ganz oder teilweise überdeckt!
+     */
     @Override
     public boolean isWithinMyPeriod( final IPeriod fOther )
     {
@@ -100,10 +103,10 @@ public abstract class APeriod implements IPeriod
             if( aOtherEnd == null ){
                 return true;
             }
-            return isWithinMyPeriod( aOtherEnd );
+            return isAfterMyStart( aOtherEnd );
         }
         if( aOtherEnd == null ){
-            return isWithinMyPeriod( aOtherStart );
+            return isBeforeMyEnd( aOtherStart );
         }
 
         if( isBeforeMyEnd( aOtherStart ) && isAfterMyStart( aOtherEnd ) ){

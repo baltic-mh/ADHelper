@@ -17,16 +17,9 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class AdjustmentsTaken implements IIdentifiedItem<AdjustmentsTaken>, IParticipationItemContainer<Adjustment>
+public class AdjustmentsTaken extends AIdentifiedItem<AdjustmentsTaken> implements IParticipationItemContainer<Adjustment>
 {
     private static final Logger sm_Log = Logger.getLogger(AdjustmentsTaken.class);
-
-    // ------------------------------------------------------------------------
-    private final int m_MemberID;
-    @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final List<Adjustment> m_AdjustmentList;
@@ -37,7 +30,7 @@ public class AdjustmentsTaken implements IIdentifiedItem<AdjustmentsTaken>, IPar
 
     public AdjustmentsTaken( final int fMemberID )
     {
-        m_MemberID         = fMemberID;
+        super(fMemberID);
         m_AdjustmentList   = new ArrayList<>();
     }
 

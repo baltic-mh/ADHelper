@@ -39,14 +39,10 @@ public class FreeFromDutyCalculator
             final IPeriod fInvoicingPeriod,
             final IClubMember fMember )
     {
-        FreeFromDuty aFFD = createFFD_TooYoung( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
-        aFFD = createFFD_TooOld( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
-        aFFD = createFFD_NoLongerMember( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
-        aFFD = createFFD_DutyNotYetEffective( fInvoicingPeriod, fMember );
-        fFreeFromDutySet.addItem( aFFD );
+        fFreeFromDutySet.addItem( createFFD_TooYoung( fInvoicingPeriod, fMember ) );
+        fFreeFromDutySet.addItem( createFFD_TooOld  ( fInvoicingPeriod, fMember ) );
+        fFreeFromDutySet.addItem( createFFD_NoLongerMember( fInvoicingPeriod, fMember ) );
+        fFreeFromDutySet.addItem( createFFD_DutyNotYetEffective( fInvoicingPeriod, fMember ) );
     }
 
     private FreeFromDuty createFFD_TooYoung( final IPeriod fInvoicingPeriod, final IClubMember fMember )

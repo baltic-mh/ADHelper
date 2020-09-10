@@ -20,6 +20,7 @@ import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.Halfyear;
 import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.IPeriod;
+import teambaltic.adhelper.utils.DateUtils;
 
 // ############################################################################
 public class BalanceFactory implements IItemFactory<Balance>
@@ -63,7 +64,7 @@ public class BalanceFactory implements IItemFactory<Balance>
         if( aBalanceValueString == null || "".equals(aBalanceValueString) ){
             return;
         }
-        final LocalDate aValidFrom = readValidFrom( aBalanceValidFromString );
+        final LocalDate aValidFrom = DateUtils.readFrom( aBalanceValidFromString );
         populateItem( fItem, aBalanceValueString, aValidFrom );
     }
 
@@ -81,7 +82,7 @@ public class BalanceFactory implements IItemFactory<Balance>
         if( aBalanceValueString == null || "".equals(aBalanceValueString) ){
             return;
         }
-        final LocalDate aValidFrom = readValidFrom( aBalanceValidFromString );
+        final LocalDate aValidFrom = DateUtils.readFrom( aBalanceValidFromString );
         final IPeriod aPeriod = new Halfyear( aValidFrom );
         final LocalDate aValidFrom_Old = aPeriod.createPredeccessor().getStart();
         populateItem( fItem, aBalanceValueString, aValidFrom_Old );
@@ -97,16 +98,6 @@ public class BalanceFactory implements IItemFactory<Balance>
         }catch( final NumberFormatException fEx ){
             sm_Log.warn("Guthaben-Angabe ist keine Zahl: "+ fBalanceValueString );
         }
-    }
-
-    private static LocalDate readValidFrom( final String aBalanceValidOnString )
-    {
-        final String[] aParts = aBalanceValidOnString.split( "\\." );
-        final int aYear = Integer.parseInt( aParts[2] );
-        final int aMonth = Integer.parseInt( aParts[1] );
-        final int aDayOfMonth = Integer.parseInt( aParts[0] );
-        final LocalDate aValidFrom = LocalDate.of( aYear, aMonth, aDayOfMonth );
-        return aValidFrom;
     }
 
 }

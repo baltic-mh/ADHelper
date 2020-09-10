@@ -11,6 +11,7 @@
 // ############################################################################
 package teambaltic.adhelper.inout;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -23,8 +24,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import teambaltic.adhelper.controller.ListProvider;
+import teambaltic.adhelper.model.FreeFromDuty;
+import teambaltic.adhelper.model.FreeFromDuty.REASON;
 import teambaltic.adhelper.model.FreeFromDutySet;
+import teambaltic.adhelper.model.Halfyear;
+import teambaltic.adhelper.model.Halfyear.EPart;
 import teambaltic.adhelper.model.IClubMember;
+import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.InfoForSingleMember;
 import teambaltic.adhelper.utils.Log4J;
 
@@ -59,18 +65,26 @@ public class BaseInfoReaderTest
     @Test
     public void test()
     {
-        final File aFile = new File("misc/TestResources/Tabellen/BasisDaten.csv");
+        final File aFile = new File("misc/TestResources/ReferenzDaten/Daten/BasisDaten.csv");
         final BaseDataReader aReader = new BaseDataReader( aFile );
         final ListProvider<InfoForSingleMember> aInfoListProvider = new ListProvider<>();
         try{
             aReader.read(  aInfoListProvider, null, 0 );
             final Collection<InfoForSingleMember> aInfoList = aInfoListProvider.getAll();
+            assertEquals( 4, aInfoList.size() );
             for( final InfoForSingleMember aInfo : aInfoList ){
                 final IClubMember aMember = aInfo.getMember();
                 final StringBuffer aSB = new StringBuffer( "Mitglied: "+aMember );
                 final FreeFromDutySet aFreeFromDutySet = aInfo.getFreeFromDutySet();
                 if( aFreeFromDutySet != null ){
                     aSB.append( " | AD-Befreiung: "+aFreeFromDutySet );
+                    if( aMember.getID() == 10174 ) {
+                        final IPeriod aPeriod = new Halfyear( 2020, EPart.FIRST);
+                        final Collection<FreeFromDuty> aFreeFromDutyItems = aFreeFromDutySet.getFreeFromDutyItems(aPeriod );
+                        assertEquals(1, aFreeFromDutyItems.size());
+                        // Es gibt nur ein Element - aber an das kommen wir nur über eine Schleife ran :-|
+                        aFreeFromDutyItems.forEach( it -> assertEquals( REASON.MANAGEMENT, it.getReason() ) );
+                    }
                 }
                 sm_Log.info( aSB.toString() );
             }

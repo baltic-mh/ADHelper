@@ -22,16 +22,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
+public class BalanceHistory extends AIdentifiedItem<BalanceHistory>
 {
     private static final Logger sm_Log = Logger.getLogger(BalanceHistory.class);
-
-    // ------------------------------------------------------------------------
-    private final int m_MemberID;
-    @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private final Map<LocalDate, Balance> m_BalanceMap;
@@ -64,7 +57,7 @@ public class BalanceHistory implements IIdentifiedItem<BalanceHistory>
 
     public BalanceHistory( final int fMemberID )
     {
-        m_MemberID   = fMemberID;
+        super( fMemberID );
         m_BalanceMap = new LinkedHashMap<>();
         m_ValidFromList = new ArrayList<>();
     }

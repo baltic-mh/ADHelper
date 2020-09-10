@@ -49,9 +49,9 @@ public class DutyCalculatorTest
     private static FreeFromDutyCalculator sm_FFDCalculator;
     private static final Halfyear sm_InvoicingPeriod = new Halfyear( 2000, EPart.FIRST );
 
-    private InfoForSingleMember sm_Info;
-    private ClubMember sm_Member;
-    private FreeFromDutySet sm_FreeFromDutySet;
+    private InfoForSingleMember m_Info;
+    private ClubMember m_Member;
+    private FreeFromDutySet m_FreeFromDutySet;
 
     // ########################################################################
     // INITIALISIERUNG
@@ -71,11 +71,11 @@ public class DutyCalculatorTest
     @Before
     public void initBeforeEachTest()
     {
-        sm_Info   = new InfoForSingleMember( ID );
-        sm_Member = new ClubMember(ID);
-        sm_Info.setMember( sm_Member );
-        sm_FreeFromDutySet = new FreeFromDutySet( ID );
-        sm_Info.setFreeFromDutySet( sm_FreeFromDutySet );
+        m_Info   = new InfoForSingleMember( ID );
+        m_Member = new ClubMember(ID);
+        m_Info.setMember( m_Member );
+        m_FreeFromDutySet = new FreeFromDutySet( ID );
+        m_Info.setFreeFromDutySet( m_FreeFromDutySet );
     }
 
     @After
@@ -91,7 +91,7 @@ public class DutyCalculatorTest
     public void test_SimplyTooOld()
     {
         final String aTestName = "SimplyTooOld";
-        sm_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
+        m_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
         check( aTestName, 0, REASON.TOO_OLD );
 
     }
@@ -100,9 +100,9 @@ public class DutyCalculatorTest
     public void test_ZuAltUndAustrittImMaerz()
     {
         final String aTestName = "ZuAltUndAustrittImMaerz";
-        sm_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
+        m_Member.setBirthday( LocalDate.of( 1930, 1, 1 ) );
         // Der ganz alte Opa tritt zum ersten März aus:
-        sm_Member.setMemberUntil( LocalDate.of( 2000, 3, 1 ) );
+        m_Member.setMemberUntil( LocalDate.of( 2000, 3, 1 ) );
 
         check( aTestName, 0, REASON.TOO_OLD, REASON.NO_LONGER_MEMBER );
 
@@ -112,7 +112,7 @@ public class DutyCalculatorTest
     public void test_ErstImMaerzZuAlt()
     {
         final String aTestName = "ErstImMaerzZuAlt";
-        sm_Member.setBirthday( LocalDate.of( 1940, 3, 31 ) );
+        m_Member.setBirthday( LocalDate.of( 1940, 3, 31 ) );
 
         check( aTestName, 2, REASON.TOO_OLD );
 
@@ -122,9 +122,9 @@ public class DutyCalculatorTest
     public void test_ErstImMaerzZuAltAberAustrittImFebruar()
     {
         final String aTestName = "ErstImMaerzZuAltAberAustrittImFebruar";
-        sm_Member.setBirthday( LocalDate.of( 1940, 3, 31 ) );
+        m_Member.setBirthday( LocalDate.of( 1940, 3, 31 ) );
         // (bevor er in den Genuss kommt, alt genug zu sein, ist er ausgetreten :-/
-        sm_Member.setMemberUntil( LocalDate.of( 2000, 2, 29 ) );
+        m_Member.setMemberUntil( LocalDate.of( 2000, 1, 29 ) );
 
         check( aTestName, 1, REASON.NO_LONGER_MEMBER, REASON.TOO_OLD );
 
@@ -134,7 +134,7 @@ public class DutyCalculatorTest
     public void test_NORMAL_MEMBER()
     {
         final String aTestName = "NORMAL_MEMBER";
-        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
+        m_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
 
         check( aTestName, 6 );
     }
@@ -143,9 +143,9 @@ public class DutyCalculatorTest
     public void test_AusTrittImApril()
     {
         final String aTestName = "AustrittImApril";
-        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
+        m_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
         // Der MittelMann tritt zum ersten April aus:
-        sm_Member.setMemberUntil( LocalDate.of( 2000, 4, 1 ) );
+        m_Member.setMemberUntil( LocalDate.of( 2000, 3, 31 ) );
         check( aTestName, 3, REASON.NO_LONGER_MEMBER );
     }
 
@@ -153,8 +153,8 @@ public class DutyCalculatorTest
     public void test_EintrittImOktoberImVorjahr()
     {
         final String aTestName = "EintrittImOktoberImVorjahr";
-        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
-        sm_Member.setMemberFrom( LocalDate.of( 1999, 10, 1 ) );
+        m_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
+        m_Member.setMemberFrom( LocalDate.of( 1999, 10, 1 ) );
         check( aTestName, 3, REASON.DUTY_NOT_YET_EFFECTIVE );
     }
 
@@ -162,8 +162,8 @@ public class DutyCalculatorTest
     public void test_EintrittImJanuar()
     {
         final String aTestName = "EintrittImJanuar";
-        sm_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
-        sm_Member.setMemberFrom( LocalDate.of( 2000, 1, 1 ) );
+        m_Member.setBirthday( LocalDate.of( 1950, 3, 1 ) );
+        m_Member.setMemberFrom( LocalDate.of( 2000, 1, 1 ) );
         check( aTestName, 0, REASON.DUTY_NOT_YET_EFFECTIVE );
     }
 
@@ -171,7 +171,7 @@ public class DutyCalculatorTest
     public void test_TOO_YOUNG()
     {
         final String aTestName = "viel zu Jung";
-        sm_Member.setBirthday( LocalDate.of( 1990, 4, 30 ) );
+        m_Member.setBirthday( LocalDate.of( 1990, 4, 30 ) );
         check( aTestName, 0, REASON.TOO_YOUNG );
     }
 
@@ -179,7 +179,7 @@ public class DutyCalculatorTest
     public void test_ZuJungBisEndeMaerz()
     {
         final String aTestName = "ZuJungBisEndeMaerz";
-        sm_Member.setBirthday( LocalDate.of( 1984, 3, 31 ) );
+        m_Member.setBirthday( LocalDate.of( 1984, 3, 31 ) );
         check( aTestName, 3, REASON.TOO_YOUNG );
     }
 
@@ -187,22 +187,26 @@ public class DutyCalculatorTest
     public void test_ZuJungBisEndeMaerzAusTrittImJuni()
     {
         final String aTestName = "ZuJungBisEndeMaerzAusTrittImJuni";
-        sm_Member.setBirthday( LocalDate.of( 1984, 3, 31 ) );
-        sm_Member.setMemberUntil( LocalDate.of( 2000, 6, 1 ) );
+        m_Member.setBirthday( LocalDate.of( 1984, 3, 31 ) );
+        m_Member.setMemberUntil( LocalDate.of( 2000, 5, 31 ) );
         // Das ältere Kücken tritt zum ersten Juni aus:
         // er wird am 1.4. arbeitsdienstpflichtig und steigt zum 1.6. aus.
         // Also ist er für die Monate 1-3 nicht dienstpflichtig,
         // für die Monate 4 und 5 dienstpflichtig
         // und für Monat 6 wieder nicht dienstpflichtig.
         // Also 2 von 6 Monaten (- sind 1/3 = eine Stunde!)
+        // ACHTUNG: Das ist nur theoretischer Natur!
+        //          Offiziell ist ein Austritt nur zum Ende eines
+        //          Quartals möglich! Das wird im Programm aber NICHT
+        //          überprüft! Das ist Sache der Mitgliederverwaltung!
         check( aTestName, 2, REASON.TOO_YOUNG, REASON.NO_LONGER_MEMBER );
     }
 
     private void check( final String fTestName, final int fExp_MonthsDue, final REASON ... fExp_Reasons )
     {
-        sm_FFDCalculator.populateFFDSetFromMemberData( sm_FreeFromDutySet, sm_InvoicingPeriod, sm_Member );
+        sm_FFDCalculator.populateFFDSetFromMemberData( m_FreeFromDutySet, sm_InvoicingPeriod, m_Member );
 
-        final Collection<FreeFromDuty> aEffectiveItems = sm_Info.getFreeFromDutyItems(sm_InvoicingPeriod);
+        final Collection<FreeFromDuty> aEffectiveItems = m_Info.getFreeFromDutyItems(sm_InvoicingPeriod);
         assertEquals(fTestName+": EffectiveFFDs.size", fExp_Reasons.length, aEffectiveItems.size());
         final List<REASON> aReasonList = Arrays.asList( fExp_Reasons );
         for( final Iterator<FreeFromDuty> aIterator = aEffectiveItems.iterator(); aIterator.hasNext(); ){

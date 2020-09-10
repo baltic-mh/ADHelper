@@ -226,7 +226,7 @@ public class SingletonWatcher implements ISingletonWatcher
         }
     }
 
-    private Path createBusyFile()
+    Path createBusyFile()
     {
         try{
             final Path aLocalFile = Files.createTempFile( sm_BusyFileBaseName, sm_BusyFileExt );

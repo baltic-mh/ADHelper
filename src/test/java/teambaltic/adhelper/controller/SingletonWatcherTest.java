@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,7 +37,7 @@ import teambaltic.adhelper.utils.Log4J;
 // ############################################################################
 public class SingletonWatcherTest
 {
-//    private static final Logger sm_Log = Logger.getLogger(SingletonWatcherTest.class);
+    private static final Logger sm_Log = Logger.getLogger(SingletonWatcherTest.class);
     private static final Path sm_FremderMann = Paths.get( "misc", "TestResources", "SingletonWatcher", "BusyFile.txt" );
     private static final Path sm_LocalPath   = Paths.get( "misc", "SandBox", "BusyFile.txt" );
 
@@ -82,6 +83,13 @@ public class SingletonWatcherTest
         int aCnt_Download   = aRemoteAccess.getCnt_Download();
         assertEquals("DownloadCnt", 1, aCnt_Download);
 
+        final Path aBusyFile = aSW.createBusyFile();
+        try {
+            Files.copy( aBusyFile, sm_LocalPath, StandardCopyOption.REPLACE_EXISTING );
+        } catch ( final IOException fEx ) {
+            fail(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
+        }
+
         // Dann kommt ein fremder Mann;
         try{
             Files.createDirectories(sm_LocalPath.getParent());
@@ -114,7 +122,7 @@ public class SingletonWatcherTest
         aCnt_Download   = aRemoteAccess.getCnt_Download();
         assertEquals("DownloadCnt", 4, aCnt_Download);
 
-        try{ Thread.sleep( 5000L ); }catch( final InterruptedException fEx ){/**/}
+        try{ Thread.sleep( 6000L ); }catch( final InterruptedException fEx ){/**/}
         final int aCnt_Upload     = aRemoteAccess.getCnt_Upload();
         assertTrue("UploadCnt="+aCnt_Upload, aCnt_Upload >= 5 );
 
@@ -152,6 +160,7 @@ public class SingletonWatcherTest
         public void upload( final LocalRemotePathPair fPathPair ) throws Exception
         {
             m_Cnt_Upload++;
+            sm_Log.info(m_Cnt_Upload+". Upload: "+fPathPair);
             Files.copy( fPathPair.getLocal(), m_MyRemotePath , StandardCopyOption.REPLACE_EXISTING );
         }
 
@@ -159,6 +168,7 @@ public class SingletonWatcherTest
         public boolean download( final LocalRemotePathPair fPathPair ) throws Exception
         {
             m_Cnt_Download++;
+            sm_Log.info(m_Cnt_Download+". Download: "+fPathPair);
             Files.copy( m_MyRemotePath, fPathPair.getLocal(), StandardCopyOption.REPLACE_EXISTING );
             return true;
         }
@@ -167,6 +177,7 @@ public class SingletonWatcherTest
         public void delete( final Path fRemotePath ) throws Exception
         {
             m_Cnt_Delete++;
+            sm_Log.info(m_Cnt_Delete+". Delete: "+fRemotePath);
             Files.delete( m_MyRemotePath );
         }
 

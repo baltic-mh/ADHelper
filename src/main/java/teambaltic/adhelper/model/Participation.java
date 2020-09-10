@@ -14,15 +14,8 @@ package teambaltic.adhelper.model;
 import java.time.LocalDate;
 
 // ############################################################################
-public class Participation implements IIdentifiedItem<Participation>
+public class Participation extends AIdentifiedItem<Participation>
 {
-    // ------------------------------------------------------------------------
-    private final int m_MemberID;
-    @Override
-    public int getID() { return getMemberID(); }
-    public int getMemberID() { return m_MemberID; }
-    // ------------------------------------------------------------------------
-
     // ------------------------------------------------------------------------
     private LocalDate m_Date;
     public LocalDate getDate(){ return m_Date; }
@@ -37,7 +30,7 @@ public class Participation implements IIdentifiedItem<Participation>
 
     public Participation( final int fMemberID )
     {
-        m_MemberID = fMemberID;
+        super( fMemberID );
     }
 
     @Override
@@ -53,7 +46,6 @@ public class Participation implements IIdentifiedItem<Participation>
         int result = 1;
         result = prime * result + ( ( m_Date == null ) ? 0 : m_Date.hashCode() );
         result = prime * result + m_Hours;
-        result = prime * result + m_MemberID;
         return result;
     }
 
@@ -73,8 +65,6 @@ public class Participation implements IIdentifiedItem<Participation>
         }else if( !m_Date.equals( other.m_Date ) )
             return false;
         if( m_Hours != other.m_Hours )
-            return false;
-        if( m_MemberID != other.m_MemberID )
             return false;
         return true;
     }

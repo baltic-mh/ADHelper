@@ -20,15 +20,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 // ############################################################################
-public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
+public class InfoForSingleMember extends AIdentifiedItem<InfoForSingleMember>
 {
     private static final Logger sm_Log = Logger.getLogger(InfoForSingleMember.class);
-
-    // ------------------------------------------------------------------------
-    private final int m_ID;
-    @Override
-    public int getID(){ return m_ID; }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     private IClubMember m_Member;
@@ -95,7 +89,7 @@ public class InfoForSingleMember implements IIdentifiedItem<InfoForSingleMember>
 
     public InfoForSingleMember(final int fID)
     {
-        m_ID = fID;
+        super( fID );
         m_BalanceHistory = new BalanceHistory( fID );
         m_Relatives = new HashMap<>();
     }

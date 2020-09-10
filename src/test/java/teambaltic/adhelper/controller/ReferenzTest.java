@@ -81,19 +81,14 @@ public class ReferenzTest
     // ########################################################################
 
     @Test
-    public void test()
+    public void test() throws Exception
     {
         // Mit diesem Wert kann man steuern, ob alle Daten eingelesen und
         // bearbeitet werden oder nur für ein einzelnes Mitglied.
         // Wenn aOnlyID == 0 ist, werden alle Daten eingelesen, sonst nur
         // das durch die ID angegebene Mitglied.
         final int aOnlyID = 0;//10131;
-        try{
-            DATAPROVIDER.init( ACTIVEPERIOD, aOnlyID );
-        }catch( final Exception fEx ){
-            sm_Log.warn("Exception: ", fEx );
-            fail( "Mist: "+fEx.getMessage() );
-        }
+        DATAPROVIDER.init( ACTIVEPERIOD, aOnlyID );
 
 //        Writer.writeToFile_BalanceHistories( DATAPROVIDER, ACTIVEPERIOD.getFolder() );
 
@@ -126,9 +121,10 @@ public class ReferenzTest
         final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
         for( final String aThisLine : aAllLines ){
             final String[] aParts = aThisLine.split( ";" );
-            final Float aFloatValue = Float.valueOf( aParts[3].replace( ',', '.' ) );
+            final Integer aMemberID = Integer.valueOf( aParts[0] );
+            final Float aFloatValue = Float.valueOf( aParts[2].replace( ',', '.' ) );
             final Integer aIntValue = Integer.valueOf( (int) ( aFloatValue.floatValue()* 100.0f ) );
-            aGuthaben.put( Integer.valueOf( aParts[0] ), aIntValue );
+            aGuthaben.put( aMemberID, aIntValue );
         }
         return aGuthaben;
     }

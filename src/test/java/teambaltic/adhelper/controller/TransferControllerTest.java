@@ -20,7 +20,6 @@ import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings.EKey;
@@ -71,7 +70,7 @@ public class TransferControllerTest
     // ########################################################################
 
 
-    @Test
+//    @Test
     public void test_Upload()
     {
         ITransferController aTC;
@@ -86,7 +85,7 @@ public class TransferControllerTest
 
     }
 
-    @Test
+//    @Test
     public void test_Download()
     {
         ITransferController aTC;

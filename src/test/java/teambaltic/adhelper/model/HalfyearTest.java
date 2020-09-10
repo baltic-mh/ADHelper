@@ -147,7 +147,7 @@ public class HalfyearTest
     }
 
     @Test
-    public void testIsWithinMyBounds()
+    public void testIsWithinMyPeriod()
     {
         assertTrue(HY.isWithinMyPeriod( (LocalDate)null ) );
         assertTrue(HY.isWithinMyPeriod( (IPeriod)null ) );
@@ -158,12 +158,13 @@ public class HalfyearTest
         assertFalse(HY.isWithinMyPeriod( sm_RefDate2_NextDay ) );
 
         assertTrue( HY.isWithinMyPeriod( new Halfyear( 2016, EPart.FIRST)));
+        assertFalse( HY.isWithinMyPeriod( new Halfyear( 2016, EPart.SECOND)));
 
         final FreeFromDuty aOtherPeriod = new FreeFromDuty( 0, null);
         assertTrue( HY.isWithinMyPeriod( aOtherPeriod));
         // Start vor Beginn der Periode - Ende == null
         aOtherPeriod.setFrom(sm_RefDate1_PreviousDay);
-        assertFalse( HY.isWithinMyPeriod( aOtherPeriod));
+        assertTrue( HY.isWithinMyPeriod( aOtherPeriod));
         // Start == null - Ende vor Beginn der Periode
         aOtherPeriod.setFrom(null);
         aOtherPeriod.setUntil(sm_RefDate1_PreviousDay);
@@ -182,7 +183,11 @@ public class HalfyearTest
         // Start == null - Ende außerhalb der Periode
         aOtherPeriod.setFrom(null);
         aOtherPeriod.setUntil(sm_RefDate2_NextDay);
-        assertFalse( HY.isWithinMyPeriod( aOtherPeriod));
+        assertTrue( HY.isWithinMyPeriod( aOtherPeriod));
+        // Start vor der Periode - Ende außerhalb der Periode
+        aOtherPeriod.setFrom( sm_RefDate1_PreviousDay );
+        aOtherPeriod.setUntil(sm_RefDate2_NextDay);
+        assertTrue( HY.isWithinMyPeriod( aOtherPeriod));
     }
 
     @Test

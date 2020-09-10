@@ -29,7 +29,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import teambaltic.adhelper.remoteaccess.LocalRemotePathPair;
 import teambaltic.adhelper.remoteaccess.SFTPWithKey;
@@ -78,9 +77,11 @@ public class SFTPWithKeyTest
 
     // ########################################################################
     // TESTS
+    // DIESE TESTS KÖNNEN NICHT AUSGEFÜHRT WERDEN, WEIL MAN DAFÜR GEHEIME
+    // ZUGANGSDATEN BENÖTIGT, DIE NICHT IN GIT VERWALTET WERDEN KÖNNEN!!!
     // ########################################################################
 
-    @Test
+//    @Test
     public void test_List()
     {
 
@@ -97,7 +98,7 @@ public class SFTPWithKeyTest
         }
     }
 
-    @Test
+//    @Test
     public void test_ListByExtension()
     {
 
@@ -106,7 +107,7 @@ public class SFTPWithKeyTest
         assertEquals( "Paths.size", 2, aPaths.size() );
     }
 
-    @Test
+//    @Test
     public void test_ListByExtendedExtension()
     {
         final Path aRemotePath = Paths.get( "SubDir" );
@@ -116,7 +117,7 @@ public class SFTPWithKeyTest
         assertEquals( "Paths.size", 1, aPaths.size() );
     }
 
-    @Test
+//    @Test
     public void test_ListFolder()
     {
 
@@ -134,7 +135,7 @@ public class SFTPWithKeyTest
         }
     }
 
-    @Test
+//    @Test
     public void test_Download()
     {
         final Path aLocalPath = Paths.get("misc/SandBox/File-Downloaded.txt");
@@ -152,7 +153,7 @@ public class SFTPWithKeyTest
         }
     }
 
-    @Test
+//    @Test
     public void test_Upload()
     {
         final Path aLocalPath = Paths.get("README");

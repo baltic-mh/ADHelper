@@ -286,6 +286,9 @@ public class PeriodDataController implements IPeriodDataController
     public PeriodData getNewestPeriodData()
     {
         final List<PeriodData> aList = getPeriodDataList( EPeriodDataSelector.ALL );
+        if( aList.isEmpty() ) {
+            return null;
+        }
         return aList.get( aList.size()-1 );
     }
 
