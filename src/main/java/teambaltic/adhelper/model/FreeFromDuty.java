@@ -56,19 +56,13 @@ public class FreeFromDuty extends APeriod implements IIdentifiedItem<FreeFromDut
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private LocalDate m_From;
-    public LocalDate getFrom(){ return m_From; }
-    @Override
-    public LocalDate getStart(){ return getFrom(); }
-    public void setFrom( final LocalDate fFrom ){ m_From = adjustToBeginningOfMonth( fFrom ); }
+    public LocalDate getFrom(){ return getStart(); }
+    public void setFrom( final LocalDate fFrom ){ setStart( adjustToBeginningOfMonth( fFrom ) ); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    private LocalDate m_Until;
-    public LocalDate getUntil(){ return m_Until; }
-    @Override
-    public LocalDate getEnd(){ return getUntil(); }
-    public void setUntil( final LocalDate fUntil ){ m_Until = adjustToEndOfMonth( fUntil ); }
+    public LocalDate getUntil(){ return getEnd(); }
+    public void setUntil( final LocalDate fUntil ){ setEnd( adjustToEndOfMonth( fUntil ) ); }
     // ------------------------------------------------------------------------
 
     public FreeFromDuty( final int fMemberID, final REASON fReason )
