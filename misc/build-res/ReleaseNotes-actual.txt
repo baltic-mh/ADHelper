@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1024001
+//RELEASE: 1024002
 ###############################################################################
-[BUGFIX] Dummy-Version (keine Änderungen!)
+[BUGFIX] Erhöhung der Robustheit, wenn geänderte Daten verworfen werden
