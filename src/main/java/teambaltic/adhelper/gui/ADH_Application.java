@@ -137,6 +137,8 @@ public class ADH_Application
     public static void main( final String[] args )
     {
         sm_Log.info("==========================================================");
+        final String aBuildConfigInfo = composeBuildConfigInfo();
+        sm_Log.info( aBuildConfigInfo );
         sm_Log.info( "Java version: "+System.getProperty( "java.version" ));
         migratePropertyFiles(BuildConfig.NAME);
         readAndSetSystemProperties(BuildConfig.NAME);
@@ -168,11 +170,10 @@ public class ADH_Application
             public void run()
             {
                 try{
-                    sm_Log.info(composeTitle());
                     sm_Log.info( "Heute ist ein schöner Tag: "+ new Date() );
                     IntegrityChecker.check( AllSettings.INSTANCE );
 
-                    aApplication.initializeUI( aApplication.m_Frame);
+                    aApplication.initializeUI( aApplication.m_Frame, aBuildConfigInfo);
 
 
                 }catch( final Exception fEx ){
@@ -330,10 +331,11 @@ public class ADH_Application
 
     /**
      * Initialize the contents of the frame.
+     * @param fBuildConfigInfo
      */
-    private void initializeUI(final JFrame fFrame)
+    private void initializeUI(final JFrame fFrame, final String fBuildConfigInfo)
     {
-        fFrame.setTitle(composeTitle());
+        fFrame.setTitle(composeTitle( fBuildConfigInfo ));
         setPositionAndSize( fFrame );
         fFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -595,16 +597,23 @@ public class ADH_Application
 
     }
 
-    private static String composeTitle()
+    private static String composeBuildConfigInfo()
     {
-        final String aUserName = AllSettings.INSTANCE.getRemoteAccessSettings().getUserName();
-        final String aFolderName_Root = AllSettings.INSTANCE.getAppSettings().getFolderName_Root();
         final StringBuffer aSB = new StringBuffer();
         aSB.append( BuildConfig.NAME );
         aSB.append( " - " );
         aSB.append( BuildConfig.COPYRIGHT );
         aSB.append( " - " );
         aSB.append( BuildConfig.VERSION );
+        return aSB.toString();
+    }
+
+    private static String composeTitle(final String fBuildConfigInfo)
+    {
+        final String aUserName = AllSettings.INSTANCE.getRemoteAccessSettings().getUserName();
+        final String aFolderName_Root = AllSettings.INSTANCE.getAppSettings().getFolderName_Root();
+
+        final StringBuffer aSB = new StringBuffer( fBuildConfigInfo );
         aSB.append( String.format(" (%s@%s)", aUserName, aFolderName_Root ) );
         return aSB.toString();
     }

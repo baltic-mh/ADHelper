@@ -32,7 +32,6 @@ import teambaltic.BuildConfig;
 public class AppUpdater implements UpdatedApplication
 {
     private static final Logger LOG = Logger.getLogger(AppUpdater.class);
-//    private static Logger LOG;
 
     public AppUpdater()
     {
