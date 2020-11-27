@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1024001" version="1.24.1">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;BUGFIX&lt;/b&gt;
+    &lt;dd&gt;Dummy-Version (keine Änderungen!)&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22967114" sourcedir="1024001"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="74915" sourcedir="1024001"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1024001"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="15493" sourcedir="1024001"/>
+    </arch>
+  </version>
   <version release="1024000" version="1.24.0">
     <description>
     &lt;dl&gt;
