@@ -524,6 +524,19 @@ public class ADH_Application
                 getPDC().removeActivePeriodFolder();
             }catch( final Exception fEx ){
                 sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName() , fEx.getMessage() ));
+                final String aMsg = String.format("Die Daten der aktiven Periode sind geändert worden!\n\n"
+                        +"Sie konnten aber nicht nach 'Obsolete' verschoben werden!\n\n"
+                        +"Bitte vor dem nächsten Start unbedingt den Ordner\n\n"
+                        +getPDC().getActivePeriodFolder()
+                        + "\n\nmanuell löschen!");
+
+                try {
+                    Files.createFile( getPDC().getActivePeriodFolder().resolve("INVALID"));
+                } catch ( final IOException fEx1 ) {
+                    sm_Log.warn(String.format( "Unexpected exception: %s - %s ", fEx1.getClass().getSimpleName() , fEx1.getMessage() ));
+
+                }
+                JOptionPane.showMessageDialog( null, aMsg, "ACHTUNG!", JOptionPane.WARNING_MESSAGE );
             }
         }
     }

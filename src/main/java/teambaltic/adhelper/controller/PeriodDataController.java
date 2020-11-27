@@ -443,8 +443,7 @@ public class PeriodDataController implements IPeriodDataController
         if( aActivePeriod == null ){
             return null;
         }
-        final Path aActivePeriodFolder = aActivePeriod.getFolder();
-        return aActivePeriodFolder;
+        return aActivePeriod.getFolder();
     }
 
     @Override

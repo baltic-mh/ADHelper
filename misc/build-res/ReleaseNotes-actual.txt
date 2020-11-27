@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1023000
+//RELEASE: 1024000
 ###############################################################################
-[ÄNDERUNG] Unit-Tests überarbeitet und einige Basisklassen eingeführt
+[BUGFIX] Erhöhung der Robustheit, wenn geänderte Daten verworfen werden sollen.

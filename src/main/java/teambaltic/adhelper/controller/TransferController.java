@@ -370,6 +370,10 @@ public class TransferController implements ITransferController
         if( !Files.exists( aLocalFolderPath ) ){
             return false;
         }
+        if( Files.exists( aLocalFolderPath.resolve( "INVALID" ) )) {
+            sm_Log.warn( "Lokales Verzeichnis ist ungültig: "+ aLocalFolderPath );
+            return false;
+        }
         final Path aCheckSumFileFromServer = getCheckSumFromServer( fCSC, aRemoteZipFile );
         final Path aCheckSumFileLocal      = fCSC.getCheckSumFile( aRemoteZipFile );
         if( !Files.exists( aCheckSumFileLocal )){
@@ -400,12 +404,16 @@ public class TransferController implements ITransferController
     {
         final String aFileName = fZipToDownload.replaceFirst( "\\.cry$", "" );
         final Path aFileToDownload = Paths.get( aFileName );
+        Files.deleteIfExists( aFileToDownload );
         final boolean aDownloaded = download( aFileToDownload ) != null;
         if( !aDownloaded ){
             sm_Log.error( "Download hat nicht geklappt: "+fZipToDownload );
             return;
         }
         ZipUtils.unzip( aFileToDownload );
+        final String aFolderName = aFileName.replaceFirst( "\\.zip$", "" );
+        final Path aFileINVALID = Paths.get(aFolderName, "INVALID");
+        Files.deleteIfExists( aFileINVALID );
         Files.delete( aFileToDownload );
     }
 
