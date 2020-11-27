@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1024000	Version: 1.24.0	Datum: 2020-11-27
+[BUGFIX] Erhöhung der Robustheit, wenn geänderte Daten verworfen werden sollen.
+================================================================================
 Release: 1023000	Version: 1.23.0	Datum: 2020-09-10
 [ÄNDERUNG] Unit-Tests überarbeitet und einige Basisklassen eingeführt
 ================================================================================
