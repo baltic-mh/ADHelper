@@ -45,6 +45,8 @@ public interface IKnownColumns
     String HOURSWORKED = "Gel.Stunden";
     // Tabelle der ZuZahlendenStunden:
     String HOURSTOPAY = "Zu zahl. Stunden";
+    // Errechnete Spalte in Tabelle der ZuZahlendenStunden:
+    String AMOUNTTOPAY = "Zu zahl. Betrag";
 
     // Tabelle der Korrektur-Stunden
     // (Zuerst gab es nur gutgeschriebene Stunden, dann kam das negative in die Welt...

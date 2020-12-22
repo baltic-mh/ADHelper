@@ -25,6 +25,8 @@ public interface IClubSettings extends ISettings<IClubSettings.EKey>
         ,PROTECTION_TIME(EPropType.INTVALUE)
         // Anzahl Pflichtarbeitsstunden pro Abrechnungszeitraum
         ,DUTYHOURS_PER_PERIOD(EPropType.HOURVALUE)
+        // Anzahl Pflichtarbeitsstunden pro Abrechnungszeitraum
+        ,HOURLY_RATE(EPropType.FLOATVALUE)
         ;
 
         // --------------------------------------------------------------------
@@ -44,6 +46,7 @@ public interface IClubSettings extends ISettings<IClubSettings.EKey>
     int getMaxAgeForDuty();
     int getProtectionTime();
     int getDutyHoursPerPeriod(IPeriod fPeriod);
+    float getHourlyRate();
 }
 
 // ############################################################################

@@ -40,6 +40,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     private static final Logger sm_Log = Logger.getLogger(ASettings.class);
 
     private final Map<KeyType, Integer> m_IntegerValues;
+    private final Map<KeyType, Float>   m_FloatValues;
     // Alle Stundenwerte werden in 100stel Stunden angegeben!
     private final Map<KeyType, Integer> m_HourValues;
     private final Map<KeyType, Map<Halfyear, Integer>> m_HourValuesPeriodSpecific;
@@ -64,6 +65,7 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
     {
         m_Local         = fLocal;
         m_IntegerValues = new HashMap<>();
+        m_FloatValues   = new HashMap<>();
         m_HourValues    = new HashMap<>();
         m_HourValuesPeriodSpecific = new HashMap<>();
     }
@@ -111,6 +113,10 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
                     transferToIntegerMap( aKey, m_Props );
                     break;
 
+                case FLOATVALUE:
+                    transferToFloatMap( aKey, m_Props );
+                    break;
+
                 case HOURVALUE:
                     transferToHourValueMap( aKey, m_Props );
                     break;
@@ -140,6 +146,24 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
             throw new UnsupportedOperationException("Schlüssel ist nicht vom Typ INTEGER: "+fKey);
         }
         m_IntegerValues.put( fKey, Integer.valueOf( fNewVal ) );
+    }
+
+    @Override
+    public float getFloatValue(final KeyType fKey)
+    {
+        if( !EPropType.FLOATVALUE.equals( fKey.getPropType() )){
+            throw new UnsupportedOperationException("Schlüssel ist nicht vom Typ FLOAT: "+fKey);
+        }
+        return m_FloatValues.get( fKey );
+    }
+
+    @Override
+    public void setFloatValue(final KeyType fKey, final int fNewVal)
+    {
+        if( !EPropType.FLOATVALUE.equals( fKey.getPropType() )){
+            throw new UnsupportedOperationException("Schlüssel ist nicht vom Typ FLOAT: "+fKey);
+        }
+        m_FloatValues.put( fKey, Float.valueOf( fNewVal ) );
     }
 
     @Override
@@ -199,6 +223,15 @@ public abstract class ASettings<KeyType extends IKey> implements ISettings<KeyTy
             throw new UnsupportedOperationException("Kein Wert angegeben für Schlüssel: "+fKey);
         }
         m_IntegerValues.put( fKey, Integer.valueOf( aProperty ) );
+    }
+
+    private void transferToFloatMap( final KeyType fKey, final Properties fProps )
+    {
+        final String aProperty = fProps.getProperty( fKey.toString() );
+        if( aProperty == null ) {
+            throw new UnsupportedOperationException("Kein Wert angegeben für Schlüssel: "+fKey);
+        }
+        m_FloatValues.put( fKey, Float.valueOf( aProperty ) );
     }
 
     private void transferToHourValueMap( final KeyType fKey, final Properties fProps )

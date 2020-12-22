@@ -23,6 +23,9 @@ public interface ISettings<KeyType extends IKey>
     int getIntValue(KeyType fKey);
     void setIntValue( KeyType fKey, int fNewVal );
 
+    float getFloatValue(KeyType fKey);
+    void setFloatValue( KeyType fKey, int fNewVal );
+
     int getHourValue( KeyType fKey );
     int getHourValue(KeyType fKey, IPeriod fPeriod);
     void setHourValue( KeyType fKey, int fNewVal );

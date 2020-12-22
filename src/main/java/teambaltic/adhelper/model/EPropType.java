@@ -15,6 +15,7 @@ package teambaltic.adhelper.model;
 public enum EPropType
 {
     INTVALUE,
+    FLOATVALUE,
     HOURVALUE,
     STRINGVALUE;
 }

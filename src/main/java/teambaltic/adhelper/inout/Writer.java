@@ -136,8 +136,9 @@ public class Writer
             final Path fOutputFolder )
     {
         try{
+            final float aStundensatz = fDataProvider.getClubSettings().getHourlyRate();
             final PrintWriter aFileWriter = new PrintWriter(fOutputFolder.toString()+"/ZuZahlendeStunden.csv", CHARSET_ISO_8859_1);
-            aFileWriter.write( String.format("%s;%s;%s"+LF, IKnownColumns.MEMBERID, IKnownColumns.NAME, IKnownColumns.HOURSTOPAY ) );
+            aFileWriter.write( String.format("%s;%s;%s;%s"+LF, IKnownColumns.MEMBERID, IKnownColumns.NAME, IKnownColumns.HOURSTOPAY, IKnownColumns.AMOUNTTOPAY ) );
             for( final InfoForSingleMember aSingleInfo : fDataProvider.getAll() ){
                 if( !fDataProvider.isMemberInCurrentPeriod( aSingleInfo.getID() ) ){
                     continue;
@@ -152,8 +153,8 @@ public class Writer
                 if( aHoursToPay == 0 ){
                     continue;
                 }
-                final String aLine = String.format( "%s;%s;%.2f"+LF, aMemberID,
-                        fDataProvider.getMemberName( aMemberID ), aHoursToPay/100.0f );
+                final String aLine = String.format( "%s;%s;%.2f;%.2f"+LF, aMemberID,
+                        fDataProvider.getMemberName( aMemberID ), aHoursToPay/100.0f, aHoursToPay * aStundensatz /100f );
 //                sm_Log.info( aLine );
                 aFileWriter.write( aLine );
             }

@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1024004
+//RELEASE: 1025000
 ###############################################################################
-[ÄNDERUNG] BuildConfigInfo wird als erste Log-Zeile ausgegeben
+[ÄNDERUNG] Es wird nun auch der zu zahlende Betrag ausgegeben

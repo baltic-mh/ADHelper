@@ -46,7 +46,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
 
     // ------------------------------------------------------------------------
     private final IAllSettings m_AllSettings;
-    private IClubSettings getClubSettings(){ return m_AllSettings.getClubSettings(); }
+    public IClubSettings getClubSettings(){ return m_AllSettings.getClubSettings(); }
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------

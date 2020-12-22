@@ -46,9 +46,15 @@ public class ClubSettings extends ASettings<IClubSettings.EKey>
         return getIntValue( EKey.PROTECTION_TIME );
     }
 
- 	public int getDutyHoursPerPeriod(IPeriod fPeriod) {
+ 	@Override
+    public int getDutyHoursPerPeriod(final IPeriod fPeriod) {
 		return getHourValue( EKey.DUTYHOURS_PER_PERIOD, fPeriod );
 	}
+
+    @Override
+    public float getHourlyRate() {
+        return getFloatValue(EKey.HOURLY_RATE);
+    }
 
 }
 
