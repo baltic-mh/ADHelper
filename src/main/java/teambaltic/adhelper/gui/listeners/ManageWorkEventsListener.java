@@ -56,7 +56,7 @@ public class ManageWorkEventsListener extends ManageParticipationsListener<WorkE
     }
 
     @Override
-    protected WorkEvent createParticipation( final LocalDate fSelectedDate, final Vector<Object> fRowValues )
+    protected WorkEvent createParticipation( final LocalDate fSelectedDate, final Vector fRowValues )
     {
         final Integer aMemberID = (Integer) fRowValues.get(  getColIdx_ID() );
         final WorkEvent aWorkEvent = new WorkEvent( aMemberID );

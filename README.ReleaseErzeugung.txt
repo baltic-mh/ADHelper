@@ -17,7 +17,12 @@ Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:
      muss vorher die Umgebungsvariable JAVA_HOME im System auf den neuen Wert 
      gesetzt werden! 
      In der Datei ~User/.gradle/gradle.properties taucht die Java-Version auch 
-     noch mal auf - weiß momentan aber nicht, wann die referenziert wird.)
+     noch mal auf - weiß momentan aber nicht, wann die referenziert wird.
+     Jetzt weiß ich es: die wird referenziert, wenn eine Gradle-Task aufgerufen wird.
+     Wenn also nicht die korrekte Java-Version benutzt wird, muss sie hier 
+     definiert werden:
+        org.gradle.java.home=/path_to_jdk_directory
+     )
 
 4. Überprüfen, ob alles chicko ist!
 

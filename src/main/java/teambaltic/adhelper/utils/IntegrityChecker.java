@@ -105,14 +105,21 @@ public final class IntegrityChecker
 
             final String aRefIDString = aAttributes.get( IKnownColumns.LINKID );
             if( aRefIDString != null && !"".equals( aRefIDString ) ){
-                final Integer aRefID = Integer.parseInt( aRefIDString );
-                // "Neuerdings" gibt es einige Einträge, bei denen lauter Nullen
-                // in der Spalte "LINKID" stehen! Das wird als "nicht vorhanden" behandelt!
-                if( aRefID != 0 ){
-                    if( aID.equals( aRefID ) ) {
-                        aProblems.put( aID, "ID und RefID sind identisch!");
+                try {
+                    final Integer aRefID = Integer.parseInt( aRefIDString );
+                    // "Neuerdings" gibt es einige Einträge, bei denen lauter Nullen
+                    // in der Spalte "LINKID" stehen! Das wird als "nicht vorhanden" behandelt!
+                    if( aRefID != 0 ){
+                        if( aID.equals( aRefID ) ) {
+                            aProblems.put( aID, "ID und RefID sind identisch!");
+                        }
+                        aSeen_RefIDs.put( aID, aRefID );
                     }
-                    aSeen_RefIDs.put( aID, aRefID );
+                } catch ( final NumberFormatException fEx ) {
+                    // Leider lässt das Vereinsprogramm es zu, dass man für die RefID
+                    // beliebigen Text eintragen kann :-|
+                    aProblems.put( aID, String.format("RefID (%s) ist keine Zahl!", aRefIDString ) );
+
                 }
             }
 

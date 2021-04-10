@@ -35,7 +35,7 @@ plugins {
     // The gradle-launch4j plugin uses launch4j to create windows .exe files
     // for java applications.
     // https://github.com/TheBoegl/gradle-launch4j
-    id 'edu.sc.seis.launch4j' version '2.3.0'
+    id 'edu.sc.seis.launch4j' version '2.4.6'
 
     // https://github.com/researchgate/gradle-release
     // Dieses Plugin setzt voraus, dass Git im Pfad eingetragen ist!

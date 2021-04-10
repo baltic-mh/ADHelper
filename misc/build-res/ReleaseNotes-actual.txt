@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1025000
+//RELEASE: 1025001
 ###############################################################################
-[ÄNDERUNG] Es wird nun auch der zu zahlende Betrag ausgegeben
+[ÄNDERUNG] Import der Basisdaten: Überprüfung, ob Verknüpfung eine Zahl ist

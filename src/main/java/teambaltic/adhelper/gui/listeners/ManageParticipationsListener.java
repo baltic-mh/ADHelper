@@ -96,7 +96,7 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
     protected List<LocalDate> getParticipationDates( final ADH_DataProvider fDataProvider );
 
     abstract
-    protected ParticipationType createParticipation( final LocalDate fSelectedDate, final Vector<Object> fRowValues );
+    protected ParticipationType createParticipation( final LocalDate fSelectedDate, final Vector fRowValues );
 
     abstract
     protected void writeToFile(ADH_DataProvider fDataProvider);
@@ -405,8 +405,7 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
 
         final JTable aTable = getTable();
         final TBLModel_Participation aModel = (TBLModel_Participation) aTable.getModel();
-        @SuppressWarnings("unchecked")
-        final Vector<Vector<Object>> aDataVector = aModel.getDataVector();
+        final Vector<Vector> aDataVector = aModel.getDataVector();
         final int aRowCount = aModel.getRowCount();
         boolean aDataChanged = false;
         for( int aIdx = 0; aIdx < aRowCount; aIdx++ ){
@@ -414,7 +413,7 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
             if( aHoursValue == null ){
                 continue;
             } else {
-                final Vector<Object> aRowVector = aDataVector.get( aIdx );
+                final Vector aRowVector = aDataVector.get( aIdx );
                 final ParticipationType aParticipationEvent = createParticipation( aSelectedDate, aRowVector );
                 aDataChanged |= writeToMember( fDataProvider, aParticipationEvent );
             }

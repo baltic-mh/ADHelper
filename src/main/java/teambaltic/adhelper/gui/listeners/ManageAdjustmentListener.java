@@ -85,7 +85,7 @@ public class ManageAdjustmentListener extends ManageParticipationsListener<Adjus
     }
 
     @Override
-    protected Adjustment createParticipation( final LocalDate fSelectedDate, final Vector<Object> fRowValues )
+    protected Adjustment createParticipation( final LocalDate fSelectedDate, final Vector fRowValues )
     {
         final Integer fMemberID = (Integer) fRowValues.get( getColIdx_ID() );
         final Adjustment aAdjustment = new Adjustment( fMemberID );
