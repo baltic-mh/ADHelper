@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1025001" version="1.25.1">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;ÄNDERUNG&lt;/b&gt;
+    &lt;dd&gt;Import der Basisdaten: Überprüfung, ob Verknüpfung eine Zahl ist&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22949415" sourcedir="1025001"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="77902" sourcedir="1025001"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1025001"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="16314" sourcedir="1025001"/>
+    </arch>
+  </version>
   <version release="1025000" version="1.25.0">
     <description>
     &lt;dl&gt;
