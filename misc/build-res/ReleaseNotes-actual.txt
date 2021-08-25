@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1025001
+//RELEASE: 1026000
 ###############################################################################
-[ÄNDERUNG] Import der Basisdaten: Überprüfung, ob Verknüpfung eine Zahl ist
+[ÄNDERUNG] Ausgabe bei vermutetem Austritt inklusive Namen und je Mitglied nur einmal
