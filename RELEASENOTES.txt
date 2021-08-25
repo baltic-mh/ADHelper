@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1026000	Version: 1.26.0	Datum: 2021-08-25
+[ÄNDERUNG] Ausgabe bei vermutetem Austritt inklusive Namen und je Mitglied nur einmal
+================================================================================
 Release: 1025001	Version: 1.25.1	Datum: 2021-04-10
 [ÄNDERUNG] Import der Basisdaten: Überprüfung, ob Verknüpfung eine Zahl ist
 ================================================================================
