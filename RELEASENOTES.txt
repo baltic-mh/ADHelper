@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1028000	Version: 1.28.0	Datum: 2021-10-21
+[BUGFIX] Korrekturen für den Fall, dass für Zeitraum "ALLE" gewählt ist
+================================================================================
 Release: 1027000	Version: 1.27.0	Datum: 2021-10-21
 [ÄNDERUNG] Bei Erzeugen eines neuen Arbeitsdiensttermins werden initial alle Mitglieder angezeigt
 ================================================================================
