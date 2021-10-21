@@ -33,7 +33,8 @@ public class ActiveMemberFilter implements IItemFilter<InfoForSingleMember>
         if( aMemberUntil == null ){
             return true;
         }
-        return !getPeriod().getPeriod().isBeforeMyStart( aMemberUntil );
+        final IPeriod aPeriod = getPeriod().getPeriod();
+        return aPeriod == null ? true : !aPeriod.isBeforeMyStart( aMemberUntil );
     }
 
     @Override

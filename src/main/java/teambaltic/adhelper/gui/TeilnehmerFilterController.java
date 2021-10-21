@@ -134,14 +134,14 @@ public class TeilnehmerFilterController
     {
         final RowFilter_NurTeilnehmer aFilter_NurTeilnehmer = getRowFilter_NurTeilnehmer();
         if( fSet ){
-            // Bisher sind "Alle" ausgewählt, also soll nun "Nur Dabei" ausgewählt
+            // Bisher sind "Alle" ausgewählt, also soll nun "Nur Teilnehmer" ausgewählt
             // sein:
             getBtn_ToggleDabeiFilter().setText( "Alle" );
             aFilter_NurTeilnehmer.setEnabled( true );
             applySettings();
             return;
         }
-        // Bisher ist "Nur Dabei" ausgewählt, also soll nun "Alle"
+        // Bisher ist "Nur Teilnehmer" ausgewählt, also soll nun "Alle"
         // ausgewählt sein:
         aFilter_NurTeilnehmer.setEnabled( false );
         getBtn_ToggleDabeiFilter().setText( "Nur Teilnehmer" );

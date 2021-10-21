@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1027000
+//RELEASE: 1028000
 ###############################################################################
-[ÄNDERUNG] Bei Erzeugen eines neuen Arbeitsdiensttermins werden initial alle Mitglieder angezeigt
+[BUGFIX] Korrekturen für den Fall, dass für Zeitraum "ALLE" gewählt ist

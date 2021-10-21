@@ -132,8 +132,7 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
 
     protected ParticipationsPanel getPanel()
     {
-        final ParticipationsPanel aPanel = m_Dialog.getContentPanel();
-        return aPanel;
+        return m_Dialog.getContentPanel();
     }
 
     private JTable getTable()
@@ -262,14 +261,16 @@ public abstract class ManageParticipationsListener<ParticipationType extends Par
 
     private boolean isReadOnly( final PeriodData fSelectedPeriod, final LocalDate fSelectedDate )
     {
+        final IPeriodDataController aPDC = getPDC();
         if( ALLPERIODS == fSelectedPeriod ){
-            return getPDC().isActivePeriodFinished();
+            final PeriodData aPeriodDataOfSelectedPeriod = aPDC.getPeriodData(fSelectedDate);
+            final PeriodData aActivePeriod = aPDC.getActivePeriod();
+            return aActivePeriod.equals(aPeriodDataOfSelectedPeriod) ? aPDC.isActivePeriodFinished() : true;
         }
         if( fSelectedPeriod.isActive() ){
             return false;
         }
-        final boolean aReadOnly = fSelectedDate == null ? true: getPDC().isFinished( fSelectedDate );
-        return aReadOnly;
+        return fSelectedDate == null ? true: aPDC.isFinished( fSelectedDate );
     }
 
     private static void populateCmbPeriods(

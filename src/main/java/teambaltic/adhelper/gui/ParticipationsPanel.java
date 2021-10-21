@@ -201,18 +201,17 @@ public class ParticipationsPanel extends JPanel
         final HoursCellRenderer aCellRender = new HoursCellRenderer();
         m_table.getColumn(aColName_Hours).setCellRenderer(aCellRender);
 
-        final int aViewRowCount = m_sorter.getViewRowCount();
-        m_FilterController.setFilter_NurTeilnehmer( aViewRowCount != 0 );
-        m_lblNumSichtbar.setText( String.valueOf(aViewRowCount) );
-        configureButtons( fModel.isReadOnly(), fSelectedPeriod == null ? false : fSelectedPeriod.isActive() );
+        configureButtons( fModel.isReadOnly(), fSelectedPeriod.isActive() );
     }
 
     protected void configureButtons( final boolean fReadOnly, final boolean fActivePeriod )
     {
-        final JButton aBtn_ToggleTeilnehmerFilter = getBtn_ToggleTeilnehmerFilter();
         if( !fActivePeriod ){
-            m_FilterController.setFilter_NurTeilnehmer( fReadOnly );
+            m_FilterController.setFilter_NurTeilnehmer( true );
+        } else if ( m_sorter.getViewRowCount() == 0 ) {
+            m_FilterController.setFilter_NurTeilnehmer( false );
         }
+        final JButton aBtn_ToggleTeilnehmerFilter = getBtn_ToggleTeilnehmerFilter();
         aBtn_ToggleTeilnehmerFilter.setEnabled( !fReadOnly );
 
         final JButton aBtn_Neu = getBtn_Neu();
