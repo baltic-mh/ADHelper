@@ -201,7 +201,9 @@ public class ParticipationsPanel extends JPanel
         final HoursCellRenderer aCellRender = new HoursCellRenderer();
         m_table.getColumn(aColName_Hours).setCellRenderer(aCellRender);
 
-        m_lblNumSichtbar.setText( String.valueOf(m_sorter.getViewRowCount()) );
+        final int aViewRowCount = m_sorter.getViewRowCount();
+        m_FilterController.setFilter_NurTeilnehmer( aViewRowCount != 0 );
+        m_lblNumSichtbar.setText( String.valueOf(aViewRowCount) );
         configureButtons( fModel.isReadOnly(), fSelectedPeriod == null ? false : fSelectedPeriod.isActive() );
     }
 

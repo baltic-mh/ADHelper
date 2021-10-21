@@ -19,6 +19,6 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1026000
+//RELEASE: 1027000
 ###############################################################################
-[ÄNDERUNG] Ausgabe bei vermutetem Austritt inklusive Namen und je Mitglied nur einmal
+[ÄNDERUNG] Bei Erzeugen eines neuen Arbeitsdiensttermins werden initial alle Mitglieder angezeigt
