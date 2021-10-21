@@ -1,4 +1,7 @@
 ================================================================================
+Release: 1027000	Version: 1.27.0	Datum: 2021-10-21
+[ÄNDERUNG] Bei Erzeugen eines neuen Arbeitsdiensttermins werden initial alle Mitglieder angezeigt
+================================================================================
 Release: 1026000	Version: 1.26.0	Datum: 2021-08-25
 [ÄNDERUNG] Ausgabe bei vermutetem Austritt inklusive Namen und je Mitglied nur einmal
 ================================================================================
