@@ -12,6 +12,7 @@
 package teambaltic.adhelper.inout;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,7 @@ public abstract class ParticipationReader<ParticipationType extends Participatio
         final File aFile = getFile();
         FileUtils.checkFile( aFile );
 
+        final List<String> aProbablyResigned = new ArrayList<>();
         final List<String>aColumnNames = FileUtils.readColumnNames( aFile );
         final List<String> aAllLines = FileUtils.readAllLines( aFile, 1 );
         for( final String aSingleLine : aAllLines ){
@@ -59,16 +61,20 @@ public abstract class ParticipationReader<ParticipationType extends Participatio
             }
             final Map<String, String> aAttributes = FileUtils.makeMap( aColumnNames, aSingleLine );
             final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
-            final int aID = Integer.parseInt( aIDString );
-            final InfoForSingleMember aInfo = fListProvider.get( aID );
+            final int aMemberID = Integer.parseInt( aIDString );
+            final InfoForSingleMember aInfo = fListProvider.get( aMemberID );
             if( aInfo == null ){
-                sm_Log.warn( String.format( "Mitglied mit der ID %d nicht gefunden! "
-                        +"Es wird angenommen, dass ein Austritt erfolgt ist", aID ) );
+                if( !aProbablyResigned.contains(aIDString) ) {
+                    final String aName = aAttributes.get( IKnownColumns.NAME );
+                    aProbablyResigned.add(aIDString);
+                    sm_Log.warn( String.format( "Mitglied mit der ID %d (%s) nicht gefunden! "
+                            +"Es wird angenommen, dass ein Austritt erfolgt ist", aMemberID, aName ) );
+                }
                 continue;
             }
 
             final IParticipationItemContainer<ParticipationType> aItemContainer = getCreateParticipationItemContainer( aInfo );
-            final ParticipationType aParticipationItem = m_ItemFactory.createItem( aID );
+            final ParticipationType aParticipationItem = m_ItemFactory.createItem( aMemberID );
             m_ItemFactory.populateItem(aParticipationItem, aAttributes);
             aItemContainer.add( aParticipationItem );
         }

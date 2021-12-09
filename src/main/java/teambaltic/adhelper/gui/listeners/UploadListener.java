@@ -27,10 +27,12 @@ import org.apache.log4j.Logger;
 import teambaltic.adhelper.controller.ADH_DataProvider;
 import teambaltic.adhelper.controller.IPeriodDataController;
 import teambaltic.adhelper.controller.ITransferController;
+import teambaltic.adhelper.gui.FileDiffDialog;
 import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.utils.FileComparisonResult;
 import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.IntegrityChecker;
 
@@ -116,16 +118,26 @@ public class UploadListener implements ActionListener
         if( aResult == JFileChooser.APPROVE_OPTION ) {
             final File aSelectedFile = aFileChooser.getSelectedFile();
             IntegrityChecker.checkBaseDataFile( aSelectedFile );
-            final Path aBaseDataFile = copyToDataFolder( aSelectedFile );
-            if( m_TransferController == null || !m_TransferController.isConnected() ){
-                throw new IOException("Keine Verbindung zu Server!");
+            final PeriodData aNewestPeriodData = getPDC().getNewestPeriodData();
+            final Path aCurrentBaseDataFile = getPDC().getFile_BaseData(aNewestPeriodData);
+            final FileComparisonResult aDiff = IntegrityChecker.compare( aCurrentBaseDataFile.toFile(), aSelectedFile );
+            if( !aDiff.filesDiffer() ) {
+                sm_Log.info("Hochzuladende Daten sind identisch mit Daten der aktuellen Periode! Kein Upload.");
+                return false;
             }
-            m_TransferController.upload( aBaseDataFile );
-            final PeriodData aPeriodData = getPDC().createNewPeriod();
-            getDataProvider().init( aPeriodData );
-            getGUIUpdater().updateGUI( aPeriodData );
+            final boolean aAcceptData = FileDiffDialog.showDiffPanel(aDiff);
+            if( aAcceptData ) {
+                final Path aBaseDataFile = copyToDataFolder( aSelectedFile );
+                if( m_TransferController == null || !m_TransferController.isConnected() ){
+                    throw new IOException("Keine Verbindung zu Server!");
+                }
+                m_TransferController.upload( aBaseDataFile );
+                final PeriodData aNewestPeriodDataUpdated = getPDC().createNewPeriod();
+                getDataProvider().init( aNewestPeriodDataUpdated );
+                getGUIUpdater().updateGUI( aNewestPeriodDataUpdated );
 
-            return true;
+                return true;
+            }
         }
         return false;
     }

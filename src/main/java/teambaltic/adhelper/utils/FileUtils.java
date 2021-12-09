@@ -125,8 +125,8 @@ public final class FileUtils
     {
         final Map<String, String> aMap = new HashMap<>();
         final String[] aSplit = fSingleLine.split( ";" );
-        for( int aIdx = 0; aIdx < aSplit.length; aIdx++ ){
-            final String aString = aSplit[aIdx];
+        for( int aIdx = 0; aIdx < fColumnNames.size(); aIdx++ ){
+            final String aString = aIdx < aSplit.length ? aSplit[aIdx] : "";
             aMap.put( fColumnNames.get( aIdx ), aString );
         }
         return aMap;

@@ -23,12 +23,16 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import teambaltic.adhelper.gui.FileDiffDialog;
 import teambaltic.adhelper.inout.Writer;
+import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IPeriod;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.model.settings.IUserSettings;
+import teambaltic.adhelper.utils.FileComparisonResult;
 import teambaltic.adhelper.utils.FileUtils;
+import teambaltic.adhelper.utils.IntegrityChecker;
 import teambaltic.adhelper.utils.InvoicingPeriodFolderFilter;
 
 // ############################################################################
@@ -201,7 +205,7 @@ public class PeriodDataController implements IPeriodDataController
     }
 
     @Override
-    public PeriodData createNewPeriod() throws IOException
+    public PeriodData createNewPeriod() throws Exception
     {
         final PeriodData aNewestPeriodData = getNewestPeriodData();
         if( !isFinished( aNewestPeriodData ) ){
@@ -219,7 +223,7 @@ public class PeriodDataController implements IPeriodDataController
         return aNewlyCreatedPeriodData;
     }
 
-    private void assertNewestBaseDataFile( final PeriodData fPeriodData ) throws IOException
+    private void assertNewestBaseDataFile( final PeriodData fPeriodData ) throws Exception
     {
         final Path aFolder_Data = getAppSettings().getFolder_Data();
         final String aFileName_BaseData = getAppSettings().getFileName_BaseData();
@@ -229,8 +233,20 @@ public class PeriodDataController implements IPeriodDataController
         final File aBaseDataFile_Period = aPeriodDataFolder.resolve( aFileName_BaseData ).toFile();
         final long aLastModified_Period = aBaseDataFile_Period.exists() ? aBaseDataFile_Period.lastModified() : 0L;
         if( aLastModified_Root > aLastModified_Period ){
-            FileUtils.copyFileToFolder( aBaseDataFile_Root, aPeriodDataFolder );
-            sm_Log.info("Neue Basisdaten-Datei kopiert nach: "+aPeriodDataFolder);
+            boolean aAcceptData = true;
+            if( ERole.BAUAUSSCHUSS.equals( getUserSettings().getRole() ) ) {
+                sm_Log.info("Neue Basisdaten-Datei: "+aBaseDataFile_Root);
+                final FileComparisonResult aDiff = IntegrityChecker.compare( aBaseDataFile_Period, aBaseDataFile_Root );
+                if( !aDiff.filesDiffer() ) {
+                    sm_Log.info("Die neuen Daten sind identisch mit den Daten der aktuellen Periode!");
+                    return;
+                }
+                aAcceptData = FileDiffDialog.showDiffPanel(aDiff);
+            }
+            if( aAcceptData ) {
+                FileUtils.copyFileToFolder( aBaseDataFile_Root, aPeriodDataFolder );
+                sm_Log.info("Neue Basisdaten-Datei kopiert nach: "+aPeriodDataFolder);
+            }
         }
     }
 

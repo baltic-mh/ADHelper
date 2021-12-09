@@ -267,13 +267,13 @@ public class MainPanel extends JPanel
         m_tbl_WorkEventsAttended.setFillsViewportHeight(true);
         scrollPane.setViewportView(m_tbl_WorkEventsAttended);
 
-                m_btn_ManageWorkEvents = new JButton("Arbeitsdienste...");
-                m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
-                add(m_btn_ManageWorkEvents, "12, 14");
+        m_btn_ManageWorkEvents = new JButton("Arbeitsdienste...");
+        m_btn_ManageWorkEvents.setActionCommand( "OPEN" );
+        add(m_btn_ManageWorkEvents, "12, 14");
 
-                m_btn_ManageAdjustment = new JButton("Korrekturen...");
-                m_btn_ManageAdjustment.setActionCommand( "OPEN" );
-                add(m_btn_ManageAdjustment, "14, 14");
+        m_btn_ManageAdjustment = new JButton("Korrekturen...");
+        m_btn_ManageAdjustment.setActionCommand( "OPEN" );
+        add(m_btn_ManageAdjustment, "14, 14");
 
         m_btnFinish = new JButton("Zeitraum abschließen");
         m_btnFinish.setActionCommand( "Zeitraum abschließen" );

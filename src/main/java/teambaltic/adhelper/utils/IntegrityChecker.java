@@ -15,6 +15,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +27,14 @@ import teambaltic.adhelper.model.IKnownColumns;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
+import teambaltic.adhelper.utils.DifferingLine.EDiffType;
 
 // ############################################################################
 public final class IntegrityChecker
 {
     private static final EPeriodDataSelector ALL = EPeriodDataSelector.ALL;
 
-    private static final List<String> REQUIREDCOLUMNNAMES = new ArrayList<>();
+    public static final List<String> REQUIREDCOLUMNNAMES = new ArrayList<>();
     static{
         REQUIREDCOLUMNNAMES.add( IKnownColumns.AD_FREE_FROM );
         REQUIREDCOLUMNNAMES.add( IKnownColumns.AD_FREE_REASON );
@@ -170,6 +172,99 @@ public final class IntegrityChecker
             throw new Exception( aSB.toString() );
         }
     }
+
+    public static FileComparisonResult compare( final File fRef, final File fNew ) throws Exception
+    {
+
+        final List<String> aColumnNames_Ref = FileUtils.readColumnNames( fRef );
+        final FileComparisonResult aResult = new FileComparisonResult( fRef, fNew, aColumnNames_Ref );
+
+        try {
+            final List<String> aAllLines_Ref = FileUtils.readAllLines( fRef, 1 );
+            final Map<Integer, Integer> aLineIdxByMemberID_Ref = mapLineIdxIDToMemberAndCleanAllLines(aColumnNames_Ref, aAllLines_Ref);
+
+            final List<String> aColumnNames_New = FileUtils.readColumnNames( fNew );
+            final List<String> aAllLines_New = FileUtils.readAllLines( fNew, 1 );
+            final Map<Integer, Integer> aLineIdxByMemberID_New = mapLineIdxIDToMemberAndCleanAllLines(aColumnNames_New, aAllLines_New);
+
+            final List<String> aLinesNotProcessed = new ArrayList<>(aAllLines_New);
+            for ( final Integer aMemberID : aLineIdxByMemberID_Ref.keySet() ) {
+                final Integer aLineIdx_Ref = aLineIdxByMemberID_Ref.get(aMemberID);
+                final String aLine_Ref = aAllLines_Ref.get( aLineIdx_Ref );
+                final Integer aLineIdx_New = aLineIdxByMemberID_New.get(aMemberID);
+                if( aLineIdx_New == null ) {
+                    // Nicht enthalten in New:
+                    final DifferingLine aDiff = new DifferingLine( new LineInfo(aLineIdx_Ref+1, aLine_Ref), null, EDiffType.DELETED);
+                    aResult.add( aDiff );
+                    continue;
+                }
+                final String aLine_New = aAllLines_New.get( aLineIdx_New );
+                if( aLine_Ref.equals(aLine_New) ) {
+                    // Beide Zeilen identisch
+                    aLinesNotProcessed.remove( aLine_New );
+                    continue;
+                }
+                // Zeilen unterschiedlich:
+                final DifferingLine aDiff = new DifferingLine( new LineInfo(aLineIdx_Ref+1, aLine_Ref), new LineInfo(aLineIdx_New+1, aLine_New), EDiffType.MODIFIED);
+                aResult.add( aDiff );
+                aLinesNotProcessed.remove( aLine_New );
+            }
+            // Jetzt sind in aLinesNotProcessed nur noch Zeilen, die in AllLines_Ref nicht enthalten waren:
+            final Map<Integer, Integer> aLineIdxByMemberID_NotProcessed = mapLineIdxIDToMemberAndCleanAllLines(aColumnNames_New, aLinesNotProcessed);
+            for ( final Integer aMemberID : aLineIdxByMemberID_NotProcessed.keySet() ) {
+                final Integer aLineIdx_New = aLineIdxByMemberID_New.get(aMemberID);
+                final String aLine_New = aAllLines_New.get( aLineIdx_New );
+                final DifferingLine aDiff = new DifferingLine( null, new LineInfo(aLineIdx_New+1, aLine_New), EDiffType.ADDED);
+                aResult.add( aDiff );
+            }
+        } catch ( final Exception fEx ) {
+            throw fEx;
+        }
+
+        return aResult;
+    }
+
+    private static Map<Integer, Integer> mapLineIdxIDToMemberAndCleanAllLines(
+            final List<String> fColumnNames,
+            final List<String> fAllLines )
+    {
+        final List<String> aCleanLines = new ArrayList<>();
+        final Map<Integer, Integer> aLineIdxByMemberID = new HashMap<>();
+        int aLineIdx = 0;
+        for( final String aSingleLine : fAllLines ){
+            final Map<String, String> aAttributes = FileUtils.makeMap( fColumnNames, aSingleLine );
+            final Map<String, String> aCleanAttributes = new HashMap<>();
+            final String aIDString = aAttributes.get( IKnownColumns.MEMBERID );
+            final Integer aID = Integer.parseInt( aIDString );
+            aLineIdxByMemberID.put( aID, Integer.valueOf(aLineIdx) );
+            aAttributes.forEach( (k,v) -> {
+                if( v.matches("00.00.0000")) {
+                    v = null;
+                } else  if( v.matches("^[0]+$")) {
+                    v = null;
+                } else  if( v.matches("31.12.2099")) {
+                    v = null;
+                }
+                aCleanAttributes.put(k, v);
+            });
+            final String aCleanLine = makeCSVLine(fColumnNames, aCleanAttributes);
+            aCleanLines.add( aCleanLine );
+            aLineIdx++;
+        }
+        fAllLines.clear();
+        fAllLines.addAll(aCleanLines);
+        return aLineIdxByMemberID;
+    }
+
+    private static String makeCSVLine( final List<String> fColumnNames, final Map<String, String> fAttributes ) {
+        final StringBuilder aLine = new StringBuilder( fAttributes.get(fColumnNames.get(0)));
+        for ( int aIdx = 1; aIdx < fColumnNames.size(); aIdx++ ) {
+            final String aAttr = fAttributes.get(fColumnNames.get(aIdx));
+            aLine.append(";").append(aAttr == null ? "" : aAttr);
+        }
+        return aLine.toString();
+    }
+
 }
 
 // ############################################################################

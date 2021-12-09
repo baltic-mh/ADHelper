@@ -19,6 +19,8 @@
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
 ###############################################################################
-//RELEASE: 1028000
+//RELEASE: 1030000
 ###############################################################################
-[BUGFIX] Korrekturen für den Fall, dass für Zeitraum "ALLE" gewählt ist
+[NEU] Beim Hochladen neuer Basisdaten werden die Änderungen noch einmal
+      zur Überprüfung angezeigt. Es muss explizit bestätigt werden, dass die
+      Daten übernommen werden sollen.
