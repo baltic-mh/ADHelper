@@ -1,8 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?><updatelist application="ADHelper" baseurl="https://syniphos.i234.me/~kvk/Download/ADHelper">
+    
   <architect arch="x86" os="Windows" tag="win32">
+        
     <launcher exec="${APPHOME}/ADHelper.exe"/>
+      
   </architect>
+    
+  <version release="1030000" version="1.30.0">
+        
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Beim Hochladen neuer Basisdaten werden die Änderungen noch einmal
+      zur Überprüfung angezeigt. Es muss explizit bestätigt werden, dass die
+      Daten übernommen werden sollen.&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+        
+    <arch>
+            
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22981613" sourcedir="1030000"/>
+            
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="79460" sourcedir="1030000"/>
+            
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1030000"/>
+            
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="17309" sourcedir="1030000"/>
+          
+    </arch>
+      
+  </version>
+    
   <version release="1028000" version="1.28.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -11,14 +43,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22964564" sourcedir="1028000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="79460" sourcedir="1028000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1028000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="16980" sourcedir="1028000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1027000" version="1.27.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -27,14 +68,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22964484" sourcedir="1027000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="78937" sourcedir="1027000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1027000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="16770" sourcedir="1027000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1026000" version="1.26.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -43,14 +93,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22964330" sourcedir="1026000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="78390" sourcedir="1026000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1026000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="16536" sourcedir="1026000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1025001" version="1.25.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -59,14 +118,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22949415" sourcedir="1025001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="77902" sourcedir="1025001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1025001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="16314" sourcedir="1025001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1025000" version="1.25.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -75,14 +143,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22968176" sourcedir="1025000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="77414" sourcedir="1025000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1025000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="16099" sourcedir="1025000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1024004" version="1.24.4">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -91,14 +168,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22967475" sourcedir="1024004"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="76736" sourcedir="1024004"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1024004"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="15901" sourcedir="1024004"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1024002" version="1.24.2">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -107,14 +193,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22952890" sourcedir="1024002"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="75590" sourcedir="1024002"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1024002"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="15702" sourcedir="1024002"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1024001" version="1.24.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -123,14 +218,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22967114" sourcedir="1024001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="74915" sourcedir="1024001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1024001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="15493" sourcedir="1024001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1024000" version="1.24.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -139,14 +243,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22967084" sourcedir="1024000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="74258" sourcedir="1024000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1024000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="15314" sourcedir="1024000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1023000" version="1.23.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -155,14 +268,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22966268" sourcedir="1023000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="73386" sourcedir="1023000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1023000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="15097" sourcedir="1023000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1022000" version="1.22.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -171,14 +293,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22965303" sourcedir="1022000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="72117" sourcedir="1022000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1022000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="14889" sourcedir="1022000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1021001" version="1.21.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -187,14 +318,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22965139" sourcedir="1021001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="71441" sourcedir="1021001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1021001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="14683" sourcedir="1021001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1021000" version="1.21.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -203,14 +343,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22965112" sourcedir="1021000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="70808" sourcedir="1021000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1021000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="14511" sourcedir="1021000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1020000" version="1.20.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -219,14 +368,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22964738" sourcedir="1020000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="69781" sourcedir="1020000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1020000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="14303" sourcedir="1020000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1019000" version="1.19.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -239,14 +397,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22962181" sourcedir="1019000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="68447" sourcedir="1019000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1019000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="14105" sourcedir="1019000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1018004" version="1.18.4">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -255,14 +422,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22961085" sourcedir="1018004"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="67825" sourcedir="1018004"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1018004"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="13766" sourcedir="1018004"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1018003" version="1.18.3">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -271,14 +447,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22961133" sourcedir="1018003"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="67164" sourcedir="1018003"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1018003"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="13575" sourcedir="1018003"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1018002" version="1.18.2">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -287,14 +472,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22960889" sourcedir="1018002"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="66131" sourcedir="1018002"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1018002"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="13391" sourcedir="1018002"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1018001" version="1.18.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -303,14 +497,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22960782" sourcedir="1018001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="65467" sourcedir="1018001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1018001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="13195" sourcedir="1018001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1018000" version="1.18.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -319,14 +522,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22960692" sourcedir="1018000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="64802" sourcedir="1018000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1018000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="12985" sourcedir="1018000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1017000" version="1.17.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -344,14 +556,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22959883" sourcedir="1017000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="64026" sourcedir="1017000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1017000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="12728" sourcedir="1017000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1016000" version="1.16.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -364,14 +585,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22958968" sourcedir="1016000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="61886" sourcedir="1016000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1016000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="12368" sourcedir="1016000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1015001" version="1.15.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -380,14 +610,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22954674" sourcedir="1015001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="60223" sourcedir="1015001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1015001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="12088" sourcedir="1015001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1015000" version="1.15.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -400,14 +639,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22954635" sourcedir="1015000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="59557" sourcedir="1015000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1015000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="11889" sourcedir="1015000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1014002" version="1.14.2">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -416,14 +664,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22941295" sourcedir="1014002"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="58802" sourcedir="1014002"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1014002"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="11633" sourcedir="1014002"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1014001" version="1.14.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -432,14 +689,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22969047" sourcedir="1014001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="58142" sourcedir="1014001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1014001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="11456" sourcedir="1014001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1014000" version="1.14.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -448,14 +714,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22969012" sourcedir="1014000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="57483" sourcedir="1014000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1014000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="11279" sourcedir="1014000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1013000" version="1.13.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -468,14 +743,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22968682" sourcedir="1013000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="56418" sourcedir="1013000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1013000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="11079" sourcedir="1013000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1012000" version="1.12.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -488,14 +772,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22967365" sourcedir="1012000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="55497" sourcedir="1012000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1012000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="10788" sourcedir="1012000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1011000" version="1.11.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -504,14 +797,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22967185" sourcedir="1011000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="54721" sourcedir="1011000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1011000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="10510" sourcedir="1011000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1010002" version="1.10.2">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -520,14 +822,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22966681" sourcedir="1010002"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="53812" sourcedir="1010002"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1010002"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="10310" sourcedir="1010002"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1010001" version="1.10.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -540,14 +851,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22964818" sourcedir="1010001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="52937" sourcedir="1010001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1010001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="10095" sourcedir="1010001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1010000" version="1.10.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -568,14 +888,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22964621" sourcedir="1010000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="52057" sourcedir="1010000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1010000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="9847" sourcedir="1010000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1009000" version="1.9.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -585,14 +914,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22961680" sourcedir="1009000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="51199" sourcedir="1009000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1009000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="9416" sourcedir="1009000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1008004" version="1.8.4">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -601,14 +939,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22961168" sourcedir="1008004"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="50521" sourcedir="1008004"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1008004"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="9137" sourcedir="1008004"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1008003" version="1.8.3">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -617,14 +964,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22960227" sourcedir="1008003"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="49840" sourcedir="1008003"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1008003"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="8946" sourcedir="1008003"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1008002" version="1.8.2">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -637,14 +993,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22960039" sourcedir="1008002"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="48938" sourcedir="1008002"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1008002"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="8751" sourcedir="1008002"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1008001" version="1.8.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -653,14 +1018,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22932041" sourcedir="1008001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="47870" sourcedir="1008001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1008001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="8510" sourcedir="1008001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1008000" version="1.8.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -669,14 +1043,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="22940888" sourcedir="1008000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="47177" sourcedir="1008000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1008000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="8305" sourcedir="1008000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1007000" version="1.7.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -685,14 +1068,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3615992" sourcedir="1007000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="46074" sourcedir="1007000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1007000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="8141" sourcedir="1007000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1006002" version="1.6.2">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -701,14 +1093,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3610588" sourcedir="1006002"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="45173" sourcedir="1006002"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1006002"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="7939" sourcedir="1006002"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1006001" version="1.6.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -717,14 +1118,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3600698" sourcedir="1006001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="44305" sourcedir="1006001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1006001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="7699" sourcedir="1006001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1005003" version="1.5.3">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -737,14 +1147,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3579656" sourcedir="1005003"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="41179" sourcedir="1005003"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1005003"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="7126" sourcedir="1005003"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1005002" version="1.5.2">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -757,14 +1176,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3587057" sourcedir="1005002"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="39908" sourcedir="1005002"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1005002"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="6878" sourcedir="1005002"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1005001" version="1.5.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -773,14 +1201,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3586130" sourcedir="1005001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="38817" sourcedir="1005001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1005001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="6584" sourcedir="1005001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1005000" version="1.5.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -789,14 +1226,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3585915" sourcedir="1005000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="38138" sourcedir="1005000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1005000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="6381" sourcedir="1005000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1004000" version="1.4.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -813,14 +1259,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3583704" sourcedir="1004000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="37469" sourcedir="1004000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1004000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="6194" sourcedir="1004000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1003001" version="1.3.1">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -837,14 +1292,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3578274" sourcedir="1003001"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="36350" sourcedir="1003001"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1003001"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="5864" sourcedir="1003001"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1003000" version="1.3.0">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -853,14 +1317,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3625295" sourcedir="1003000"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="35659" sourcedir="1003000"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1003000"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="5550" sourcedir="1003000"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1002008" version="1.2.8">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -869,14 +1342,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3624091" sourcedir="1002008"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="34571" sourcedir="1002008"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1002008"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="5350" sourcedir="1002008"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1002007" version="1.2.7">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -885,14 +1367,23 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3624076" sourcedir="1002007"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="33670" sourcedir="1002007"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1002007"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="5151" sourcedir="1002007"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1002006" version="1.2.6">
+        
     <description>
     &lt;dl&gt;
   &lt;dt&gt;
@@ -911,12 +1402,21 @@
   &lt;/dt&gt;
 &lt;/dl&gt;
   </description>
+        
     <arch>
+            
       <file destdir="${APPHOME}" name="ADHelper.exe" size="3624044" sourcedir="1002006"/>
+            
       <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="32812" sourcedir="1002006"/>
+            
       <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="18684" sourcedir="1002006"/>
+            
       <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="4959" sourcedir="1002006"/>
+          
     </arch>
+      
   </version>
+    
   <version release="1" version="0.0.0"/>
+  
 </updatelist>
