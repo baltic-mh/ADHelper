@@ -136,16 +136,48 @@ In der Rolle *MITGLIEDERWART* hat man quasi nur lesenden Zugriff auf die Daten.
 Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine 
 aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
 Server zu laden. Dazu dient der Knopf kbd:[Daten hochladen...]. 
-
-Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei im Dateisystem erbrowst wird.
-Diese wird daraufhin auf ihre Konsistenz überprüft. Bei Erfolg der Prüfung wird sie auf den Server hochgeladen. 
-Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.
-
-Das genaue Format der Datei der Basisdaten ist im link:developers-guide.html#Basisdaten[Enwicklerhandbuch] angegeben.
+Der zugehörige Ablauf ist weiter unten beschrieben.
 
 ====== Bauausschuss
 
 Der *BAUAUSSCHUSS* führt die Arbeitsdiensttermine im Verein durch und führt Buch über die dort geleisteten Stunden. Diese Aufgabe zu erleichtern, ist die Hauptaufgabe des Programmes +ADHelper+. Die einzelnen Bedienschritte sind im folgenden Abschnitt genauer beschrieben.
+
+=== Hochladen neuer Basisdaten
+Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine 
+aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den 
+Server zu laden. Dazu dient der Knopf kbd:[Daten hochladen...]. 
+
+Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei im Dateisystem erbrowst wird.
+Diese wird daraufhin zuerst auf ihre Konsistenz hin überprüft. 
+Erfüllen die Daten nicht die an sie gestellten Anforderungen, wird der Prozess abgebrochen und keine Daten hochgeladen.
+
+Nach der Konsistenzprüfing wird ein Vergleich zu den aktuell gültigen Daten durchgeführt. Das Ergebnis wird in einem Dialog angezeigt:
+
+.Darstellung der Modifikationen der Daten
+image::DatenDiffPanel.png[align="center"]
+
+[NOTE]
+====
+Erläuterung der Bestandteile:
+
+<1> Pfad der Datei mit den aktuellen Daten
+<2> Pfad der Datei mit den neuen Daten
+<3> Zeile in der aktuellen Datei, die in der neuen Datei modifiziert wurde
+<4> Zeile in der neuen Datei mit modifizierten Daten
+<5> Datenfelder, die modifiziert sind, werden gesondert hervorgehoben
+<6> Zeile in der aktuellen Datei, die in der neuen Datei nicht mehr vorkommt
+<7> Zeile in der neuen Datei, die in der aktuellen Datei noch nicht enthalten ist
+====
+
+Hier besteht noch einmal die Gelegenheit zu überprüfen, ob die Daten, die hochgeladen werden sollen, auch den erwarteten Inhalt haben.
+
+Ist das nicht der Fall, kann über den Knopf 
+kbd:[Daten verwerfen] das weitere Hochladen abgebrochen werden.
+
+Wird der Knopf kbd:[Daten übernehmen] gedrückt, wird die Datei auf den Server hochgeladen. 
+Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.
+
+Das genaue Format der Datei der Basisdaten ist im link:developers-guide.html#Basisdaten[Enwicklerhandbuch] angegeben.
 
 === Verwaltung der Arbeitsdienste
 

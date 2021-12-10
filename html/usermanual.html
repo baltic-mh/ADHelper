@@ -779,16 +779,17 @@ table.tableblock.grid-all { -webkit-border-radius: 0; border-radius: 0; -webkit-
 </li>
 </ul>
 </li>
-<li><a href="#_verwaltung_der_arbeitsdienste">5.3. Verwaltung der Arbeitsdienste</a>
+<li><a href="#_hochladen_neuer_basisdaten">5.3. Hochladen neuer Basisdaten</a></li>
+<li><a href="#_verwaltung_der_arbeitsdienste">5.4. Verwaltung der Arbeitsdienste</a>
 <ul class="sectlevel3">
-<li><a href="#_erfassung_von_arbeitsdienststunden">5.3.1. Erfassung von Arbeitsdienststunden</a></li>
-<li><a href="#_erfassung_von_gutschriften">5.3.2. Erfassung von Gutschriften</a></li>
-<li><a href="#_abschluss_eines_abrechnungszeitraumes">5.3.3. Abschluss eines Abrechnungszeitraumes</a></li>
+<li><a href="#_erfassung_von_arbeitsdienststunden">5.4.1. Erfassung von Arbeitsdienststunden</a></li>
+<li><a href="#_erfassung_von_gutschriften">5.4.2. Erfassung von Gutschriften</a></li>
+<li><a href="#_abschluss_eines_abrechnungszeitraumes">5.4.3. Abschluss eines Abrechnungszeitraumes</a></li>
 </ul>
 </li>
-<li><a href="#_pdf_reports">5.4. PDF-Reports</a></li>
-<li><a href="#_log_ausgaben">5.5. Log-Ausgaben</a></li>
-<li><a href="#_automatisches_update">5.6. Automatisches Update</a></li>
+<li><a href="#_pdf_reports">5.5. PDF-Reports</a></li>
+<li><a href="#_log_ausgaben">5.6. Log-Ausgaben</a></li>
+<li><a href="#_automatisches_update">5.7. Automatisches Update</a></li>
 </ul>
 </li>
 <li><a href="#_mögliche_probleme">6. Mögliche Probleme</a>
@@ -1307,15 +1308,8 @@ Daten einer  abgeschlossenen Periode können nicht mehr verändert werden!</p>
 <div class="paragraph">
 <p>Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine
 aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den
-Server zu laden. Dazu dient der Knopf <kbd>Daten hochladen&#8230;&#8203;</kbd>.</p>
-</div>
-<div class="paragraph">
-<p>Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei im Dateisystem erbrowst wird.
-Diese wird daraufhin auf ihre Konsistenz überprüft. Bei Erfolg der Prüfung wird sie auf den Server hochgeladen.
-Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.</p>
-</div>
-<div class="paragraph">
-<p>Das genaue Format der Datei der Basisdaten ist im <a href="developers-guide.html#Basisdaten">Enwicklerhandbuch</a> angegeben.</p>
+Server zu laden. Dazu dient der Knopf <kbd>Daten hochladen&#8230;&#8203;</kbd>.
+Der zugehörige Ablauf ist weiter unten beschrieben.</p>
 </div>
 </div>
 <div class="sect5">
@@ -1328,7 +1322,89 @@ Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neue
 </div>
 </div>
 <div class="sect2">
-<h3 id="_verwaltung_der_arbeitsdienste"><a class="anchor" href="#_verwaltung_der_arbeitsdienste"></a>5.3. Verwaltung der Arbeitsdienste</h3>
+<h3 id="_hochladen_neuer_basisdaten"><a class="anchor" href="#_hochladen_neuer_basisdaten"></a>5.3. Hochladen neuer Basisdaten</h3>
+<div class="paragraph">
+<p>Die einzig originäre Aufgabe des Mitgliederwartes ist es, eine
+aktualisierte Datei aus dem Mitgliederverwaltungsprogramm auf den
+Server zu laden. Dazu dient der Knopf <kbd>Daten hochladen&#8230;&#8203;</kbd>.</p>
+</div>
+<div class="paragraph">
+<p>Er öffnet einen Auswahldialog, mit dem die neu aus dem Vereinsverwaltungsprogramm exportierte Datei im Dateisystem erbrowst wird.
+Diese wird daraufhin zuerst auf ihre Konsistenz hin überprüft.
+Erfüllen die Daten nicht die an sie gestellten Anforderungen, wird der Prozess abgebrochen und keine Daten hochgeladen.</p>
+</div>
+<div class="paragraph">
+<p>Nach der Konsistenzprüfing wird ein Vergleich zu den aktuell gültigen Daten durchgeführt. Das Ergebnis wird in einem Dialog angezeigt:</p>
+</div>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/DatenDiffPanel.png" alt="DatenDiffPanel">
+</div>
+<div class="title">Abbildung 12. Darstellung der Modifikationen der Daten</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Erläuterung der Bestandteile:</p>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Pfad der Datei mit den aktuellen Daten</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Pfad der Datei mit den neuen Daten</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Zeile in der aktuellen Datei, die in der neuen Datei modifiziert wurde</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Zeile in der neuen Datei mit modifizierten Daten</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Datenfelder, die modifiziert sind, werden gesondert hervorgehoben</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Zeile in der aktuellen Datei, die in der neuen Datei nicht mehr vorkommt</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>Zeile in der neuen Datei, die in der aktuellen Datei noch nicht enthalten ist</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Hier besteht noch einmal die Gelegenheit zu überprüfen, ob die Daten, die hochgeladen werden sollen, auch den erwarteten Inhalt haben.</p>
+</div>
+<div class="paragraph">
+<p>Ist das nicht der Fall, kann über den Knopf
+<kbd>Daten verwerfen</kbd> das weitere Hochladen abgebrochen werden.</p>
+</div>
+<div class="paragraph">
+<p>Wird der Knopf <kbd>Daten übernehmen</kbd> gedrückt, wird die Datei auf den Server hochgeladen.
+Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neuen Datei durchgeführt.</p>
+</div>
+<div class="paragraph">
+<p>Das genaue Format der Datei der Basisdaten ist im <a href="developers-guide.html#Basisdaten">Enwicklerhandbuch</a> angegeben.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_verwaltung_der_arbeitsdienste"><a class="anchor" href="#_verwaltung_der_arbeitsdienste"></a>5.4. Verwaltung der Arbeitsdienste</h3>
 <div class="paragraph">
 <p>Der Knopf <kbd>Arbeitsdienste &#8230;&#8203;</kbd> im <a href="#_hauptfenster">Hauptfenster</a> öffnet das Fenster zur Eingabe und Verwaltung der Arbeitsdienste.</p>
 </div>
@@ -1336,7 +1412,7 @@ Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neue
 <div class="content">
 <img src="images/AppAD-0.png" alt="AppAD 0">
 </div>
-<div class="title">Abbildung 12. Fenster "Arbeitsdienste"</div>
+<div class="title">Abbildung 13. Fenster "Arbeitsdienste"</div>
 </div>
 <div class="paragraph">
 <p>Auch hier kann man wieder die zu betrachtende Periode auswählen und auch hier ist eine Änderung an Daten von abgeschlossenen Perioden nicht möglich. Die Daten bereits abgeschlossener Perioden können also nur zur Kontrolle angesehen werden. Die aktive Periode erkennt man an dem angehängten <mark>*</mark> im Auswahldialog.</p>
@@ -1348,7 +1424,7 @@ Alle dann folgenden Berechnungen werden ab dann basierend auf dem Stand der neue
 <p>Im Feld <mark>Filter</mark> kann man eine Zeichenkette eingeben, die die Liste der angezeigten Personen auf solche einschränkt, bei denen die Eingabe im Namen enthalten ist. Über <kbd>Reset Teckstfilter</kbd> kann man die Liste wieder vollständig anzeigen lassen.</p>
 </div>
 <div class="sect3">
-<h4 id="_erfassung_von_arbeitsdienststunden"><a class="anchor" href="#_erfassung_von_arbeitsdienststunden"></a>5.3.1. Erfassung von Arbeitsdienststunden</h4>
+<h4 id="_erfassung_von_arbeitsdienststunden"><a class="anchor" href="#_erfassung_von_arbeitsdienststunden"></a>5.4.1. Erfassung von Arbeitsdienststunden</h4>
 <div class="paragraph">
 <p>Hat ein Arbeitsdiensttermin stattgefunden, müssen die dort geleisteten Arbeitsstunden in das Programm ADHelper eingegeben werden. Dazu muss im geöffneten Arbeitsdienst-Fenster die aktive Periode ausgewählt sein.</p>
 </div>
@@ -1387,7 +1463,7 @@ Im Datums-Auswahldialog für einen neuen Arbeitsdiensttermin ist besonders darau
 <div class="content">
 <img src="images/AppAD-0-neu.png" alt="AppAD 0 neu">
 </div>
-<div class="title">Abbildung 13. Neuer Arbeitsdiensttermin</div>
+<div class="title">Abbildung 14. Neuer Arbeitsdiensttermin</div>
 </div>
 <div class="paragraph">
 <p>TODO: Bereits ausgetretene Mitglieder ausfiltern!</p>
@@ -1403,7 +1479,7 @@ Zum Auffinden der betreffenden Personen hilft das <mark>Filter</mark>-Feld, in d
 <div class="content">
 <img src="images/AppAD-0-nurTeilnehmer.png" alt="AppAD 0 nurTeilnehmer">
 </div>
-<div class="title">Abbildung 14. Ansicht "Nur Teilnehmer"</div>
+<div class="title">Abbildung 15. Ansicht "Nur Teilnehmer"</div>
 </div>
 <div class="paragraph">
 <p>In dieser reduzierten Liste kann für jeden Arbeiter die Anzahl der Stunden eingegen werden. Die Stunden können in Viertelstunden-Auflösung bis macksimal
@@ -1426,7 +1502,7 @@ Die neu erfassten Daten sind bis zu diesem Punkt nur auf dem lokalen Rechner ges
 </div>
 </div>
 <div class="sect3">
-<h4 id="_erfassung_von_gutschriften"><a class="anchor" href="#_erfassung_von_gutschriften"></a>5.3.2. Erfassung von Gutschriften</h4>
+<h4 id="_erfassung_von_gutschriften"><a class="anchor" href="#_erfassung_von_gutschriften"></a>5.4.2. Erfassung von Gutschriften</h4>
 <div class="paragraph">
 <p>Wenn festgestellt worden ist, dass bei einem Mitglied in der Vergangenheit ein Fehler in der Berechnung bzw. Abbuchung vorlag, besteht die Möglichkeit, Gutschriften zu erfassen. Eine Gutschrift erfolgt in Stunden.</p>
 </div>
@@ -1437,7 +1513,7 @@ Die neu erfassten Daten sind bis zu diesem Punkt nur auf dem lokalen Rechner ges
 <div class="content">
 <img src="images/AppGS-0-neu.png" alt="AppGS 0 neu">
 </div>
-<div class="title">Abbildung 15. Neue Gutschrift</div>
+<div class="title">Abbildung 16. Neue Gutschrift</div>
 </div>
 <div class="paragraph">
 <p>Der wesentliche Unterschied ist, dass es immer nur eine Gutschrift pro Mitglied und Abrechnungszeitraum geben kann und der Termin immer fest auf den Beginn des Abrechnungszeitraum gelegt wird.</p>
@@ -1447,7 +1523,7 @@ Die neu erfassten Daten sind bis zu diesem Punkt nur auf dem lokalen Rechner ges
 </div>
 </div>
 <div class="sect3">
-<h4 id="_abschluss_eines_abrechnungszeitraumes"><a class="anchor" href="#_abschluss_eines_abrechnungszeitraumes"></a>5.3.3. Abschluss eines Abrechnungszeitraumes</h4>
+<h4 id="_abschluss_eines_abrechnungszeitraumes"><a class="anchor" href="#_abschluss_eines_abrechnungszeitraumes"></a>5.4.3. Abschluss eines Abrechnungszeitraumes</h4>
 <div class="paragraph">
 <p>Ist sichergestellt, dass alle Arbeitsdiensttermine eines Abrechnungszeitraumes vollständig erfasst sind, kann der Zeitraum abgeschlossen werden. Dazu ist im <a href="#_hauptfenster">Hauptfenster</a> der Knopf <kbd>Zeitraum abschließen</kbd> zu drücken.</p>
 </div>
@@ -1485,7 +1561,7 @@ Bereits diese Aktion wird selbstverständlich als Veränderung der lokalen Daten
 </div>
 </div>
 <div class="sect2">
-<h3 id="_pdf_reports"><a class="anchor" href="#_pdf_reports"></a>5.4. PDF-Reports</h3>
+<h3 id="_pdf_reports"><a class="anchor" href="#_pdf_reports"></a>5.5. PDF-Reports</h3>
 <div class="paragraph">
 <p>Seit der Version 1.8.2 ist es möglich, anprechende PDF-Reports für jedes einzelne Mitglied auszugeben.
 Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports</kbd> zugänglich:</p>
@@ -1554,7 +1630,7 @@ Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports
 </div>
 </div>
 <div class="sect2">
-<h3 id="_log_ausgaben"><a class="anchor" href="#_log_ausgaben"></a>5.5. Log-Ausgaben</h3>
+<h3 id="_log_ausgaben"><a class="anchor" href="#_log_ausgaben"></a>5.6. Log-Ausgaben</h3>
 <div class="paragraph">
 <p>Das Programm erzeugt während des Laufes einige Log-Ausgaben. Diese gehen einerseits in eine Datei und können andererseits auch in einem Fenster sichtbar gemacht werden. Das Fenster ist bei Programmstart aktiviert und kann gefahrlos geschlossen werden. Es kann jederzeit über das Menu
  <kbd>Aktionen/Zeige Logausgaben</kbd> wiederhergestellt werden.</p>
@@ -1565,7 +1641,7 @@ Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports
 </div>
 </div>
 <div class="sect2">
-<h3 id="_automatisches_update"><a class="anchor" href="#_automatisches_update"></a>5.6. Automatisches Update</h3>
+<h3 id="_automatisches_update"><a class="anchor" href="#_automatisches_update"></a>5.7. Automatisches Update</h3>
 <div class="paragraph">
 <p>Das Programm überprüft, ob auf dem Server eine neuere als die installierte Version bereitsteht. Ist das der Fall, öffnet sich ein Fenster, in dem die neue Version angekündigt und vorgestellt wird:</p>
 </div>
@@ -1573,7 +1649,7 @@ Diese Funktionalität ist über den Menu-Punkt <kbd>Aktionen/Erzeuge PDF-Reports
 <div class="content">
 <img src="images/App-0-Update.png" alt="App 0 Update">
 </div>
-<div class="title">Abbildung 16. Update-Fenster</div>
+<div class="title">Abbildung 17. Update-Fenster</div>
 </div>
 <div class="paragraph">
 <p>Soweit keine gewichtigen Gründe dagegen sprechen, sollte <em>immer</em> die neueste Version installiert werden.</p>
@@ -1600,7 +1676,7 @@ In der Meldung wird angegeben, wer gerade mit dem Programm arbeitet.</p>
 <div class="content">
 <img src="images/Exception-AppLaeuftSchon.png" alt="Exception AppLaeuftSchon">
 </div>
-<div class="title">Abbildung 17. Es läuft schon eine andere Applikation</div>
+<div class="title">Abbildung 18. Es läuft schon eine andere Applikation</div>
 </div>
 <div class="paragraph">
 <p>Die als zweites gestartete Programminstanz kann dann keine Daten auf den Server hochladen. Ansonsten ist die Funktion aber vollkommmen uneingeschränkt.</p>
@@ -1641,7 +1717,7 @@ In so einem Fall einfach das Programm nach ca. 10 Sekunden Wartezeit erneut star
 <div id="footer">
 <div id="footer-text">
 Version 1.6<br>
-Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-23 19:13:22 +02:00
+Erstellt mit Asciidoctor v1.5.4 : Zuletzt geändert: 2020-04-23 18:13:22 +02:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">
