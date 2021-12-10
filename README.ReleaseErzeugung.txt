@@ -14,15 +14,10 @@ Wenn ein neues Release erzeugt werden soll, ist folgender Prozess notwendig:
 3. Aufruf der Gradle-Task
     gradlew release -Prelease.useAutomaticVersion=true
     (Wenn seit dem letzten Aufruf eine neue Java-Version installiert worden ist,
-     muss vorher die Umgebungsvariable JAVA_HOME im System auf den neuen Wert 
-     gesetzt werden! 
-     In der Datei ~User/.gradle/gradle.properties taucht die Java-Version auch 
-     noch mal auf - weiß momentan aber nicht, wann die referenziert wird.
-     Jetzt weiß ich es: die wird referenziert, wenn eine Gradle-Task aufgerufen wird.
-     Wenn also nicht die korrekte Java-Version benutzt wird, muss sie hier 
-     definiert werden:
-        org.gradle.java.home=/path_to_jdk_directory
-     )
+     muss vorher in der Datei ~User/.gradle/gradle.properties das Java-Home 
+     angegeben werden. Z.B.:
+        org.gradle.java.home=c:/Program Files/Java/jdk1.8.0_191 
+     taucht die Java-Version auch 
 
 4. Überprüfen, ob alles chicko ist!
 

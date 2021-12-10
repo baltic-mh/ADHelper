@@ -1,13 +1,5 @@
 ﻿###############################################################################
 # ReleaseNotes der aktuellen Version
-# Die einzelnen Änderungen/Neuerungen müssen mit einer Kategorie beginnen.
-# Die Kategorie muss in eckigen Klammern stehen.
-# Danach muss in derselben Zeile noch Text stehen
-# Übliche Kategorien sind:
-#[NEU]      Für ein neues Feature
-#[BUGFIX]   Für einen behobenen Fehler
-#[ÄNDERUNG] Für ein geändertes Verhalten
-#
 # Zeilen, die mit # oder // anfangen, werden ignoriert.
 # Es muss eine Zeile geben, die mit "//RELEASE:" anfängt gefolgt von der
 # Release-Nummer des anstehenden Releases.
@@ -18,9 +10,16 @@
 #    Versionsnummer: Major.Minor.Build
 # => Release-Nummer:
 #       (Major)(Minor, dreistellig mit führenden 0en)(Build, dreistellig mit führenden 0en)
+#
+# Die einzelnen Änderungen/Neuerungen müssen mit einer Kategorie beginnen.
+# Die Kategorie muss in eckigen Klammern stehen.
+# Danach muss in derselben Zeile noch Text stehen
+# Übliche Kategorien sind:
+#[NEU]      Für ein neues Feature
+#[BUGFIX]   Für einen behobenen Fehler
+#[ÄNDERUNG] Für ein geändertes Verhalten
+#
 ###############################################################################
-//RELEASE: 1030000
+//RELEASE: 1030001
 ###############################################################################
-[NEU] Beim Hochladen neuer Basisdaten werden die Änderungen noch einmal
-      zur Überprüfung angezeigt. Es muss explizit bestätigt werden, dass die
-      Daten übernommen werden sollen.
+[INTERN] Verwenden des Java-8-Compilers
