@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1030002" version="1.30.2">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Endlich korrekt dargestellt Umläute!!!&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22973981" sourcedir="1030002"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="80840" sourcedir="1030002"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1030002"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="17665" sourcedir="1030002"/>
+    </arch>
+  </version>
   <version release="1030001" version="1.30.1">
     <description>
     &lt;dl&gt;
