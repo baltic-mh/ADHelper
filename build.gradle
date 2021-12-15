@@ -35,11 +35,11 @@ plugins {
     // The gradle-launch4j plugin uses launch4j to create windows .exe files
     // for java applications.
     // https://github.com/TheBoegl/gradle-launch4j
-    id 'edu.sc.seis.launch4j' version '2.4.6'
+    id 'edu.sc.seis.launch4j' version '2.5.1'
 
     // https://github.com/researchgate/gradle-release
     // Dieses Plugin setzt voraus, dass Git im Pfad eingetragen ist!
-    id 'net.researchgate.release' version '2.4.0'
+    id 'net.researchgate.release' version '2.8.1'
 
     // Gradle plugin for generating a changelog based on a Git commit history.
     // https://github.com/tomasbjerre/git-changelog-gradle-plugin
@@ -113,6 +113,14 @@ def jupidatorProps = [
     distributionFolder      : distributionFolder,
     releaseNotesActual      : releaseNotesActual
 ]
+// ############################################################################
+
+// ############################################################################
+// Das Encoding muss angegeben werden, weil sonst die Umläute nicht unter allen
+// Umständen im UI korrekt angezeigt werden!
+compileJava {
+    options.encoding = 'UTF-8'
+}
 // ############################################################################
 
 // ############################################################################

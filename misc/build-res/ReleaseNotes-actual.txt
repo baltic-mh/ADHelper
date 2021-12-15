@@ -20,6 +20,6 @@
 #[ÄNDERUNG] Für ein geändertes Verhalten
 #
 ###############################################################################
-//RELEASE: 1030001
+//RELEASE: 1030002
 ###############################################################################
-[INTERN] Verwenden des Java-8-Compilers
+[NEU] Endlich korrekt dargestellt Umläute!!!
