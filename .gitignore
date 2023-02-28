@@ -95,3 +95,5 @@ $RECYCLE.BIN/
 /RELEASENOTES-previous.txt
 /.classpath
 /ADHelper.log
+*.bak
+.dbeaver/

@@ -15,6 +15,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
 import teambaltic.adhelper.model.settings.IAppSettings;
 import teambaltic.adhelper.utils.DifferingLine.EDiffType;
+import teambaltic.adhelper.utils.FileComparisonResult.EReason;
 
 // ############################################################################
 public final class IntegrityChecker
@@ -179,13 +181,19 @@ public final class IntegrityChecker
         final List<String> aColumnNames_Ref = FileUtils.readColumnNames( fRef );
         final FileComparisonResult aResult = new FileComparisonResult( fRef, fNew, aColumnNames_Ref );
 
+        final List<String> aColumnNames_New = FileUtils.readColumnNames( fNew );
+        if( !checkColumnNames( aColumnNames_New, aResult) ) {
+            return aResult;
+        }
+
         try {
             final List<String> aAllLines_Ref = FileUtils.readAllLines( fRef, 1 );
             final Map<Integer, Integer> aLineIdxByMemberID_Ref = mapLineIdxIDToMemberAndCleanAllLines(aColumnNames_Ref, aAllLines_Ref);
 
-            final List<String> aColumnNames_New = FileUtils.readColumnNames( fNew );
+            final List<String> aColumnsToSkip = aResult.getSuspiciousColumns( EReason.OBSOLETE );
             final List<String> aAllLines_New = FileUtils.readAllLines( fNew, 1 );
-            final Map<Integer, Integer> aLineIdxByMemberID_New = mapLineIdxIDToMemberAndCleanAllLines(aColumnNames_New, aAllLines_New);
+            final Map<Integer, Integer> aLineIdxByMemberID_New = mapLineIdxIDToMemberAndCleanAllLines(
+                    aColumnNames_New, aColumnsToSkip, aAllLines_New);
 
             final List<String> aLinesNotProcessed = new ArrayList<>(aAllLines_New);
             for ( final Integer aMemberID : aLineIdxByMemberID_Ref.keySet() ) {
@@ -210,7 +218,8 @@ public final class IntegrityChecker
                 aLinesNotProcessed.remove( aLine_New );
             }
             // Jetzt sind in aLinesNotProcessed nur noch Zeilen, die in AllLines_Ref nicht enthalten waren:
-            final Map<Integer, Integer> aLineIdxByMemberID_NotProcessed = mapLineIdxIDToMemberAndCleanAllLines(aColumnNames_New, aLinesNotProcessed);
+            final Map<Integer, Integer> aLineIdxByMemberID_NotProcessed = mapLineIdxIDToMemberAndCleanAllLines(
+                    aColumnNames_New, aColumnsToSkip, aLinesNotProcessed);
             for ( final Integer aMemberID : aLineIdxByMemberID_NotProcessed.keySet() ) {
                 final Integer aLineIdx_New = aLineIdxByMemberID_New.get(aMemberID);
                 final String aLine_New = aAllLines_New.get( aLineIdx_New );
@@ -228,6 +237,13 @@ public final class IntegrityChecker
             final List<String> fColumnNames,
             final List<String> fAllLines )
     {
+        return mapLineIdxIDToMemberAndCleanAllLines( fColumnNames, Collections.emptyList(), fAllLines);
+    }
+    private static Map<Integer, Integer> mapLineIdxIDToMemberAndCleanAllLines(
+            final List<String> fColumnNames,
+            final List<String> fColumnsToSkip,
+            final List<String> fAllLines )
+    {
         final List<String> aCleanLines = new ArrayList<>();
         final Map<Integer, Integer> aLineIdxByMemberID = new HashMap<>();
         int aLineIdx = 0;
@@ -238,16 +254,29 @@ public final class IntegrityChecker
             final Integer aID = Integer.parseInt( aIDString );
             aLineIdxByMemberID.put( aID, Integer.valueOf(aLineIdx) );
             aAttributes.forEach( (k,v) -> {
-                if( v.matches("00.00.0000")) {
-                    v = null;
-                } else  if( v.matches("^[0]+$")) {
-                    v = null;
-                } else  if( v.matches("31.12.2099")) {
-                    v = null;
+                if( !fColumnsToSkip.contains(k) ) {
+                    if( v.matches("00.00.0000")) {
+                        v = null;
+                    } else  if( v.matches("^[0]+$")) {
+                        v = null;
+                    } else  if( v.matches("31.12.2099")) {
+                        v = null;
+                    }
+                    if( IKnownColumns.LINKID.equals( k ) ) {
+                        try {
+                            final Integer aLinkID = Integer.parseInt( v );
+                            if( aLinkID != 0 ) {
+                                v = String.valueOf(aLinkID);
+                            }
+                        } catch ( final NumberFormatException fEx ) {
+                            // Keine valide Zahl - wird ignoriert
+                        }
+                    }
+                    aCleanAttributes.put(k, v);
                 }
-                aCleanAttributes.put(k, v);
             });
-            final String aCleanLine = makeCSVLine(fColumnNames, aCleanAttributes);
+            aCleanAttributes.put( IKnownColumns.MEMBERID, String.valueOf(aID));
+            final String aCleanLine = makeCSVLine(fColumnNames, fColumnsToSkip, aCleanAttributes);
             aCleanLines.add( aCleanLine );
             aLineIdx++;
         }
@@ -256,15 +285,36 @@ public final class IntegrityChecker
         return aLineIdxByMemberID;
     }
 
-    private static String makeCSVLine( final List<String> fColumnNames, final Map<String, String> fAttributes ) {
+    private static String makeCSVLine(
+            final List<String> fColumnNames,
+            final List<String> fColumnsToSkip,
+            final Map<String, String> fAttributes )
+    {
         final StringBuilder aLine = new StringBuilder( fAttributes.get(fColumnNames.get(0)));
         for ( int aIdx = 1; aIdx < fColumnNames.size(); aIdx++ ) {
-            final String aAttr = fAttributes.get(fColumnNames.get(aIdx));
-            aLine.append(";").append(aAttr == null ? "" : aAttr);
+            final String aColumnName = fColumnNames.get(aIdx);
+            if( !fColumnsToSkip.contains(aColumnName)) {
+                final String aAttr = fAttributes.get(aColumnName);
+                aLine.append(";").append(aAttr == null ? "" : aAttr);
+            }
         }
         return aLine.toString();
     }
 
+    private static boolean checkColumnNames( final List<String> fColumnNames_New, final FileComparisonResult fResult ) {
+        final List<String> aColumnNames_Ref = fResult.getColumnNames();
+        aColumnNames_Ref.forEach( aColumn -> {
+            if( !fColumnNames_New.contains(aColumn) ) {
+                fResult.addSuspiciousColumn(aColumn, EReason.MISSING);
+            }
+        });
+        fColumnNames_New.forEach( aColumn ->{
+            if( !aColumnNames_Ref.contains(aColumn) ) {
+                fResult.addSuspiciousColumn(aColumn, EReason.OBSOLETE);
+            }
+        });
+        return fResult.getSuspiciousColumns(EReason.MISSING).size() == 0;
+    }
 }
 
 // ############################################################################

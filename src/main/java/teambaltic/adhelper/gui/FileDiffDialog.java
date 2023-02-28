@@ -53,8 +53,11 @@ public class FileDiffDialog extends JDialog implements ActionListener {
     {
         try{
             final FileDiffDialog dialog = new FileDiffDialog( "FileDiff" );
-            final FileComparisonResult aDiff = IntegrityChecker.compare(new File("Arbeitsdienstabrechnungen\\Daten\\2020-07-01 - 2020-12-31\\BasisDaten.csv"),
-                    new File("Arbeitsdienstabrechnungen\\Daten\\BasisDaten_2019-12-02_18-50-16.csv") );
+//            final File aFileRef = new File("Arbeitsdienstabrechnungen\\Daten\\2020-07-01 - 2020-12-31\\BasisDaten.csv");
+//            final File aFileNew = new File("Arbeitsdienstabrechnungen\\Daten\\BasisDaten_2019-12-02_18-50-16.csv");
+            final File aFileRef = new File("misc\\TestResources\\IntegrityChecker\\BasisDaten_2023-01-01 - 2023-06-30.csv");
+            final File aFileNew = new File("misc\\TestResources\\IntegrityChecker\\BasisDaten_ExportVonUschi.csv");
+            final FileComparisonResult aDiff = IntegrityChecker.compare(aFileRef, aFileNew );
             final boolean aAccepted = dialog.accept( aDiff );
             System.out.println("Accepted: "+aAccepted);
         }catch( final Exception e ){

@@ -34,6 +34,7 @@ import teambaltic.adhelper.gui.model.TBLModel_FilesDiff;
 import teambaltic.adhelper.utils.DifferingLine;
 import teambaltic.adhelper.utils.DifferingLine.EDiffType;
 import teambaltic.adhelper.utils.FileComparisonResult;
+import teambaltic.adhelper.utils.FileComparisonResult.EReason;
 import teambaltic.adhelper.utils.LineInfo;
 
 // ############################################################################
@@ -49,6 +50,10 @@ public class FileDiffPanel extends JPanel {
     public JButton getBtnOK() { return m_btnOK; }
 
     private final JButton m_btnCancel;
+    private final JLabel m_lbl_ColumnsMissing;
+    private final JLabel m_lbl_ColumnsObsolete;
+    private final JTextField m_ColumnsMissing;
+    private final JTextField m_ColumnsObsolete;
     public JButton getBtnCancel() { return m_btnCancel; }
 
     /**
@@ -71,9 +76,9 @@ public class FileDiffPanel extends JPanel {
                 FormSpecs.RELATED_GAP_ROWSPEC,
                 FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,
-                RowSpec.decode("default:grow"),
+                FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,
-                RowSpec.decode("default:grow"),
+                FormSpecs.DEFAULT_ROWSPEC,
                 FormSpecs.RELATED_GAP_ROWSPEC,
                 RowSpec.decode("default:grow"),
                 FormSpecs.RELATED_GAP_ROWSPEC,
@@ -100,8 +105,24 @@ public class FileDiffPanel extends JPanel {
         add(m_File_New, "4, 4, 5, 1, fill, default");
         m_File_New.setColumns(10);
 
+        m_lbl_ColumnsMissing = new JLabel("Fehlende Spalten");
+        add(m_lbl_ColumnsMissing, "2, 6, right, fill");
+
+        m_ColumnsMissing = new JTextField();
+        m_ColumnsMissing.setEditable(false);
+        add(m_ColumnsMissing, "4, 6, 5, 1, fill, default");
+        m_ColumnsMissing.setColumns(10);
+
+        m_lbl_ColumnsObsolete = new JLabel("Unnötige Spalten");
+        add(m_lbl_ColumnsObsolete, "2, 8, right, default");
+
+        m_ColumnsObsolete = new JTextField();
+        m_ColumnsObsolete.setEditable(false);
+        add(m_ColumnsObsolete, "4, 8, 5, 1, fill, default");
+        m_ColumnsObsolete.setColumns(10);
+
         final JScrollPane scrollPane = new JScrollPane();
-        add(scrollPane, "2, 6, 7, 7");
+        add(scrollPane, "2, 10, 7, 3");
 
         scrollPane.setViewportView(m_DifferingLines);
         m_DifferingLines.setFillsViewportHeight(true);
@@ -120,6 +141,20 @@ public class FileDiffPanel extends JPanel {
     public void populate(final FileComparisonResult fDiff) {
         m_File_New.setText(fDiff.getNew().getAbsolutePath());
         m_File_Ref.setText(fDiff.getRef().getAbsolutePath());
+        final List<String> aMissingColumns = fDiff.getSuspiciousColumns(EReason.MISSING);
+        if( aMissingColumns.size() > 0 ) {
+            m_lbl_ColumnsMissing.setForeground( new Color( 255,0,0) );
+            m_ColumnsMissing.setText( String.join(", ", aMissingColumns) );
+        } else {
+            m_ColumnsMissing.setText( "- keine -" );
+        }
+        final List<String> aObsoleteColumns = fDiff.getSuspiciousColumns(EReason.OBSOLETE);
+        if( aObsoleteColumns.size() > 0 ) {
+            m_lbl_ColumnsObsolete.setForeground( new Color( 255,128,0) );
+            m_ColumnsObsolete.setText( String.join(", ", aObsoleteColumns) );
+        } else {
+            m_ColumnsObsolete.setText( "- keine -" );
+        }
         final List<DifferingLine> aDifferingLines = fDiff.getDifferingLines();
         final List<String> aColumnNames = new ArrayList<>();
         aColumnNames.add("Zeile (alt)");

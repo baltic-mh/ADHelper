@@ -20,6 +20,6 @@
 #[ÄNDERUNG] Für ein geändertes Verhalten
 #
 ###############################################################################
-//RELEASE: 1030002
+//RELEASE: 1031000
 ###############################################################################
-[NEU] Endlich korrekt dargestellt Umläute!!!
+[ÄNDERUNG] Anzeige der Differenzen bei neuen Daten überarbeitet
