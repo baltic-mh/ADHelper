@@ -20,6 +20,6 @@
 #[ÄNDERUNG] Für ein geändertes Verhalten
 #
 ###############################################################################
-//RELEASE: 1031001
+//RELEASE: 1032001
 ###############################################################################
 [ÄNDERUNG] Anzeige der Differenzen bei neuen Daten nochmals überarbeitet
