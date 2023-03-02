@@ -127,7 +127,8 @@ public final class FileUtils
         final String[] aSplit = fSingleLine.split( ";" );
         for( int aIdx = 0; aIdx < fColumnNames.size(); aIdx++ ){
             final String aString = aIdx < aSplit.length ? aSplit[aIdx] : "";
-            aMap.put( fColumnNames.get( aIdx ), aString );
+            final String aThisColumnName = fColumnNames.get( aIdx );
+            aMap.put( aThisColumnName, aString );
         }
         return aMap;
     }

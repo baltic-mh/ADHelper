@@ -15,7 +15,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -53,12 +56,41 @@ public class IntegrityCheckerTest {
     // ########################################################################
 
     @Test
+    public void test_makeCSVLine() {
+        final List<String> aColumnNames   = new ArrayList<>();
+        aColumnNames.add("C1");
+        aColumnNames.add("C3");
+        final Map<String, String> aAttributes = new HashMap<>();
+        aAttributes.put("C1", "V1");
+        aAttributes.put("C2", "V2");
+        aAttributes.put("C3", "V3");
+        aAttributes.put("C4", "V4");
+
+        final String aCSVLine = IntegrityChecker.makeCSVLine(aColumnNames, aAttributes);
+        assertEquals("V1;V3", aCSVLine);
+    }
+
+    @Test
     public void test_checkBaseDataFile() {
         try {
             final File aBaseDataFile1 = new File("misc/TestResources/IntegrityChecker/BaisDaten-SPG4-1-NurWeber.csv");
             IntegrityChecker.checkBaseDataFile(aBaseDataFile1);
             final File aBaseDataFile2 = new File("misc/TestResources/IntegrityChecker/BaisDaten-SPG4-1-complete.csv");
             IntegrityChecker.checkBaseDataFile(aBaseDataFile2);
+        } catch ( final Exception fEx ) {
+            fail(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName(), fEx.getMessage() ) );
+
+        }
+    }
+
+    @Test
+    public void test_compareWithObsoleteColumns() {
+        try {
+            final File aBaseDataFile1 = new File("misc/TestResources/IntegrityChecker/BaisDaten-SPG4-1-NurWeber.csv");
+            final File aBaseDataFile2 = new File("misc/TestResources/IntegrityChecker/BaisDaten-SPG4-1-NurWeber-MitUeberfluessigerSpalte.csv");
+            final FileComparisonResult aResult = IntegrityChecker.compare(aBaseDataFile1, aBaseDataFile2);
+            final List<DifferingLine> aDifferingLines = aResult.getDifferingLines();
+            assertEquals( 0, aDifferingLines.size() );
         } catch ( final Exception fEx ) {
             fail(String.format( "Unexpected exception: %s - %s ", fEx.getClass().getSimpleName(), fEx.getMessage() ) );
 

@@ -15,6 +15,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -72,6 +75,18 @@ public class FileUtilsTest
         assertEquals( "File9", aRetainedFiles[1]);
     }
 
+    @Test
+    public void test_makeMap()
+    {
+        final List<String> aActualColumnNames   = new ArrayList<>();
+        aActualColumnNames.add("C1");
+        aActualColumnNames.add("C2");
+        aActualColumnNames.add("C3");
+        aActualColumnNames.add("C4");
+        final String aSingleLine = "v1;v2;v3;v4";
+        final Map<String, String> aMap = FileUtils.makeMap( aActualColumnNames, aSingleLine);
+        assertEquals(4, aMap.size() );
+    }
 }
 
 // ############################################################################

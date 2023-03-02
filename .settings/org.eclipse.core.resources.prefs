@@ -1,6 +1,8 @@
 eclipse.preferences.version=1
 encoding//Arbeitsdienstabrechnungen/Daten=ISO-8859-1
 encoding//buildSrc/src/main/groovy/ReleaseNotesUpdater.groovy=UTF-8
+encoding//misc/TestResources/IntegrityChecker/BaisDaten-SPG4-1-NurWeber-MitUeberfluessigerSpalte.csv=ISO-8859-1
+encoding//misc/TestResources/IntegrityChecker/BaisDaten-SPG4-1-NurWeber.csv=ISO-8859-1
 encoding//misc/TestResources/IntegrityChecker/BasisDaten_ExportVonUschi.csv=ISO-8859-1
 encoding//misc/TestResources/Tabellen/Arbeitsdienste1.csv=UTF-8
 encoding//src/main/java=UTF-8
