@@ -11,6 +11,8 @@
 // ############################################################################
 package teambaltic.adhelper.model.settings;
 
+import java.nio.file.Path;
+
 import teambaltic.adhelper.model.EPropType;
 import teambaltic.adhelper.model.IKey;
 
@@ -22,6 +24,7 @@ public interface IUISettings extends ISettings<IUISettings.EKey>
        ,MAINFRAME_HEIGHT
        ,MAINFRAME_POSX
        ,MAINFRAME_POSY
+       ,UPLOADDATA_LATESTFOLDER(EPropType.STRINGVALUE)
        ;
         // --------------------------------------------------------------------
         private final EPropType m_PropType;
@@ -49,6 +52,10 @@ public interface IUISettings extends ISettings<IUISettings.EKey>
     void setMainFrame_PosX(int fValue);
     int  getMainFrame_PosY();
     void setMainFrame_PosY(int fValue);
+
+    String getFolderName_UploadDataLatestFolder();
+    Path   getFolder_UploadDataLatestFolder();
+    void setUploadDataLatestFolder(Path fFolder);
 
 }
 

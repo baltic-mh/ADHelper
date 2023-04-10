@@ -32,6 +32,7 @@ import teambaltic.adhelper.gui.MainPanel;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.PeriodData;
 import teambaltic.adhelper.model.settings.AllSettings;
+import teambaltic.adhelper.model.settings.IUISettings;
 import teambaltic.adhelper.utils.FileComparisonResult;
 import teambaltic.adhelper.utils.FileUtils;
 import teambaltic.adhelper.utils.IntegrityChecker;
@@ -112,11 +113,12 @@ public class UploadListener implements ActionListener
     private boolean uploadBaseData() throws Exception
     {
         final JFileChooser aFileChooser = new JFileChooser();
-        final Path aFolder_Data = getDataFolder();
-        aFileChooser.setCurrentDirectory( aFolder_Data.toFile() );
+        final Path aUploadData_LatestFolder = getUploadData_LatestFolder();
+        aFileChooser.setCurrentDirectory( aUploadData_LatestFolder.toFile() );
         final int aResult = aFileChooser.showOpenDialog(m_Panel);
         if( aResult == JFileChooser.APPROVE_OPTION ) {
             final File aSelectedFile = aFileChooser.getSelectedFile();
+            saveSettings( aSelectedFile.toPath() );
             IntegrityChecker.checkBaseDataFile( aSelectedFile );
             final PeriodData aNewestPeriodData = getPDC().getNewestPeriodData();
             final Path aCurrentBaseDataFile = getPDC().getFile_BaseData(aNewestPeriodData);
@@ -128,7 +130,7 @@ public class UploadListener implements ActionListener
             final boolean aAcceptData = FileDiffDialog.showDiffPanel(aDiff);
             if( aAcceptData ) {
                 final Path aBaseDataFile = copyToDataFolder( aSelectedFile );
-                if( m_TransferController == null || !m_TransferController.isConnected() ){
+                if( (m_TransferController == null) || !m_TransferController.isConnected() ){
                     throw new IOException("Keine Verbindung zu Server!");
                 }
                 m_TransferController.upload( aBaseDataFile );
@@ -142,6 +144,16 @@ public class UploadListener implements ActionListener
         return false;
     }
 
+    private void saveSettings(final Path fPath) {
+        try{
+        	final IUISettings aUISettings = AllSettings.INSTANCE.getUISettings();
+        	aUISettings.setUploadDataLatestFolder(fPath);
+			aUISettings.writeToFile();
+        }catch( final IOException fEx ){
+            sm_Log.warn("Exception: ", fEx );
+        }
+	}
+
     private static Path copyToDataFolder( final File fSelectedFile ) throws IOException
     {
         final Path aBaseDataFile = getRootBaseDataFile();
@@ -151,9 +163,10 @@ public class UploadListener implements ActionListener
         return aBaseDataFile;
     }
 
-    private static Path getDataFolder()
+    private static Path getUploadData_LatestFolder()
     {
-        return AllSettings.INSTANCE.getAppSettings().getFolder_Data();
+    	final Path aFolder_UploadDataLatestFolder = AllSettings.INSTANCE.getUISettings().getFolder_UploadDataLatestFolder();
+		return aFolder_UploadDataLatestFolder;
     }
 
     private static Path getRootBaseDataFile()

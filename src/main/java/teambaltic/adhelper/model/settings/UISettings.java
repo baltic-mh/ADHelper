@@ -12,12 +12,13 @@
 package teambaltic.adhelper.model.settings;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 // ############################################################################
 public class UISettings extends ASettings<IUISettings.EKey>
     implements IUISettings
 {
-    public UISettings(final Path fSettingsFile) throws Exception
+	public UISettings(final Path fSettingsFile) throws Exception
     {
         super(true);
         init(fSettingsFile);
@@ -48,7 +49,6 @@ public class UISettings extends ASettings<IUISettings.EKey>
         setIntValue( EKey.MAINFRAME_HEIGHT, fValue );
     }
 
-
     @Override
     public int getMainFrame_PosX()
     {
@@ -71,6 +71,22 @@ public class UISettings extends ASettings<IUISettings.EKey>
     {
         setIntValue( EKey.MAINFRAME_POSY, fValue );
     }
+
+    @Override
+    public String getFolderName_UploadDataLatestFolder() {
+    	return getStringValue(EKey.UPLOADDATA_LATESTFOLDER);
+    }
+
+	@Override
+	public Path getFolder_UploadDataLatestFolder() {
+		final String aFolderName_UploadDataLatestFolder = getFolderName_UploadDataLatestFolder();
+		return Paths.get( aFolderName_UploadDataLatestFolder ).normalize();
+	}
+
+	@Override
+	public void setUploadDataLatestFolder(final Path fFolder) {
+		setStringValue(EKey.UPLOADDATA_LATESTFOLDER, fFolder.toString());
+	}
 
 }
 
