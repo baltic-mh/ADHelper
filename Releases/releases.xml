@@ -2,6 +2,22 @@
   <architect arch="x86" os="Windows" tag="win32">
     <launcher exec="${APPHOME}/ADHelper.exe"/>
   </architect>
+  <version release="1032002" version="1.32.2">
+    <description>
+    &lt;dl&gt;
+  &lt;dt&gt;
+    &lt;b&gt;NEU&lt;/b&gt;
+    &lt;dd&gt;Das Verzeichnis, das beim Upload der Basisdaten ausgewählt wird, wird gespeichert.&lt;/dd&gt;
+  &lt;/dt&gt;
+&lt;/dl&gt;
+  </description>
+    <arch>
+      <file destdir="${APPHOME}" name="ADHelper.exe" size="22990257" sourcedir="1032002"/>
+      <file destdir="${APPHOME}\misc" name="CHANGELOG.html" size="83169" sourcedir="1032002"/>
+      <file destdir="${APPHOME}\misc" name="Dokumentation.txt" size="19418" sourcedir="1032002"/>
+      <file destdir="${APPHOME}\misc" name="RELEASENOTES.txt" size="18511" sourcedir="1032002"/>
+    </arch>
+  </version>
   <version release="1032001" version="1.32.1">
     <description>
     &lt;dl&gt;
