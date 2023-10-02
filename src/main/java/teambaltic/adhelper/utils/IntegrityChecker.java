@@ -14,6 +14,7 @@ package teambaltic.adhelper.utils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -107,7 +108,7 @@ public final class IntegrityChecker
             aSeen_IDs.add( aID );
 
             final String aRefIDString = aAttributes.get( IKnownColumns.LINKID );
-            if( aRefIDString != null && !"".equals( aRefIDString ) ){
+            if( (aRefIDString != null) && !"".equals( aRefIDString ) ){
                 try {
                     final Integer aRefID = Integer.parseInt( aRefIDString );
                     // "Neuerdings" gibt es einige Einträge, bei denen lauter Nullen
@@ -127,13 +128,16 @@ public final class IntegrityChecker
             }
 
             final String aBirthdayString = aAttributes.get( IKnownColumns.BIRTHDAY );
-            if( aBirthdayString == null ){
-                aProblems.put( aID, "Kein Geburtsdatum");
+            LocalDate aDateValue = ParseUtils.getDate( aBirthdayString );
+
+            if( aDateValue == null ){
+                aProblems.put( aID, String.format("Kein (gültiges) Geburtsdatum: '%s'", aBirthdayString ));
             }
 
             final String aEintrittString = aAttributes.get( IKnownColumns.EINTRITT );
-            if( aEintrittString == null ){
-                aProblems.put( aID, "Kein Eintrittsdatum!" );
+            aDateValue = ParseUtils.getDate( aEintrittString );
+            if( aDateValue == null ){
+                aProblems.put( aID, String.format("Kein (gültiges) Eintrittsdatum: '%s'", aEintrittString ));
             }
 
         }

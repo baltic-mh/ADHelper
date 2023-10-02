@@ -38,6 +38,7 @@ import teambaltic.adhelper.model.WorkEventsAttended;
 import teambaltic.adhelper.model.settings.IAllSettings;
 import teambaltic.adhelper.model.settings.IClubSettings;
 import teambaltic.adhelper.utils.FileUtils;
+import teambaltic.adhelper.utils.IntegrityChecker;
 
 // ############################################################################
 public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
@@ -99,7 +100,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
     static boolean isMembershipEffective( final IClubMember fMember, final IPeriod fPeriod )
     {
         final LocalDate aMemberUntil = fMember.getMemberUntil();
-        final boolean aIsMembershipEffective = aMemberUntil == null || fPeriod.isAfterMyStart( aMemberUntil );
+        final boolean aIsMembershipEffective = (aMemberUntil == null) || fPeriod.isAfterMyStart( aMemberUntil );
         return aIsMembershipEffective;
     }
 
@@ -127,7 +128,9 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         sm_Log.info( "Einlesen der Daten für Zeitraum: "+fPeriodData );
 
         // Die Daten werden immer aus dem Verzeichnis des Abrechnungszeitraumes gelesen
-        readBaseData   ( getPDC().getFile_BaseData( fPeriodData ), aPeriod, fOnlyID );
+        final Path aFile_BaseData = getPDC().getFile_BaseData( fPeriodData );
+        IntegrityChecker.checkBaseDataFile( aFile_BaseData.toFile() );
+		readBaseData   ( aFile_BaseData, aPeriod, fOnlyID );
         readWorkEvents ( getPDC().getFile_WorkEvents ( fPeriodData ) );
         readAdjustments( getPDC().getFile_Adjustments( fPeriodData ) );
         readBalances( fPeriodData );
@@ -293,7 +296,7 @@ public class ADH_DataProvider extends ListProvider<InfoForSingleMember>
         final InfoForSingleMember aInfoForSingleMember = get( fMemberID );
         final IClubMember aMember = aInfoForSingleMember.getMember();
         final LocalDate aMemberUntil = aMember.getMemberUntil();
-        if( aMemberUntil != null && aCurrentPeriod.isBeforeMyStart( aMemberUntil ) ){
+        if( (aMemberUntil != null) && aCurrentPeriod.isBeforeMyStart( aMemberUntil ) ){
             return false;
         }
         return true;

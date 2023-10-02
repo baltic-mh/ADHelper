@@ -20,6 +20,6 @@
 #[ÄNDERUNG] Für ein geändertes Verhalten
 #
 ###############################################################################
-//RELEASE: 1032002
+//RELEASE: 1032003
 ###############################################################################
-[NEU] Das Verzeichnis, das beim Upload der Basisdaten ausgewählt wird, wird gespeichert.
+[BUGFIX] Fehlen von Geburtstag oder Eintrittsdatum ist nicht zulässig
