@@ -28,7 +28,6 @@ import teambaltic.adhelper.gui.model.CBModel_Member;
 import teambaltic.adhelper.gui.model.TBLModel_AttendedWorkEvent;
 import teambaltic.adhelper.gui.model.TBLModel_DutyCharge;
 import teambaltic.adhelper.gui.model.TBLModel_DutyFree;
-import teambaltic.adhelper.gui.renderer.RNDR_CB_Member;
 import teambaltic.adhelper.model.Adjustment;
 import teambaltic.adhelper.model.Balance;
 import teambaltic.adhelper.model.DutyCharge;
@@ -77,7 +76,14 @@ public class GUIUpdater
     private boolean isReadOnly(){ return m_ReadOnly; }
     // ------------------------------------------------------------------------
 
-    private final RNDR_CB_Member m_Renderer_Member;
+    // ------------------------------------------------------------------------
+	private MemberFilterChangedListener m_MemberFilterChangedListener;
+    public MemberFilterChangedListener getMemberFilterChangedListener() { return m_MemberFilterChangedListener; }
+	public void setMemberFilterChangedListener(final MemberFilterChangedListener fMFCL) {
+		m_MemberFilterChangedListener = fMFCL;
+	}
+    // ------------------------------------------------------------------------
+
 
     public GUIUpdater(
             final MainPanel             fPanel,
@@ -91,7 +97,6 @@ public class GUIUpdater
         m_PDC               = fPDC;
         m_TransferController= fTransferController;
         m_ReadOnly          = fIsReadOnly;
-        m_Renderer_Member   = new RNDR_CB_Member( m_DataProvider );
     }
 
     public void updateGUI()
@@ -102,8 +107,8 @@ public class GUIUpdater
     public void updateGUI( final PeriodData fPeriodData)
     {
         synchronized( this ){
-            if( isUpdating() ){
-                return;
+            if( isUpdating() ) {
+            	return;
             }
             setUpdating( true );
             final boolean aPeriodChanged = isPeriodChanged( fPeriodData );
@@ -117,7 +122,11 @@ public class GUIUpdater
             }
             setUpdating( false );
         }
+
         final int aMemberID = m_Panel.getSelectedMemberID();
+        if( aMemberID == -1 ) {
+        	return;
+        }
         final InfoForSingleMember aInfoForSingleMember = m_DataProvider.get( aMemberID );
         fill_Birthday_Eintritt_Austritt(aInfoForSingleMember, m_Panel);
         final TBLModel_DutyFree aDM_DutyFree = m_Panel.getDataModel_DutyFree();
@@ -134,8 +143,7 @@ public class GUIUpdater
 
     public IClubMember getSelectedMember()
     {
-        final IClubMember aSelectedMember = m_Panel.getSelectedMember();
-        return aSelectedMember;
+    	return m_Panel.getSelectedMember();
     }
 
     private void reselectPreviouslySelectedMember()
@@ -146,13 +154,13 @@ public class GUIUpdater
         final IClubMember[] aMemberArray = new IClubMember[ aAllMembers.size() ];
         final CBModel_Member aMemberCBModel = new CBModel_Member( aAllMembers.toArray( aMemberArray ) );
         final JComboBox<IClubMember> aCB_Members = m_Panel.getCB_Members();
-        aCB_Members.setRenderer( m_Renderer_Member );
         aCB_Members.setModel( aMemberCBModel );
+        getMemberFilterChangedListener().setAllMembers( aAllMembers );
         if( aSelectedMember != null ){
             // Ehemals selektiertes Mitglied wird wieder selektiert:
             final IClubMember aPreviouslySelectedMember = m_DataProvider.getMember( aSelectedMember.getID() );
             // null? Das passiert, wenn das Mitglied in der nun selektieren
-            // Periode noch nicht in der Mitgliederdatei enthalten war.
+            // Periode noch nicht oder nicht mehr in der Mitgliederdatei enthalten ist.
             if( aPreviouslySelectedMember != null ){
                 aMemberCBModel.setSelectedItem( aPreviouslySelectedMember );
             }

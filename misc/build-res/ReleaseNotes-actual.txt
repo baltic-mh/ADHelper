@@ -20,6 +20,6 @@
 #[ÄNDERUNG] Für ein geändertes Verhalten
 #
 ###############################################################################
-//RELEASE: 1032003
+//RELEASE: 1033000
 ###############################################################################
-[BUGFIX] Fehlen von Geburtstag oder Eintrittsdatum ist nicht zulässig
+[NEU] Filter für Mitgliederliste eingeführt

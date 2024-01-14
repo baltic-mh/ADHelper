@@ -61,9 +61,8 @@ public class GeneratePDFReportListener implements ActionListener
     @Override
     public void actionPerformed( final ActionEvent fE )
     {
-        if( getDataProvider() == null || getOutputFolder() == null ){
-            // Noch nicht initialisiert!
-            return;
+        if( (getDataProvider() == null) || (getOutputFolder() == null) || (getMainPanel().getSelectedMember() == null) ) {
+        	return;
         }
         if( !Files.exists( getOutputFolder() )){
             try{

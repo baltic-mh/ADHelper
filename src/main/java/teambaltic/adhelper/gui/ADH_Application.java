@@ -14,7 +14,6 @@ package teambaltic.adhelper.gui;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.io.FileInputStream;
@@ -41,6 +40,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -61,11 +61,13 @@ import teambaltic.adhelper.gui.listeners.GUIUpdater;
 import teambaltic.adhelper.gui.listeners.GeneratePDFReportListener;
 import teambaltic.adhelper.gui.listeners.ManageAdjustmentListener;
 import teambaltic.adhelper.gui.listeners.ManageWorkEventsListener;
+import teambaltic.adhelper.gui.listeners.MemberFilterChangedListener;
 import teambaltic.adhelper.gui.listeners.MemberSelectedListener;
 import teambaltic.adhelper.gui.listeners.PeriodDataChangedListener;
 import teambaltic.adhelper.gui.listeners.UploadListener;
 import teambaltic.adhelper.gui.listeners.UserSettingsListener;
 import teambaltic.adhelper.gui.model.CBModel_PeriodData;
+import teambaltic.adhelper.gui.renderer.RNDR_CB_Member;
 import teambaltic.adhelper.model.ERole;
 import teambaltic.adhelper.model.IClubMember;
 import teambaltic.adhelper.model.PeriodData;
@@ -131,7 +133,7 @@ public class ADH_Application
 
     private GUIUpdater m_GUIUpdater;
 
-    /**
+	/**
      * Launch the application.
      */
     public static void main( final String[] args )
@@ -164,28 +166,22 @@ public class ADH_Application
             aApplication.shutdown("Beenden wegen fataler Exception", 1, false);
         }
 
-        EventQueue.invokeLater( new Runnable() {
+        EventQueue.invokeLater( () -> {
+		    try{
+		        sm_Log.info( "Heute ist ein schöner Tag: "+ new Date() );
+		        IntegrityChecker.check( AllSettings.INSTANCE );
 
-            @Override
-            public void run()
-            {
-                try{
-                    sm_Log.info( "Heute ist ein schöner Tag: "+ new Date() );
-                    IntegrityChecker.check( AllSettings.INSTANCE );
-
-                    aApplication.initializeUI( aApplication.m_Frame, aBuildConfigInfo);
+		        aApplication.initializeUI( aApplication.m_Frame, aBuildConfigInfo);
 
 
-                }catch( final Exception fEx ){
-                    sm_Log.error( "Unerwartete Exception: ", fEx );
-                    final String aMsg = ExceptionUtils.getStackTrace(fEx);
-                    JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
-                                JOptionPane.ERROR_MESSAGE );
-                    aApplication.shutdown("Beenden wegen fataler Exception", 1, false);
-                }
-            }
-
-        } );
+		    }catch( final Exception fEx ){
+		        sm_Log.error( "Unerwartete Exception: ", fEx );
+		        final String aMsg = ExceptionUtils.getStackTrace(fEx);
+		        JOptionPane.showMessageDialog( aApplication.m_MainPanel, aMsg, "Fataler Fehler!",
+		                    JOptionPane.ERROR_MESSAGE );
+		        aApplication.shutdown("Beenden wegen fataler Exception", 1, false);
+		    }
+		} );
         checkForUpdate();
 
         new Thread("Initialize"){
@@ -279,10 +275,21 @@ public class ADH_Application
         final GeneratePDFReportListener aGeneratePDFReportListener = getGeneratePDFReportListener();
         aGeneratePDFReportListener.init( fDataProvider, m_MainPanel );
 
-        final PeriodDataChangedListener aPDCL = initComboBox_PeriodData( fDataProvider, fPDC );
-
         final JComboBox<IClubMember> aCB_Members = m_MainPanel.getCB_Members();
         aCB_Members.addActionListener( aMemberSelectedListener );
+        aCB_Members.setRenderer( new RNDR_CB_Member( fDataProvider ) );
+        final JTextField aTF_MemberFilter = m_MainPanel.getTF_MemberFilter();
+		final MemberFilterChangedListener aMFCL = new MemberFilterChangedListener(aCB_Members, aTF_MemberFilter );
+		m_GUIUpdater.setMemberFilterChangedListener( aMFCL );
+		aTF_MemberFilter.addKeyListener(aMFCL);
+		final JButton aBTN_ClearFilter = m_MainPanel.getBtn_ClearFilter();
+
+        aBTN_ClearFilter.addActionListener( fE -> {
+        	m_MainPanel.getTF_MemberFilter().setText("");
+        	aMFCL.keyPressed(null);
+        });
+
+		final PeriodDataChangedListener aPDCL = initComboBox_PeriodData( fDataProvider, fPDC );
 
         final ManageWorkEventsListener aManageWorkEventsListener = new ManageWorkEventsListener(fDataProvider, fPDC, m_GUIUpdater, fIsBauausschuss);
         m_MainPanel.getBtn_ManageWorkEvents().addActionListener( aManageWorkEventsListener );
@@ -351,14 +358,7 @@ public class ADH_Application
         menuBar.add(mnDatei);
 
         final JMenuItem mntmBeenden = new JMenuItem("Beenden");
-        mntmBeenden.addActionListener( new ActionListener(){
-            @Override
-            public void actionPerformed( final ActionEvent fE )
-            {
-                shutdown("Beenden durch Benutzer (Menue)", 0);
-            }
-
-        });
+        mntmBeenden.addActionListener( fE -> shutdown("Beenden durch Benutzer (Menue)", 0));
         mnDatei.add(mntmBeenden);
 
         final JMenu mnAktionen = new JMenu("Aktionen");
@@ -383,14 +383,7 @@ public class ADH_Application
         mnPDFReport.add(mnit_PDFReport_All);
 
         final JMenuItem mntmShowLogWindow = new JMenuItem("Zeige Log-Ausgaben");
-        mntmShowLogWindow.addActionListener( new ActionListener(){
-            @Override
-            public void actionPerformed( final ActionEvent fE )
-            {
-                SwingAppenderUI.getInstance().show();
-            }
-
-        });
+        mntmShowLogWindow.addActionListener( fE -> SwingAppenderUI.getInstance().show());
         mnAktionen.add( mntmShowLogWindow );
 
         final Component horizontalGlue = Box.createHorizontalGlue();
@@ -400,20 +393,15 @@ public class ADH_Application
         menuBar.add(mnHilfe);
 
         final JMenuItem mntmHelpDocumentation = new JMenuItem("Dokumentation");
-        mntmHelpDocumentation.addActionListener( new ActionListener(){
-            @Override
-            public void actionPerformed( final ActionEvent fE )
-            {
-                if (Desktop.isDesktopSupported()) {
-                    try{
-                        Desktop.getDesktop().browse(new URI("http://baltic-mh.github.io/ADHelper/"));
-                    }catch( IOException | URISyntaxException fEx ){
-                        sm_Log.warn("Exception: ", fEx );
-                    }
-                }
-            }
-
-        });
+        mntmHelpDocumentation.addActionListener( fE -> {
+		    if (Desktop.isDesktopSupported()) {
+		        try{
+		            Desktop.getDesktop().browse(new URI("http://baltic-mh.github.io/ADHelper/"));
+		        }catch( IOException | URISyntaxException fEx ){
+		            sm_Log.warn("Exception: ", fEx );
+		        }
+		    }
+		});
         mnHilfe.add( mntmHelpDocumentation );
 
         fFrame.setVisible( true );

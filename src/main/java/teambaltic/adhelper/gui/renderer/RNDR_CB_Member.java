@@ -40,7 +40,16 @@ public class RNDR_CB_Member extends JLabel implements ListCellRenderer<IClubMemb
             final boolean fIsSelected,
             final boolean fCellHasFocus )
     {
-        String aMemberString;
+        final String aMemberString = createMemberString(fClubMember);
+        setText( aMemberString );
+        return this;
+    }
+
+	public String createMemberString(final IClubMember fClubMember) {
+		if ( fClubMember == null ) {
+			return "";
+		}
+		String aMemberString;
         final int aLinkID = fClubMember.getLinkID();
         if( aLinkID == 0){
             aMemberString = fClubMember.toString();
@@ -48,9 +57,8 @@ public class RNDR_CB_Member extends JLabel implements ListCellRenderer<IClubMemb
             final String aLinkedMemberString = m_DataProvider.getMember( aLinkID ).toString();
             aMemberString = String.format( "%s (%d => %s)", fClubMember.getName(), fClubMember.getID(), aLinkedMemberString );
         }
-        setText( aMemberString );
-        return this;
-    }
+		return aMemberString;
+	}
 
 }
 

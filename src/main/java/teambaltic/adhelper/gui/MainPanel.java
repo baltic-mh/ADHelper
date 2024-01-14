@@ -53,6 +53,16 @@ public class MainPanel extends JPanel
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    private final JTextField m_tf_MemberFilter;
+    public JTextField getTF_MemberFilter(){ return m_tf_MemberFilter; }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    private final JButton m_btn_ClearFilter;
+    public JButton getBtn_ClearFilter() { return m_btn_ClearFilter; }
+    // ------------------------------------------------------------------------
+
+	// ------------------------------------------------------------------------
     private final JComboBox<PeriodData> m_cmb_Period;
     public JComboBox<PeriodData> getCB_Period(){ return m_cmb_Period; }
     // ------------------------------------------------------------------------
@@ -105,58 +115,67 @@ public class MainPanel extends JPanel
     public MainPanel()
     {
         setLayout(new FormLayout(new ColumnSpec[] {
-                FormSpecs.RELATED_GAP_COLSPEC,
-                ColumnSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_COLSPEC,
-                FormSpecs.DEFAULT_COLSPEC,
-                FormSpecs.RELATED_GAP_COLSPEC,
-                ColumnSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_COLSPEC,
-                FormSpecs.DEFAULT_COLSPEC,
-                FormSpecs.RELATED_GAP_COLSPEC,
-                ColumnSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_COLSPEC,
-                FormSpecs.DEFAULT_COLSPEC,
-                FormSpecs.RELATED_GAP_COLSPEC,
-                ColumnSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_COLSPEC,
-                ColumnSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_COLSPEC,
-                FormSpecs.DEFAULT_COLSPEC,
-                FormSpecs.RELATED_GAP_COLSPEC,
-                FormSpecs.DEFAULT_COLSPEC,
-                FormSpecs.RELATED_GAP_COLSPEC,},
-            new RowSpec[] {
-                FormSpecs.RELATED_GAP_ROWSPEC,
-                FormSpecs.DEFAULT_ROWSPEC,
-                FormSpecs.RELATED_GAP_ROWSPEC,
-                FormSpecs.DEFAULT_ROWSPEC,
-                FormSpecs.RELATED_GAP_ROWSPEC,
-                FormSpecs.DEFAULT_ROWSPEC,
-                FormSpecs.RELATED_GAP_ROWSPEC,
-                RowSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_ROWSPEC,
-                RowSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_ROWSPEC,
-                RowSpec.decode("default:grow"),
-                FormSpecs.RELATED_GAP_ROWSPEC,
-                FormSpecs.DEFAULT_ROWSPEC,
-                FormSpecs.RELATED_GAP_ROWSPEC,}));
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		FormSpecs.DEFAULT_COLSPEC,
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		FormSpecs.DEFAULT_COLSPEC,
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		FormSpecs.DEFAULT_COLSPEC,
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		ColumnSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		FormSpecs.DEFAULT_COLSPEC,
+        		FormSpecs.RELATED_GAP_COLSPEC,
+        		FormSpecs.DEFAULT_COLSPEC,
+        		FormSpecs.RELATED_GAP_COLSPEC,},
+        	new RowSpec[] {
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		FormSpecs.DEFAULT_ROWSPEC,
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		FormSpecs.DEFAULT_ROWSPEC,
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		FormSpecs.DEFAULT_ROWSPEC,
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		RowSpec.decode("default:grow"),
+        		FormSpecs.RELATED_GAP_ROWSPEC,
+        		FormSpecs.DEFAULT_ROWSPEC,
+        		FormSpecs.RELATED_GAP_ROWSPEC,}));
 
         final JLabel lblPeriod = new JLabel("Zeitraum");
         add(lblPeriod, "2, 2, right, default");
 
         m_cmb_Period = new JComboBox<>();
-        add(m_cmb_Period, "4, 2, 17, 1, fill, default");
+        add(m_cmb_Period, "4, 2, 19, 1, fill, default");
 
         final JLabel lblMitglied = new JLabel("Mitglied");
         add(lblMitglied, "2, 4, right, default");
 
         m_cmb_Members = new JComboBox<>();
-        add(getCB_Members(), "4, 4, 17, 1, fill, default");
+        add(getCB_Members(), "4, 4, 11, 1, fill, default");
 
-        final JComboBox<IClubMember> aCb_Members = getCB_Members();
-        UIUtils.setItemStartsWithSelector( aCb_Members );
+        final JLabel lblMemberFilter = new JLabel("Filter");
+        add(lblMemberFilter, "16, 4, right, default");
+
+        m_btn_ClearFilter = new JButton("x");
+        add(m_btn_ClearFilter, "18, 4");
+
+        m_tf_MemberFilter = new JTextField();
+        add(m_tf_MemberFilter, "20, 4, 3, 1, fill, default");
+        m_tf_MemberFilter.setColumns(10);
 
         final JLabel aLBL_Birthday = new JLabel("Geb.Datum");
         add(aLBL_Birthday, "4, 6, right, default");
@@ -181,7 +200,7 @@ public class MainPanel extends JPanel
 
         final JPanel aPnl_DutyFree = new JPanel();
         aPnl_DutyFree.setBorder(new TitledBorder(null, "AD-Befreiungen", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        add(aPnl_DutyFree, "2, 8, 19, 1, fill, fill");
+        add(aPnl_DutyFree, "2, 8, 21, 1, fill, fill");
         aPnl_DutyFree.setLayout(new FormLayout(new ColumnSpec[] {
                 ColumnSpec.decode("426px:grow"),
                 ColumnSpec.decode("2px"),},
@@ -202,7 +221,7 @@ public class MainPanel extends JPanel
 
         final JPanel m_pnl_Accountings = new JPanel();
         m_pnl_Accountings.setBorder(new TitledBorder(null, "Abrechnungen", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        add(m_pnl_Accountings, "2, 12, 19, 1, fill, fill");
+        add(m_pnl_Accountings, "2, 12, 21, 1, fill, fill");
         m_pnl_Accountings.setLayout(new FormLayout(new ColumnSpec[] {
                 FormSpecs.RELATED_GAP_COLSPEC,
                 ColumnSpec.decode("default:grow"),
@@ -237,7 +256,7 @@ public class MainPanel extends JPanel
 
         final JPanel m_pnl_WorkEvents = new JPanel();
         m_pnl_WorkEvents.setBorder(new TitledBorder(null, "Arbeitsdienste", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        add(m_pnl_WorkEvents, "2, 10, 19, 1, fill, fill");
+        add(m_pnl_WorkEvents, "2, 10, 21, 1, fill, fill");
         m_pnl_WorkEvents.setLayout(new FormLayout(new ColumnSpec[] {
                 FormSpecs.RELATED_GAP_COLSPEC,
                 ColumnSpec.decode("default:grow"),
@@ -280,7 +299,7 @@ public class MainPanel extends JPanel
         add(m_btnFinish, "16, 14");
 
         m_btnUpload = new JButton("Daten hochladen...");
-        add(m_btnUpload, "20, 14");
+        add(m_btnUpload, "22, 14");
 
     }
 
@@ -333,13 +352,16 @@ public class MainPanel extends JPanel
 
     public IClubMember getSelectedMember()
     {
-        final IClubMember aSelectedItem = (IClubMember) getCB_Members().getSelectedItem();
-        return aSelectedItem;
+        return (IClubMember) getCB_Members().getSelectedItem();
     }
 
     public int getSelectedMemberID()
     {
-        return getSelectedMember().getID();
+        final IClubMember aSelectedMember = getSelectedMember();
+        if( aSelectedMember == null ) {
+        	return -1;
+        }
+		return aSelectedMember.getID();
     }
 
     public void enableBtn_Finish(final boolean fEnable)
