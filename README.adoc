@@ -1,0 +1,27 @@
+= ADHelper
+Mathias-H. Weber <mhw@teambaltic.de>
+28. Juni 2026
+:doctype: book
+:encoding: utf-8
+:lang: de
+//:toc: left
+//:toclevels: 4
+//:toc-title: Inhaltsverzeichnis
+:last-update-label: Erstellt mit Asciidoctor v{asciidoctor-version} : Zuletzt geändert:
+:icons: font
+:numbered:
+:source-highlighter: highlightjs
+
+
+ADHelper ist ein Werkzeug, um die Verwaltung und Abrechnung von Arbeitsdienststunden im Verein komfortabel und sicher durchführen zu können.
+
+Dies ist der Branch, der die Dokumentation für das Projekt beinhaltet.
+
+Die Dokumentation ist in link:https://docs.asciidoctor.org/asciidoc/latest/[AsciiDoc] erstellt. Für die Publikation müssen daraus HTML-Seiten erstellt werden. Das erfolgt, indem man das Projekt klont und dann im Hauptverzeichnis das Kommando
+
+ gradlew
+
+aufruft. Danach müssen die geänderten Dateien mit `git` gepusht werden.
+
+Das Ergebnis ist dann unter link:http://baltic-mh.github.io/ADHelper/ zu finden.
+
