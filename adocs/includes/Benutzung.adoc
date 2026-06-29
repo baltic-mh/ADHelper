@@ -241,6 +241,11 @@ Für jede Gutschrift ist ein Kommentar anzulegen, der erläutert, warum die Guts
 
 ==== Abschluss eines Abrechnungszeitraumes
 
+[IMPORTANT]
+====
+Vor dem Abschluss eines Abrechnungszeitraumes ist sicherzustellen, dass die BasisDaten auf dem aktuellen Stand sind. Zur Sicherheit sollte kurz vorher die Mitgliederwartin aufgefordert werden, noch einmal frische Daten aus dem Mitgliederverwaltungsprogramm zu exportieren und hochzuladen!
+====
+
 Ist sichergestellt, dass alle Arbeitsdiensttermine eines Abrechnungszeitraumes vollständig erfasst sind, kann der Zeitraum abgeschlossen werden. Dazu ist im <<Hauptfenster>> der Knopf kbd:[Zeitraum abschließen] zu drücken.
 
 Mit dem "Abschließen"-Vorgang werden im Datenverzeichnis der aktiven Periode einige neue Dateien erzeugt (siehe auch <<Dateien eines Abrechnungszeitraumes>>). 
